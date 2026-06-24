@@ -1,0 +1,8 @@
+node_modules/
+dist/
+.codex/
+.agents/
+*.png
+*.log
+*.zip
+_write_test.txt
