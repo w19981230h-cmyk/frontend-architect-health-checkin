@@ -212,6 +212,76 @@
     .patient-advanced-actions button { height: 32px; padding: 0 12px; border-radius: 4px; }
     .patient-advanced-actions .reset { border: 1px solid #dfe5ee; color: #66748a; }
     .patient-advanced-actions .apply { color: #fff; background: #3154ff; }
+    .health-task-panel { padding: 0; overflow: hidden; }
+    .health-task-shell { flex: 1; min-height: 0; display: flex; flex-direction: column; padding: 24px; background: #fff; border-radius: 8px; overflow: hidden; }
+    .health-task-team-row { height: 88px; display: flex; gap: 16px; align-items: flex-start; }
+    .health-task-team-card { position: relative; width: 318px; height: 88px; padding: 18px 16px 12px; border: 1px solid #e7eaf1; border-radius: 10px; background: #fff; overflow: hidden; }
+    .health-task-team-card.active { border-color: #6f94ff; box-shadow: 0 0 0 1px rgba(111,148,255,.08); }
+    .health-task-team-card.active::after { content: ""; position: absolute; right: 0; top: 0; border-style: solid; border-width: 0 30px 30px 0; border-color: transparent #5b83ff transparent transparent; }
+    .health-task-team-title { min-width: 0; display: flex; align-items: center; gap: 8px; color: #253653; font-size: 14px; font-weight: 800; }
+    .health-task-team-title span:nth-child(2) { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .health-task-team-icon { width: 20px; height: 20px; border-radius: 5px; display: inline-grid; place-items: center; color: #fff; background: #3154ff; font-size: 12px; flex: 0 0 auto; }
+    .health-task-team-count { height: 22px; min-width: 34px; padding: 0 8px; border-radius: 999px; display: inline-flex; align-items: center; justify-content: center; color: #3154ff; background: #eef3ff; font-size: 12px; font-weight: 800; }
+    .health-task-team-card p { margin: 12px 0 0; color: #8b97aa; font-size: 13px; }
+    .health-task-filter { margin-top: 18px; padding: 18px 20px; border-radius: 12px; background: #f8fbff; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px 22px; align-content: start; }
+    .health-task-filter.is-collapsed .health-filter-field:nth-of-type(n+5) { display: none; }
+    .health-filter-field { min-width: 0; display: grid; grid-template-columns: 96px minmax(0, 1fr); align-items: center; gap: 10px; color: #2e3d56; font-size: 14px; }
+    .health-filter-field > span:first-child { text-align: right; white-space: nowrap; }
+    .health-filter-field input, .health-filter-field select { width: 100%; height: 38px; border: 1px solid #e3e8f1; border-radius: 4px; padding: 0 12px; color: #53627a; background: #fff; }
+    .health-filter-field input::placeholder { color: #b7bfcc; }
+    .health-filter-date { display: grid; grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr) auto; align-items: center; gap: 6px; height: 38px; border: 1px solid #e3e8f1; border-radius: 4px; padding: 0 10px; background: #fff; color: #a8b2c2; }
+    .health-filter-date input { height: auto; border: 0; padding: 0; background: transparent; }
+    .health-filter-date svg { width: 16px; height: 16px; color: #344157; }
+    .health-filter-tag { width: fit-content; height: 28px; padding: 0 10px; border-radius: 4px; display: inline-flex; align-items: center; gap: 6px; color: #3154ff; background: #eef3ff; font-weight: 700; }
+    .health-filter-actions { grid-column: 1 / -1; display: flex; align-items: center; gap: 12px; padding-top: 2px; }
+    .health-filter-actions button { height: 32px; padding: 0 16px; border-radius: 4px; }
+    .health-filter-actions .plain { color: #3154ff; background: transparent; }
+    .health-filter-actions .ghost { margin-left: auto; }
+    .health-filter-actions .ghost { border: 1px solid #e3e8f1; color: #60708a; background: #fff; }
+    .health-filter-actions .primary { margin-left: 0; color: #fff; background: #3154ff; }
+    .health-task-list-card { flex: 1; min-height: 0; margin-top: 18px; border: 1px solid #e1e8f3; border-radius: 10px; background: #fff; display: flex; flex-direction: column; overflow: hidden; }
+    .health-task-list-head { min-height: 58px; padding: 0 10px 0 18px; display: flex; align-items: flex-end; justify-content: space-between; gap: 20px; border-bottom: 1px solid #edf2f8; }
+    .health-task-tabs { min-width: 0; height: 58px; display: flex; align-items: flex-end; gap: 36px; }
+    .health-task-tab { position: relative; height: 38px; color: #7c8798; font-size: 14px; font-weight: 700; white-space: nowrap; }
+    .health-task-tab.active { color: #3154ff; }
+    .health-task-tab.active::after { content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 3px; border-radius: 3px 3px 0 0; background: #3154ff; }
+    .health-task-tools { height: 58px; display: flex; align-items: center; justify-content: flex-end; gap: 10px; flex: 0 0 auto; }
+    .health-task-tool { height: 32px; padding: 0 12px; border: 1px solid #e3e8f1; border-radius: 4px; color: #40506a; background: #fff; font-size: 13px; }
+    .health-task-table-wrap { flex: 1; min-height: 0; overflow: auto; }
+    .health-task-table { width: 100%; min-width: 1560px; border-collapse: collapse; table-layout: fixed; }
+    .health-task-table thead tr { height: 48px; background: #f2f3f5; }
+    .health-task-table tbody tr { height: 54px; border-bottom: 1px solid #edf0f5; }
+    .health-task-table th, .health-task-table td { padding: 0 10px; color: #647188; font-size: 13px; text-align: left; white-space: nowrap; }
+    .health-task-table th { color: #2e3d56; font-weight: 700; }
+    .health-task-table th:nth-child(1) { width: 46px; }
+    .health-task-table th:nth-child(2) { width: 150px; }
+    .health-task-table th:nth-child(3) { width: 112px; }
+    .health-task-table th:nth-child(4) { width: 110px; }
+    .health-task-table th:nth-child(5) { width: 138px; }
+    .health-task-table th:nth-child(6) { width: 128px; }
+    .health-task-table th:nth-child(7) { width: 128px; }
+    .health-task-table th:nth-child(8) { width: 130px; }
+    .health-task-table th:nth-child(9) { width: 128px; }
+    .health-task-table th:nth-child(10) { width: 120px; }
+    .health-task-table th:nth-child(11) { width: 110px; }
+    .health-task-table th:nth-child(12) { width: 150px; }
+    .health-task-table th:nth-child(13) { width: 108px; }
+    .health-task-table th:nth-child(14) { width: 80px; }
+    .health-task-check { width: 15px; height: 15px; accent-color: #3154ff; }
+    .health-task-patient { display: inline-flex; align-items: center; gap: 8px; color: #506078; }
+    .health-task-avatar { width: 24px; height: 24px; border-radius: 50%; background: linear-gradient(180deg, #eef5ff, #dce8ff); position: relative; overflow: hidden; box-shadow: inset 0 0 0 1px #c8d8ff; }
+    .health-task-avatar::before { content: ""; position: absolute; left: 7px; top: 5px; width: 10px; height: 10px; border-radius: 50%; background: #ffd9c2; box-shadow: 0 -4px 0 -1px #2d3f66; }
+    .health-task-avatar::after { content: ""; position: absolute; left: 5px; right: 5px; bottom: 3px; height: 8px; border-radius: 8px 8px 4px 4px; background: #4f79ff; }
+    .health-task-overdue { margin-left: 6px; padding: 1px 5px; border-radius: 3px; color: #ff4d4f; background: #fff1f0; font-size: 12px; }
+    .health-task-status { color: #3154ff; font-weight: 700; }
+    .health-task-status::before { content: ""; display: inline-block; width: 6px; height: 6px; margin-right: 5px; border-radius: 50%; background: currentColor; vertical-align: 1px; }
+    .health-task-actions { display: inline-flex; align-items: center; gap: 12px; }
+    .health-task-fill, .health-task-more { color: #3154ff; font-weight: 700; }
+    .health-task-action-menu { position: fixed; z-index: 80; min-width: 148px; padding: 6px; border: 1px solid #dfe7f3; border-radius: 8px; background: #fff; box-shadow: 0 12px 28px rgba(31,51,82,.16); display: none; }
+    .health-task-action-menu.open { display: grid; gap: 2px; }
+    .health-task-action-menu button { height: 34px; padding: 0 12px; border-radius: 6px; color: #263752; background: #fff; text-align: left; font-size: 13px; font-weight: 700; }
+    .health-task-action-menu button:hover { color: #3154ff; background: #f4f7ff; }
+    .health-task-pager { height: 64px; align-items: center; flex: 0 0 auto; }
     .checkin-evaluation-panel { padding: 0; overflow: hidden; }
     .checkin-evaluation-shell { flex: 1; min-height: 0; display: flex; flex-direction: column; padding: 24px; background: #fff; border-radius: 8px; overflow: hidden; }
     .checkin-team-row { height: 92px; display: flex; gap: 16px; align-items: flex-start; }
@@ -1570,7 +1640,7 @@
         <div class="brand"><div class="seal" aria-hidden="true"></div><span>AI患者管理系统</span></div>
         <nav class="menu">
           <div class="menu-section"><div class="menu-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="4" y="5" width="16" height="11" rx="1.5"/><path d="M8 20h8M12 16v4"/></svg><span>工作台</span></div></div>
-          <div class="menu-section"><div class="menu-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M8 4h8l3 3v13H5V4h3Z"/><path d="M9 12h6M9 16h4"/></svg><span>任务管理</span><svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="m18 15-6-6-6 6"/></svg></div><div class="submenu"><div class="submenu-item">健康任务</div><div class="submenu-item">预警任务</div><div class="submenu-item" data-list-view="checkinEvaluation">打卡评价</div></div></div>
+          <div class="menu-section"><div class="menu-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M8 4h8l3 3v13H5V4h3Z"/><path d="M9 12h6M9 16h4"/></svg><span>任务管理</span><svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="m18 15-6-6-6 6"/></svg></div><div class="submenu"><div class="submenu-item" data-list-view="healthTasks">健康任务</div><div class="submenu-item">预警任务</div><div class="submenu-item" data-list-view="checkinEvaluation">打卡评价</div></div></div>
           <div class="menu-section"><div class="menu-item" data-list-view="patients"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8Z"/><path d="M4 21a8 8 0 0 1 16 0"/></svg><span>患者管理</span><svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="m18 15-6-6-6 6"/></svg></div><div class="submenu"><div class="submenu-item" data-list-view="patients">全部患者</div><div class="submenu-item" data-patient-team-list>团队患者</div></div></div>
           <div class="menu-section">
             <div class="menu-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M7 4h10v16H7z"/><path d="M9 8h6M9 12h6M9 16h3"/></svg><span>方案与内容</span><svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="m18 15-6-6-6 6"/></svg></div>
@@ -1607,6 +1677,94 @@
               </div>
             </div>
             <div class="pager plan-pager"><span>共 80 条</span><button class="page-btn disabled">‹</button><button class="page-btn active">1</button><button class="page-btn">2</button><button class="page-btn">3</button><button class="page-btn">4</button><button class="page-btn">5</button><span class="ellipsis">...</span><button class="page-btn">8</button><button class="page-btn">›</button><button class="page-select">10 条/页⌄</button><span>跳至</span><span class="jump-input"></span><span>页</span></div>
+          </div>
+        </section>
+        <section class="list-panel list-view health-task-panel" id="healthTaskView">
+          <div class="health-task-shell">
+            <div class="health-task-team-row">
+              <article class="health-task-team-card active">
+                <div class="health-task-team-title"><span class="health-task-team-icon">群</span><span>慢性肾病专病健康团队（信息科...）</span><span class="health-task-team-count">99+</span></div>
+                <p>科室： 信息科</p>
+              </article>
+              <article class="health-task-team-card">
+                <div class="health-task-team-title"><span class="health-task-team-icon">群</span><span>高血压随访团队</span><span class="health-task-team-count">90</span></div>
+                <p>科室： 信息科</p>
+              </article>
+              <article class="health-task-team-card">
+                <div class="health-task-team-title"><span class="health-task-team-icon">群</span><span>出院随访团队</span></div>
+                <p>科室： 健康管理中心、信息科</p>
+              </article>
+            </div>
+
+            <div class="health-task-filter is-collapsed" id="healthTaskFilter">
+              <label class="health-filter-field">
+                <span>任务结束时间：</span>
+                <span class="health-filter-date"><input placeholder="开始日期"><span>→</span><input placeholder="结束日期"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="4" y="5" width="16" height="15" rx="2"/><path d="M8 3v4M16 3v4M4 10h16"/></svg></span>
+              </label>
+              <label class="health-filter-field"><span>完成人员：</span><select><option>请选择完成人员</option></select></label>
+              <label class="health-filter-field"><span>任务名称：</span><input placeholder="请输入任务名称"></label>
+              <label class="health-filter-field"><span>就诊号：</span><input placeholder="请输入就诊号"></label>
+              <label class="health-filter-field">
+                <span>出院时间：</span>
+                <span class="health-filter-date"><input placeholder="开始日期"><span>→</span><input placeholder="结束日期"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="4" y="5" width="16" height="15" rx="2"/><path d="M8 3v4M16 3v4M4 10h16"/></svg></span>
+              </label>
+              <label class="health-filter-field"><span>住院号：</span><input placeholder="请输入住院号"></label>
+              <label class="health-filter-field"><span>患者姓名：</span><input placeholder="请输入患者姓名"></label>
+              <label class="health-filter-field"><span>任务类型：</span><select><option>请选择任务类型</option><option>随访量表</option><option>科普宣教</option><option>复诊提醒</option><option>饮食打卡</option><option>运动打卡</option><option>用药打卡</option><option>体重打卡</option><option>血压打卡</option><option>血糖打卡</option><option>血脂打卡</option><option>尿酸打卡</option></select></label>
+              <label class="health-filter-field"><span>标记类型：</span><select><option>请选择标记类型</option></select></label>
+              <label class="health-filter-field">
+                <span>任务开始时间：</span>
+                <span class="health-filter-date"><input placeholder="开始日期"><span>→</span><input placeholder="结束日期"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="4" y="5" width="16" height="15" rx="2"/><path d="M8 3v4M16 3v4M4 10h16"/></svg></span>
+              </label>
+              <label class="health-filter-field">
+                <span>任务完成时间：</span>
+                <span class="health-filter-date"><input placeholder="开始日期"><span>→</span><input placeholder="结束日期"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="4" y="5" width="16" height="15" rx="2"/><path d="M8 3v4M16 3v4M4 10h16"/></svg></span>
+              </label>
+              <label class="health-filter-field"><span>消息推送状态：</span><select><option>请选择消息推送状态</option></select></label>
+              <label class="health-filter-field"><span>人工外呼情况：</span><select><option>请选择人工外呼情况</option></select></label>
+              <label class="health-filter-field"><span>智能外呼状态：</span><select><option>请选择智能外呼状态</option></select></label>
+              <div class="health-filter-actions"><button class="plain">设置</button><button class="plain" data-health-filter-toggle>展开筛选⌄</button><button class="ghost">重置</button><button class="primary">查询</button></div>
+            </div>
+
+            <div class="health-task-list-card">
+              <div class="health-task-list-head">
+                <div class="health-task-tabs">
+                  <button class="health-task-tab">全部（11）</button>
+                  <button class="health-task-tab">未开始（0）</button>
+                  <button class="health-task-tab active">进行中（11）</button>
+                  <button class="health-task-tab">已完成（0）</button>
+                  <button class="health-task-tab">已终止（0）</button>
+                </div>
+                <div class="health-task-tools">
+                  <button class="health-task-tool" aria-label="字段设置"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M8 4v16M16 4v16M5 8h6M13 16h6"/><circle cx="8" cy="8" r="2"/><circle cx="16" cy="16" r="2"/></svg></button>
+                  <button class="health-task-tool">导出</button>
+                  <button class="health-task-tool">录音文件</button>
+                  <button class="health-task-tool">批量催办</button>
+                  <button class="health-task-tool">再次智能外呼</button>
+                </div>
+              </div>
+              <div class="health-task-table-wrap">
+                <table class="health-task-table">
+                  <thead>
+                    <tr><th><input class="health-task-check" type="checkbox"></th><th>任务名称</th><th>姓名</th><th>手机号码</th><th>任务开始时间</th><th>任务结束时间</th><th>完成/终止人员</th><th>完成/终止时间</th><th>任务类型</th><th>健康负责人</th><th>入组时间</th><th>状态</th><th>操作</th></tr>
+                  </thead>
+                  <tbody>
+                    <tr><td><input class="health-task-check" type="checkbox"></td><td>术后恢复评估量表</td><td><span class="health-task-patient"><span class="health-task-avatar"></span>喜洋洋</span></td><td>182****2136</td><td>2026/03/05</td><td>2026/04/04<span class="health-task-overdue">逾期</span></td><td>--</td><td>--</td><td>随访量表</td><td>--</td><td>2026/03/05 21:08:27</td><td><span class="health-task-status">进行中</span></td><td><span class="health-task-actions"><button class="health-task-fill">代填</button><button class="health-task-more" title="再次智能外呼、标记、催办、执行记录">更多</button></span></td></tr>
+                    <tr><td><input class="health-task-check" type="checkbox"></td><td>慢性肾病健康宣教指南</td><td><span class="health-task-patient"><span class="health-task-avatar"></span>杨花花</span></td><td>178****7517</td><td>2026/03/05</td><td>2026/04/04<span class="health-task-overdue">逾期</span></td><td>--</td><td>--</td><td>科普宣教</td><td>--</td><td>2026/03/05 21:30:20</td><td><span class="health-task-status">进行中</span></td><td><button class="health-task-more">更多</button></td></tr>
+                    <tr><td><input class="health-task-check" type="checkbox"></td><td>泌尿系统术后复诊提醒</td><td><span class="health-task-patient"><span class="health-task-avatar"></span>蔡阳阳</span></td><td>178****7517</td><td>2026/03/06</td><td>2026/04/05<span class="health-task-overdue">逾期</span></td><td>--</td><td>--</td><td>复诊提醒</td><td>--</td><td>2026/03/05 21:07:21</td><td><span class="health-task-status">进行中</span></td><td><button class="health-task-more">更多</button></td></tr>
+                    <tr><td><input class="health-task-check" type="checkbox"></td><td>每日饮食打卡</td><td><span class="health-task-patient"><span class="health-task-avatar"></span>喜洋洋</span></td><td>182****2136</td><td>2026/04/05</td><td>2026/05/05<span class="health-task-overdue">逾期</span></td><td>--</td><td>--</td><td>饮食打卡</td><td>--</td><td>2026/03/05 21:08:27</td><td><span class="health-task-status">进行中</span></td><td><button class="health-task-more" title="标记、催办、执行记录">更多</button></td></tr>
+                    <tr><td><input class="health-task-check" type="checkbox"></td><td>运动打卡</td><td><span class="health-task-patient"><span class="health-task-avatar"></span>杨花花</span></td><td>178****7517</td><td>2026/04/05</td><td>2026/05/05<span class="health-task-overdue">逾期</span></td><td>--</td><td>--</td><td>运动打卡</td><td>--</td><td>2026/03/05 21:30:20</td><td><span class="health-task-status">进行中</span></td><td><button class="health-task-more" title="标记、催办、执行记录">更多</button></td></tr>
+                    <tr><td><input class="health-task-check" type="checkbox"></td><td>用药打卡</td><td><span class="health-task-patient"><span class="health-task-avatar"></span>胡亦泓</span></td><td>137****8319</td><td>2026/04/05</td><td>2026/05/05<span class="health-task-overdue">逾期</span></td><td>--</td><td>--</td><td>用药打卡</td><td>--</td><td>2026/03/05 22:44:29</td><td><span class="health-task-status">进行中</span></td><td><button class="health-task-more" title="标记、催办、执行记录">更多</button></td></tr>
+                    <tr><td><input class="health-task-check" type="checkbox"></td><td>体重打卡</td><td><span class="health-task-patient"><span class="health-task-avatar"></span>杨明明</span></td><td>178****7517</td><td>2026/04/06</td><td>2026/05/06<span class="health-task-overdue">逾期</span></td><td>--</td><td>--</td><td>体重打卡</td><td>--</td><td>2026/03/05 19:25:03</td><td><span class="health-task-status">进行中</span></td><td><button class="health-task-more" title="标记、催办、执行记录">更多</button></td></tr>
+                    <tr><td><input class="health-task-check" type="checkbox"></td><td>血压打卡</td><td><span class="health-task-patient"><span class="health-task-avatar"></span>蔡阳阳</span></td><td>178****7517</td><td>2026/04/06</td><td>2026/05/06<span class="health-task-overdue">逾期</span></td><td>--</td><td>--</td><td>血压打卡</td><td>--</td><td>2026/03/05 21:07:21</td><td><span class="health-task-status">进行中</span></td><td><button class="health-task-more" title="标记、催办、执行记录">更多</button></td></tr>
+                    <tr><td><input class="health-task-check" type="checkbox"></td><td>血糖打卡</td><td><span class="health-task-patient"><span class="health-task-avatar"></span>喜洋洋</span></td><td>182****2136</td><td>2026/05/05</td><td>2026/06/04<span class="health-task-overdue">逾期</span></td><td>--</td><td>--</td><td>血糖打卡</td><td>--</td><td>2026/03/05 21:08:27</td><td><span class="health-task-status">进行中</span></td><td><button class="health-task-more" title="标记、催办、执行记录">更多</button></td></tr>
+                    <tr><td><input class="health-task-check" type="checkbox"></td><td>血脂打卡</td><td><span class="health-task-patient"><span class="health-task-avatar"></span>杨花花</span></td><td>178****7517</td><td>2026/05/05</td><td>2026/06/04<span class="health-task-overdue">逾期</span></td><td>--</td><td>--</td><td>血脂打卡</td><td>--</td><td>2026/03/05 21:30:20</td><td><span class="health-task-status">进行中</span></td><td><button class="health-task-more" title="标记、催办、执行记录">更多</button></td></tr>
+                    <tr><td><input class="health-task-check" type="checkbox"></td><td>尿酸打卡</td><td><span class="health-task-patient"><span class="health-task-avatar"></span>孙患者</span></td><td>166****8874</td><td>2026/05/06</td><td>2026/06/05<span class="health-task-overdue">逾期</span></td><td>--</td><td>--</td><td>尿酸打卡</td><td>--</td><td>2026/03/05 22:08:12</td><td><span class="health-task-status">进行中</span></td><td><button class="health-task-more" title="标记、催办、执行记录">更多</button></td></tr>
+                  </tbody>
+                </table>
+              </div>
+              <div class="pager health-task-pager"><span>共11条</span><button class="page-btn disabled">‹</button><button class="page-btn active">1</button><button class="page-btn">2</button><button class="page-btn">3</button><button class="page-btn">›</button><button class="page-select">10条/页</button><span>跳至</span><span class="jump-input"></span><span>页</span></div>
+            </div>
           </div>
         </section>
         <section class="list-panel list-view checkin-evaluation-panel" id="checkinEvaluationView">
@@ -2010,7 +2168,7 @@
           <label class="required">打卡配置</label>
           <div class="checkin-strategy-box">
             <div class="checkin-config-grid">
-              <div class="checkin-config-field"><span>频率</span><select data-checkin-frequency><option value="daily">日</option><option value="weekly">周</option><option value="monthly">月</option></select></div>
+              <div class="checkin-config-field"><span>频率</span><select data-checkin-frequency><option value="daily">每日</option><option value="weekly">每周</option><option value="monthly">每月</option></select></div>
             </div>
             <div class="checkin-time-panel active" data-checkin-time-panel="daily">
               <div class="checkin-count-field"><span class="checkin-config-label">每日执行</span><div class="checkin-count-control"><input type="number" min="1" value="3" data-checkin-count><span>次</span></div></div>
@@ -2780,17 +2938,64 @@
       const isScale = view === 'scale';
       const isIndicator = view === 'indicator';
       const isPatients = view === 'patients';
+      const isHealthTasks = view === 'healthTasks';
       const isCheckinEvaluation = view === 'checkinEvaluation';
       document.getElementById('planManagementView').classList.toggle('active', isPlans);
       document.getElementById('scaleManagementView').classList.toggle('active', isScale);
       document.getElementById('indicatorTemplateView').classList.toggle('active', isIndicator);
       document.getElementById('patientListView').classList.toggle('active', isPatients);
+      document.getElementById('healthTaskView').classList.toggle('active', isHealthTasks);
       document.getElementById('checkinEvaluationView').classList.toggle('active', isCheckinEvaluation);
-      document.getElementById('listPageTitle').textContent = isCheckinEvaluation ? '打卡评价' : isPatients ? '全部患者' : isIndicator ? '指标模板' : isScale ? '量表管理' : '方案管理';
+      document.getElementById('listPageTitle').textContent = isHealthTasks ? '健康任务' : isCheckinEvaluation ? '打卡评价' : isPatients ? '全部患者' : isIndicator ? '指标模板' : isScale ? '量表管理' : '方案管理';
       document.querySelectorAll('[data-list-view]').forEach(item => item.classList.toggle('active', item.dataset.listView === view));
       if (isIndicator) renderIndicatorList();
       if (isPatients) renderPatientList();
       if (isCheckinEvaluation) applyCheckinEvalFilters();
+    }
+
+    document.addEventListener('click', event => {
+      const filterToggle = event.target.closest('[data-health-filter-toggle]');
+      if (filterToggle) {
+        const filter = document.getElementById('healthTaskFilter');
+        const collapsed = filter.classList.toggle('is-collapsed');
+        filterToggle.textContent = collapsed ? '展开筛选⌄' : '收起筛选⌃';
+      }
+
+      const healthTaskMore = event.target.closest('.health-task-more');
+      if (healthTaskMore) {
+        event.stopPropagation();
+        const row = healthTaskMore.closest('tr');
+        const taskType = row?.cells?.[8]?.textContent.trim() || '';
+        const menu = getHealthTaskActionMenu();
+        const actions = taskType === '随访量表'
+          ? ['再次智能外呼', '标记', '催办', '执行记录']
+          : ['标记', '催办', '执行记录'];
+        menu.innerHTML = actions.map(action => '<button type="button">' + action + '</button>').join('');
+        const rect = healthTaskMore.getBoundingClientRect();
+        menu.style.top = rect.bottom + 8 + 'px';
+        menu.style.left = Math.max(12, rect.right - 148) + 'px';
+        menu.classList.add('open');
+        return;
+      }
+
+      const healthTaskTab = event.target.closest('.health-task-tab');
+      if (healthTaskTab) {
+        healthTaskTab.parentElement.querySelectorAll('.health-task-tab').forEach(tab => tab.classList.remove('active'));
+        healthTaskTab.classList.add('active');
+      }
+
+      document.getElementById('healthTaskActionMenu')?.classList.remove('open');
+    });
+
+    function getHealthTaskActionMenu() {
+      let menu = document.getElementById('healthTaskActionMenu');
+      if (!menu) {
+        menu = document.createElement('div');
+        menu.id = 'healthTaskActionMenu';
+        menu.className = 'health-task-action-menu';
+        document.body.appendChild(menu);
+      }
+      return menu;
     }
 
     function openIndicatorModal(id = null) {
