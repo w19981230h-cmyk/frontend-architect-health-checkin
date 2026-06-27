@@ -282,6 +282,143 @@
     .health-task-action-menu.open { display: grid; gap: 2px; }
     .health-task-action-menu button { height: 34px; padding: 0 12px; border-radius: 6px; color: #263752; background: #fff; text-align: left; font-size: 13px; font-weight: 700; }
     .health-task-action-menu button:hover { color: #3154ff; background: #f4f7ff; }
+    .health-checkin-detail-mask { position: fixed; inset: 0; z-index: 142; display: none; align-items: center; justify-content: center; padding: 32px; background: rgba(18,31,52,.42); }
+    .health-checkin-detail-mask.open { display: flex; }
+    .health-checkin-detail-dialog { width: 760px; max-width: calc(100vw - 48px); max-height: calc(100vh - 64px); display: flex; flex-direction: column; overflow: hidden; border-radius: 12px; background: #fff; box-shadow: 0 20px 60px rgba(22,37,67,.22); }
+    .health-checkin-detail-head { height: 60px; padding: 0 22px; display: flex; align-items: center; justify-content: space-between; gap: 16px; border-bottom: 1px solid #edf1f6; }
+    .health-checkin-detail-head h2 { margin: 0; color: #1f304b; font-size: 17px; font-weight: 800; }
+    .health-checkin-detail-close { width: 34px; height: 34px; border-radius: 8px; display: grid; place-items: center; color: #66758c; font-size: 24px; }
+    .health-checkin-detail-close:hover { color: #3154ff; background: #f3f6ff; }
+    .health-checkin-detail-body { padding: 20px 22px 24px; overflow: auto; background: #fbfdff; }
+    .health-checkin-detail-meta { margin-bottom: 14px; display: flex; align-items: center; justify-content: space-between; gap: 16px; color: #6b7890; font-size: 13px; font-weight: 700; }
+    .health-checkin-detail-summary { margin-bottom: 14px; padding: 15px; border: 1px solid #e1e8f3; border-radius: 9px; background: #fff; }
+    .health-checkin-detail-summary h3 { margin: 0 0 12px; color: #1f304b; font-size: 15px; font-weight: 800; }
+    .health-checkin-detail-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
+    .health-checkin-detail-tile { min-height: 74px; padding: 11px 12px; border: 1px solid #e6edf6; border-radius: 8px; background: #f8fbff; }
+    .health-checkin-detail-tile span { display: block; color: #68768e; font-size: 12px; font-weight: 700; }
+    .health-checkin-detail-tile strong { display: block; margin-top: 8px; color: #10233f; font-size: 20px; font-weight: 800; }
+    .health-checkin-detail-tile small { margin-left: 3px; color: #65748a; font-size: 12px; font-weight: 700; }
+    .health-glucose-detail { display: grid; gap: 16px; }
+    .health-glucose-primary { min-height: 166px; padding: 30px 34px; border: 1px solid #d7e5fb; border-radius: 16px; background: #fff; }
+    .health-glucose-label,
+    .health-glucose-info span { display: block; color: #73839a; font-size: 15px; font-weight: 800; }
+    .health-glucose-value { margin-top: 20px; display: flex; align-items: flex-end; gap: 8px; color: #172842; }
+    .health-glucose-value strong { font-size: 46px; line-height: .95; letter-spacing: 0; }
+    .health-glucose-value small { margin-bottom: 6px; color: #5c6a81; font-size: 18px; font-weight: 800; }
+    .health-glucose-status { margin-top: 18px; width: fit-content; height: 30px; padding: 0 12px; border-radius: 999px; display: inline-flex; align-items: center; color: #f05a28; background: #fff1e8; font-size: 14px; font-weight: 800; }
+    .health-glucose-info-grid { display: grid; grid-template-columns: minmax(0, .82fr) minmax(0, 1.18fr); gap: 16px; }
+    .health-glucose-info { min-height: 112px; padding: 22px 24px; border: 1px solid #dfe8f5; border-radius: 14px; background: #fff; }
+    .health-glucose-info strong { display: block; margin-top: 18px; color: #22314c; font-size: 19px; line-height: 1.5; font-weight: 800; }
+    .health-sport-detail { display: grid; gap: 18px; }
+    .health-sport-primary { min-height: 166px; padding: 30px 34px; border: 1px solid #d9ddff; border-radius: 16px; background: linear-gradient(135deg, #fbfbff 0%, #fff 70%); }
+    .health-sport-label,
+    .health-sport-info span,
+    .health-sport-note span { display: block; color: #73839a; font-size: 15px; font-weight: 800; }
+    .health-sport-value { margin-top: 28px; display: flex; align-items: flex-end; gap: 8px; color: #172842; }
+    .health-sport-value strong { font-size: 50px; line-height: .9; letter-spacing: 0; }
+    .health-sport-value small { margin-bottom: 7px; color: #5c6a81; font-size: 18px; font-weight: 800; }
+    .health-sport-info-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 18px; }
+    .health-sport-info,
+    .health-sport-note { min-height: 112px; padding: 22px 28px; border: 1px solid #dfe8f5; border-radius: 14px; background: #fff; }
+    .health-sport-info strong,
+    .health-sport-note strong { display: block; margin-top: 18px; color: #22314c; font-size: 20px; line-height: 1.5; font-weight: 800; }
+    .health-sport-note { min-height: 128px; background: #fff; }
+    .health-diet-detail { display: grid; gap: 24px; }
+    .health-diet-analysis { padding: 26px 28px; border: 1px solid #ffd9c8; border-radius: 14px; background: #fffaf7; }
+    .health-diet-analysis-badge { height: 44px; padding: 0 20px; border-radius: 8px; display: inline-flex; align-items: center; color: #fff; background: #ff6534; font-size: 18px; font-weight: 900; }
+    .health-diet-grid { margin-top: 22px; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 20px; }
+    .health-diet-card { min-height: 124px; padding: 24px 22px; border: 1px solid #dfe8f5; border-radius: 10px; background: #fff; }
+    .health-diet-card span { display: block; color: #73839a; font-size: 18px; font-weight: 900; }
+    .health-diet-card strong { display: flex; align-items: flex-end; gap: 4px; margin-top: 22px; color: #172842; font-size: 25px; line-height: 1; font-weight: 900; }
+    .health-diet-card small { margin-bottom: 2px; color: #5c6a81; font-size: 18px; font-weight: 800; }
+    .health-diet-card em { display: block; margin-top: 16px; color: #708098; font-style: normal; font-size: 15px; font-weight: 700; }
+    .health-diet-meal { overflow: hidden; border: 1px solid #dfe8f5; border-radius: 12px; background: #fff; }
+    .health-diet-meal-head { min-height: 64px; padding: 0 28px; display: flex; align-items: center; color: #172842; background: #f7faff; font-size: 20px; font-weight: 900; }
+    .health-diet-upload { min-height: 134px; padding: 18px 28px; display: flex; align-items: center; gap: 18px; border-top: 1px solid #edf2f8; background: #fff; }
+    .health-diet-upload .checkin-meal-thumb { width: 104px; height: 104px; border-radius: 10px; }
+    .health-diet-upload time { color: #68768e; font-size: 17px; font-weight: 700; }
+    .health-diet-row { min-height: 96px; padding: 14px 28px; display: grid; grid-template-columns: 64px minmax(0, 1fr) auto; align-items: center; gap: 18px; border-top: 1px solid #edf2f8; }
+    .health-diet-row .checkin-meal-thumb { width: 64px; height: 64px; border-radius: 9px; }
+    .health-diet-row-name { display: block; margin-bottom: 8px; color: #172842; font-size: 20px; font-weight: 900; }
+    .health-diet-row-amount { display: block; color: #62738d; font-size: 16px; font-weight: 700; }
+    .health-diet-row-kcal { color: #061936; font-size: 20px; font-weight: 900; }
+    .health-checkin-section { margin-top: 14px; border: 1px solid #e1e8f3; border-radius: 9px; background: #fff; overflow: hidden; }
+    .health-checkin-section-title { min-height: 40px; padding: 0 14px; display: flex; align-items: center; color: #1f304b; background: #f7faff; font-size: 14px; font-weight: 800; }
+    .health-checkin-read-row { min-height: 50px; padding: 10px 14px; display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 14px; align-items: center; border-top: 1px solid #eef2f7; color: #253852; }
+    .health-checkin-read-row span { color: #68768e; font-size: 12px; font-weight: 700; }
+    .health-checkin-read-row strong { color: #10233f; font-size: 15px; }
+    .health-checkin-med-row { min-height: 66px; padding: 10px 14px; display: grid; grid-template-columns: 44px minmax(0, 1fr) auto; gap: 12px; align-items: center; border-top: 1px solid #eef2f7; }
+    .health-checkin-med-photo { width: 42px; height: 42px; border-radius: 8px; background: linear-gradient(135deg, #eef7ff, #dbeafe); position: relative; overflow: hidden; }
+    .health-checkin-med-photo::before { content: ""; position: absolute; left: 11px; top: 9px; width: 20px; height: 24px; border-radius: 5px; background: #fff; box-shadow: inset 0 0 0 2px #9ec5ff; }
+    .health-checkin-med-photo::after { content: ""; position: absolute; left: 15px; top: 17px; width: 12px; height: 3px; border-radius: 2px; background: #5b83ff; box-shadow: 0 6px 0 #5b83ff; }
+    .health-checkin-med-row strong { display: block; color: #1f304b; font-size: 14px; }
+    .health-checkin-med-row span { display: block; margin-top: 4px; color: #7a879b; font-size: 12px; }
+    .health-checkin-med-type { padding: 3px 8px; border-radius: 999px; color: #3154ff; background: #eef3ff; font-size: 12px; font-weight: 800; }
+    .health-medicine-detail { display: grid; gap: 16px; }
+    .health-medicine-summary { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 18px; }
+    .health-medicine-stat { min-height: 118px; padding: 26px 30px; border: 1px solid #dbe7fb; border-radius: 14px; background: #f8fbff; }
+    .health-medicine-stat span { display: block; color: #73839a; font-size: 16px; font-weight: 800; }
+    .health-medicine-stat strong { display: flex; align-items: flex-end; gap: 8px; margin-top: 24px; color: #172842; font-size: 40px; line-height: .9; font-weight: 900; }
+    .health-medicine-stat small { margin-bottom: 4px; color: #5c6a81; font-size: 18px; font-weight: 800; }
+    .health-medicine-record { overflow: hidden; border: 1px solid #dfe8f5; border-radius: 14px; background: #fff; }
+    .health-medicine-record-title { height: 56px; padding: 0 28px; display: flex; align-items: center; color: #172842; background: #f7faff; font-size: 18px; font-weight: 900; }
+    .health-medicine-record-body { max-height: 520px; padding: 24px 28px; display: grid; gap: 18px; overflow: auto; background: #fff; }
+    .health-medicine-item { padding: 26px 28px; border: 1px solid #dfe8f5; border-radius: 16px; background: #fff; }
+    .health-medicine-item-head { display: flex; align-items: center; gap: 16px; }
+    .health-medicine-type { height: 34px; padding: 0 14px; border-radius: 999px; display: inline-flex; align-items: center; color: #1d55ff; background: #edf3ff; font-size: 16px; font-weight: 900; }
+    .health-medicine-type.nutrition { color: #16a667; background: #e6f8ef; }
+    .health-medicine-name { color: #172842; font-size: 22px; font-weight: 900; }
+    .health-medicine-photos { margin-top: 22px; display: flex; gap: 16px; flex-wrap: wrap; }
+    .health-medicine-photo { width: 116px; height: 116px; border: 1px solid #dfe8f5; border-radius: 14px; position: relative; overflow: hidden; background: linear-gradient(135deg, #eef5ff, #e7eefb); }
+    .health-medicine-photo::before { content: ""; position: absolute; left: 36px; top: 18px; width: 44px; height: 62px; border-radius: 9px; background: #fff; box-shadow: inset 0 0 0 2px #d3e1f6; }
+    .health-medicine-photo::after { content: attr(data-label); position: absolute; left: 43px; top: 44px; min-width: 30px; height: 28px; padding: 0 4px; border-radius: 5px; display: grid; place-items: center; color: #fff; background: linear-gradient(135deg, #7ea0ff, #4a72f1); font-size: 13px; font-weight: 900; }
+    .health-medicine-photo-dot { position: absolute; bottom: 16px; width: 16px; height: 16px; border-radius: 999px; background: #aec2ff; }
+    .health-medicine-photo-dot:first-child { left: 22px; }
+    .health-medicine-photo-dot:last-child { right: 22px; }
+    .health-medicine-photo.nutrition { background: linear-gradient(135deg, #edfff6, #def8eb); }
+    .health-medicine-photo.nutrition::after { background: linear-gradient(135deg, #66d99e, #25bd73); }
+    .health-medicine-photo.nutrition .health-medicine-photo-dot { background: #8de2b8; }
+    .health-medicine-note { min-height: 132px; padding: 24px 28px; border: 1px solid #dfe8f5; border-radius: 16px; background: #fff; }
+    .health-medicine-note span { display: block; color: #73839a; font-size: 16px; font-weight: 800; }
+    .health-medicine-note strong { display: block; margin-top: 18px; color: #22314c; font-size: 20px; line-height: 1.65; font-weight: 800; }
+    .health-lipid-detail { display: grid; gap: 22px; }
+    .health-lipid-list { overflow: hidden; border: 1px solid #dfe8f5; border-radius: 16px; background: #fff; }
+    .health-lipid-row { min-height: 124px; padding: 24px 28px; display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: 24px; border-top: 1px solid #edf2f8; }
+    .health-lipid-row:first-child { border-top: 0; }
+    .health-lipid-name { display: block; color: #172842; font-size: 22px; line-height: 1.35; font-weight: 900; }
+    .health-lipid-time { display: block; margin-top: 16px; color: #7a8aa2; font-size: 17px; font-weight: 700; }
+    .health-lipid-value { color: #172842; font-size: 36px; line-height: 1; font-weight: 900; white-space: nowrap; }
+    .health-lipid-value small { margin-left: 6px; color: #5c6a81; font-size: 18px; font-weight: 800; }
+    .health-lipid-note { min-height: 132px; padding: 24px 28px; border: 1px solid #dfe8f5; border-radius: 16px; background: #fff; }
+    .health-lipid-note span { display: block; color: #73839a; font-size: 16px; font-weight: 800; }
+    .health-lipid-note strong { display: block; margin-top: 20px; color: #22314c; font-size: 20px; line-height: 1.65; font-weight: 800; }
+    .health-uric-detail { display: grid; gap: 22px; }
+    .health-uric-primary { min-height: 196px; padding: 42px 44px; border: 1px solid #d9e6fb; border-radius: 18px; background: #fff; }
+    .health-uric-primary span,
+    .health-uric-note span { display: block; color: #73839a; font-size: 18px; font-weight: 900; }
+    .health-uric-value { margin-top: 32px; display: flex; align-items: flex-end; gap: 10px; color: #172842; }
+    .health-uric-value strong { font-size: 56px; line-height: .9; letter-spacing: 0; }
+    .health-uric-value small { margin-bottom: 8px; color: #5c6a81; font-size: 20px; font-weight: 900; }
+    .health-uric-note { min-height: 142px; padding: 26px 30px; border: 1px solid #dfe8f5; border-radius: 16px; background: #fff; }
+    .health-uric-note strong { display: block; margin-top: 24px; color: #22314c; font-size: 22px; line-height: 1.6; font-weight: 900; }
+    .health-checkin-record-card { min-height: 520px; overflow: hidden; border-radius: 12px; background: #fff; box-shadow: 0 0 0 1px #e2eaf6; }
+    .health-checkin-record-head { min-height: 92px; padding: 20px 22px; display: flex; align-items: center; gap: 16px; border-bottom: 1px solid #edf2f8; }
+    .health-checkin-record-icon { width: 54px; height: 54px; border-radius: 14px; display: grid; place-items: center; flex: 0 0 auto; color: #fff; background: linear-gradient(135deg, #37d5bd, #26b8d8); font-size: 22px; font-weight: 900; }
+    .health-checkin-record-title { min-width: 0; flex: 1; color: #1f304b; font-size: 16px; font-weight: 800; }
+    .health-checkin-record-time { color: #7a879b; font-size: 13px; font-weight: 700; white-space: nowrap; }
+    .health-checkin-record-body { padding: 28px; display: grid; gap: 16px; }
+    .health-checkin-primary-value { min-height: 132px; padding: 24px 26px; border: 1px solid #dce8ff; border-radius: 12px; background: #fff; }
+    .health-checkin-primary-value span { display: block; color: #738199; font-size: 13px; font-weight: 800; }
+    .health-checkin-primary-value strong { display: block; margin-top: 12px; color: #10233f; font-size: 34px; line-height: 1; font-weight: 900; }
+    .health-checkin-primary-value small { margin-left: 6px; color: #66758c; font-size: 13px; font-weight: 800; }
+    .health-checkin-record-badge { display: inline-flex; height: 24px; margin-top: 14px; padding: 0 10px; border-radius: 999px; align-items: center; color: #f05f2a; background: #fff0e8; font-size: 12px; font-weight: 800; }
+    .health-checkin-record-info-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+    .health-checkin-record-info { min-height: 82px; padding: 16px 18px; border: 1px solid #dfe8f6; border-radius: 10px; background: #fff; }
+    .health-checkin-record-info span { display: block; margin-bottom: 12px; color: #738199; font-size: 13px; font-weight: 800; }
+    .health-checkin-record-info strong { color: #10233f; font-size: 15px; line-height: 1.65; }
+    .health-checkin-record-list { overflow: hidden; border: 1px solid #dfe8f6; border-radius: 10px; background: #fff; }
+    .health-checkin-record-list-title { height: 42px; padding: 0 16px; display: flex; align-items: center; color: #1f304b; background: #f7faff; font-size: 14px; font-weight: 800; }
+    .health-checkin-record-list .checkin-meal-row, .health-checkin-record-list .health-checkin-med-row, .health-checkin-record-list .health-checkin-read-row { border-top-color: #edf2f8; }
     .task-exec-table { overflow: hidden; border: 1px solid #dfe8f6; border-radius: 12px; background: #fff; }
     .task-exec-row { display: grid; grid-template-columns: 108px minmax(0, 1fr); border-top: 1px solid #edf1f7; }
     .task-exec-row:first-child { border-top: 0; }
@@ -386,10 +523,11 @@
     .checkin-review-modal { position: fixed; inset: 0; z-index: 80; display: none; align-items: center; justify-content: center; background: rgba(17, 25, 42, .28); }
     .checkin-review-modal.open { display: flex; }
     .checkin-review-dialog { width: min(1360px, calc(100vw - 72px)); height: min(780px, calc(100vh - 56px)); border-radius: 18px; overflow: hidden; background: #eef4ff; box-shadow: 0 24px 80px rgba(22, 34, 62, .22); }
-    .checkin-exec-mask { position: fixed; inset: 0; z-index: 88; background: rgba(17, 25, 42, .24); opacity: 0; pointer-events: none; transition: opacity .2s ease; }
+    .checkin-exec-mask { position: fixed; inset: 0; z-index: 900; background: rgba(15, 23, 42, .52); backdrop-filter: blur(1.5px); opacity: 0; pointer-events: none; transition: opacity .2s ease; }
     .checkin-exec-mask.open { opacity: 1; pointer-events: auto; }
-    .checkin-exec-drawer { position: fixed; z-index: 89; top: 0; right: 0; width: 460px; max-width: calc(100vw - 32px); height: 100vh; display: flex; flex-direction: column; background: #fff; border-left: 1px solid #dde7f5; box-shadow: -16px 0 38px rgba(22, 34, 62, .16); transform: translateX(102%); transition: transform .2s ease; }
+    .checkin-exec-drawer { position: fixed; z-index: 901; top: 0; right: 0; width: 460px; max-width: calc(100vw - 32px); height: 100vh; display: flex; flex-direction: column; background: #fff; border-left: 1px solid #dde7f5; box-shadow: -20px 0 48px rgba(15, 23, 42, .22); transform: translateX(102%); transition: transform .2s ease; }
     .checkin-exec-drawer.open { transform: translateX(0); }
+    body:has(.checkin-exec-mask.open) { overflow: hidden; }
     .checkin-exec-head { height: 64px; flex: 0 0 auto; padding: 0 22px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid #edf1f7; }
     .checkin-exec-head h2 { margin: 0; color: #1f2e48; font-size: 18px; }
     .checkin-exec-close { width: 34px; height: 34px; display: grid; place-items: center; border-radius: 8px; color: #5d6b80; font-size: 24px; }
@@ -1469,10 +1607,11 @@
     .checkin-meal-detail-btn { width: 28px; height: 28px; display: inline-grid; place-items: center; border: 1px solid #dfe7f4; border-radius: 6px; color: #3154ff; background: #fff; }
     .checkin-meal-detail-btn svg { width: 16px; height: 16px; stroke-width: 2; }
     .checkin-meal-detail-btn:hover { border-color: #3154ff; background: #f4f7ff; }
-    .meal-detail-mask { position: fixed; inset: 0; z-index: 139; background: rgba(18,31,52,.36); opacity: 0; pointer-events: none; transition: opacity .2s ease; }
-    .meal-detail-mask.open { opacity: 1; pointer-events: auto; }
-    .meal-detail-drawer { position: fixed; z-index: 140; top: 0; right: 0; width: 480px; max-width: calc(100vw - 28px); height: 100vh; display: flex; flex-direction: column; background: #fff; border-left: 1px solid #dfe7f4; box-shadow: -14px 0 34px rgba(30,45,78,.15); transform: translateX(102%); transition: transform .2s ease; }
+    .meal-detail-mask { position: fixed; inset: 0; z-index: 900; background: rgba(15,23,42,.52); backdrop-filter: blur(1.5px); opacity: 0; pointer-events: none; transition: opacity .2s ease; }
+    .meal-detail-mask.open, .meal-detail-mask.show { opacity: 1; pointer-events: auto; }
+    .meal-detail-drawer { position: fixed; z-index: 901; top: 0; right: 0; width: 480px; max-width: calc(100vw - 28px); height: 100vh; display: flex; flex-direction: column; background: #fff; border-left: 1px solid #dfe7f4; box-shadow: -20px 0 48px rgba(15,23,42,.22); transform: translateX(102%); transition: transform .2s ease; }
     .meal-detail-drawer.open { transform: translateX(0); }
+    body:has(.meal-detail-mask.open), body:has(.meal-detail-mask.show) { overflow: hidden; }
     .meal-detail-head { height: 64px; padding: 0 22px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid #edf1f6; }
     .meal-detail-head h2 { margin: 0; color: #1f304b; font-size: 16px; }
     .meal-detail-close { width: 32px; height: 32px; border-radius: 6px; display: grid; place-items: center; color: #65748a; font-size: 22px; }
@@ -2023,7 +2162,7 @@
           </div>
         </section>
         <section class="checkin-review-card checkin-review-ai">
-          <div class="checkin-review-ai-head"><span class="checkin-ai-orb" aria-hidden="true"></span><span id="checkinReviewAssistantTitle">AI助手</span></div>
+          <div class="checkin-review-ai-head"><span class="checkin-ai-orb" aria-hidden="true"></span><span id="checkinReviewAssistantTitle">AI智能管家</span></div>
           <div class="checkin-review-editor">
             <div class="checkin-review-editor-title"><span>综合评价与建议</span><button data-regenerate-checkin-review>重新生成</button></div>
             <textarea class="checkin-review-textarea" id="checkinReviewText" placeholder="输入框文本"></textarea>
@@ -2057,6 +2196,16 @@
     </header>
     <div class="checkin-exec-body" id="checkinExecBody"></div>
   </aside>
+
+  <div class="health-checkin-detail-mask" id="healthCheckinDetailModal" data-close-health-checkin-detail aria-hidden="true">
+    <section class="health-checkin-detail-dialog" role="dialog" aria-modal="true" aria-labelledby="healthCheckinDetailTitle">
+      <header class="health-checkin-detail-head">
+        <h2 id="healthCheckinDetailTitle">打卡详情</h2>
+        <button class="health-checkin-detail-close" data-close-health-checkin-detail aria-label="关闭打卡详情">×</button>
+      </header>
+      <div class="health-checkin-detail-body" id="healthCheckinDetailBody"></div>
+    </section>
+  </div>
 
   <section id="planAiPage" class="page">
     <div class="plan-ai-page">
@@ -3020,6 +3169,11 @@
       document.querySelectorAll('[data-list-view]').forEach(item => item.classList.toggle('active', item.dataset.listView === view));
       if (isIndicator) renderIndicatorList();
       if (isPatients) renderPatientList();
+      if (isHealthTasks) {
+        ensureHealthTaskCheckinTypeRows();
+        const activeTab = document.querySelector('.health-task-tab.active')?.dataset.healthTaskTab || 'running';
+        filterHealthTaskRows(activeTab);
+      }
       if (isCheckinEvaluation) applyCheckinEvalFilters();
     }
 
@@ -3039,9 +3193,10 @@
         const taskType = row?.cells?.[8]?.textContent.trim() || '';
         const menu = getHealthTaskActionMenu();
         const isScaleTask = taskType.includes('随访量表') || taskType.includes('量表');
+        const canViewCheckinDetail = canViewHealthCheckinDetail(row);
         const actions = isScaleTask
           ? ['再次智能外呼', '标记', '催办', '执行记录']
-          : ['标记', '催办', '执行记录'];
+          : [...(canViewCheckinDetail ? ['查看打卡详情'] : []), '标记', '催办', '执行记录'];
         menu.dataset.healthTaskId = row?.dataset.healthTaskId || '';
         menu.innerHTML = actions.map(action => '<button type="button" data-health-task-menu-action="' + action + '">' + action + '</button>').join('');
         const rect = healthTaskMore.getBoundingClientRect();
@@ -3057,11 +3212,19 @@
         const row = menu?.dataset.healthTaskId ? document.querySelector(`[data-health-task-id="${menu.dataset.healthTaskId}"]`) : null;
         const action = healthTaskMenuAction.dataset.healthTaskMenuAction;
         menu?.classList.remove('open');
-        if (action.includes('执行') || action.includes('鎵ц')) {
+        if (action === '查看打卡详情') {
+          openHealthCheckinDetail(row);
+        } else if (action.includes('执行') || action.includes('鎵ц')) {
           openHealthTaskExecutionDrawer(row);
         } else {
           showToast(`${action}已加载`);
         }
+        return;
+      }
+
+      const detailClose = event.target.closest('[data-close-health-checkin-detail]');
+      if (detailClose && (detailClose.classList.contains('health-checkin-detail-close') || event.target === detailClose)) {
+        closeHealthCheckinDetail();
         return;
       }
 
@@ -3093,11 +3256,350 @@
         patient: cells[2]?.textContent.trim() || '--',
         phone: cells[3]?.textContent.trim() || '--',
         startTime: cells[4]?.textContent.trim() || '--',
+        finishTime: cells[7]?.textContent.trim() || '--',
         taskType: cells[8]?.textContent.trim() || '--',
         owner: cells[9]?.textContent.trim() || '--',
         groupTime: cells[10]?.textContent.trim() || '--',
         status: cells[11]?.textContent.trim() || '--'
       };
+    }
+
+    const healthTaskCheckinDoneRows = [
+      ['每日饮食打卡', '林患者', '166****8814', '2026/03/09', '2026/03/09 12:15', '饮食打卡', '赵护士', '2026/03/05 21:22:10'],
+      ['体重打卡', '王患者', '166****8824', '2026/03/13', '2026/03/13 07:30', '体重打卡', '陈护士', '2026/03/05 20:15:32'],
+      ['血压打卡', '李患者', '166****8834', '2026/03/14', '2026/03/14 08:20', '血压打卡', '王护士', '2026/03/05 20:44:18'],
+      ['血脂打卡', '刘患者', '166****8844', '2026/03/15', '2026/03/15 10:00', '血脂打卡', '李护士', '2026/03/05 19:41:07'],
+      ['尿酸打卡', '孙患者', '166****8854', '2026/03/16', '2026/03/16 16:00', '尿酸打卡', '张护士', '2026/03/05 19:58:24'],
+      ['心率打卡', '周患者', '166****8864', '2026/03/17', '2026/03/17 08:21', '心率打卡', '赵护士', '2026/03/05 21:06:53'],
+      ['腰围打卡', '吴患者', '166****8874', '2026/03/18', '2026/03/18 07:40', '腰围打卡', '王护士', '2026/03/05 20:36:19']
+    ];
+
+    function ensureHealthTaskCheckinTypeRows() {
+      const tbody = document.querySelector('.health-task-table tbody');
+      if (!tbody || tbody.dataset.checkinTypesReady === 'true') return;
+      const doneTypes = new Set(Array.from(tbody.querySelectorAll('tr[data-health-task-status="done"]')).map(row => healthTaskDetailType(row.cells[8]?.textContent.trim() || '')).filter(Boolean));
+      healthTaskCheckinDoneRows.forEach(rowData => {
+        const typeKey = healthTaskDetailType(rowData[5]);
+        if (doneTypes.has(typeKey)) return;
+        doneTypes.add(typeKey);
+        const row = document.createElement('tr');
+        row.dataset.healthTaskStatus = 'done';
+        row.hidden = true;
+        row.innerHTML = `
+          <td><input class="health-task-check" type="checkbox"></td>
+          <td>${esc(rowData[0])}</td>
+          <td><span class="health-task-patient"><span class="health-task-avatar"></span>${esc(rowData[1])}</span></td>
+          <td>${esc(rowData[2])}</td>
+          <td>${esc(rowData[3])}</td>
+          <td>--</td>
+          <td>张医生</td>
+          <td>${esc(rowData[4])}</td>
+          <td>${esc(rowData[5])}</td>
+          <td>${esc(rowData[6])}</td>
+          <td>${esc(rowData[7])}</td>
+          <td><span class="health-task-status done">已完成</span></td>
+          <td><button class="health-task-more" title="查看打卡详情、标记、催办、执行记录">更多</button></td>
+        `;
+        tbody.appendChild(row);
+      });
+      tbody.dataset.checkinTypesReady = 'true';
+    }
+
+    function healthTaskDetailType(taskType = '') {
+      if (taskType.includes('饮食')) return '饮食';
+      if (taskType.includes('运动')) return '运动';
+      if (taskType.includes('用药')) return '用药/补充';
+      if (taskType.includes('体重')) return '体重';
+      if (taskType.includes('血压')) return '血压';
+      if (taskType.includes('血糖')) return '血糖';
+      if (taskType.includes('血脂')) return '血脂';
+      if (taskType.includes('尿酸')) return '尿酸';
+      if (taskType.includes('心率')) return '心率';
+      if (taskType.includes('腰围')) return '腰围';
+      return '';
+    }
+
+    function isHealthTaskCheckinRow(row) {
+      return !!healthTaskDetailType(row?.cells?.[8]?.textContent.trim() || '');
+    }
+
+    function canViewHealthCheckinDetail(row) {
+      return row?.dataset.healthTaskStatus === 'done' && isHealthTaskCheckinRow(row);
+    }
+
+    function healthTaskRowsForStatus(rows, status) {
+      if (status !== 'all') return rows.filter(row => row.dataset.healthTaskStatus === status);
+      const preferred = new Map();
+      rows.forEach(row => {
+        if (!isHealthTaskCheckinRow(row)) return;
+        const type = healthTaskDetailType(row.cells[8]?.textContent.trim() || '');
+        const current = preferred.get(type);
+        if (!current || (row.dataset.healthTaskStatus === 'done' && current.dataset.healthTaskStatus !== 'done')) {
+          preferred.set(type, row);
+        }
+      });
+      return rows.filter(row => !isHealthTaskCheckinRow(row) || preferred.get(healthTaskDetailType(row.cells[8]?.textContent.trim() || '')) === row);
+    }
+
+    function updateHealthTaskTabCounts(rows) {
+      const labels = { all: '全部', pending: '未开始', running: '进行中', done: '已完成', stopped: '已终止' };
+      document.querySelectorAll('.health-task-tab').forEach(tab => {
+        const key = tab.dataset.healthTaskTab || 'all';
+        const count = key === 'all' ? healthTaskRowsForStatus(rows, 'all').length : rows.filter(row => row.dataset.healthTaskStatus === key).length;
+        tab.textContent = `${labels[key] || tab.textContent.replace(/（.*$/, '')}（${count}）`;
+      });
+    }
+
+    function renderHealthDetailTiles(items) {
+      return `<div class="health-checkin-detail-grid">${items.map(item => `
+        <article class="health-checkin-detail-tile"><span>${esc(item[0])}</span><strong>${esc(item[1])}<small>${esc(item[2] || '')}</small></strong></article>
+      `).join('')}</div>`;
+    }
+
+    function renderHealthReadRows(rows) {
+      return rows.map(item => `<div class="health-checkin-read-row"><span>${esc(item[0])}</span><strong>${esc(item[1])}</strong></div>`).join('');
+    }
+
+    function renderHealthGlucoseDetail() {
+      return `
+        <section class="health-glucose-detail">
+          <div class="health-glucose-primary">
+            <span class="health-glucose-label">血糖值</span>
+            <div class="health-glucose-value"><strong>7.8</strong><small>mmol/L</small></div>
+            <span class="health-glucose-status">偏高</span>
+          </div>
+          <div class="health-glucose-info-grid">
+            <div class="health-glucose-info"><span>测量时段</span><strong>早餐前</strong></div>
+            <div class="health-glucose-info"><span>备注</span><strong>晨起空腹测量，已按要求完成本次记录。</strong></div>
+          </div>
+        </section>
+      `;
+    }
+
+    function renderHealthSportDetail() {
+      return `
+        <section class="health-sport-detail">
+          <div class="health-sport-primary">
+            <span class="health-sport-label">消耗卡路里</span>
+            <div class="health-sport-value"><strong>186</strong><small>kcal</small></div>
+          </div>
+          <div class="health-sport-info-grid">
+            <div class="health-sport-info"><span>运动类型</span><strong>快走</strong></div>
+            <div class="health-sport-info"><span>运动强度</span><strong>中等</strong></div>
+            <div class="health-sport-info"><span>运动时长</span><strong>38 分钟</strong></div>
+          </div>
+          <div class="health-sport-note"><span>备注</span><strong>晚间快走 3.2 公里，运动后微汗，无胸闷心悸。</strong></div>
+        </section>
+      `;
+    }
+
+    function renderHealthDietDetail() {
+      const foods = [
+        ['egg', '鸡蛋', '1个（50g）', '70 kcal'],
+        ['milk', '牛奶', '250 ml', '150 kcal'],
+        ['bread', '全麦面包', '1片（60g）', '160 kcal'],
+        ['apple', '苹果', '90g', '48 kcal']
+      ];
+      return `
+        <section class="health-diet-detail">
+          <div class="health-diet-analysis">
+            <span class="health-diet-analysis-badge">营养分析</span>
+            <div class="health-diet-grid">
+              <article class="health-diet-card"><span>热量</span><strong>1416<small>kcal</small></strong><em>今日总热量</em></article>
+              <article class="health-diet-card"><span>蛋白质</span><strong>72<small>g</small></strong><em>21%</em></article>
+              <article class="health-diet-card"><span>脂肪</span><strong>38<small>g</small></strong><em>30%</em></article>
+              <article class="health-diet-card"><span>碳水</span><strong>188<small>g</small></strong><em>49%</em></article>
+            </div>
+          </div>
+          <section class="health-diet-meal">
+            <div class="health-diet-meal-head">早餐</div>
+            <div class="health-diet-upload"><span class="checkin-meal-thumb photo" aria-hidden="true"></span><time>20:45</time></div>
+            ${foods.map(item => `
+              <div class="health-diet-row">
+                <span class="checkin-meal-thumb ${esc(item[0])}" aria-hidden="true"></span>
+                <span><strong class="health-diet-row-name">${esc(item[1])}</strong><span class="health-diet-row-amount">${esc(item[2])}</span></span>
+                <strong class="health-diet-row-kcal">${esc(item[3])}</strong>
+              </div>
+            `).join('')}
+          </section>
+        </section>
+      `;
+    }
+
+    function renderMedicinePhoto(label, nutrition = false) {
+      return `<span class="health-medicine-photo${nutrition ? ' nutrition' : ''}" data-label="${esc(label)}" aria-hidden="true"><i class="health-medicine-photo-dot"></i><i class="health-medicine-photo-dot"></i></span>`;
+    }
+
+    function renderHealthMedicineDetail() {
+      const items = [
+        { type: '药品', name: '阿托伐他汀钙片', count: 3, label: 'Atv' },
+        { type: '药品', name: '二甲双胍片', count: 2, label: 'Met' },
+        { type: '营养素', name: '维生素 D3 钙片', count: 3, label: 'D3', nutrition: true }
+      ];
+      return `
+        <section class="health-medicine-detail">
+          <div class="health-medicine-summary">
+            <div class="health-medicine-stat"><span>服用药品</span><strong>2<small>种</small></strong></div>
+            <div class="health-medicine-stat"><span>服用营养素</span><strong>1<small>种</small></strong></div>
+            <div class="health-medicine-stat"><span>共记录</span><strong>3<small>次</small></strong></div>
+          </div>
+          <section class="health-medicine-record">
+            <div class="health-medicine-record-title">服用记录</div>
+            <div class="health-medicine-record-body">
+              ${items.map(item => `
+                <article class="health-medicine-item">
+                  <div class="health-medicine-item-head">
+                    <span class="health-medicine-type${item.nutrition ? ' nutrition' : ''}">${esc(item.type)}</span>
+                    <strong class="health-medicine-name">${esc(item.name)}</strong>
+                  </div>
+                  <div class="health-medicine-photos">
+                    ${Array.from({ length: item.count }, () => renderMedicinePhoto(item.label, item.nutrition)).join('')}
+                  </div>
+                </article>
+              `).join('')}
+              <div class="health-medicine-note">
+                <span>备注说明</span>
+                <strong>患者本次上传药盒、药片和服用记录照片，整体图片清晰；阿托伐他汀钙片剂量仍需医生确认。</strong>
+              </div>
+            </div>
+          </section>
+        </section>
+      `;
+    }
+
+    function renderHealthLipidDetail() {
+      const items = [
+        ['总胆固醇 TC', '5.8'],
+        ['甘油三酯 TG', '2.1'],
+        ['高密度脂蛋白 HDL-C', '1.2'],
+        ['低密度脂蛋白 LDL-C', '3.6'],
+        ['小而密低密度脂蛋白 sdLDL-C', '0.85']
+      ];
+      return `
+        <section class="health-lipid-detail">
+          <div class="health-lipid-list">
+            ${items.map(item => `
+              <article class="health-lipid-row">
+                <div>
+                  <strong class="health-lipid-name">${esc(item[0])}</strong>
+                  <span class="health-lipid-time">检查时间： 2025-07-02 10:00</span>
+                </div>
+                <strong class="health-lipid-value">${esc(item[1])}<small>mmol/L</small></strong>
+              </article>
+            `).join('')}
+          </div>
+          <div class="health-lipid-note">
+            <span>备注</span>
+            <strong>本次为空腹血脂记录，低密度脂蛋白和甘油三酯偏高，建议结合近期饮食、运动和用药情况继续观察。</strong>
+          </div>
+        </section>
+      `;
+    }
+
+    function renderHealthUricDetail() {
+      return `
+        <section class="health-uric-detail">
+          <div class="health-uric-primary">
+            <span>尿酸值</span>
+            <div class="health-uric-value"><strong>486</strong><small>μmol/L</small></div>
+          </div>
+          <div class="health-uric-note">
+            <span>备注</span>
+            <strong>本次尿酸记录偏高，昨日有海鲜和肉汤摄入，未反馈关节红肿热痛。</strong>
+          </div>
+        </section>
+      `;
+    }
+
+    function renderHealthWaistDetail() {
+      return `
+        <section class="health-uric-detail">
+          <div class="health-uric-primary">
+            <span>腰围</span>
+            <div class="health-uric-value"><strong>88</strong><small>cm</small></div>
+          </div>
+          <div class="health-uric-note">
+            <span>备注</span>
+            <strong>晨起空腹测量，软尺水平绕脐一周，需确认软尺松紧和测量位置是否规范。</strong>
+          </div>
+        </section>
+      `;
+    }
+
+    function healthCheckinDetailTime(task) {
+      return task.finishTime && task.finishTime !== '--' ? task.finishTime : task.startTime;
+    }
+
+    function renderHealthCheckinDetailContent(type) {
+      if (type === '饮食') {
+        return renderHealthDietDetail();
+      }
+      if (type === '用药/补充') {
+        return renderHealthMedicineDetail();
+      }
+      if (type === '血糖') {
+        return renderHealthGlucoseDetail();
+      }
+      if (type === '运动') {
+        return renderHealthSportDetail();
+      }
+      if (type === '血脂') {
+        return renderHealthLipidDetail();
+      }
+      if (type === '尿酸') {
+        return renderHealthUricDetail();
+      }
+      if (type === '腰围') {
+        return renderHealthWaistDetail();
+      }
+      const detailMap = {
+        '运动': { title: '运动详情', tiles: [['运动类型', '快走', ''], ['运动时长', '38', '分钟'], ['消耗热量', '186', 'kcal']], rows: [['运动强度', '中等'], ['身体反馈', '运动后微汗，无胸闷心悸']] },
+        '体重': { title: '体重详情', tiles: [['体重', '68.1', 'kg'], ['BMI', '22.4', ''], ['体脂率', '24.6', '%']], rows: [['测量方式', '晨起空腹测量'], ['记录说明', '本次体重较上次基本稳定']] },
+        '血压': { title: '血压详情', tiles: [['收缩压', '130', 'mmHg'], ['舒张压', '82', 'mmHg'], ['脉搏', '78', '次/分']], rows: [['测量时段', '午间静息后'], ['记录说明', '本次血压记录完整，脉搏同步记录']] },
+        '血糖': { title: '血糖详情', tiles: [['血糖值', '7.8', 'mmol/L'], ['测量时段', '早餐前', ''], ['状态', '偏高', '']], rows: [['记录说明', '晨起空腹测量，已按要求完成本次记录']] },
+        '血脂': { title: '血脂详情', tiles: [['总胆固醇', '5.8', 'mmol/L'], ['甘油三酯', '2.1', 'mmol/L'], ['低密度脂蛋白', '3.6', 'mmol/L']], rows: [['高密度脂蛋白', '1.2 mmol/L'], ['记录说明', '本次为空腹血脂记录']] },
+        '尿酸': { title: '尿酸详情', tiles: [['尿酸值', '486', 'μmol/L'], ['状态', '偏高', ''], ['测量方式', '居家检测', '']], rows: [['记录说明', '未反馈关节红肿热痛']] },
+        '心率': { title: '心率详情', tiles: [['心率', '72', '次/分'], ['测量状态', '静息', ''], ['状态', '正常', '']], rows: [['记录说明', '晨起静息状态下测量']] },
+        '腰围': { title: '腰围详情', tiles: [['腰围', '82', 'cm'], ['测量位置', '脐水平', ''], ['状态', '稳定', '']], rows: [['记录说明', '本次腰围测量位置已标注']] }
+      };
+      const detail = detailMap[type] || detailMap['体重'];
+      return `
+        <section class="health-checkin-detail-summary">
+          <h3>${esc(detail.title)}</h3>
+          ${renderHealthDetailTiles(detail.tiles)}
+        </section>
+        <section class="health-checkin-section">
+          <div class="health-checkin-section-title">记录信息</div>
+          ${renderHealthReadRows(detail.rows)}
+        </section>
+      `;
+    }
+
+    function openHealthCheckinDetail(row) {
+      if (!row) return;
+      const task = healthTaskRowData(row);
+      const type = healthTaskDetailType(task.taskType) || '打卡';
+      const modal = document.getElementById('healthCheckinDetailModal');
+      const title = document.getElementById('healthCheckinDetailTitle');
+      const body = document.getElementById('healthCheckinDetailBody');
+      if (title) title.textContent = `${type}打卡详情`;
+      if (body) {
+        body.innerHTML = `
+          <div class="health-checkin-detail-meta">
+            <span>${esc(task.patient)} · ${esc(task.phone)}</span>
+            <time>打卡时间：${esc(healthCheckinDetailTime(task))}</time>
+          </div>
+          ${renderHealthCheckinDetailContent(type)}
+        `;
+      }
+      modal?.classList.add('open');
+      modal?.setAttribute('aria-hidden', 'false');
+    }
+
+    function closeHealthCheckinDetail() {
+      const modal = document.getElementById('healthCheckinDetailModal');
+      modal?.classList.remove('open');
+      modal?.setAttribute('aria-hidden', 'true');
     }
 
     function healthTaskExecutionRecords(task) {
@@ -3152,13 +3654,16 @@
     }
 
     function filterHealthTaskRows(status) {
+      ensureHealthTaskCheckinTypeRows();
       const rows = Array.from(document.querySelectorAll('.health-task-table tbody tr[data-health-task-status]'));
+      const visibleRows = new Set(healthTaskRowsForStatus(rows, status));
       let visibleCount = 0;
       rows.forEach(row => {
-        const visible = status === 'all' || row.dataset.healthTaskStatus === status;
+        const visible = visibleRows.has(row);
         row.hidden = !visible;
         if (visible) visibleCount += 1;
       });
+      updateHealthTaskTabCounts(rows);
       const total = document.querySelector('.health-task-pager span');
       if (total) total.textContent = `共${visibleCount}条`;
       document.getElementById('healthTaskActionMenu')?.classList.remove('open');
@@ -5006,7 +5511,7 @@
       if (patientPhone) patientPhone.textContent = cells[3]?.textContent.trim() || '166****8814';
       if (contentTitle) contentTitle.textContent = data.title;
       if (checkinTime) checkinTime.textContent = `打卡时间:${cells[5]?.textContent.trim() || '2025-07-03 12:30'}`;
-      if (assistantTitle) assistantTitle.textContent = 'AI助手';
+      if (assistantTitle) assistantTitle.textContent = 'AI智能管家';
       if (content) content.innerHTML = type === '饮食' ? data.content : renderCheckinMetricContent(data);
       if (modal) modal.dataset.checkinType = type;
 
@@ -6488,8 +6993,11 @@
         if (!drawer || !body || !meal) return;
         if (title) title.textContent = meal.name + '详情';
         body.innerHTML = renderMealDetailDrawerV2(meal);
+        mask?.classList.remove('show');
+        mask?.classList.add('open');
+        mask?.setAttribute('aria-hidden', 'false');
         drawer.classList.add('open');
-        if (mask) mask.classList.add('show');
+        drawer.setAttribute('aria-hidden', 'false');
       }
       function renderMealDetailDrawerV2(meal) {
         var advices = meal.advices || (meal.advice ? [meal.advice] : []);
@@ -6517,7 +7025,7 @@
         var mask = document.getElementById('mealDetailMask');
         drawer?.classList.remove('open');
         drawer?.setAttribute('aria-hidden', 'true');
-        mask?.classList.remove('open');
+        mask?.classList.remove('open', 'show');
         mask?.setAttribute('aria-hidden', 'true');
       }
       function renderSportDetailDrawerV2(row) {
