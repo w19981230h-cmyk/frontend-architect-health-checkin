@@ -3106,9 +3106,7 @@
         return [
           { actor: '患者', category: `评价任务 / ${taskType}`, title: '消息推送', action: '对进行中的任务进行推送', result: '已通过【微信服务号】向患者推送健康行动提醒，推送成功', status: '推送成功', operator: task.patient, time: task.groupTime },
           { actor: '患者', category: `评价任务 / ${taskType}`, title: '消息推送', action: '对进行中的任务进行推送', result: '已通过【短信】向患者推送健康行动提醒，推送失败', status: '推送失败', operator: task.patient, time: task.groupTime },
-          { actor: '患者', category: `评价任务 / ${taskType}`, title: '提交健康打卡', action: '提交并完成健康打卡', result: '完成健康打卡', status: '打卡成功', operator: task.patient, time: task.startTime },
-          { actor: 'AI智能助手', category: `评价任务 / ${taskType}`, title: '健康评价', action: '完成评价任务', result: '自动完成并下发评价建议', status: '评价成功', operator: 'AI智能助手', time: task.groupTime },
-          { actor: '医护', category: `评价任务 / ${taskType}`, title: '健康评价', action: '修改评价任务', result: '完成评价任务修改并更新评价内容', status: '修改成功', operator: task.owner && task.owner !== '--' ? task.owner : '张医生', time: task.groupTime }
+          { actor: '患者', category: `评价任务 / ${taskType}`, title: '提交健康打卡', action: '提交并完成健康打卡', result: '完成健康打卡', status: '打卡成功', operator: task.patient, time: task.startTime }
         ];
       }
       if (taskType.includes('量表')) {
@@ -3621,7 +3619,8 @@
     const checkinState = {
       calendarMonth: new Date(2026, 5, 1),
       selectedDate: new Date(2026, 5, 12),
-      activeRecordId: 'food-202605121853'
+      activeRecordId: 'food-202605121853',
+      selectedRecordIds: []
     };
 
     function formatCalendarTitle(date) {
@@ -5270,6 +5269,7 @@
           checkinState.rangeEnd = '';
           checkinState.selectedDate = null;
           checkinState.activeRecordId = '';
+          checkinState.selectedRecordIds = [];
         } else {
           setRecentRangeV2(Number(mode));
         }
@@ -5283,6 +5283,7 @@
         checkinState.rangeStart = formatDateKey(checkinState.selectedDate);
         checkinState.rangeEnd = checkinState.rangeStart;
         checkinState.activeRecordId = '';
+        checkinState.selectedRecordIds = [];
         checkinState.quickRange = 'custom';
         renderCheckinCalendar();
         return;
@@ -5304,13 +5305,22 @@
           }
         }
         checkinState.activeRecordId = '';
+        checkinState.selectedRecordIds = [];
         checkinState.quickRange = 'custom';
         renderCheckinCalendar();
         return;
       }
       const checkinRecord = e.target.closest('[data-checkin-record]');
       if (checkinRecord) {
-        checkinState.activeRecordId = checkinRecord.dataset.checkinRecord;
+        const recordId = checkinRecord.dataset.checkinRecord;
+        checkinState.selectedRecordIds = Array.isArray(checkinState.selectedRecordIds) ? checkinState.selectedRecordIds : [];
+        const currentIndex = checkinState.selectedRecordIds.indexOf(recordId);
+        if (currentIndex === -1) {
+          checkinState.selectedRecordIds.push(recordId);
+        } else {
+          checkinState.selectedRecordIds.splice(currentIndex, 1);
+        }
+        checkinState.activeRecordId = checkinState.selectedRecordIds[checkinState.selectedRecordIds.length - 1] || '';
         renderCheckinRecords();
         renderCheckinDetail();
         return;
@@ -6392,6 +6402,7 @@
         checkinState.selectedDate = endDate;
         checkinState.calendarMonth = new Date(endDate.getFullYear(), endDate.getMonth(), 1);
         checkinState.activeRecordId = '';
+        checkinState.selectedRecordIds = [];
       }
       window.setRecentRangeV2 = setRecentRangeV2;
       function renderCheckinQuickFiltersV2() {
@@ -6610,7 +6621,8 @@
         var data = detailDataV2[kind];
         var rows = data && data.rows ? data.rows : [];
         var activeRecord = checkinRecordsV2.find(function (item) { return item.id === checkinState.activeRecordId; });
-        var activeKey = activeRecord && kindV2(activeRecord) === kind ? keyV2(activeRecord) : '';
+        var hasMultiTypeSelection = Array.isArray(checkinState.selectedRecordIds) && checkinState.selectedRecordIds.length > 0;
+        var activeKey = !hasMultiTypeSelection && activeRecord && kindV2(activeRecord) === kind ? keyV2(activeRecord) : '';
         var filtered = activeKey ? rows.filter(function (row) { return keyFromTimeV2(row.time) === activeKey; }) : rowsInSelectedRangeV2(rows);
         return filtered.sort(function (a, b) { return String(b.time).localeCompare(String(a.time)); });
       }
@@ -6729,7 +6741,8 @@
       function medicineEventsV2() {
         var medicine = detailDataV2.medicine || { events: [] };
         var activeRecord = checkinRecordsV2.find(function (item) { return item.id === checkinState.activeRecordId; });
-        var activeKey = activeRecord && kindV2(activeRecord) === 'medicine' ? keyV2(activeRecord) : '';
+        var hasMultiTypeSelection = Array.isArray(checkinState.selectedRecordIds) && checkinState.selectedRecordIds.length > 0;
+        var activeKey = !hasMultiTypeSelection && activeRecord && kindV2(activeRecord) === 'medicine' ? keyV2(activeRecord) : '';
         var rows = activeKey
           ? (medicine.events || []).filter(function (row) { return keyFromTimeV2(row.time) === activeKey; })
           : rowsInSelectedRangeV2(medicine.events || []);
@@ -6910,10 +6923,15 @@
         var range = normalizeRangeV2();
         var singleDay = hasCheckinRangeV2() && range[0] === range[1];
         var todayKey = formatDateKey(new Date());
-        if (!records.some(function (record) { return record.id === checkinState.activeRecordId; })) checkinState.activeRecordId = '';
+        var validIds = new Set(records.map(function (record) { return record.id; }));
+        checkinState.selectedRecordIds = Array.isArray(checkinState.selectedRecordIds)
+          ? checkinState.selectedRecordIds.filter(function (id) { return validIds.has(id); })
+          : [];
+        if (!validIds.has(checkinState.activeRecordId)) checkinState.activeRecordId = checkinState.selectedRecordIds[0] || '';
         list.innerHTML = records.map(function (record) {
           var displayTime = displayRecordTimeV2(record);
-          return '<button class="checkin-record ' + (record.id === checkinState.activeRecordId ? 'active' : '') + '" data-checkin-record="' + esc(record.id) + '"><span class="checkin-record-thumb ' + esc(record.icon) + '" aria-hidden="true">' + checkinIcon(record.icon) + '</span><span class="checkin-record-body"><strong>' + esc(checkinDisplayTypeV2(record.type)) + '</strong><span class="checkin-record-content">' + esc(record.content) + '</span><span class="checkin-record-time">' + esc(displayTime) + '</span></span></button>';
+          var active = checkinState.selectedRecordIds.indexOf(record.id) !== -1 || (!checkinState.selectedRecordIds.length && record.id === checkinState.activeRecordId);
+          return '<button class="checkin-record ' + (active ? 'active' : '') + '" data-checkin-record="' + esc(record.id) + '"><span class="checkin-record-thumb ' + esc(record.icon) + '" aria-hidden="true">' + checkinIcon(record.icon) + '</span><span class="checkin-record-body"><strong>' + esc(checkinDisplayTypeV2(record.type)) + '</strong><span class="checkin-record-content">' + esc(record.content) + '</span><span class="checkin-record-time">' + esc(displayTime) + '</span></span></button>';
         }).join('');
       };
       function renderAllCheckinOverviewV2(records) {
@@ -6975,6 +6993,20 @@
         var range = normalizeRangeV2();
         var records = allRecordsInRangeV2(range[0], range[1]);
         var latestRecords = selectedV2();
+        var selectedIds = Array.isArray(checkinState.selectedRecordIds) ? checkinState.selectedRecordIds : [];
+        var selectedRecords = selectedIds.map(function (id) {
+          return latestRecords.find(function (item) { return item.id === id; });
+        }).filter(Boolean);
+        if (selectedRecords.length) {
+          var previousActiveId = checkinState.activeRecordId;
+          var selectedScopeText = hasCheckinRangeV2() ? (range[0] === range[1] ? range[0] : range[0] + ' 至 ' + range[1]) : '全部记录';
+          detail.innerHTML = selectedRecords.map(function (record) {
+            checkinState.activeRecordId = record.id;
+            return '<section class="checkin-type-block"><div class="checkin-type-block-head"><div class="checkin-type-block-title"><span class="checkin-record-thumb ' + esc(record.icon) + '" aria-hidden="true">' + checkinIcon(record.icon) + '</span><span>' + esc(checkinDisplayTypeV2(record.type)) + '打卡</span></div><div class="checkin-type-block-meta">' + esc(selectedScopeText) + '</div></div><div class="checkin-type-block-body">' + renderDetailBodyV2(record) + '</div></section>';
+          }).join('');
+          checkinState.activeRecordId = previousActiveId;
+          return;
+        }
         var record = latestRecords.find(function (item) { return item.id === checkinState.activeRecordId; });
         if (!record) {
           detail.innerHTML = records.length ? renderAllCheckinOverviewV2(records) : '<div class="checkin-empty-note">暂无打卡数据</div>';
@@ -7112,6 +7144,7 @@
       checkinState.rangeStart = '';
       checkinState.rangeEnd = '';
       checkinState.activeRecordId = '';
+      checkinState.selectedRecordIds = [];
       checkinState.quickRange = 'all';
       renderCheckinPanel();
       window.__checkinV2Ready = true;
