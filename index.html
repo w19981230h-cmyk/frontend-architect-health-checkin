@@ -282,6 +282,15 @@
     .health-task-action-menu.open { display: grid; gap: 2px; }
     .health-task-action-menu button { height: 34px; padding: 0 12px; border-radius: 6px; color: #263752; background: #fff; text-align: left; font-size: 13px; font-weight: 700; }
     .health-task-action-menu button:hover { color: #3154ff; background: #f4f7ff; }
+    .task-exec-table { overflow: hidden; border: 1px solid #dfe8f6; border-radius: 12px; background: #fff; }
+    .task-exec-row { display: grid; grid-template-columns: 108px minmax(0, 1fr); border-top: 1px solid #edf1f7; }
+    .task-exec-row:first-child { border-top: 0; }
+    .task-exec-label { padding: 12px 14px; color: #748196; background: #f8fbff; font-weight: 800; }
+    .task-exec-value { padding: 12px 14px; color: #253852; line-height: 1.65; }
+    .task-exec-tags { display: flex; flex-wrap: wrap; gap: 8px; }
+    .task-exec-tag { height: 24px; padding: 0 9px; border-radius: 999px; display: inline-flex; align-items: center; color: #3154ff; background: #eef3ff; font-size: 12px; font-weight: 800; }
+    .task-exec-tag.operator { color: #0b8f59; background: #eaf8f1; }
+    .task-exec-note { margin-top: 12px; padding: 12px 14px; border: 1px solid #ffe3c7; border-radius: 10px; color: #8a5a1f; background: #fffaf4; line-height: 1.7; }
     .health-task-pager { height: 64px; align-items: center; flex: 0 0 auto; }
     .checkin-evaluation-panel { padding: 0; overflow: hidden; }
     .checkin-evaluation-shell { flex: 1; min-height: 0; display: flex; flex-direction: column; padding: 24px; background: #fff; border-radius: 8px; overflow: hidden; }
@@ -3026,16 +3035,33 @@
       if (healthTaskMore) {
         event.stopPropagation();
         const row = healthTaskMore.closest('tr');
+        if (row && !row.dataset.healthTaskId) row.dataset.healthTaskId = `health-task-${Date.now()}-${Math.random().toString(16).slice(2)}`;
         const taskType = row?.cells?.[8]?.textContent.trim() || '';
         const menu = getHealthTaskActionMenu();
-        const actions = taskType === '随访量表'
+        const isScaleTask = taskType.includes('随访量表') || taskType.includes('量表');
+        const actions = isScaleTask
           ? ['再次智能外呼', '标记', '催办', '执行记录']
           : ['标记', '催办', '执行记录'];
-        menu.innerHTML = actions.map(action => '<button type="button">' + action + '</button>').join('');
+        menu.dataset.healthTaskId = row?.dataset.healthTaskId || '';
+        menu.innerHTML = actions.map(action => '<button type="button" data-health-task-menu-action="' + action + '">' + action + '</button>').join('');
         const rect = healthTaskMore.getBoundingClientRect();
         menu.style.top = rect.bottom + 8 + 'px';
         menu.style.left = Math.max(12, rect.right - 148) + 'px';
         menu.classList.add('open');
+        return;
+      }
+
+      const healthTaskMenuAction = event.target.closest('[data-health-task-menu-action]');
+      if (healthTaskMenuAction) {
+        const menu = document.getElementById('healthTaskActionMenu');
+        const row = menu?.dataset.healthTaskId ? document.querySelector(`[data-health-task-id="${menu.dataset.healthTaskId}"]`) : null;
+        const action = healthTaskMenuAction.dataset.healthTaskMenuAction;
+        menu?.classList.remove('open');
+        if (action.includes('执行') || action.includes('鎵ц')) {
+          openHealthTaskExecutionDrawer(row);
+        } else {
+          showToast(`${action}已加载`);
+        }
         return;
       }
 
@@ -3058,6 +3084,73 @@
         document.body.appendChild(menu);
       }
       return menu;
+    }
+
+    function healthTaskRowData(row) {
+      const cells = row ? Array.from(row.cells) : [];
+      return {
+        taskName: cells[1]?.textContent.trim() || '--',
+        patient: cells[2]?.textContent.trim() || '--',
+        phone: cells[3]?.textContent.trim() || '--',
+        startTime: cells[4]?.textContent.trim() || '--',
+        taskType: cells[8]?.textContent.trim() || '--',
+        owner: cells[9]?.textContent.trim() || '--',
+        groupTime: cells[10]?.textContent.trim() || '--',
+        status: cells[11]?.textContent.trim() || '--'
+      };
+    }
+
+    function healthTaskExecutionRecords(task) {
+      const taskType = task.taskType || '饮食打卡';
+      if (taskType.includes('打卡')) {
+        return [
+          { actor: '患者', category: `评价任务 / ${taskType}`, title: '消息推送', action: '对进行中的任务进行推送', result: '已通过【微信服务号】向患者推送健康行动提醒，推送成功', status: '推送成功', operator: task.patient, time: task.groupTime },
+          { actor: '患者', category: `评价任务 / ${taskType}`, title: '消息推送', action: '对进行中的任务进行推送', result: '已通过【短信】向患者推送健康行动提醒，推送失败', status: '推送失败', operator: task.patient, time: task.groupTime },
+          { actor: '患者', category: `评价任务 / ${taskType}`, title: '提交健康打卡', action: '提交并完成健康打卡', result: '完成健康打卡', status: '打卡成功', operator: task.patient, time: task.startTime },
+          { actor: 'AI智能助手', category: `评价任务 / ${taskType}`, title: '健康评价', action: '完成评价任务', result: '自动完成并下发评价建议', status: '评价成功', operator: 'AI智能助手', time: task.groupTime },
+          { actor: '医护', category: `评价任务 / ${taskType}`, title: '健康评价', action: '修改评价任务', result: '完成评价任务修改并更新评价内容', status: '修改成功', operator: task.owner && task.owner !== '--' ? task.owner : '张医生', time: task.groupTime }
+        ];
+      }
+      if (taskType.includes('量表')) {
+        return [
+          { actor: '医护', category: `随访任务 / ${taskType}`, title: '标记任务', action: '标记随访任务', result: '标记已选择的情况', status: '标记成功', operator: task.owner && task.owner !== '--' ? task.owner : '张医生', time: task.groupTime },
+          { actor: '患者', category: `随访任务 / ${taskType}`, title: '提交量表', action: '填写并提交量表', result: '已完成量表提交', status: '提交成功', operator: task.patient, time: task.startTime }
+        ];
+      }
+      return [
+        { actor: '医护', category: `随访任务 / ${taskType}`, title: '健康打卡', action: '健康打卡', result: '完成健康打卡', status: '打卡成功', operator: task.owner && task.owner !== '--' ? task.owner : '张医生', time: task.groupTime },
+        { actor: 'AI智能助手', category: `随访任务 / ${taskType}`, title: '消息推送', action: '执行任务推送', result: '已通过【微信服务号】向患者推送任务提醒', status: '推送成功', operator: 'AI智能助手', time: task.groupTime }
+      ];
+    }
+
+    function openHealthTaskExecutionDrawer(row) {
+      if (!row) return;
+      const drawer = document.getElementById('checkinExecDrawer');
+      const mask = document.getElementById('checkinExecMask');
+      const title = document.getElementById('checkinExecTitle');
+      const body = document.getElementById('checkinExecBody');
+      const task = healthTaskRowData(row);
+      const records = healthTaskExecutionRecords(task);
+      if (title) title.textContent = '执行记录';
+      if (body) {
+        body.innerHTML = `
+          <div class="checkin-exec-list">
+            ${records.map(record => `
+              <article class="checkin-exec-item">
+                <div class="checkin-exec-item-head"><span class="checkin-exec-dot"></span><span>${esc(record.title || record.action)}</span><em class="checkin-exec-status">${esc(record.status)}</em></div>
+                <p class="checkin-exec-copy">${esc(record.result || record.action)}</p>
+                <div class="checkin-exec-meta">
+                  <span>操作人：<strong>${esc(record.operator)}</strong>　时间：<strong>${esc(record.time)}</strong></span>
+                </div>
+              </article>
+            `).join('')}
+          </div>
+        `;
+      }
+      mask?.classList.add('open');
+      mask?.setAttribute('aria-hidden', 'false');
+      drawer?.classList.add('open');
+      drawer?.setAttribute('aria-hidden', 'false');
     }
 
     function filterHealthTaskRows(status) {
@@ -4987,9 +5080,11 @@
       if (!row) return;
       const drawer = document.getElementById('checkinExecDrawer');
       const mask = document.getElementById('checkinExecMask');
+      const title = document.getElementById('checkinExecTitle');
       const body = document.getElementById('checkinExecBody');
       const data = getCheckinEvalRowData(row);
       const steps = checkinExecutionSteps(data);
+      if (title) title.textContent = '执行记录';
       if (body) {
         body.innerHTML = `
           <div class="checkin-exec-list">
