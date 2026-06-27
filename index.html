@@ -347,9 +347,11 @@
     .checkin-actions { display: inline-flex; gap: 12px; flex-wrap: wrap; align-items: center; }
     .checkin-actions button { color: #1d43ff; font-weight: 600; }
     .checkin-execution-action { white-space: nowrap; }
+    .checkin-execution-action { display: none; }
     .checkin-view-action { display: none; }
     .checkin-evaluation-shell.is-evaluated .checkin-evaluate-action { display: none; }
     .checkin-evaluation-shell.is-evaluated .checkin-view-action { display: inline; }
+    .checkin-evaluation-shell.is-evaluated .checkin-execution-action { display: inline; }
     .checkin-evaluation-shell.is-evaluated .checkin-batch-review { display: none; }
     .checkin-auto-tag { display: none; width: fit-content; height: 22px; margin-top: 4px; padding: 0 8px; border-radius: 999px; align-items: center; color: #1d43ff; background: #eef3ff; font-size: 12px; font-weight: 700; }
     .checkin-evaluation-shell.is-evaluated tr[data-ai-auto="true"] .checkin-auto-tag { display: inline-flex; }
