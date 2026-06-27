@@ -275,6 +275,7 @@
     .health-task-overdue { margin-left: 6px; padding: 1px 5px; border-radius: 3px; color: #ff4d4f; background: #fff1f0; font-size: 12px; }
     .health-task-status { color: #3154ff; font-weight: 700; }
     .health-task-status::before { content: ""; display: inline-block; width: 6px; height: 6px; margin-right: 5px; border-radius: 50%; background: currentColor; vertical-align: 1px; }
+    .health-task-status.done { color: #16a34a; }
     .health-task-actions { display: inline-flex; align-items: center; gap: 12px; }
     .health-task-fill, .health-task-more { color: #3154ff; font-weight: 700; }
     .health-task-action-menu { position: fixed; z-index: 80; min-width: 148px; padding: 6px; border: 1px solid #dfe7f3; border-radius: 8px; background: #fff; box-shadow: 0 12px 28px rgba(31,51,82,.16); display: none; }
@@ -334,15 +335,18 @@
     .checkin-table th:nth-child(7) { width: 160px; }
     .checkin-table th:nth-child(8) { width: 120px; }
     .checkin-table th:nth-child(9) { width: 160px; }
-    .checkin-table th:nth-child(10) { width: 100px; }
+    .checkin-table th:nth-child(10) { width: 150px; }
     .checkin-select-col, .checkin-select-cell { text-align: center; padding-left: 14px !important; padding-right: 6px !important; }
     .checkin-row-check { width: 16px; height: 16px; margin: 0; accent-color: var(--blue); cursor: pointer; }
     .checkin-patient-cell { display: inline-flex; align-items: center; gap: 10px; color: #516078; }
     .checkin-patient-avatar { width: 32px; height: 32px; flex: 0 0 auto; border-radius: 50%; background: linear-gradient(180deg, #eef5ff 0%, #dce8ff 100%); position: relative; box-shadow: inset 0 0 0 1px #c8d8ff; overflow: hidden; }
+    .checkin-patient-avatar { cursor: pointer; transition: transform .15s ease, box-shadow .15s ease; }
+    .checkin-patient-avatar:hover { transform: translateY(-1px); box-shadow: inset 0 0 0 1px #8fb0ff, 0 5px 14px rgba(49,84,255,.16); }
     .checkin-patient-avatar::before { content: ""; position: absolute; left: 9px; top: 7px; width: 14px; height: 14px; border-radius: 50%; background: #ffd9c2; box-shadow: 0 -5px 0 -1px #2d3f66; }
     .checkin-patient-avatar::after { content: ""; position: absolute; left: 6px; right: 6px; bottom: 4px; height: 11px; border-radius: 9px 9px 5px 5px; background: #4f79ff; }
-    .checkin-actions { display: inline-flex; gap: 16px; }
+    .checkin-actions { display: inline-flex; gap: 12px; flex-wrap: wrap; align-items: center; }
     .checkin-actions button { color: #1d43ff; font-weight: 600; }
+    .checkin-execution-action { white-space: nowrap; }
     .checkin-view-action { display: none; }
     .checkin-evaluation-shell.is-evaluated .checkin-evaluate-action { display: none; }
     .checkin-evaluation-shell.is-evaluated .checkin-view-action { display: inline; }
@@ -371,6 +375,26 @@
     .checkin-review-modal { position: fixed; inset: 0; z-index: 80; display: none; align-items: center; justify-content: center; background: rgba(17, 25, 42, .28); }
     .checkin-review-modal.open { display: flex; }
     .checkin-review-dialog { width: min(1360px, calc(100vw - 72px)); height: min(780px, calc(100vh - 56px)); border-radius: 18px; overflow: hidden; background: #eef4ff; box-shadow: 0 24px 80px rgba(22, 34, 62, .22); }
+    .checkin-exec-mask { position: fixed; inset: 0; z-index: 88; background: rgba(17, 25, 42, .24); opacity: 0; pointer-events: none; transition: opacity .2s ease; }
+    .checkin-exec-mask.open { opacity: 1; pointer-events: auto; }
+    .checkin-exec-drawer { position: fixed; z-index: 89; top: 0; right: 0; width: 460px; max-width: calc(100vw - 32px); height: 100vh; display: flex; flex-direction: column; background: #fff; border-left: 1px solid #dde7f5; box-shadow: -16px 0 38px rgba(22, 34, 62, .16); transform: translateX(102%); transition: transform .2s ease; }
+    .checkin-exec-drawer.open { transform: translateX(0); }
+    .checkin-exec-head { height: 64px; flex: 0 0 auto; padding: 0 22px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid #edf1f7; }
+    .checkin-exec-head h2 { margin: 0; color: #1f2e48; font-size: 18px; }
+    .checkin-exec-close { width: 34px; height: 34px; display: grid; place-items: center; border-radius: 8px; color: #5d6b80; font-size: 24px; }
+    .checkin-exec-close:hover { color: #2447ff; background: #f1f5ff; }
+    .checkin-exec-body { flex: 1; min-height: 0; padding: 18px 22px 28px; overflow: auto; background: #f6f9ff; }
+    .checkin-exec-summary { margin-bottom: 16px; padding: 16px; border: 1px solid #dfe8f6; border-radius: 12px; background: #fff; }
+    .checkin-exec-summary strong { display: block; color: #1f2e48; font-size: 17px; }
+    .checkin-exec-summary span { display: block; margin-top: 8px; color: #7a879b; font-size: 13px; }
+    .checkin-exec-list { display: grid; gap: 12px; }
+    .checkin-exec-item { padding: 15px 16px; border: 1px solid #dfe8f6; border-radius: 12px; background: #fff; box-shadow: 0 10px 24px rgba(38, 54, 92, .05); }
+    .checkin-exec-item-head { display: flex; align-items: center; gap: 8px; color: #1f2e48; font-weight: 800; }
+    .checkin-exec-dot { width: 9px; height: 9px; border-radius: 50%; background: #3154ff; box-shadow: 0 0 0 4px #edf3ff; }
+    .checkin-exec-status { margin-left: auto; padding: 3px 8px; border-radius: 999px; color: #15945d; background: #eaf8f1; font-size: 12px; font-weight: 800; }
+    .checkin-exec-copy { margin: 10px 0 12px; color: #33425b; line-height: 1.65; }
+    .checkin-exec-meta { display: grid; gap: 6px; color: #7b8798; font-size: 13px; }
+    .checkin-exec-meta strong { color: #253852; font-weight: 800; }
     .checkin-review-head { height: 82px; padding: 0 28px; display: flex; align-items: center; gap: 14px; background: #fff; color: #6a758a; font-size: 14px; }
     .checkin-review-head strong { color: #24324d; font-size: 16px; }
     .checkin-review-avatar { width: 34px; height: 34px; border-radius: 50%; background: linear-gradient(180deg, #eef5ff, #dce8ff); position: relative; overflow: hidden; box-shadow: inset 0 0 0 1px #c8d8ff; }
@@ -492,6 +516,8 @@
     .checkin-review-editor-title span { padding-left: 12px; border-left: 4px solid #1d43ff; }
     .checkin-review-editor-title button { color: #4f6dff; font-size: 14px; }
     .checkin-review-textarea { width: 100%; height: 330px; padding: 20px; resize: none; border: 1px solid #e2e6ef; border-radius: 10px; background: #fff; color: #25324a; font-size: 14px; line-height: 1.7; }
+    .checkin-review-next-row { margin-top: 14px; display: inline-flex; align-items: center; gap: 8px; color: #52617a; font-size: 13px; font-weight: 700; user-select: none; }
+    .checkin-review-next-row input { width: 16px; height: 16px; accent-color: #3154ff; }
     .checkin-review-submit { width: 100%; height: 50px; margin-top: 24px; border-radius: 4px; color: #fff; background: #1d33ff; font-size: 14px; }
     .checkin-review-tip { margin: 16px 4px 0; color: #a2abbc; font-size: 12px; line-height: 1.55; }
 
@@ -1640,7 +1666,7 @@
         <div class="brand"><div class="seal" aria-hidden="true"></div><span>AI患者管理系统</span></div>
         <nav class="menu">
           <div class="menu-section"><div class="menu-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="4" y="5" width="16" height="11" rx="1.5"/><path d="M8 20h8M12 16v4"/></svg><span>工作台</span></div></div>
-          <div class="menu-section"><div class="menu-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M8 4h8l3 3v13H5V4h3Z"/><path d="M9 12h6M9 16h4"/></svg><span>任务管理</span><svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="m18 15-6-6-6 6"/></svg></div><div class="submenu"><div class="submenu-item" data-list-view="healthTasks">健康任务</div><div class="submenu-item">预警任务</div><div class="submenu-item" data-list-view="checkinEvaluation">打卡评价</div></div></div>
+          <div class="menu-section"><div class="menu-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M8 4h8l3 3v13H5V4h3Z"/><path d="M9 12h6M9 16h4"/></svg><span>任务管理</span><svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="m18 15-6-6-6 6"/></svg></div><div class="submenu"><div class="submenu-item" data-list-view="healthTasks">健康任务</div><div class="submenu-item">预警任务</div><div class="submenu-item" data-list-view="checkinEvaluation">评价任务</div></div></div>
           <div class="menu-section"><div class="menu-item" data-list-view="patients"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8Z"/><path d="M4 21a8 8 0 0 1 16 0"/></svg><span>患者管理</span><svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="m18 15-6-6-6 6"/></svg></div><div class="submenu"><div class="submenu-item" data-list-view="patients">全部患者</div><div class="submenu-item" data-patient-team-list>团队患者</div></div></div>
           <div class="menu-section">
             <div class="menu-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M7 4h10v16H7z"/><path d="M9 8h6M9 12h6M9 16h3"/></svg><span>方案与内容</span><svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="m18 15-6-6-6 6"/></svg></div>
@@ -1729,11 +1755,11 @@
             <div class="health-task-list-card">
               <div class="health-task-list-head">
                 <div class="health-task-tabs">
-                  <button class="health-task-tab">全部（11）</button>
-                  <button class="health-task-tab">未开始（0）</button>
-                  <button class="health-task-tab active">进行中（11）</button>
-                  <button class="health-task-tab">已完成（0）</button>
-                  <button class="health-task-tab">已终止（0）</button>
+                  <button class="health-task-tab" data-health-task-tab="all">全部（14）</button>
+                  <button class="health-task-tab" data-health-task-tab="pending">未开始（0）</button>
+                  <button class="health-task-tab active" data-health-task-tab="running">进行中（11）</button>
+                  <button class="health-task-tab" data-health-task-tab="done">已完成（3）</button>
+                  <button class="health-task-tab" data-health-task-tab="stopped">已终止（0）</button>
                 </div>
                 <div class="health-task-tools">
                   <button class="health-task-tool" aria-label="字段设置"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M8 4v16M16 4v16M5 8h6M13 16h6"/><circle cx="8" cy="8" r="2"/><circle cx="16" cy="16" r="2"/></svg></button>
@@ -1749,17 +1775,20 @@
                     <tr><th><input class="health-task-check" type="checkbox"></th><th>任务名称</th><th>姓名</th><th>手机号码</th><th>任务开始时间</th><th>任务结束时间</th><th>完成/终止人员</th><th>完成/终止时间</th><th>任务类型</th><th>健康负责人</th><th>入组时间</th><th>状态</th><th>操作</th></tr>
                   </thead>
                   <tbody>
-                    <tr><td><input class="health-task-check" type="checkbox"></td><td>术后恢复评估量表</td><td><span class="health-task-patient"><span class="health-task-avatar"></span>喜洋洋</span></td><td>182****2136</td><td>2026/03/05</td><td>2026/04/04<span class="health-task-overdue">逾期</span></td><td>--</td><td>--</td><td>随访量表</td><td>--</td><td>2026/03/05 21:08:27</td><td><span class="health-task-status">进行中</span></td><td><span class="health-task-actions"><button class="health-task-fill">代填</button><button class="health-task-more" title="再次智能外呼、标记、催办、执行记录">更多</button></span></td></tr>
-                    <tr><td><input class="health-task-check" type="checkbox"></td><td>慢性肾病健康宣教指南</td><td><span class="health-task-patient"><span class="health-task-avatar"></span>杨花花</span></td><td>178****7517</td><td>2026/03/05</td><td>2026/04/04<span class="health-task-overdue">逾期</span></td><td>--</td><td>--</td><td>科普宣教</td><td>--</td><td>2026/03/05 21:30:20</td><td><span class="health-task-status">进行中</span></td><td><button class="health-task-more">更多</button></td></tr>
-                    <tr><td><input class="health-task-check" type="checkbox"></td><td>泌尿系统术后复诊提醒</td><td><span class="health-task-patient"><span class="health-task-avatar"></span>蔡阳阳</span></td><td>178****7517</td><td>2026/03/06</td><td>2026/04/05<span class="health-task-overdue">逾期</span></td><td>--</td><td>--</td><td>复诊提醒</td><td>--</td><td>2026/03/05 21:07:21</td><td><span class="health-task-status">进行中</span></td><td><button class="health-task-more">更多</button></td></tr>
-                    <tr><td><input class="health-task-check" type="checkbox"></td><td>每日饮食打卡</td><td><span class="health-task-patient"><span class="health-task-avatar"></span>喜洋洋</span></td><td>182****2136</td><td>2026/04/05</td><td>2026/05/05<span class="health-task-overdue">逾期</span></td><td>--</td><td>--</td><td>饮食打卡</td><td>--</td><td>2026/03/05 21:08:27</td><td><span class="health-task-status">进行中</span></td><td><button class="health-task-more" title="标记、催办、执行记录">更多</button></td></tr>
-                    <tr><td><input class="health-task-check" type="checkbox"></td><td>运动打卡</td><td><span class="health-task-patient"><span class="health-task-avatar"></span>杨花花</span></td><td>178****7517</td><td>2026/04/05</td><td>2026/05/05<span class="health-task-overdue">逾期</span></td><td>--</td><td>--</td><td>运动打卡</td><td>--</td><td>2026/03/05 21:30:20</td><td><span class="health-task-status">进行中</span></td><td><button class="health-task-more" title="标记、催办、执行记录">更多</button></td></tr>
-                    <tr><td><input class="health-task-check" type="checkbox"></td><td>用药/补充打卡</td><td><span class="health-task-patient"><span class="health-task-avatar"></span>胡亦泓</span></td><td>137****8319</td><td>2026/04/05</td><td>2026/05/05<span class="health-task-overdue">逾期</span></td><td>--</td><td>--</td><td>用药/补充打卡</td><td>--</td><td>2026/03/05 22:44:29</td><td><span class="health-task-status">进行中</span></td><td><button class="health-task-more" title="标记、催办、执行记录">更多</button></td></tr>
-                    <tr><td><input class="health-task-check" type="checkbox"></td><td>体重打卡</td><td><span class="health-task-patient"><span class="health-task-avatar"></span>杨明明</span></td><td>178****7517</td><td>2026/04/06</td><td>2026/05/06<span class="health-task-overdue">逾期</span></td><td>--</td><td>--</td><td>体重打卡</td><td>--</td><td>2026/03/05 19:25:03</td><td><span class="health-task-status">进行中</span></td><td><button class="health-task-more" title="标记、催办、执行记录">更多</button></td></tr>
-                    <tr><td><input class="health-task-check" type="checkbox"></td><td>血压打卡</td><td><span class="health-task-patient"><span class="health-task-avatar"></span>蔡阳阳</span></td><td>178****7517</td><td>2026/04/06</td><td>2026/05/06<span class="health-task-overdue">逾期</span></td><td>--</td><td>--</td><td>血压打卡</td><td>--</td><td>2026/03/05 21:07:21</td><td><span class="health-task-status">进行中</span></td><td><button class="health-task-more" title="标记、催办、执行记录">更多</button></td></tr>
-                    <tr><td><input class="health-task-check" type="checkbox"></td><td>血糖打卡</td><td><span class="health-task-patient"><span class="health-task-avatar"></span>喜洋洋</span></td><td>182****2136</td><td>2026/05/05</td><td>2026/06/04<span class="health-task-overdue">逾期</span></td><td>--</td><td>--</td><td>血糖打卡</td><td>--</td><td>2026/03/05 21:08:27</td><td><span class="health-task-status">进行中</span></td><td><button class="health-task-more" title="标记、催办、执行记录">更多</button></td></tr>
-                    <tr><td><input class="health-task-check" type="checkbox"></td><td>血脂打卡</td><td><span class="health-task-patient"><span class="health-task-avatar"></span>杨花花</span></td><td>178****7517</td><td>2026/05/05</td><td>2026/06/04<span class="health-task-overdue">逾期</span></td><td>--</td><td>--</td><td>血脂打卡</td><td>--</td><td>2026/03/05 21:30:20</td><td><span class="health-task-status">进行中</span></td><td><button class="health-task-more" title="标记、催办、执行记录">更多</button></td></tr>
-                    <tr><td><input class="health-task-check" type="checkbox"></td><td>尿酸打卡</td><td><span class="health-task-patient"><span class="health-task-avatar"></span>孙患者</span></td><td>166****8874</td><td>2026/05/06</td><td>2026/06/05<span class="health-task-overdue">逾期</span></td><td>--</td><td>--</td><td>尿酸打卡</td><td>--</td><td>2026/03/05 22:08:12</td><td><span class="health-task-status">进行中</span></td><td><button class="health-task-more" title="标记、催办、执行记录">更多</button></td></tr>
+                    <tr data-health-task-status="running"><td><input class="health-task-check" type="checkbox"></td><td>术后恢复评估量表</td><td><span class="health-task-patient"><span class="health-task-avatar"></span>喜洋洋</span></td><td>182****2136</td><td>2026/03/05</td><td>2026/04/04<span class="health-task-overdue">逾期</span></td><td>--</td><td>--</td><td>随访量表</td><td>--</td><td>2026/03/05 21:08:27</td><td><span class="health-task-status">进行中</span></td><td><span class="health-task-actions"><button class="health-task-fill">代填</button><button class="health-task-more" title="再次智能外呼、标记、催办、执行记录">更多</button></span></td></tr>
+                    <tr data-health-task-status="running"><td><input class="health-task-check" type="checkbox"></td><td>慢性肾病健康宣教指南</td><td><span class="health-task-patient"><span class="health-task-avatar"></span>杨花花</span></td><td>178****7517</td><td>2026/03/05</td><td>2026/04/04<span class="health-task-overdue">逾期</span></td><td>--</td><td>--</td><td>科普宣教</td><td>--</td><td>2026/03/05 21:30:20</td><td><span class="health-task-status">进行中</span></td><td><button class="health-task-more">更多</button></td></tr>
+                    <tr data-health-task-status="running"><td><input class="health-task-check" type="checkbox"></td><td>泌尿系统术后复诊提醒</td><td><span class="health-task-patient"><span class="health-task-avatar"></span>蔡阳阳</span></td><td>178****7517</td><td>2026/03/06</td><td>2026/04/05<span class="health-task-overdue">逾期</span></td><td>--</td><td>--</td><td>复诊提醒</td><td>--</td><td>2026/03/05 21:07:21</td><td><span class="health-task-status">进行中</span></td><td><button class="health-task-more">更多</button></td></tr>
+                    <tr data-health-task-status="running"><td><input class="health-task-check" type="checkbox"></td><td>每日饮食打卡</td><td><span class="health-task-patient"><span class="health-task-avatar"></span>喜洋洋</span></td><td>182****2136</td><td>2026/04/05</td><td>--</td><td>--</td><td>--</td><td>饮食打卡</td><td>--</td><td>2026/03/05 21:08:27</td><td><span class="health-task-status">进行中</span></td><td><button class="health-task-more" title="标记、催办、执行记录">更多</button></td></tr>
+                    <tr data-health-task-status="running"><td><input class="health-task-check" type="checkbox"></td><td>运动打卡</td><td><span class="health-task-patient"><span class="health-task-avatar"></span>杨花花</span></td><td>178****7517</td><td>2026/04/05</td><td>--</td><td>--</td><td>--</td><td>运动打卡</td><td>--</td><td>2026/03/05 21:30:20</td><td><span class="health-task-status">进行中</span></td><td><button class="health-task-more" title="标记、催办、执行记录">更多</button></td></tr>
+                    <tr data-health-task-status="running"><td><input class="health-task-check" type="checkbox"></td><td>用药/补充打卡</td><td><span class="health-task-patient"><span class="health-task-avatar"></span>胡亦泓</span></td><td>137****8319</td><td>2026/04/05</td><td>--</td><td>--</td><td>--</td><td>用药/补充打卡</td><td>--</td><td>2026/03/05 22:44:29</td><td><span class="health-task-status">进行中</span></td><td><button class="health-task-more" title="标记、催办、执行记录">更多</button></td></tr>
+                    <tr data-health-task-status="running"><td><input class="health-task-check" type="checkbox"></td><td>体重打卡</td><td><span class="health-task-patient"><span class="health-task-avatar"></span>杨明明</span></td><td>178****7517</td><td>2026/04/06</td><td>--</td><td>--</td><td>--</td><td>体重打卡</td><td>--</td><td>2026/03/05 19:25:03</td><td><span class="health-task-status">进行中</span></td><td><button class="health-task-more" title="标记、催办、执行记录">更多</button></td></tr>
+                    <tr data-health-task-status="running"><td><input class="health-task-check" type="checkbox"></td><td>血压打卡</td><td><span class="health-task-patient"><span class="health-task-avatar"></span>蔡阳阳</span></td><td>178****7517</td><td>2026/04/06</td><td>--</td><td>--</td><td>--</td><td>血压打卡</td><td>--</td><td>2026/03/05 21:07:21</td><td><span class="health-task-status">进行中</span></td><td><button class="health-task-more" title="标记、催办、执行记录">更多</button></td></tr>
+                    <tr data-health-task-status="running"><td><input class="health-task-check" type="checkbox"></td><td>血糖打卡</td><td><span class="health-task-patient"><span class="health-task-avatar"></span>喜洋洋</span></td><td>182****2136</td><td>2026/05/05</td><td>--</td><td>--</td><td>--</td><td>血糖打卡</td><td>--</td><td>2026/03/05 21:08:27</td><td><span class="health-task-status">进行中</span></td><td><button class="health-task-more" title="标记、催办、执行记录">更多</button></td></tr>
+                    <tr data-health-task-status="running"><td><input class="health-task-check" type="checkbox"></td><td>血脂打卡</td><td><span class="health-task-patient"><span class="health-task-avatar"></span>杨花花</span></td><td>178****7517</td><td>2026/05/05</td><td>--</td><td>--</td><td>--</td><td>血脂打卡</td><td>--</td><td>2026/03/05 21:30:20</td><td><span class="health-task-status">进行中</span></td><td><button class="health-task-more" title="标记、催办、执行记录">更多</button></td></tr>
+                    <tr data-health-task-status="running"><td><input class="health-task-check" type="checkbox"></td><td>尿酸打卡</td><td><span class="health-task-patient"><span class="health-task-avatar"></span>孙患者</span></td><td>166****8874</td><td>2026/05/06</td><td>--</td><td>--</td><td>--</td><td>尿酸打卡</td><td>--</td><td>2026/03/05 22:08:12</td><td><span class="health-task-status">进行中</span></td><td><button class="health-task-more" title="标记、催办、执行记录">更多</button></td></tr>
+                    <tr data-health-task-status="done" hidden><td><input class="health-task-check" type="checkbox"></td><td>餐后血糖打卡</td><td><span class="health-task-patient"><span class="health-task-avatar"></span>周患者</span></td><td>166****8884</td><td>2026/03/10</td><td>--</td><td>张医生</td><td>2026/03/10 19:05</td><td>血糖打卡</td><td>李护士</td><td>2026/03/05 21:12:40</td><td><span class="health-task-status done">已完成</span></td><td><button class="health-task-more" title="标记、催办、执行记录">更多</button></td></tr>
+                    <tr data-health-task-status="done" hidden><td><input class="health-task-check" type="checkbox"></td><td>晚间运动打卡</td><td><span class="health-task-patient"><span class="health-task-avatar"></span>吴患者</span></td><td>166****8894</td><td>2026/03/11</td><td>--</td><td>张医生</td><td>2026/03/11 20:30</td><td>运动打卡</td><td>王护士</td><td>2026/03/05 21:18:09</td><td><span class="health-task-status done">已完成</span></td><td><button class="health-task-more" title="标记、催办、执行记录">更多</button></td></tr>
+                    <tr data-health-task-status="done" hidden><td><input class="health-task-check" type="checkbox"></td><td>用药/补充打卡</td><td><span class="health-task-patient"><span class="health-task-avatar"></span>郑患者</span></td><td>166****8804</td><td>2026/03/12</td><td>--</td><td>张医生</td><td>2026/03/12 08:45</td><td>用药/补充打卡</td><td>陈护士</td><td>2026/03/05 22:02:16</td><td><span class="health-task-status done">已完成</span></td><td><button class="health-task-more" title="标记、催办、执行记录">更多</button></td></tr>
                   </tbody>
                 </table>
               </div>
@@ -1987,6 +2016,7 @@
           <div class="checkin-review-editor">
             <div class="checkin-review-editor-title"><span>综合评价与建议</span><button data-regenerate-checkin-review>重新生成</button></div>
             <textarea class="checkin-review-textarea" id="checkinReviewText" placeholder="输入框文本"></textarea>
+            <label class="checkin-review-next-row"><input type="checkbox" data-checkin-auto-next>完成评价后自动跳转下一个</label>
             <button class="checkin-review-submit" data-send-checkin-review>发送评价</button>
             <p class="checkin-review-tip">本评价由 AI辅助生成，仅供参考。您可以直接在上方文本框中进行修改和完善，确认无误后点击发送给患者。</p>
           </div>
@@ -2007,6 +2037,15 @@
       </div>
     </div>
   </div>
+
+  <div class="checkin-exec-mask" id="checkinExecMask" data-close-checkin-exec aria-hidden="true"></div>
+  <aside class="checkin-exec-drawer" id="checkinExecDrawer" aria-hidden="true" aria-labelledby="checkinExecTitle">
+    <header class="checkin-exec-head">
+      <h2 id="checkinExecTitle">执行记录</h2>
+      <button class="checkin-exec-close" data-close-checkin-exec aria-label="关闭执行记录">×</button>
+    </header>
+    <div class="checkin-exec-body" id="checkinExecBody"></div>
+  </aside>
 
   <section id="planAiPage" class="page">
     <div class="plan-ai-page">
@@ -2832,6 +2871,19 @@
       emptyRow?.querySelector('td')?.setAttribute('colspan', '10');
     }
 
+    function ensureCheckinExecutionActions() {
+      document.querySelectorAll('[data-checkin-eval-row]').forEach(row => {
+        const actions = row.querySelector('.checkin-actions');
+        if (!actions || actions.querySelector('[data-open-checkin-execution]')) return;
+        const button = document.createElement('button');
+        button.className = 'checkin-execution-action';
+        button.type = 'button';
+        button.dataset.openCheckinExecution = '';
+        button.textContent = '执行记录';
+        actions.appendChild(button);
+      });
+    }
+
     function updateCheckinSelectAllState() {
       const selectAll = document.querySelector('[data-checkin-select-all]');
       if (!selectAll) return;
@@ -2844,19 +2896,26 @@
 
     function applyCheckinEvalFilters() {
       ensureCheckinEvalCheckboxes();
+      ensureCheckinExecutionActions();
       const keyword = (document.getElementById('checkinEvalPatientSearch')?.value || '').trim().toLowerCase();
       const selectedType = document.getElementById('checkinEvalTypeFilter')?.value || '';
       const activeTab = document.querySelector('[data-checkin-eval-tab].active')?.dataset.checkinEvalTab || 'pending';
       let visibleCount = 0;
       const counts = { pending: 0, evaluated: 0 };
       document.querySelectorAll('[data-checkin-eval-row]').forEach(row => {
-        const reviewerCell = row.children[row.querySelector('.checkin-select-cell') ? 7 : 6];
+        const offset = row.querySelector('.checkin-select-cell') ? 1 : 0;
+        const reviewerCell = row.children[6 + offset];
+        const reviewTimeCell = row.children[7 + offset];
+        const status = row.dataset.reviewStatus || 'pending';
+        if (status === 'pending') {
+          if (reviewerCell) reviewerCell.textContent = '--';
+          if (reviewTimeCell) reviewTimeCell.textContent = '--';
+        }
         if (row.dataset.aiAuto === 'true' && reviewerCell) {
           reviewerCell.innerHTML = '--<span class="checkin-auto-tag">自动下发</span>';
         }
         const patient = (row.dataset.patient || '').toLowerCase();
         const type = row.dataset.type || '';
-        const status = row.dataset.reviewStatus || 'pending';
         const matchesPatient = !keyword || patient.includes(keyword);
         const matchesType = !selectedType || type === selectedType;
         if (matchesPatient && matchesType && counts[status] !== undefined) counts[status] += 1;
@@ -2946,7 +3005,7 @@
       document.getElementById('patientListView').classList.toggle('active', isPatients);
       document.getElementById('healthTaskView').classList.toggle('active', isHealthTasks);
       document.getElementById('checkinEvaluationView').classList.toggle('active', isCheckinEvaluation);
-      document.getElementById('listPageTitle').textContent = isHealthTasks ? '健康任务' : isCheckinEvaluation ? '打卡评价' : isPatients ? '全部患者' : isIndicator ? '指标模板' : isScale ? '量表管理' : '方案管理';
+      document.getElementById('listPageTitle').textContent = isHealthTasks ? '健康任务' : isCheckinEvaluation ? '评价任务' : isPatients ? '全部患者' : isIndicator ? '指标模板' : isScale ? '量表管理' : '方案管理';
       document.querySelectorAll('[data-list-view]').forEach(item => item.classList.toggle('active', item.dataset.listView === view));
       if (isIndicator) renderIndicatorList();
       if (isPatients) renderPatientList();
@@ -2982,6 +3041,7 @@
       if (healthTaskTab) {
         healthTaskTab.parentElement.querySelectorAll('.health-task-tab').forEach(tab => tab.classList.remove('active'));
         healthTaskTab.classList.add('active');
+        filterHealthTaskRows(healthTaskTab.dataset.healthTaskTab || 'all');
       }
 
       document.getElementById('healthTaskActionMenu')?.classList.remove('open');
@@ -2996,6 +3056,19 @@
         document.body.appendChild(menu);
       }
       return menu;
+    }
+
+    function filterHealthTaskRows(status) {
+      const rows = Array.from(document.querySelectorAll('.health-task-table tbody tr[data-health-task-status]'));
+      let visibleCount = 0;
+      rows.forEach(row => {
+        const visible = status === 'all' || row.dataset.healthTaskStatus === status;
+        row.hidden = !visible;
+        if (visible) visibleCount += 1;
+      });
+      const total = document.querySelector('.health-task-pager span');
+      if (total) total.textContent = `共${visibleCount}条`;
+      document.getElementById('healthTaskActionMenu')?.classList.remove('open');
     }
 
     function openIndicatorModal(id = null) {
@@ -4854,6 +4927,124 @@
       }
     }
 
+    function getCheckinEvalRowData(row) {
+      const cells = row ? Array.from(row.children) : [];
+      const offset = row?.querySelector('.checkin-select-cell') ? 1 : 0;
+      const reviewerText = (cells[6 + offset]?.textContent || '').replace('自动下发', '').trim();
+      return {
+        patient: row?.dataset.patient || cells[0 + offset]?.textContent.trim() || '--',
+        type: row?.dataset.type || cells[4 + offset]?.textContent.trim() || '--',
+        checkinTime: cells[5 + offset]?.textContent.trim() || '--',
+        reviewer: reviewerText && reviewerText !== '--' ? reviewerText : 'AI智能助手',
+        reviewTime: cells[7 + offset]?.textContent.trim() || '--',
+        status: row?.dataset.reviewStatus || 'pending',
+        aiAuto: row?.dataset.aiAuto === 'true'
+      };
+    }
+
+    function displayCheckinTaskType(type) {
+      return `${type === '用药' ? '用药/补充' : type}打卡`;
+    }
+
+    function addMinutesToDisplayTime(time, minutes) {
+      const date = new Date(String(time).replace(/-/g, '/'));
+      if (Number.isNaN(date.getTime())) return time || '--';
+      date.setMinutes(date.getMinutes() + minutes);
+      const pad = value => String(value).padStart(2, '0');
+      return `${date.getFullYear()}/${pad(date.getMonth() + 1)}/${pad(date.getDate())} ${pad(date.getHours())}:${pad(date.getMinutes())}`;
+    }
+
+    function checkinExecutionSteps(rowData) {
+      const operator = rowData.aiAuto ? 'AI智能助手' : (rowData.reviewer || '张医生');
+      return [
+        {
+          title: '健康评价',
+          status: '评价成功',
+          text: '自动完成并下发评价建议',
+          operator: 'AI智能助手',
+          time: rowData.reviewTime
+        },
+        {
+          title: '健康评价',
+          status: '评价成功',
+          text: '完成并下发评价内容',
+          operator,
+          time: addMinutesToDisplayTime(rowData.reviewTime, 3)
+        },
+        {
+          title: '修改评价',
+          status: '修改成功',
+          text: '完成评价任务修改并更新评价内容',
+          operator,
+          time: addMinutesToDisplayTime(rowData.reviewTime, 6)
+        }
+      ];
+    }
+
+    function openCheckinExecutionDrawer(row) {
+      if (!row) return;
+      const drawer = document.getElementById('checkinExecDrawer');
+      const mask = document.getElementById('checkinExecMask');
+      const body = document.getElementById('checkinExecBody');
+      const data = getCheckinEvalRowData(row);
+      const steps = checkinExecutionSteps(data);
+      if (body) {
+        body.innerHTML = `
+          <div class="checkin-exec-list">
+            ${steps.map(step => `
+              <article class="checkin-exec-item">
+                <div class="checkin-exec-item-head"><span class="checkin-exec-dot"></span><span>${esc(step.title)}</span><em class="checkin-exec-status">${esc(step.status)}</em></div>
+                <p class="checkin-exec-copy">${esc(step.text)}</p>
+                <div class="checkin-exec-meta">
+                  <span>操作人：<strong>${esc(step.operator)}</strong>　时间：<strong>${esc(step.time)}</strong></span>
+                </div>
+              </article>
+            `).join('')}
+          </div>
+        `;
+      }
+      mask?.classList.add('open');
+      mask?.setAttribute('aria-hidden', 'false');
+      drawer?.classList.add('open');
+      drawer?.setAttribute('aria-hidden', 'false');
+    }
+
+    function closeCheckinExecutionDrawer() {
+      const drawer = document.getElementById('checkinExecDrawer');
+      const mask = document.getElementById('checkinExecMask');
+      drawer?.classList.remove('open');
+      drawer?.setAttribute('aria-hidden', 'true');
+      mask?.classList.remove('open');
+      mask?.setAttribute('aria-hidden', 'true');
+    }
+
+    function patientFromCheckinEvalRow(row) {
+      const cells = row ? Array.from(row.children) : [];
+      const offset = row?.querySelector('.checkin-select-cell') ? 1 : 0;
+      const phone = cells[3 + offset]?.textContent.trim() || '166****0000';
+      return {
+        name: row?.dataset.patient || cells[0 + offset]?.textContent.trim() || '患者',
+        gender: cells[1 + offset]?.textContent.trim() || '--',
+        age: cells[2 + offset]?.textContent.trim() || '--',
+        phone,
+        visitNo: `CK-${phone.replace(/\D/g, '').slice(-4) || Date.now()}`,
+        department: '内分泌科',
+        diagnosis: '健康打卡随访患者',
+        visitDate: '2026/06/12',
+        team: '糖尿病随访团队',
+        birthDate: '--',
+        ethnicity: '汉族',
+        occupation: '--',
+        region: '--',
+        pastHistory: '--',
+        personalHistory: '--',
+        allergyHistory: '--',
+        familyHistory: '--',
+        drinking: '--',
+        smoking: '--'
+      };
+    }
+
     document.addEventListener('click', e => {
       const archiveCardRange = e.target.closest('[data-archive-card-range]');
       if (archiveCardRange) {
@@ -5250,6 +5441,20 @@
         showToast(rows.length ? `已批量评价 ${rows.length} 条` : '当前没有待评价数据', 'top');
         return;
       }
+      const checkinExecutionAction = e.target.closest('[data-open-checkin-execution]');
+      if (checkinExecutionAction) {
+        openCheckinExecutionDrawer(checkinExecutionAction.closest('[data-checkin-eval-row]'));
+        return;
+      }
+      if (e.target.closest('[data-close-checkin-exec]')) {
+        closeCheckinExecutionDrawer();
+        return;
+      }
+      const checkinPatientAvatar = e.target.closest('[data-checkin-eval-row] .checkin-patient-avatar');
+      if (checkinPatientAvatar) {
+        openPatientArchive(patientFromCheckinEvalRow(checkinPatientAvatar.closest('[data-checkin-eval-row]')));
+        return;
+      }
       const checkinReviewAction = e.target.closest('[data-open-checkin-review]');
       if (checkinReviewAction) {
         openCheckinReviewModal(checkinReviewAction);
@@ -5273,7 +5478,8 @@
         const textarea = document.getElementById('checkinReviewText');
         const isResend = modal?.dataset.resend === 'true';
         const row = modal?.dataset.reviewRowId ? document.querySelector(`[data-checkin-eval-row][data-review-id="${modal.dataset.reviewRowId}"]`) : null;
-        const nextAction = !isResend && row ? nextPendingReviewActionAfter(row) : null;
+        const autoNext = !!modal?.querySelector('[data-checkin-auto-next]')?.checked;
+        const nextAction = autoNext && !isResend && row ? nextPendingReviewActionAfter(row) : null;
         if (row) {
           markCheckinRowEvaluated(row, textarea?.value || '');
         }
