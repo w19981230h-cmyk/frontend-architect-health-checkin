@@ -1097,6 +1097,8 @@
     .metric-field .indicator-edit-input, .metric-field .indicator-edit-select { height: 34px; font-size: 13px; }
     .indicator-add-card { min-height: 164px; border: 1px dashed #78a8e8; border-radius: 7px; background: #f3f8ff; color: #2864d7; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 20px; text-align: center; cursor: pointer; }
     .indicator-add-card:hover { border-color: #2864d7; background: #edf5ff; }
+    .indicator-add-card:disabled { cursor: not-allowed; opacity: .58; }
+    .indicator-add-card:disabled:hover { border-color: #78a8e8; background: #f3f8ff; }
     .indicator-add-icon { width: 48px; height: 48px; margin-bottom: 12px; border-radius: 50%; background: #fff; box-shadow: 0 4px 12px rgba(40,100,215,.12); display: grid; place-items: center; font-size: 30px; font-weight: 300; }
     .indicator-add-card strong { margin-bottom: 7px; font-size: 15px; }
     .indicator-add-card p { margin: 0; color: #7890af; font-size: 12px; line-height: 1.6; }
@@ -3823,11 +3825,13 @@
       const metrics = indicatorEditorState.draft?.metrics || [];
       const displayOptions = ['结果卡','趋势图'];
       const indicatorOptions = ['腰围','腰臀比','体重指数 BMI','身高','体重','心率','总胆固醇','高密度脂蛋白胆固醇','低密度脂蛋白胆固醇（LDL-C）','糖化血红蛋白 HbA1c','抗甲状腺球蛋白抗体 TgAb','抗甲状腺过氧化物酶抗体 TPOAb','EB病毒核抗原IgG','抗β2糖蛋白I抗体','血压','血糖','血尿酸'];
+      const maxIndicatorMetrics = 20;
+      const isMetricLimitReached = metrics.length >= maxIndicatorMetrics;
       document.getElementById('indicatorMetricRows').innerHTML = metrics.map((metric, index) => `<article class="indicator-metric-card" data-metric-card-index="${index}">
         <div class="metric-card-head"><div class="metric-card-actions"><button class="metric-drag" draggable="true" data-drag-indicator-metric="${index}" title="拖动排序" aria-label="拖动${esc(metric.name || '指标')}排序">⋮⋮</button><button class="metric-delete" data-remove-indicator-metric="${index}" title="删除指标" aria-label="删除${esc(metric.name || '指标')}">${trashIcon()}</button></div></div>
         <div class="metric-field"><label>指标</label><select class="indicator-edit-select" data-indicator-metric-field="name" data-indicator-metric-index="${index}"><option value="">请选择指标</option>${metric.name && !indicatorOptions.includes(metric.name) ? `<option selected>${esc(metric.name)}</option>` : ''}${indicatorOptions.map(value => `<option ${metric.name === value ? 'selected' : ''}>${value}</option>`).join('')}</select></div>
         <div class="metric-field"><label>展示方式</label><select class="indicator-edit-select" data-indicator-metric-field="display" data-indicator-metric-index="${index}">${displayOptions.map(value => `<option ${metric.display === value ? 'selected' : ''}>${value}</option>`).join('')}</select>${indicatorDisplayWarning(metric) ? `<div class="metric-display-warning">${esc(indicatorDisplayWarning(metric))}</div>` : ''}</div>
-      </article>`).join('') + `<button class="indicator-add-card" data-add-indicator-metric><span class="indicator-add-icon">+</span><strong>添加指标</strong><p>从指标库选择指标，系统将推荐展示方式</p></button>`;
+      </article>`).join('') + `<button class="indicator-add-card" data-add-indicator-metric data-max-indicators="${maxIndicatorMetrics}" data-dev-note="最多只能添加20个指标" ${isMetricLimitReached ? 'disabled aria-disabled="true"' : ''}><span class="indicator-add-icon">+</span><strong>添加指标</strong><p>从指标库选择指标，系统将推荐展示方式</p></button>`;
       renderIndicatorPreview();
     }
 
@@ -5674,6 +5678,10 @@
         return;
       }
       if (e.target.closest('[data-add-indicator-metric]')) {
+        // Dev note: indicator templates support up to 20 metrics.
+        if ((indicatorEditorState.draft?.metrics || []).length >= 20) {
+          return;
+        }
         indicatorEditorState.draft.metrics.push({ name: '', display: '结果卡', source: '居家打卡', period: '按日' });
         indicatorEditorState.dirty = true;
         patientPageState.dirty = true;
