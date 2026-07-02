@@ -500,7 +500,7 @@
     .checkin-evaluation-shell.is-evaluated .checkin-execution-action { display: inline; }
     .checkin-evaluation-shell.is-evaluated .checkin-batch-review { display: none; }
     .checkin-auto-tag { display: none; width: fit-content; height: 22px; margin-top: 4px; padding: 0 8px; border-radius: 999px; align-items: center; color: #1d43ff; background: #eef3ff; font-size: 12px; font-weight: 700; }
-    .checkin-evaluation-shell.is-evaluated tr[data-ai-auto="true"] .checkin-auto-tag { display: inline-flex; }
+    .checkin-evaluation-shell.is-evaluated tr[data-ai-auto="true"] .checkin-auto-tag { display: none; }
     .checkin-eval-pager { margin-top: auto; height: 72px; align-items: center; }
     .checkin-eval-pager .page-select { width: 116px; }
     .checkin-evaluation-shell.has-data .checkin-empty { display: none; }
@@ -2042,9 +2042,9 @@
                 <tr data-checkin-eval-row data-patient="周患者" data-type="腰围"><td><span class="checkin-patient-cell"><span class="checkin-patient-avatar"></span>周患者</span></td><td>女</td><td>39</td><td>166****8884</td><td>腰围</td><td>2025-07-01 07:40</td><td>张医生</td><td>2025-07-01 08:15</td><td><span class="checkin-actions"><button class="checkin-evaluate-action" data-open-checkin-review="edit">评价</button><button class="checkin-view-action" data-open-checkin-review="view">查看</button></span></td></tr>
                 <tr data-checkin-eval-row data-patient="吴患者" data-type="心率"><td><span class="checkin-patient-cell"><span class="checkin-patient-avatar"></span>吴患者</span></td><td>男</td><td>33</td><td>166****8894</td><td>心率</td><td>2025-06-30 22:00</td><td>张医生</td><td>2025-07-01 09:20</td><td><span class="checkin-actions"><button class="checkin-evaluate-action" data-open-checkin-review="edit">评价</button><button class="checkin-view-action" data-open-checkin-review="view">查看</button></span></td></tr>
                 <tr data-checkin-eval-row data-patient="郑患者" data-type="体重"><td><span class="checkin-patient-cell"><span class="checkin-patient-avatar"></span>郑患者</span></td><td>女</td><td>41</td><td>166****8804</td><td>体重</td><td>2025-06-30 07:10</td><td>张医生</td><td>2025-06-30 08:00</td><td><span class="checkin-actions"><button class="checkin-evaluate-action" data-open-checkin-review="edit">评价</button><button class="checkin-view-action" data-open-checkin-review="view">查看</button></span></td></tr>
-                <tr data-checkin-eval-row data-review-status="evaluated" data-ai-auto="true" data-patient="钱患者" data-type="血糖"><td><span class="checkin-patient-cell"><span class="checkin-patient-avatar"></span>钱患者</span></td><td>男</td><td>58</td><td>166****8815</td><td>血糖</td><td>2025-07-03 06:50</td><td>--<span class="checkin-auto-tag">自动下发</span></td><td>2025-07-03 07:18</td><td><span class="checkin-actions"><button class="checkin-evaluate-action" data-open-checkin-review="edit">评价</button><button class="checkin-view-action" data-open-checkin-review="view">查看</button></span></td></tr>
+                <tr data-checkin-eval-row data-review-status="evaluated" data-ai-auto="true" data-patient="钱患者" data-type="血糖"><td><span class="checkin-patient-cell"><span class="checkin-patient-avatar"></span>钱患者</span></td><td>男</td><td>58</td><td>166****8815</td><td>血糖</td><td>2025-07-03 06:50</td><td>AI专员</td><td>2025-07-03 07:18</td><td><span class="checkin-actions"><button class="checkin-evaluate-action" data-open-checkin-review="edit">评价</button><button class="checkin-view-action" data-open-checkin-review="view">查看</button></span></td></tr>
                 <tr data-checkin-eval-row data-review-status="evaluated" data-patient="冯患者" data-type="血压"><td><span class="checkin-patient-cell"><span class="checkin-patient-avatar"></span>冯患者</span></td><td>女</td><td>66</td><td>166****8825</td><td>血压</td><td>2025-07-03 08:35</td><td>李医生</td><td>2025-07-03 09:02</td><td><span class="checkin-actions"><button class="checkin-evaluate-action" data-open-checkin-review="edit">评价</button><button class="checkin-view-action" data-open-checkin-review="view">查看</button></span></td></tr>
-                <tr data-checkin-eval-row data-review-status="evaluated" data-ai-auto="true" data-patient="曹患者" data-type="饮食"><td><span class="checkin-patient-cell"><span class="checkin-patient-avatar"></span>曹患者</span></td><td>男</td><td>37</td><td>166****8835</td><td>饮食</td><td>2025-07-02 18:42</td><td>--<span class="checkin-auto-tag">自动下发</span></td><td>2025-07-02 19:05</td><td><span class="checkin-actions"><button class="checkin-evaluate-action" data-open-checkin-review="edit">评价</button><button class="checkin-view-action" data-open-checkin-review="view">查看</button></span></td></tr>
+                <tr data-checkin-eval-row data-review-status="evaluated" data-ai-auto="true" data-patient="曹患者" data-type="饮食"><td><span class="checkin-patient-cell"><span class="checkin-patient-avatar"></span>曹患者</span></td><td>男</td><td>37</td><td>166****8835</td><td>饮食</td><td>2025-07-02 18:42</td><td>AI专员</td><td>2025-07-02 19:05</td><td><span class="checkin-actions"><button class="checkin-evaluate-action" data-open-checkin-review="edit">评价</button><button class="checkin-view-action" data-open-checkin-review="view">查看</button></span></td></tr>
                 <tr id="checkinEvalNoResult" hidden><td colspan="9" style="height:220px;text-align:center;color:#9aa5b4">暂无符合条件的打卡评价</td></tr>
               </tbody>
             </table>
@@ -2164,7 +2164,7 @@
           </div>
         </section>
         <section class="checkin-review-card checkin-review-ai">
-          <div class="checkin-review-ai-head"><span class="checkin-ai-orb" aria-hidden="true"></span><span id="checkinReviewAssistantTitle">AI智能管家</span></div>
+          <div class="checkin-review-ai-head"><span class="checkin-ai-orb" aria-hidden="true"></span><span id="checkinReviewAssistantTitle">AI专员</span></div>
           <div class="checkin-review-editor">
             <div class="checkin-review-editor-title"><span>综合评价与建议</span><button data-regenerate-checkin-review>重新生成</button></div>
             <textarea class="checkin-review-textarea" id="checkinReviewText" placeholder="输入框文本"></textarea>
@@ -3074,7 +3074,7 @@
           if (reviewTimeCell) reviewTimeCell.textContent = '--';
         }
         if (row.dataset.aiAuto === 'true' && reviewerCell) {
-          reviewerCell.innerHTML = '--<span class="checkin-auto-tag">自动下发</span>';
+          reviewerCell.textContent = 'AI专员';
         }
         const patient = (row.dataset.patient || '').toLowerCase();
         const type = row.dataset.type || '';
@@ -3128,7 +3128,7 @@
       row.dataset.reviewText = reviewText;
       const cells = row.children;
       const offset = row.querySelector('.checkin-select-cell') ? 1 : 0;
-      if (cells[6 + offset]) cells[6 + offset].innerHTML = '--<span class="checkin-auto-tag">自动下发</span>';
+      if (cells[6 + offset]) cells[6 + offset].textContent = 'AI专员';
       if (cells[7 + offset]) cells[7 + offset].textContent = new Date().toLocaleString('zh-CN', { hour12: false }).replace(/\//g, '-');
       row.querySelector('[data-checkin-row-select]')?.removeAttribute('checked');
       const checkbox = row.querySelector('[data-checkin-row-select]');
@@ -5515,7 +5515,7 @@
       if (patientPhone) patientPhone.textContent = cells[3]?.textContent.trim() || '166****8814';
       if (contentTitle) contentTitle.textContent = data.title;
       if (checkinTime) checkinTime.textContent = `打卡时间:${cells[5]?.textContent.trim() || '2025-07-03 12:30'}`;
-      if (assistantTitle) assistantTitle.textContent = 'AI智能管家';
+      if (assistantTitle) assistantTitle.textContent = 'AI专员';
       if (content) content.innerHTML = type === '饮食' ? data.content : renderCheckinMetricContent(data);
       if (modal) modal.dataset.checkinType = type;
 
