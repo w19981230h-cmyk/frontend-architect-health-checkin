@@ -2006,11 +2006,12 @@
             <div class="checkin-table-card">
             <div class="checkin-tabs">
               <div class="checkin-tab-group">
-              <button class="checkin-tab active" data-checkin-eval-tab="pending">待评价（70）</button>
-              <button class="checkin-tab" data-checkin-eval-tab="evaluated">已评价（112）</button>
+              <button class="checkin-tab active" data-checkin-eval-tab="all">全部（0）</button>
+              <button class="checkin-tab" data-checkin-eval-tab="pending">待处理（70）</button>
+              <button class="checkin-tab" data-checkin-eval-tab="evaluated">已处理（112）</button>
               </div>
               <div class="checkin-tab-actions">
-                <button class="checkin-batch-review" data-batch-checkin-review>一键评价</button>
+                <button class="checkin-batch-review" data-batch-checkin-review>一键处理</button>
                 <button class="checkin-column-tool" aria-label="字段设置">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M5 4h4v16H5zM15 4h4v16h-4z"/><path d="M3 9h8M13 15h8"/><circle cx="17" cy="17" r="3"/></svg>
                 </button>
@@ -2032,19 +2033,19 @@
                 </tr>
               </thead>
               <tbody id="checkinEvalRows">
-                <tr data-checkin-eval-row data-patient="张患者" data-type="血糖"><td><span class="checkin-patient-cell"><span class="checkin-patient-avatar"></span>张患者</span></td><td>男</td><td>24</td><td>166****8814</td><td>血糖</td><td>2025-07-03 07:20</td><td>张医生</td><td>2025-07-03 08:05</td><td><span class="checkin-actions"><button class="checkin-evaluate-action" data-open-checkin-review="edit">评价</button><button class="checkin-view-action" data-open-checkin-review="view">查看</button></span></td></tr>
-                <tr data-checkin-eval-row data-patient="李患者" data-type="血压"><td><span class="checkin-patient-cell"><span class="checkin-patient-avatar"></span>李患者</span></td><td>女</td><td>31</td><td>166****8824</td><td>血压</td><td>2025-07-03 08:10</td><td>张医生</td><td>2025-07-03 08:50</td><td><span class="checkin-actions"><button class="checkin-evaluate-action" data-open-checkin-review="edit">评价</button><button class="checkin-view-action" data-open-checkin-review="view">查看</button></span></td></tr>
-                <tr data-checkin-eval-row data-patient="王患者" data-type="用药"><td><span class="checkin-patient-cell"><span class="checkin-patient-avatar"></span>王患者</span></td><td>男</td><td>45</td><td>166****8834</td><td>用药/补充</td><td>2025-07-03 09:00</td><td>张医生</td><td>2025-07-03 09:25</td><td><span class="checkin-actions"><button class="checkin-evaluate-action" data-open-checkin-review="edit">评价</button><button class="checkin-view-action" data-open-checkin-review="view">查看</button></span></td></tr>
-                <tr data-checkin-eval-row data-patient="赵患者" data-type="运动"><td><span class="checkin-patient-cell"><span class="checkin-patient-avatar"></span>赵患者</span></td><td>女</td><td>28</td><td>166****8844</td><td>运动</td><td>2025-07-02 19:30</td><td>张医生</td><td>2025-07-02 20:10</td><td><span class="checkin-actions"><button class="checkin-evaluate-action" data-open-checkin-review="edit">评价</button><button class="checkin-view-action" data-open-checkin-review="view">查看</button></span></td></tr>
-                <tr data-checkin-eval-row data-patient="陈患者" data-type="饮食"><td><span class="checkin-patient-cell"><span class="checkin-patient-avatar"></span>陈患者</span></td><td>男</td><td>36</td><td>166****8854</td><td>饮食</td><td>2025-07-02 12:30</td><td>张医生</td><td>2025-07-02 13:10</td><td><span class="checkin-actions"><button class="checkin-evaluate-action" data-open-checkin-review="edit">评价</button><button class="checkin-view-action" data-open-checkin-review="view">查看</button></span></td></tr>
-                <tr data-checkin-eval-row data-patient="刘患者" data-type="血脂"><td><span class="checkin-patient-cell"><span class="checkin-patient-avatar"></span>刘患者</span></td><td>女</td><td>52</td><td>166****8864</td><td>血脂</td><td>2025-07-02 10:00</td><td>张医生</td><td>2025-07-02 10:40</td><td><span class="checkin-actions"><button class="checkin-evaluate-action" data-open-checkin-review="edit">评价</button><button class="checkin-view-action" data-open-checkin-review="view">查看</button></span></td></tr>
-                <tr data-checkin-eval-row data-patient="孙患者" data-type="尿酸"><td><span class="checkin-patient-cell"><span class="checkin-patient-avatar"></span>孙患者</span></td><td>男</td><td>47</td><td>166****8874</td><td>尿酸</td><td>2025-07-01 16:00</td><td>张医生</td><td>2025-07-01 16:35</td><td><span class="checkin-actions"><button class="checkin-evaluate-action" data-open-checkin-review="edit">评价</button><button class="checkin-view-action" data-open-checkin-review="view">查看</button></span></td></tr>
-                <tr data-checkin-eval-row data-patient="周患者" data-type="腰围"><td><span class="checkin-patient-cell"><span class="checkin-patient-avatar"></span>周患者</span></td><td>女</td><td>39</td><td>166****8884</td><td>腰围</td><td>2025-07-01 07:40</td><td>张医生</td><td>2025-07-01 08:15</td><td><span class="checkin-actions"><button class="checkin-evaluate-action" data-open-checkin-review="edit">评价</button><button class="checkin-view-action" data-open-checkin-review="view">查看</button></span></td></tr>
-                <tr data-checkin-eval-row data-patient="吴患者" data-type="心率"><td><span class="checkin-patient-cell"><span class="checkin-patient-avatar"></span>吴患者</span></td><td>男</td><td>33</td><td>166****8894</td><td>心率</td><td>2025-06-30 22:00</td><td>张医生</td><td>2025-07-01 09:20</td><td><span class="checkin-actions"><button class="checkin-evaluate-action" data-open-checkin-review="edit">评价</button><button class="checkin-view-action" data-open-checkin-review="view">查看</button></span></td></tr>
-                <tr data-checkin-eval-row data-patient="郑患者" data-type="体重"><td><span class="checkin-patient-cell"><span class="checkin-patient-avatar"></span>郑患者</span></td><td>女</td><td>41</td><td>166****8804</td><td>体重</td><td>2025-06-30 07:10</td><td>张医生</td><td>2025-06-30 08:00</td><td><span class="checkin-actions"><button class="checkin-evaluate-action" data-open-checkin-review="edit">评价</button><button class="checkin-view-action" data-open-checkin-review="view">查看</button></span></td></tr>
-                <tr data-checkin-eval-row data-review-status="evaluated" data-ai-auto="true" data-patient="钱患者" data-type="血糖"><td><span class="checkin-patient-cell"><span class="checkin-patient-avatar"></span>钱患者</span></td><td>男</td><td>58</td><td>166****8815</td><td>血糖</td><td>2025-07-03 06:50</td><td>AI专员</td><td>2025-07-03 07:18</td><td><span class="checkin-actions"><button class="checkin-evaluate-action" data-open-checkin-review="edit">评价</button><button class="checkin-view-action" data-open-checkin-review="view">查看</button></span></td></tr>
-                <tr data-checkin-eval-row data-review-status="evaluated" data-patient="冯患者" data-type="血压"><td><span class="checkin-patient-cell"><span class="checkin-patient-avatar"></span>冯患者</span></td><td>女</td><td>66</td><td>166****8825</td><td>血压</td><td>2025-07-03 08:35</td><td>李医生</td><td>2025-07-03 09:02</td><td><span class="checkin-actions"><button class="checkin-evaluate-action" data-open-checkin-review="edit">评价</button><button class="checkin-view-action" data-open-checkin-review="view">查看</button></span></td></tr>
-                <tr data-checkin-eval-row data-review-status="evaluated" data-ai-auto="true" data-patient="曹患者" data-type="饮食"><td><span class="checkin-patient-cell"><span class="checkin-patient-avatar"></span>曹患者</span></td><td>男</td><td>37</td><td>166****8835</td><td>饮食</td><td>2025-07-02 18:42</td><td>AI专员</td><td>2025-07-02 19:05</td><td><span class="checkin-actions"><button class="checkin-evaluate-action" data-open-checkin-review="edit">评价</button><button class="checkin-view-action" data-open-checkin-review="view">查看</button></span></td></tr>
+                <tr data-checkin-eval-row data-patient="张患者" data-type="血糖"><td><span class="checkin-patient-cell"><span class="checkin-patient-avatar"></span>张患者</span></td><td>男</td><td>24</td><td>166****8814</td><td>血糖</td><td>2025-07-03 07:20</td><td>张医生</td><td>2025-07-03 08:05</td><td><span class="checkin-actions"><button class="checkin-evaluate-action" data-open-checkin-review="edit">处理</button><button class="checkin-view-action" data-open-checkin-review="view">查看</button></span></td></tr>
+                <tr data-checkin-eval-row data-patient="李患者" data-type="血压"><td><span class="checkin-patient-cell"><span class="checkin-patient-avatar"></span>李患者</span></td><td>女</td><td>31</td><td>166****8824</td><td>血压</td><td>2025-07-03 08:10</td><td>张医生</td><td>2025-07-03 08:50</td><td><span class="checkin-actions"><button class="checkin-evaluate-action" data-open-checkin-review="edit">处理</button><button class="checkin-view-action" data-open-checkin-review="view">查看</button></span></td></tr>
+                <tr data-checkin-eval-row data-patient="王患者" data-type="用药"><td><span class="checkin-patient-cell"><span class="checkin-patient-avatar"></span>王患者</span></td><td>男</td><td>45</td><td>166****8834</td><td>用药/补充</td><td>2025-07-03 09:00</td><td>张医生</td><td>2025-07-03 09:25</td><td><span class="checkin-actions"><button class="checkin-evaluate-action" data-open-checkin-review="edit">处理</button><button class="checkin-view-action" data-open-checkin-review="view">查看</button></span></td></tr>
+                <tr data-checkin-eval-row data-patient="赵患者" data-type="运动"><td><span class="checkin-patient-cell"><span class="checkin-patient-avatar"></span>赵患者</span></td><td>女</td><td>28</td><td>166****8844</td><td>运动</td><td>2025-07-02 19:30</td><td>张医生</td><td>2025-07-02 20:10</td><td><span class="checkin-actions"><button class="checkin-evaluate-action" data-open-checkin-review="edit">处理</button><button class="checkin-view-action" data-open-checkin-review="view">查看</button></span></td></tr>
+                <tr data-checkin-eval-row data-patient="陈患者" data-type="饮食"><td><span class="checkin-patient-cell"><span class="checkin-patient-avatar"></span>陈患者</span></td><td>男</td><td>36</td><td>166****8854</td><td>饮食</td><td>2025-07-02 12:30</td><td>张医生</td><td>2025-07-02 13:10</td><td><span class="checkin-actions"><button class="checkin-evaluate-action" data-open-checkin-review="edit">处理</button><button class="checkin-view-action" data-open-checkin-review="view">查看</button></span></td></tr>
+                <tr data-checkin-eval-row data-patient="刘患者" data-type="血脂"><td><span class="checkin-patient-cell"><span class="checkin-patient-avatar"></span>刘患者</span></td><td>女</td><td>52</td><td>166****8864</td><td>血脂</td><td>2025-07-02 10:00</td><td>张医生</td><td>2025-07-02 10:40</td><td><span class="checkin-actions"><button class="checkin-evaluate-action" data-open-checkin-review="edit">处理</button><button class="checkin-view-action" data-open-checkin-review="view">查看</button></span></td></tr>
+                <tr data-checkin-eval-row data-patient="孙患者" data-type="尿酸"><td><span class="checkin-patient-cell"><span class="checkin-patient-avatar"></span>孙患者</span></td><td>男</td><td>47</td><td>166****8874</td><td>尿酸</td><td>2025-07-01 16:00</td><td>张医生</td><td>2025-07-01 16:35</td><td><span class="checkin-actions"><button class="checkin-evaluate-action" data-open-checkin-review="edit">处理</button><button class="checkin-view-action" data-open-checkin-review="view">查看</button></span></td></tr>
+                <tr data-checkin-eval-row data-patient="周患者" data-type="腰围"><td><span class="checkin-patient-cell"><span class="checkin-patient-avatar"></span>周患者</span></td><td>女</td><td>39</td><td>166****8884</td><td>腰围</td><td>2025-07-01 07:40</td><td>张医生</td><td>2025-07-01 08:15</td><td><span class="checkin-actions"><button class="checkin-evaluate-action" data-open-checkin-review="edit">处理</button><button class="checkin-view-action" data-open-checkin-review="view">查看</button></span></td></tr>
+                <tr data-checkin-eval-row data-patient="吴患者" data-type="心率"><td><span class="checkin-patient-cell"><span class="checkin-patient-avatar"></span>吴患者</span></td><td>男</td><td>33</td><td>166****8894</td><td>心率</td><td>2025-06-30 22:00</td><td>张医生</td><td>2025-07-01 09:20</td><td><span class="checkin-actions"><button class="checkin-evaluate-action" data-open-checkin-review="edit">处理</button><button class="checkin-view-action" data-open-checkin-review="view">查看</button></span></td></tr>
+                <tr data-checkin-eval-row data-patient="郑患者" data-type="体重"><td><span class="checkin-patient-cell"><span class="checkin-patient-avatar"></span>郑患者</span></td><td>女</td><td>41</td><td>166****8804</td><td>体重</td><td>2025-06-30 07:10</td><td>张医生</td><td>2025-06-30 08:00</td><td><span class="checkin-actions"><button class="checkin-evaluate-action" data-open-checkin-review="edit">处理</button><button class="checkin-view-action" data-open-checkin-review="view">查看</button></span></td></tr>
+                <tr data-checkin-eval-row data-review-status="evaluated" data-ai-auto="true" data-patient="钱患者" data-type="血糖"><td><span class="checkin-patient-cell"><span class="checkin-patient-avatar"></span>钱患者</span></td><td>男</td><td>58</td><td>166****8815</td><td>血糖</td><td>2025-07-03 06:50</td><td>AI专员</td><td>2025-07-03 07:18</td><td><span class="checkin-actions"><button class="checkin-evaluate-action" data-open-checkin-review="edit">处理</button><button class="checkin-view-action" data-open-checkin-review="view">查看</button></span></td></tr>
+                <tr data-checkin-eval-row data-review-status="evaluated" data-patient="冯患者" data-type="血压"><td><span class="checkin-patient-cell"><span class="checkin-patient-avatar"></span>冯患者</span></td><td>女</td><td>66</td><td>166****8825</td><td>血压</td><td>2025-07-03 08:35</td><td>李医生</td><td>2025-07-03 09:02</td><td><span class="checkin-actions"><button class="checkin-evaluate-action" data-open-checkin-review="edit">处理</button><button class="checkin-view-action" data-open-checkin-review="view">查看</button></span></td></tr>
+                <tr data-checkin-eval-row data-review-status="evaluated" data-ai-auto="true" data-patient="曹患者" data-type="饮食"><td><span class="checkin-patient-cell"><span class="checkin-patient-avatar"></span>曹患者</span></td><td>男</td><td>37</td><td>166****8835</td><td>饮食</td><td>2025-07-02 18:42</td><td>AI专员</td><td>2025-07-02 19:05</td><td><span class="checkin-actions"><button class="checkin-evaluate-action" data-open-checkin-review="edit">处理</button><button class="checkin-view-action" data-open-checkin-review="view">查看</button></span></td></tr>
                 <tr id="checkinEvalNoResult" hidden><td colspan="9" style="height:220px;text-align:center;color:#9aa5b4">暂无符合条件的打卡评价</td></tr>
               </tbody>
             </table>
@@ -2408,7 +2409,7 @@
         <aside class="patient-template-config">
           <h2>模板配置</h2>
           <div class="patient-template-field"><label for="patientTemplateName">模板名称</label><input class="patient-template-input" id="patientTemplateName" placeholder="请输入模板名称"></div>
-          <div class="patient-template-field"><label for="patientTemplateType">匹配维度</label><select class="patient-template-select" id="patientTemplateType"><option value="全部患者">全部患者</option><option value="方案">方案</option><option value="科室">科室</option><option value="主诊断">主诊断</option><option value="团队">团队</option></select><div class="patient-template-help">先选择匹配维度。</div></div>
+          <div class="patient-template-field"><label for="patientTemplateType">匹配维度</label><select class="patient-template-select" id="patientTemplateType"><option value="全部患者">全部患者</option><option value="方案">方案</option><option value="科室">科室（本期暂不实现）</option><option value="主诊断">主诊断（本期暂不实现）</option><option value="团队">团队</option></select><div class="patient-template-help">先选择匹配维度。</div></div>
           <div class="patient-template-field"><label for="patientTemplateValue">匹配值</label><div class="patient-value-select" id="patientTemplateValueSelect"><select class="patient-value-native" id="patientTemplateValue" multiple></select><div class="patient-value-control" id="patientTemplateValueControl" data-toggle-patient-template-values role="combobox" aria-expanded="false" tabindex="0"><div class="patient-value-tags" id="patientTemplateValueTags"></div><svg class="patient-value-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="m6 9 6 6 6-6"/></svg></div><div class="patient-value-dropdown" id="patientTemplateValueDropdown" hidden></div></div><div class="patient-template-help" id="patientTemplateValueHelp">请选择具体方案</div></div>
         </aside>
         <main class="patient-content">
@@ -3061,9 +3062,9 @@
       ensureCheckinExecutionActions();
       const keyword = (document.getElementById('checkinEvalPatientSearch')?.value || '').trim().toLowerCase();
       const selectedType = document.getElementById('checkinEvalTypeFilter')?.value || '';
-      const activeTab = document.querySelector('[data-checkin-eval-tab].active')?.dataset.checkinEvalTab || 'pending';
+      const activeTab = document.querySelector('[data-checkin-eval-tab].active')?.dataset.checkinEvalTab || 'all';
       let visibleCount = 0;
-      const counts = { pending: 0, evaluated: 0 };
+      const counts = { all: 0, pending: 0, evaluated: 0 };
       document.querySelectorAll('[data-checkin-eval-row]').forEach(row => {
         const offset = row.querySelector('.checkin-select-cell') ? 1 : 0;
         const reviewerCell = row.children[6 + offset];
@@ -3080,16 +3081,21 @@
         const type = row.dataset.type || '';
         const matchesPatient = !keyword || patient.includes(keyword);
         const matchesType = !selectedType || type === selectedType;
-        if (matchesPatient && matchesType && counts[status] !== undefined) counts[status] += 1;
-        const matchesStatus = status === activeTab;
+        if (matchesPatient && matchesType) {
+          counts.all += 1;
+          if (counts[status] !== undefined) counts[status] += 1;
+        }
+        const matchesStatus = activeTab === 'all' || status === activeTab;
         const visible = matchesPatient && matchesType && matchesStatus;
         row.hidden = !visible;
         if (visible) visibleCount += 1;
       });
+      const allTab = document.querySelector('[data-checkin-eval-tab="all"]');
       const pendingTab = document.querySelector('[data-checkin-eval-tab="pending"]');
       const evaluatedTab = document.querySelector('[data-checkin-eval-tab="evaluated"]');
-      if (pendingTab) pendingTab.textContent = `待评价（${counts.pending}）`;
-      if (evaluatedTab) evaluatedTab.textContent = `已评价（${counts.evaluated}）`;
+      if (allTab) allTab.textContent = `全部（${counts.all}）`;
+      if (pendingTab) pendingTab.textContent = `待处理（${counts.pending}）`;
+      if (evaluatedTab) evaluatedTab.textContent = `已处理（${counts.evaluated}）`;
       const emptyRow = document.getElementById('checkinEvalNoResult');
       if (emptyRow) emptyRow.hidden = visibleCount > 0;
       const total = document.getElementById('checkinEvalTotal');
