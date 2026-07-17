@@ -751,6 +751,27 @@
     .archive-range-btn { height: 34px; min-width: 54px; padding: 0 12px; border: 1px solid #e2e7ee; border-radius: 4px; color: #8b96a6; background: #fff; }
     .archive-range-btn.active { color: #3154ff; border-color: #3154ff; background: #f7f9ff; }
     .archive-date-box { height: 34px; padding: 0 10px; display: flex; align-items: center; gap: 8px; border: 1px solid #e2e7ee; border-radius: 4px; color: #748196; background: #fff; font-size: 12px; }
+    .archive-date-range-wrap { position: relative; }
+    .archive-date-range-trigger { height: 30px; min-width: 238px; padding: 0 10px; display: inline-flex; align-items: center; gap: 10px; border: 1px solid #d7e1ef; border-radius: 4px; color: #6d7b91; background: #fff; box-shadow: 0 1px 0 rgba(20, 44, 84, .03); font-size: 12px; }
+    .archive-date-range-trigger.active { border-color: #3154ff; box-shadow: 0 0 0 2px rgba(49, 84, 255, .08); }
+    .archive-date-range-trigger .archive-date-placeholder { color: #aab4c2; }
+    .archive-date-range-trigger .archive-date-arrow { color: #8b96a6; }
+    .archive-date-clear { width: 16px; height: 16px; margin-left: auto; border: 0; border-radius: 50%; color: #fff; background: #b7c0cc; line-height: 16px; cursor: pointer; }
+    .archive-date-range-panel { position: absolute; right: 0; top: 38px; z-index: 20; width: 576px; padding: 12px 14px 14px; border: 1px solid #e4e8ef; border-radius: 6px; background: #fff; box-shadow: 0 10px 28px rgba(18, 38, 75, .14); }
+    .archive-date-range-panel::before { content: ""; position: absolute; top: -7px; left: 24px; width: 12px; height: 12px; border-left: 1px solid #e4e8ef; border-top: 1px solid #e4e8ef; background: #fff; transform: rotate(45deg); }
+    .archive-calendar-months { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px; }
+    .archive-calendar-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; color: #1f2d40; font-weight: 700; font-size: 14px; }
+    .archive-calendar-nav { width: 22px; height: 22px; border: 0; color: #8b96a6; background: transparent; cursor: pointer; font-size: 18px; line-height: 20px; }
+    .archive-calendar-nav.placeholder { visibility: hidden; }
+    .archive-calendar-grid { display: grid; grid-template-columns: repeat(7, 32px); justify-content: center; gap: 4px 5px; }
+    .archive-calendar-weekday, .archive-calendar-day { height: 28px; display: grid; place-items: center; font-size: 13px; }
+    .archive-calendar-weekday { color: #303b4d; font-weight: 600; }
+    .archive-calendar-day { border: 0; border-radius: 4px; color: #303b4d; background: transparent; cursor: pointer; }
+    .archive-calendar-day.muted { color: #bdc4ce; }
+    .archive-calendar-day.in-range { background: #edf4ff; color: #1f5cff; }
+    .archive-calendar-day.selected { color: #fff; background: #1f73ff; font-weight: 700; }
+    .archive-calendar-foot { margin-top: 10px; display: flex; justify-content: space-between; color: #1f73ff; font-size: 12px; }
+    .archive-calendar-foot button { border: 0; color: inherit; background: transparent; cursor: pointer; }
     .archive-date-input { width: 126px; border: 0; outline: 0; color: #748196; background: transparent; font: inherit; }
     .archive-chart-scroll { margin-top: 12px; overflow-x: auto; overflow-y: hidden; scrollbar-width: thin; scrollbar-color: #c8d3e2 transparent; }
     .archive-monitor-chart { display: block; width: auto; min-width: 100%; height: 230px; }
@@ -965,8 +986,8 @@
     @media (prefers-reduced-motion: reduce) { .patient-hero, .patient-hero-visual, .patient-summary, .patient-summary-head, .patient-info-columns, .patient-portrait, .patient-hero-toggle svg { transition: none; } }
     .patient-indicator-section { min-height: 270px; display: flex; flex-direction: column; gap: 16px; }
     .patient-indicator-section .indicator-work-card { box-shadow: 0 4px 14px rgba(31,51,82,.04); }
-    .patient-indicator-section .indicator-metric-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
-    .patient-indicator-section .indicator-preview-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+    .patient-indicator-section .indicator-metric-grid { display: flex; flex-direction: column; grid-template-columns: none; }
+    .patient-indicator-section .indicator-preview-grid { display: block; grid-template-columns: none; }
     .patient-indicator-head { height: 38px; display: flex; align-items: center; }
     .patient-indicator-head h3 { margin: 0; padding-left: 10px; border-left: 3px solid #3154ff; color: #314159; font-size: 15px; }
     .patient-indicator-add { margin-left: auto; height: 32px; padding: 0 12px; display: inline-flex; align-items: center; gap: 6px; border: 1px solid #3154ff; border-radius: 4px; color: #3154ff; background: #fff; font-weight: 700; }
@@ -1064,15 +1085,40 @@
     .indicator-main-column { min-width: 0; display: flex; flex-direction: column; gap: 20px; }
     .indicator-work-card { background: #fff; border: 1px solid #dfe7f1; border-radius: 8px; box-shadow: 0 4px 14px rgba(31,51,82,.05); overflow: hidden; }
     .indicator-work-head { min-height: 56px; padding: 0 20px; border-bottom: 1px solid #e8edf4; display: flex; align-items: center; gap: 12px; }
+    .indicator-board-head { justify-content: space-between; }
+    .indicator-work-title { min-width: 0; display: flex; align-items: center; gap: 12px; }
+    .indicator-board-actions { margin-left: auto; display: flex; align-items: center; gap: 10px; }
     .indicator-work-head h2 { margin: 0; font-size: 17px; color: #263850; }
     .indicator-work-head span { color: #8a97a9; font-size: 12px; }
-    .indicator-metric-grid { padding: 18px 20px 22px; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 14px; }
+    .indicator-metric-grid { padding: 18px 20px 22px; display: flex; flex-direction: column; gap: 14px; }
+    .indicator-canvas-toolbar { display: flex; align-items: center; justify-content: space-between; gap: 14px; }
+    .indicator-canvas-toolbar h3 { margin: 0 0 4px; color: #263850; font-size: 15px; }
+    .indicator-canvas-toolbar p { margin: 0; color: #7f8da1; font-size: 12px; }
+    .indicator-canvas-count { color: #6f7f95; font-size: 12px; white-space: nowrap; }
+    .indicator-canvas-board { min-height: 300px; padding: 16px; border: 1px dashed #c8d9f2; border-radius: 8px; background-color: #f7fbff; background-image: radial-gradient(#c8d9f2 1px, transparent 1px); background-size: 18px 18px; }
+    .indicator-canvas-list { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; align-items: stretch; }
+    .indicator-canvas-empty { min-height: 220px; border: 1px dashed #bad2f4; border-radius: 8px; background: rgba(255,255,255,.72); display: flex; align-items: center; justify-content: center; color: #7890af; font-size: 13px; }
+    .indicator-canvas-add { margin: 0 0 14px; padding: 14px 16px; border: 1px solid #dbe7f6; border-radius: 8px; background: rgba(255,255,255,.88); display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+    .indicator-canvas-add strong { display: block; margin-bottom: 4px; color: #263850; font-size: 14px; }
+    .indicator-canvas-add p { margin: 0; color: #7f8da1; font-size: 12px; }
+    .indicator-canvas-add-actions { display: flex; align-items: center; gap: 10px; }
+    .indicator-add-widget { min-height: 38px; padding: 0 14px; border: 1px solid #2f63ff; border-radius: 8px; color: #2f63ff; background: #fff; font-weight: 600; display: inline-flex; align-items: center; gap: 7px; }
+    .indicator-add-widget svg { width: 16px; height: 16px; stroke-width: 1.9; }
+    .indicator-add-widget.primary { background: #2f63ff; color: #fff; box-shadow: 0 6px 14px rgba(47,99,255,.18); }
+    .indicator-add-widget:disabled { cursor: not-allowed; opacity: .52; box-shadow: none; }
+    .indicator-canvas-limit { color: #8a97a9; font-size: 12px; white-space: nowrap; }
+    .indicator-canvas-add-card { min-height: 198px; border: 1px dashed #a9c4f2; border-radius: 8px; background: rgba(255,255,255,.74); color: #6f83a1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; text-align: center; cursor: pointer; transition: border-color .2s, background .2s, box-shadow .2s; }
+    .indicator-canvas-add-card:hover { border-color: #2f63ff; background: #fff; box-shadow: 0 8px 22px rgba(47,99,255,.12); }
+    .indicator-canvas-add-card:disabled { cursor: not-allowed; opacity: .56; box-shadow: none; }
+    .indicator-canvas-add-icon { width: 42px; height: 42px; border-radius: 50%; background: #fff; color: #2f63ff; box-shadow: 0 6px 14px rgba(35,75,135,.12); display: inline-flex; align-items: center; justify-content: center; font-size: 24px; line-height: 1; }
+    .indicator-canvas-add-card strong { color: #2f63ff; font-size: 14px; }
+    .indicator-canvas-add-card em { max-width: 220px; color: #8a97a9; font-size: 12px; font-style: normal; line-height: 1.6; }
     .indicator-metric-card { min-height: 142px; padding: 12px; border: 1px solid #dfe6ef; border-radius: 7px; background: #fff; position: relative; box-shadow: 0 3px 10px rgba(35,55,88,.04); }
     .indicator-metric-card:hover { border-color: #aac5ee; box-shadow: 0 6px 18px rgba(35,75,135,.08); }
     .indicator-metric-card.dragging { opacity: .42; border-style: dashed; }
     .indicator-metric-card.drag-before { box-shadow: -4px 0 0 #2864d7, 0 6px 18px rgba(35,75,135,.08); }
     .indicator-metric-card.drag-after { box-shadow: 4px 0 0 #2864d7, 0 6px 18px rgba(35,75,135,.08); }
-    .metric-card-head { position: absolute; top: 7px; right: 8px; z-index: 2; margin: 0; }
+    .metric-card-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 10px; margin: 0 0 12px; }
     .metric-card-actions { display: flex; align-items: center; gap: 0; }
     .metric-drag, .metric-delete { width: 22px; height: 22px; border-radius: 3px; display: grid; place-items: center; color: #7a8799; }
     .metric-drag { cursor: grab; font-size: 13px; letter-spacing: -2px; }
@@ -1095,6 +1141,45 @@
     .metric-field:last-child { margin-bottom: 0; }
     .metric-field label { display: block; margin-bottom: 5px; color: #78869a; font-size: 12px; }
     .metric-field .indicator-edit-input, .metric-field .indicator-edit-select { height: 34px; font-size: 13px; }
+    .indicator-widget-type { display: inline-flex; align-items: center; height: 24px; padding: 0 8px; border-radius: 999px; font-size: 12px; font-weight: 700; }
+    .indicator-widget-type.result { color: #2864d7; background: #eef4ff; }
+    .indicator-widget-type.trend { color: #0f9f6e; background: #eaf8f2; }
+    .indicator-widget-desc { margin: 6px 0 0; color: #8a97a9; font-size: 12px; line-height: 1.5; }
+    .indicator-widget-meta { margin-top: 10px; padding: 8px 10px; border-radius: 6px; color: #6f7f95; background: #f6f8fb; font-size: 12px; }
+    .indicator-board-card { min-height: 258px; padding: 14px; display: flex; flex-direction: column; gap: 12px; cursor: pointer; border-color: #dfe6ef; transition: border-color .18s ease, box-shadow .18s ease, background .18s ease, opacity .18s ease; }
+    .indicator-board-card:hover { border-color: #b9cff4; box-shadow: 0 8px 22px rgba(40,100,215,.08); }
+    .indicator-board-card.is-editing { border-color: #2f63ff; background: #fff; box-shadow: 0 0 0 2px rgba(47,99,255,.16), 0 10px 26px rgba(47,99,255,.12); }
+    .indicator-board-card.is-editing::before { content: ""; position: absolute; left: -1px; top: 14px; bottom: 14px; width: 3px; border-radius: 0 999px 999px 0; background: #2f63ff; }
+    .indicator-board-card-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; }
+    .indicator-board-card-title { min-width: 0; }
+    .indicator-board-card-title h3 { margin: 0; font-size: 16px; color: #263850; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .indicator-board-card-title .edit-hint { display: block; margin-top: 8px; color: #8a97a9; font-size: 12px; opacity: 0; transition: opacity .18s ease; }
+    .indicator-board-card:hover .indicator-board-card-title .edit-hint { opacity: 1; }
+    .indicator-preview-board-card { cursor: default; }
+    .indicator-preview-board-card:hover { border-color: #dfe7f1; box-shadow: 0 3px 10px rgba(50,72,104,.05); }
+    .template-preview-page #templatePreviewDetailBoards .indicator-preview-board-card.result { grid-column: span 1; }
+    .template-preview-page #templatePreviewDetailBoards .indicator-preview-board-card.trend { grid-column: span 2; }
+    .template-preview-page #templatePreviewDetailBoards .indicator-preview-board-card .indicator-board-result { min-height: 168px; }
+    .template-preview-page #templatePreviewDetailBoards .indicator-preview-board-card .indicator-board-chart { min-height: 168px; }
+    .indicator-board-edit-panel { display: grid; grid-template-columns: 184px minmax(0, 1fr); gap: 12px; padding: 12px; border: 1px solid #e4ebf5; border-radius: 8px; background: #f8fbff; }
+    .indicator-board-display label, .indicator-board-select label { display: block; margin-bottom: 6px; color: #78869a; font-size: 12px; }
+    .indicator-board-display .indicator-edit-select { height: 38px; }
+    .indicator-display-switch { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 6px; }
+    .indicator-display-switch label { position: relative; margin: 0; }
+    .indicator-display-switch input { position: absolute; inset: 0; opacity: 0; pointer-events: none; }
+    .indicator-display-switch span { height: 34px; border: 1px solid #d6e1ef; border-radius: 6px; background: #fff; color: #44546a; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700; }
+    .indicator-display-switch input:checked + span { border-color: #2f63ff; background: #eef4ff; color: #2557df; box-shadow: 0 0 0 2px rgba(47,99,255,.08); }
+    .indicator-board-result, .indicator-board-chart { flex: 1; border: 1px solid #dfe7f1; border-radius: 8px; background: #fbfdff; }
+    .indicator-board-result { padding: 18px; display: flex; flex-direction: column; justify-content: center; gap: 10px; }
+    .indicator-board-result span, .indicator-board-placeholder span { color: #7f8da1; font-size: 12px; font-weight: 700; }
+    .indicator-board-result strong { color: #1f304a; font-size: 34px; line-height: 1; }
+    .indicator-board-result small { margin-left: 6px; color: #65748a; font-size: 13px; }
+    .indicator-board-result em { color: #8a97a9; font-size: 12px; font-style: normal; }
+    .indicator-board-chart { min-height: 168px; padding: 12px; display: flex; align-items: center; justify-content: center; }
+    .indicator-board-chart .mini-chart { width: 100%; }
+    .indicator-board-chart svg { width: 100%; height: 150px; display: block; }
+    .indicator-board-placeholder { min-height: 120px; border: 1px dashed #cbd9eb; border-radius: 8px; background: rgba(255,255,255,.7); color: #8a97a9; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; text-align: center; }
+    .indicator-board-placeholder svg { width: 28px; height: 28px; stroke-width: 1.8; color: #7aa0d8; }
     .indicator-add-card { min-height: 164px; border: 1px dashed #78a8e8; border-radius: 7px; background: #f3f8ff; color: #2864d7; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 20px; text-align: center; cursor: pointer; }
     .indicator-add-card:hover { border-color: #2864d7; background: #edf5ff; }
     .indicator-add-card:disabled { cursor: not-allowed; opacity: .58; }
@@ -1102,7 +1187,7 @@
     .indicator-add-icon { width: 48px; height: 48px; margin-bottom: 12px; border-radius: 50%; background: #fff; box-shadow: 0 4px 12px rgba(40,100,215,.12); display: grid; place-items: center; font-size: 30px; font-weight: 300; }
     .indicator-add-card strong { margin-bottom: 7px; font-size: 15px; }
     .indicator-add-card p { margin: 0; color: #7890af; font-size: 12px; line-height: 1.6; }
-    .indicator-preview-grid { padding: 14px 20px 22px; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); grid-auto-flow: row dense; gap: 14px; }
+    .indicator-preview-grid { padding: 14px 20px 22px; display: block; }
     .preview-empty { grid-column: 1 / -1; min-height: 260px; display: flex; flex-direction: column; align-items: center; justify-content: center; color: #8996a8; }
     .preview-empty-icon { width: 58px; height: 58px; margin-bottom: 13px; border-radius: 50%; display: grid; place-items: center; background: #eef4fc; color: #6f96ce; }
     .preview-empty-icon svg { width: 28px; height: 28px; }
@@ -2425,12 +2510,11 @@
             <section class="patient-portrait"><h3 class="patient-band-title">健康画像</h3><div class="portrait-columns"><div class="portrait-item">疾病诊断：<span id="diagnosisSummary">--</span><div class="portrait-count" id="diagnosisCount">共 0 条</div></div><div class="portrait-item">异常指标：<span id="abnormalSummary">--</span><div class="portrait-count" id="abnormalCount">共 0 条</div></div><div class="portrait-item">风险提示：<span id="riskSummary">--</span><div class="portrait-count" id="riskCount">共 0 条</div></div></div></section>
           </section>
           <section class="patient-indicator-section">
-            <section class="indicator-work-card">
-              <div class="indicator-work-head"><h2>指标配置区</h2><span>配置指标名称和展示方式</span></div>
-              <div class="indicator-metric-grid" id="indicatorMetricRows"></div>
-            </section>
             <section class="indicator-work-card" id="patientIndicatorPreview">
-              <div class="indicator-work-head"><h2>指标展示预览</h2><span>预览会随上方配置实时更新</span></div>
+              <div class="indicator-work-head indicator-board-head">
+                <div class="indicator-work-title"><h2>看板编辑区</h2><span>在展示区域添加结果卡或趋势图，并在卡片内选择指标</span></div>
+                <div class="indicator-board-actions" id="indicatorBoardActions"></div>
+              </div>
               <div class="indicator-preview-grid" id="indicatorPreviewGrid"></div>
             </section>
           </section>
@@ -2462,10 +2546,8 @@
           </section>
         </section>
         <section class="archive-dashboard">
-          <div class="archive-dashboard-head"><h2>指标明细</h2><span class="archive-board-count" id="templatePreviewMetricCount"></span></div>
-          <section class="archive-metric-strip" id="templatePreviewMetricCards"></section>
+          <div class="archive-dashboard-head"><h2>指标看板</h2><span class="archive-board-count" id="templatePreviewMetricCount"></span></div>
           <section class="archive-detail-area">
-            <div class="archive-detail-toolbar"><h2>指标看板</h2></div>
             <div class="archive-detail-grid" id="templatePreviewDetailBoards"></div>
           </section>
         </section>
@@ -2817,7 +2899,8 @@
     ];
 
     const indicatorState = { keyword: '', editingId: null };
-    const indicatorEditorState = { editingId: null, dirty: false, draft: null, granularity: '日', startDate: '2026-06-01', endDate: '2026-06-13', range: '2026-06-01 至 2026-06-13' };
+    const indicatorEditorState = { editingId: null, dirty: false, draft: null, activeMetricIndex: null, granularity: '日', startDate: '2026-06-01', endDate: '2026-06-13', range: '2026-06-01 至 2026-06-13' };
+    let activeMetricRangePicker = null;
     const indicatorApplicableOptions = {
       '全部患者': ['全部患者'],
       '方案': ['全部患者管理方案', '糖尿病管理方案', '高血压管理方案', '肿瘤患者随访方案', '营养风险管理方案'],
@@ -3805,11 +3888,13 @@
     }
 
     function renderIndicatorPreview() {
+      renderIndicatorMetricEditor();
+      return;
       const root = document.getElementById('indicatorPreviewGrid');
       if (!root) return;
       const metrics = indicatorEditorState.draft?.metrics || [];
       if (!metrics.length) {
-        root.innerHTML = `<div class="preview-empty"><div class="preview-empty-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M4 19V9M10 19V5M16 19v-7M3 19h18"/><path d="M18 5v6M15 8h6"/></svg></div><strong>暂无展示指标</strong><p>请先在上方添加指标，系统将根据配置生成看板预览</p></div>`;
+        root.innerHTML = `<div class="preview-empty"><div class="preview-empty-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M4 19V9M10 19V5M16 19v-7M3 19h18"/><path d="M18 5v6M15 8h6"/></svg></div><strong>暂无展示卡片</strong><p>请先在画板中添加结果卡或趋势卡，系统将根据配置生成看板预览</p></div>`;
         return;
       }
       root.innerHTML = metrics.map((metric, index) => {
@@ -3829,16 +3914,44 @@
 
     function renderIndicatorMetricEditor() {
       const metrics = indicatorEditorState.draft?.metrics || [];
-      const displayOptions = ['结果卡','趋势图'];
       const indicatorOptions = ['腰围','腰臀比','体重指数 BMI','身高','体重','心率','总胆固醇','高密度脂蛋白胆固醇','低密度脂蛋白胆固醇（LDL-C）','糖化血红蛋白 HbA1c','抗甲状腺球蛋白抗体 TgAb','抗甲状腺过氧化物酶抗体 TPOAb','EB病毒核抗原IgG','抗β2糖蛋白I抗体','血压','血糖','血尿酸'];
       const maxIndicatorMetrics = 20;
       const isMetricLimitReached = metrics.length >= maxIndicatorMetrics;
-      document.getElementById('indicatorMetricRows').innerHTML = metrics.map((metric, index) => `<article class="indicator-metric-card" data-metric-card-index="${index}">
-        <div class="metric-card-head"><div class="metric-card-actions"><button class="metric-drag" draggable="true" data-drag-indicator-metric="${index}" title="拖动排序" aria-label="拖动${esc(metric.name || '指标')}排序">⋮⋮</button><button class="metric-delete" data-remove-indicator-metric="${index}" title="删除指标" aria-label="删除${esc(metric.name || '指标')}">${trashIcon()}</button></div></div>
-        <div class="metric-field"><label>指标</label><select class="indicator-edit-select" data-indicator-metric-field="name" data-indicator-metric-index="${index}"><option value="">请选择指标</option>${metric.name && !indicatorOptions.includes(metric.name) ? `<option selected>${esc(metric.name)}</option>` : ''}${indicatorOptions.map(value => `<option ${metric.name === value ? 'selected' : ''}>${value}</option>`).join('')}</select></div>
-        <div class="metric-field"><label>展示方式</label><select class="indicator-edit-select" data-indicator-metric-field="display" data-indicator-metric-index="${index}">${displayOptions.map(value => `<option ${metric.display === value ? 'selected' : ''}>${value}</option>`).join('')}</select>${indicatorDisplayWarning(metric) ? `<div class="metric-display-warning">${esc(indicatorDisplayWarning(metric))}</div>` : ''}</div>
-      </article>`).join('') + `<button class="indicator-add-card" data-add-indicator-metric data-max-indicators="${maxIndicatorMetrics}" data-dev-note="最多只能添加20个指标" ${isMetricLimitReached ? 'disabled aria-disabled="true"' : ''}><span class="indicator-add-icon">+</span><strong>添加指标</strong><p>从指标库选择指标，最多可添加20个</p></button>`;
-      renderIndicatorPreview();
+      const cardsHtml = metrics.map((metric, index) => {
+        const isEditing = indicatorEditorState.activeMetricIndex === index;
+        const isTrend = ['趋势图','多趋势图','柱状图'].includes(metric.display);
+        const display = isTrend ? '趋势图' : '结果卡';
+        const typeClass = isTrend ? 'trend' : 'result';
+        const typeText = isTrend ? '趋势卡' : '结果卡';
+        const sample = indicatorSample(metric, index);
+        const warning = indicatorDisplayWarning({ ...metric, display });
+        const cardTitle = metric.name || display;
+        const displaySwitchHtml = `<div class="indicator-board-display"><label>展示方式</label><select class="indicator-edit-select" data-indicator-metric-field="display" data-indicator-metric-index="${index}">
+          ${['趋势图', '结果卡'].map(option => `<option value="${option}" ${display === option ? 'selected' : ''}>${option}</option>`).join('')}
+        </select></div>`;
+        const selectHtml = isEditing ? `<div class="indicator-board-edit-panel">${displaySwitchHtml}<div class="indicator-board-select"><label>指标</label><select class="indicator-edit-select" data-indicator-metric-field="name" data-indicator-metric-index="${index}"><option value="">请选择指标</option>${metric.name && !indicatorOptions.includes(metric.name) ? `<option selected>${esc(metric.name)}</option>` : ''}${indicatorOptions.map(value => `<option ${metric.name === value ? 'selected' : ''}>${value}</option>`).join('')}</select>${warning ? `<div class="metric-display-warning">${esc(warning)}</div>` : ''}</div></div>` : '';
+        const trendPreviewMetric = metric.name ? { ...metric, display } : { ...metric, name: '趋势预览', display };
+        const cardBody = isTrend
+          ? `<div class="indicator-board-chart">${!warning ? `<div class="mini-chart">${trendChartSvg(index, trendPreviewMetric, '趋势图')}</div>` : `<div class="indicator-board-placeholder"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M4 19h16"/><path d="m5 15 4-4 4 3 6-8"/><circle cx="9" cy="11" r="1.5"/><circle cx="13" cy="14" r="1.5"/><circle cx="19" cy="6" r="1.5"/></svg><span>${esc(warning)}</span></div>`}</div>`
+          : `<div class="indicator-board-result">${metric.name ? `<span>最新结果</span><strong>${sample.value}<small>${sample.unit}</small></strong><em>更新时间：2026-06-12 08:30</em>` : `<div class="indicator-board-placeholder"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="4" y="5" width="16" height="14" rx="2"/><path d="M8 10h8M8 14h5"/></svg><span>选择指标后展示结果卡</span></div>`}</div>`;
+        return `<article class="indicator-metric-card indicator-board-card ${typeClass} ${isEditing ? 'is-editing' : ''}" data-metric-card-index="${index}">
+          <div class="indicator-board-card-head">
+            <div class="indicator-board-card-title"><h3>${esc(cardTitle)}</h3>${isEditing ? '' : `<span class="edit-hint">点击编辑</span>`}</div>
+            <div class="metric-card-actions"><button class="metric-drag" draggable="true" data-drag-indicator-metric="${index}" title="拖动排序" aria-label="拖动${esc(metric.name || typeText)}排序">⋮⋮</button><button class="metric-delete" data-remove-indicator-metric="${index}" title="删除卡片" aria-label="删除${esc(metric.name || typeText)}">${trashIcon()}</button></div>
+          </div>
+          ${selectHtml}
+          ${cardBody}
+        </article>`;
+      }).join('');
+      const root = document.getElementById('indicatorPreviewGrid');
+      const actionsRoot = document.getElementById('indicatorBoardActions');
+      if (!root) return;
+      if (actionsRoot) {
+        actionsRoot.innerHTML = `<button class="indicator-add-widget primary" data-add-indicator-metric data-card-display="趋势图" ${isMetricLimitReached ? 'disabled aria-disabled="true"' : ''}><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M12 5v14M5 12h14"/></svg>添加指标</button>
+          <span class="indicator-canvas-limit" data-max-indicators="${maxIndicatorMetrics}" data-dev-note="最多只能添加20个卡片">${metrics.length}/${maxIndicatorMetrics}</span>`;
+      }
+      const addCardHtml = `<button class="indicator-canvas-add-card" data-add-indicator-metric data-card-display="趋势图" ${isMetricLimitReached ? 'disabled aria-disabled="true"' : ''}><span class="indicator-canvas-add-icon">+</span><strong>添加卡片</strong><em>默认新增趋势图，可在卡片内切换展示方式和指标</em></button>`;
+      root.innerHTML = `<div class="indicator-canvas-board" data-max-indicators="${maxIndicatorMetrics}" data-dev-note="最多只能添加20个卡片"><div class="indicator-canvas-list">${cardsHtml}${addCardHtml}</div></div>`;
     }
 
     function inferApplicableType(value) {
@@ -3929,7 +4042,7 @@
       draft.applicableType = document.getElementById('indicatorEditorApplicableType').value;
       draft.applicableProfile = selectedApplicableValue('indicatorEditorApplicableValue');
       if (!draft.name || !draft.applicableType || !draft.applicableProfile) return showToast('请填写模板名称和适用对象');
-      if (draft.metrics.some(metric => !metric.name.trim() || !metric.display)) return showToast('请完善指标名称和展示方式');
+      if (draft.metrics.some(metric => !metric.name.trim() || !metric.display)) return showToast('请完善画板卡片中的指标');
       const item = indicatorTemplates.find(row => row.id === indicatorEditorState.editingId);
       Object.assign(item, JSON.parse(JSON.stringify(draft)));
       indicatorEditorState.dirty = false;
@@ -3945,8 +4058,8 @@
       draft.applicableType = document.getElementById('indicatorEditorApplicableType').value;
       draft.applicableProfile = selectedApplicableValue('indicatorEditorApplicableValue');
       if (!draft.name || !draft.applicableType || !draft.applicableProfile) return showToast('请先完善模板名称、适用维度和适用对象');
-      if (!draft.metrics.length) return showToast('发布前请至少添加一个指标');
-      if (draft.metrics.some(metric => !metric.name.trim() || !metric.display)) return showToast('请先完善所有指标配置');
+      if (!draft.metrics.length) return showToast('发布前请至少添加一个展示卡片');
+      if (draft.metrics.some(metric => !metric.name.trim() || !metric.display)) return showToast('请先完善画板卡片中的指标');
       const item = indicatorTemplates.find(row => row.id === indicatorEditorState.editingId);
       Object.assign(item, JSON.parse(JSON.stringify({ ...draft, published: true })));
       indicatorEditorState.dirty = false;
@@ -4044,19 +4157,127 @@
         return Array.from({ length: 24 }, (_, hour) => `${String(hour).padStart(2, '0')}:00`);
       }
       if (state.range === '最近30天') return archiveDateList('2026-05-14', '2026-06-12');
-      if (state.range === '自定义') return archiveDateList(state.start, state.end);
+      if (state.range === '自定义') return archiveDateList(state.start, state.end || state.start);
       return archiveDateList('2026-06-06', '2026-06-12');
     }
 
     function metricRangeTools(metric, state, scope) {
       const ranges = ['今天', '昨天', '最近7天', '最近30天'];
-      return `<div class="archive-card-range-tools" data-range-tools="${esc(metric)}">${ranges.map(range => `<button class="archive-range-btn ${state.range === range ? 'active' : ''}" data-${scope}-card-range="${range}" data-range-metric="${esc(metric)}">${range}</button>`).join('')}<div class="archive-date-box"><input class="archive-date-input" data-${scope}-card-date-start="${esc(metric)}" type="date" value="${state.start}" aria-label="${esc(metric)}开始日期"><span>至</span><input class="archive-date-input" data-${scope}-card-date-end="${esc(metric)}" type="date" value="${state.end}" aria-label="${esc(metric)}结束日期"></div></div>`;
+      const isOpen = activeMetricRangePicker?.scope === scope && activeMetricRangePicker?.metric === metric;
+      const panel = isOpen ? renderMetricRangePanel(metric, state, scope) : '';
+      return `<div class="archive-card-range-tools" data-range-tools="${esc(metric)}">${ranges.map(range => `<button class="archive-range-btn ${state.range === range ? 'active' : ''}" data-${scope}-card-range="${range}" data-range-metric="${esc(metric)}">${range}</button>`).join('')}<div class="archive-date-range-wrap" data-${scope}-card-date-range="${esc(metric)}" data-max-range-years="3" title="日期范围最多可选择3年"><button type="button" class="archive-date-range-trigger ${isOpen ? 'active' : ''}" data-range-toggle data-range-scope="${scope}" data-range-metric="${esc(metric)}"><span>${formatMetricRangeDisplay(state.start)}</span><span class="archive-date-arrow">→</span><span class="${state.end ? '' : 'archive-date-placeholder'}">${state.end ? formatMetricRangeDisplay(state.end) : '结束日期'}</span><span class="archive-date-clear" data-range-clear data-range-scope="${scope}" data-range-metric="${esc(metric)}">×</span></button>${panel}</div></div>`;
     }
 
     function applyMetricRange(state, range) {
       const ranges = { '今天': ['2026-06-12', '2026-06-12'], '昨天': ['2026-06-11', '2026-06-11'], '最近7天': ['2026-06-06', '2026-06-12'], '最近30天': ['2026-05-14', '2026-06-12'] };
       state.range = range;
       [state.start, state.end] = ranges[range];
+    }
+
+    function parseMetricRangeDate(value) {
+      const date = new Date(`${value}T00:00:00`);
+      return Number.isNaN(date.getTime()) ? null : date;
+    }
+
+    function formatMetricRangeDate(date) {
+      const year = date.getFullYear();
+      const month = String(date.getMonth() + 1).padStart(2, '0');
+      const day = String(date.getDate()).padStart(2, '0');
+      return `${year}-${month}-${day}`;
+    }
+
+    function addMetricRangeYears(date, years) {
+      const next = new Date(date);
+      next.setFullYear(next.getFullYear() + years);
+      return next;
+    }
+
+    function addMetricRangeMonths(date, months) {
+      const next = new Date(date);
+      next.setMonth(next.getMonth() + months, 1);
+      return next;
+    }
+
+    function formatMetricRangeDisplay(value) {
+      return value ? value.replaceAll('-', '/') : '';
+    }
+
+    function monthKeyFromMetricDate(value) {
+      const date = parseMetricRangeDate(value) || parseMetricRangeDate('2026-06-12');
+      return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-01`;
+    }
+
+    function applyCustomMetricRange(state, start, end) {
+      let startDate = parseMetricRangeDate(start) || parseMetricRangeDate(state.start) || parseMetricRangeDate('2026-06-06');
+      let endDate = parseMetricRangeDate(end) || parseMetricRangeDate(state.end) || startDate;
+      if (startDate > endDate) return showToast('开始日期不能晚于结束日期');
+      const maxEndDate = addMetricRangeYears(startDate, 3);
+      if (endDate > maxEndDate) {
+        endDate = maxEndDate;
+        showToast('日期范围最多选择3年');
+      }
+      state.start = formatMetricRangeDate(startDate);
+      state.end = formatMetricRangeDate(endDate);
+      state.range = '自定义';
+      return true;
+    }
+
+    function renderMetricRangePanel(metric, state, scope) {
+      state.viewMonth = state.viewMonth || monthKeyFromMetricDate(state.start);
+      const base = parseMetricRangeDate(state.viewMonth) || parseMetricRangeDate(monthKeyFromMetricDate(state.start));
+      const next = addMetricRangeMonths(base, 1);
+      return `<div class="archive-date-range-panel" data-range-panel data-range-scope="${scope}" data-range-metric="${esc(metric)}"><div class="archive-calendar-months">${renderMetricMonth(base, metric, state, scope, 'prev')}${renderMetricMonth(next, metric, state, scope, 'next')}</div><div class="archive-calendar-foot"><button type="button" data-range-clear data-range-scope="${scope}" data-range-metric="${esc(metric)}">清除</button><button type="button" data-range-today data-range-scope="${scope}" data-range-metric="${esc(metric)}">今天</button></div></div>`;
+    }
+
+    function renderMetricMonth(monthDate, metric, state, scope, navSide) {
+      const year = monthDate.getFullYear();
+      const month = monthDate.getMonth();
+      const first = new Date(year, month, 1);
+      const startOffset = (first.getDay() + 6) % 7;
+      const gridStart = new Date(year, month, 1 - startOffset);
+      const monthTitle = `${year}年 ${month + 1}月`;
+      const weekdays = ['一', '二', '三', '四', '五', '六', '日'];
+      const days = [];
+      for (let index = 0; index < 42; index += 1) {
+        const date = new Date(gridStart);
+        date.setDate(gridStart.getDate() + index);
+        const value = formatMetricRangeDate(date);
+        const muted = date.getMonth() !== month;
+        const selected = value === state.start || value === state.end;
+        const inRange = state.start && state.end && value > state.start && value < state.end;
+        days.push(`<button type="button" class="archive-calendar-day ${muted ? 'muted' : ''} ${inRange ? 'in-range' : ''} ${selected ? 'selected' : ''}" data-range-day="${value}" data-range-scope="${scope}" data-range-metric="${esc(metric)}">${date.getDate()}</button>`);
+      }
+      const leftNav = navSide === 'prev' ? `<button type="button" class="archive-calendar-nav" data-range-month-nav="-12" data-range-scope="${scope}" data-range-metric="${esc(metric)}">‹‹</button><button type="button" class="archive-calendar-nav" data-range-month-nav="-1" data-range-scope="${scope}" data-range-metric="${esc(metric)}">‹</button>` : `<span class="archive-calendar-nav placeholder"></span><span class="archive-calendar-nav placeholder"></span>`;
+      const rightNav = navSide === 'next' ? `<button type="button" class="archive-calendar-nav" data-range-month-nav="1" data-range-scope="${scope}" data-range-metric="${esc(metric)}">›</button><button type="button" class="archive-calendar-nav" data-range-month-nav="12" data-range-scope="${scope}" data-range-metric="${esc(metric)}">››</button>` : `<span class="archive-calendar-nav placeholder"></span><span class="archive-calendar-nav placeholder"></span>`;
+      return `<div class="archive-calendar-month"><div class="archive-calendar-head"><span>${leftNav}</span><strong>${monthTitle}</strong><span>${rightNav}</span></div><div class="archive-calendar-grid">${weekdays.map(day => `<span class="archive-calendar-weekday">${day}</span>`).join('')}${days.join('')}</div></div>`;
+    }
+
+    function metricRangeStoreByScope(scope) {
+      return scope === 'template' ? templatePreviewState : archiveDashboardState;
+    }
+
+    function rerenderMetricRangeScope(scope) {
+      if (scope === 'template') renderTemplatePreviewMetrics();
+      else renderArchiveDetails(archiveBoardMetrics[archiveDashboardState.board]);
+    }
+
+    function selectMetricRangeDate(state, value) {
+      if (!state.pendingStart || (state.start && state.end && state.pendingComplete !== false)) {
+        state.pendingStart = value;
+        state.pendingComplete = false;
+        state.start = value;
+        state.end = '';
+        state.range = '自定义';
+        state.viewMonth = monthKeyFromMetricDate(value);
+        return true;
+      }
+      const applied = applyCustomMetricRange(state, state.pendingStart, value);
+      if (applied) {
+        state.pendingStart = '';
+        state.pendingComplete = true;
+        state.viewMonth = monthKeyFromMetricDate(state.start);
+      }
+      return applied;
     }
 
     function archiveSeriesPoints(source, count, width, patientShift = 0) {
@@ -4321,30 +4542,38 @@
       }
     }
 
+    function isIndicatorTrendDisplay(display) {
+      const value = String(display || '');
+      return value.includes('趋势') || value.includes('Trend') || value.includes('trend') || value.includes('瓒嬪娍');
+    }
+
+    function templatePreviewBoardCard(metric, index) {
+      const isTrend = isIndicatorTrendDisplay(metric.display);
+      const typeClass = isTrend ? 'trend' : 'result';
+      const emptyText = isTrend ? '请选择趋势指标' : '请选择结果指标';
+      const data = templatePreviewMetricData(metric, index);
+      const cardTitle = metric.name || emptyText;
+      const placeholder = `<div class="indicator-board-placeholder"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M4 19V9M10 19V5M16 19v-7M3 19h18"/><path d="M18 5v6M15 8h6"/></svg><span>${emptyText}</span></div>`;
+      const cardBody = isTrend
+        ? `<div class="indicator-board-chart">${metric.name ? `<div class="mini-chart">${trendChartSvg(templatePreviewState.patientIndex * 4 + index, metric, metric.display)}</div>` : placeholder}</div>`
+        : `<div class="indicator-board-result">${metric.name ? `<span>最新结果</span><strong>${esc(data.value)}<small>${esc(data.unit)}</small></strong><em>更新时间：2026-06-12 08:30</em>` : placeholder}</div>`;
+      return `<article class="indicator-metric-card indicator-board-card indicator-preview-board-card ${typeClass}">
+        <div class="indicator-board-card-head">
+          <div class="indicator-board-card-title"><h3>${esc(cardTitle)}</h3></div>
+        </div>
+        ${cardBody}
+      </article>`;
+    }
+
     function renderTemplatePreviewMetrics() {
       const metrics = (indicatorEditorState.draft?.metrics || []).filter(item => item.name);
-      const cards = document.getElementById('templatePreviewMetricCards');
       const details = document.getElementById('templatePreviewDetailBoards');
       document.getElementById('templatePreviewMetricCount').textContent = `当前配置 ${metrics.length} 个指标`;
       if (!metrics.length) {
-        cards.innerHTML = '<div class="template-preview-empty">当前模板尚未配置指标</div>';
-        details.innerHTML = '';
+        details.innerHTML = '<div class="template-preview-empty">当前模板尚未配置指标</div>';
         return;
       }
-      cards.innerHTML = metrics.map((metric, index) => {
-        const data = templatePreviewMetricData(metric, index);
-        return `<article class="archive-mini-card"><div class="archive-mini-title">${esc(metric.name)}</div><div class="archive-mini-value">${esc(data.value)}<small>${esc(data.unit)}</small></div><div class="archive-mini-update">更新时间：2026-06-12 08:30</div></article>`;
-      }).join('');
-      details.innerHTML = metrics.map((metric, index) => {
-        const data = templatePreviewMetricData(metric, index);
-        const status = indicatorSample(metric, index);
-        const isCompact = metric.display === '指标卡' || metric.display === '结果卡';
-        const displayWarning = indicatorDisplayWarning(metric);
-        const rangeState = metricRangeState(templatePreviewState, metric.name);
-        const rangeTools = isCompact ? '' : metricRangeTools(metric.name, rangeState, 'template');
-        const body = isCompact ? '' : displayWarning ? `<div class="archive-display-unsupported">${esc(displayWarning)}</div>` : archiveDetailChart(metric.name, templatePreviewState.patientIndex * 4 + index, metricRangeLabels(rangeState), metric.display);
-        return `<article class="archive-detail-card ${isCompact ? 'preview-compact' : 'preview-visual'}"><div class="archive-detail-card-head"><div><h3>${esc(metric.name)}监测数据</h3><span class="archive-detail-update">更新时间：2026-06-12 08:30</span></div></div>${rangeTools}<div class="archive-detail-value"><strong>${esc(data.value)}</strong><span>${esc(data.unit)}</span></div>${body}</article>`;
-      }).join('');
+      details.innerHTML = metrics.map((metric, index) => templatePreviewBoardCard(metric, index)).join('');
     }
 
     function renderTemplatePreview() {
@@ -4601,7 +4830,7 @@
       const applicableProfile = selectedApplicableValue('patientTemplateValue');
       if (!name || !applicableType || !applicableProfile) { closePatientSaveModal(); return showToast('请填写模板名称、匹配维度和匹配值'); }
       const metrics = indicatorEditorState.draft?.metrics || [];
-      if (metrics.some(metric => !metric.name.trim() || !metric.display)) { closePatientSaveModal(); return showToast('请完善指标名称和展示方式'); }
+      if (metrics.some(metric => !metric.name.trim() || !metric.display)) { closePatientSaveModal(); return showToast('请完善画板卡片中的指标'); }
       patientPageState.saving = true;
       const button = document.querySelector('[data-save-patient-detail]');
       const confirmButton = document.querySelector('[data-confirm-patient-save]');
@@ -4639,8 +4868,8 @@
       const applicableType = document.getElementById('patientTemplateType').value;
       const applicableProfile = selectedApplicableValue('patientTemplateValue');
       if (!name || !applicableType || !applicableProfile) return showToast('请先填写模板名称、匹配维度和匹配值');
-      if (!(indicatorEditorState.draft?.metrics || []).length) return showToast('发布前请至少添加一个指标');
-      if (indicatorEditorState.draft.metrics.some(metric => !metric.name.trim() || !metric.display)) return showToast('请先完善所有指标配置');
+      if (!(indicatorEditorState.draft?.metrics || []).length) return showToast('发布前请至少添加一个展示卡片');
+      if (indicatorEditorState.draft.metrics.some(metric => !metric.name.trim() || !metric.display)) return showToast('请先完善画板卡片中的指标');
       const modal = document.getElementById('patientPublishModal');
       modal.classList.add('open');
       modal.setAttribute('aria-hidden', 'false');
@@ -5657,10 +5886,85 @@
     }
 
     document.addEventListener('click', e => {
+      const rangeClear = e.target.closest('[data-range-clear]');
+      if (rangeClear) {
+        e.preventDefault();
+        e.stopPropagation();
+        const store = metricRangeStoreByScope(rangeClear.dataset.rangeScope);
+        const state = metricRangeState(store, rangeClear.dataset.rangeMetric);
+        applyMetricRange(state, '最近7天');
+        state.pendingStart = '';
+        state.pendingComplete = true;
+        state.viewMonth = monthKeyFromMetricDate(state.start);
+        activeMetricRangePicker = { scope: rangeClear.dataset.rangeScope, metric: rangeClear.dataset.rangeMetric };
+        rerenderMetricRangeScope(rangeClear.dataset.rangeScope);
+        return;
+      }
+      const rangeToday = e.target.closest('[data-range-today]');
+      if (rangeToday) {
+        e.preventDefault();
+        e.stopPropagation();
+        const store = metricRangeStoreByScope(rangeToday.dataset.rangeScope);
+        const state = metricRangeState(store, rangeToday.dataset.rangeMetric);
+        applyMetricRange(state, '今天');
+        state.pendingStart = '';
+        state.pendingComplete = true;
+        state.viewMonth = monthKeyFromMetricDate(state.start);
+        activeMetricRangePicker = { scope: rangeToday.dataset.rangeScope, metric: rangeToday.dataset.rangeMetric };
+        rerenderMetricRangeScope(rangeToday.dataset.rangeScope);
+        return;
+      }
+      const rangeMonthNav = e.target.closest('[data-range-month-nav]');
+      if (rangeMonthNav) {
+        e.preventDefault();
+        e.stopPropagation();
+        const store = metricRangeStoreByScope(rangeMonthNav.dataset.rangeScope);
+        const state = metricRangeState(store, rangeMonthNav.dataset.rangeMetric);
+        const base = parseMetricRangeDate(state.viewMonth || monthKeyFromMetricDate(state.start));
+        state.viewMonth = formatMetricRangeDate(addMetricRangeMonths(base, Number(rangeMonthNav.dataset.rangeMonthNav)));
+        activeMetricRangePicker = { scope: rangeMonthNav.dataset.rangeScope, metric: rangeMonthNav.dataset.rangeMetric };
+        rerenderMetricRangeScope(rangeMonthNav.dataset.rangeScope);
+        return;
+      }
+      const rangeDay = e.target.closest('[data-range-day]');
+      if (rangeDay) {
+        e.preventDefault();
+        e.stopPropagation();
+        const store = metricRangeStoreByScope(rangeDay.dataset.rangeScope);
+        const state = metricRangeState(store, rangeDay.dataset.rangeMetric);
+        selectMetricRangeDate(state, rangeDay.dataset.rangeDay);
+        activeMetricRangePicker = { scope: rangeDay.dataset.rangeScope, metric: rangeDay.dataset.rangeMetric };
+        rerenderMetricRangeScope(rangeDay.dataset.rangeScope);
+        return;
+      }
+      const rangeToggle = e.target.closest('[data-range-toggle]');
+      if (rangeToggle) {
+        e.preventDefault();
+        e.stopPropagation();
+        const scope = rangeToggle.dataset.rangeScope;
+        const metric = rangeToggle.dataset.rangeMetric;
+        const isOpen = activeMetricRangePicker?.scope === scope && activeMetricRangePicker?.metric === metric;
+        activeMetricRangePicker = isOpen ? null : { scope, metric };
+        const store = metricRangeStoreByScope(scope);
+        const state = metricRangeState(store, metric);
+        state.viewMonth = state.viewMonth || monthKeyFromMetricDate(state.start);
+        rerenderMetricRangeScope(scope);
+        return;
+      }
+      if (activeMetricRangePicker && !e.target.closest('.archive-date-range-wrap')) {
+        const scope = activeMetricRangePicker.scope;
+        activeMetricRangePicker = null;
+        rerenderMetricRangeScope(scope);
+        return;
+      }
       const archiveCardRange = e.target.closest('[data-archive-card-range]');
       if (archiveCardRange) {
         const state = metricRangeState(archiveDashboardState, archiveCardRange.dataset.rangeMetric);
         applyMetricRange(state, archiveCardRange.dataset.archiveCardRange);
+        state.pendingStart = '';
+        state.pendingComplete = true;
+        state.viewMonth = monthKeyFromMetricDate(state.start);
+        activeMetricRangePicker = null;
         renderArchiveDetails(archiveBoardMetrics[archiveDashboardState.board]);
         return;
       }
@@ -5668,6 +5972,10 @@
       if (templateCardRange) {
         const state = metricRangeState(templatePreviewState, templateCardRange.dataset.rangeMetric);
         applyMetricRange(state, templateCardRange.dataset.templateCardRange);
+        state.pendingStart = '';
+        state.pendingComplete = true;
+        state.viewMonth = monthKeyFromMetricDate(state.start);
+        activeMetricRangePicker = null;
         renderTemplatePreviewMetrics();
         return;
       }
@@ -5683,12 +5991,15 @@
         publishIndicatorEditor();
         return;
       }
-      if (e.target.closest('[data-add-indicator-metric]')) {
+      const addIndicatorMetricButton = e.target.closest('[data-add-indicator-metric]');
+      if (addIndicatorMetricButton) {
         // Dev note: indicator templates support up to 20 metrics.
         if ((indicatorEditorState.draft?.metrics || []).length >= 20) {
           return;
         }
-        indicatorEditorState.draft.metrics.push({ name: '', display: '结果卡', source: '居家打卡', period: '按日' });
+        const display = addIndicatorMetricButton.dataset.cardDisplay || '趋势图';
+        indicatorEditorState.draft.metrics.push({ name: '', display, source: '居家打卡', period: '按日' });
+        indicatorEditorState.activeMetricIndex = indicatorEditorState.draft.metrics.length - 1;
         indicatorEditorState.dirty = true;
         patientPageState.dirty = true;
         renderIndicatorMetricEditor();
@@ -5715,9 +6026,25 @@
         const metric = indicatorEditorState.draft.metrics[index];
         if (!window.confirm(`确定删除指标“${metric?.name || '未命名指标'}”吗？`)) return;
         indicatorEditorState.draft.metrics.splice(index, 1);
+        if (indicatorEditorState.activeMetricIndex === index) indicatorEditorState.activeMetricIndex = null;
+        else if (indicatorEditorState.activeMetricIndex > index) indicatorEditorState.activeMetricIndex -= 1;
         indicatorEditorState.dirty = true;
         patientPageState.dirty = true;
         renderIndicatorMetricEditor();
+        return;
+      }
+      const metricCard = e.target.closest('[data-metric-card-index]');
+      if (metricCard && indicatorEditorState.draft && !e.target.closest('button, select, input, textarea')) {
+        indicatorEditorState.activeMetricIndex = Number(metricCard.dataset.metricCardIndex);
+        renderIndicatorMetricEditor();
+        return;
+      }
+      const metricCanvas = e.target.closest('.indicator-canvas-board');
+      if (metricCanvas && indicatorEditorState.draft && !e.target.closest('[data-metric-card-index], button, select, input, textarea')) {
+        if (indicatorEditorState.activeMetricIndex !== null) {
+          indicatorEditorState.activeMetricIndex = null;
+          renderIndicatorMetricEditor();
+        }
         return;
       }
       const granularityButton = e.target.closest('[data-granularity]');
@@ -6392,7 +6719,9 @@
       let insertIndex = targetIndex + (e.clientX > rect.left + rect.width / 2 ? 1 : 0);
       const [movedMetric] = indicatorEditorState.draft.metrics.splice(sourceIndex, 1);
       if (sourceIndex < insertIndex) insertIndex -= 1;
-      indicatorEditorState.draft.metrics.splice(Math.max(0, Math.min(insertIndex, indicatorEditorState.draft.metrics.length)), 0, movedMetric);
+      const finalIndex = Math.max(0, Math.min(insertIndex, indicatorEditorState.draft.metrics.length));
+      indicatorEditorState.draft.metrics.splice(finalIndex, 0, movedMetric);
+      indicatorEditorState.activeMetricIndex = finalIndex;
       draggedIndicatorMetricIndex = null;
       indicatorEditorState.dirty = true;
       patientPageState.dirty = true;
@@ -6433,7 +6762,7 @@
       if (e.target.matches('[data-indicator-metric-field]') && indicatorEditorState.draft) {
         const metric = indicatorEditorState.draft.metrics[Number(e.target.dataset.indicatorMetricIndex)];
         metric[e.target.dataset.indicatorMetricField] = e.target.value;
-        if (e.target.dataset.indicatorMetricField === 'name' && e.target.value) metric.display = recommendedIndicatorDisplay(e.target.value);
+        if (e.target.dataset.indicatorMetricField === 'name' && e.target.value && !metric.display) metric.display = recommendedIndicatorDisplay(e.target.value);
         if (e.target.dataset.indicatorMetricField === 'display' && indicatorDisplayWarning(metric)) showToast(indicatorDisplayWarning(metric));
         indicatorEditorState.dirty = true;
         patientPageState.dirty = true;
@@ -6510,10 +6839,11 @@
       if (archiveDateMetric) {
         const state = metricRangeState(archiveDashboardState, archiveDateMetric);
         const tools = e.target.closest('.archive-card-range-tools');
-        state.start = tools.querySelector('[data-archive-card-date-start]').value;
-        state.end = tools.querySelector('[data-archive-card-date-end]').value;
-        if (state.start > state.end) return showToast('开始日期不能晚于结束日期');
-        state.range = '自定义';
+        const startInput = tools.querySelector('[data-archive-card-date-start]');
+        const endInput = tools.querySelector('[data-archive-card-date-end]');
+        if (!startInput || !endInput) return;
+        const applied = applyCustomMetricRange(state, startInput.value, endInput.value);
+        if (!applied) return;
         renderArchiveDetails(archiveBoardMetrics[archiveDashboardState.board]);
         return;
       }
@@ -6521,10 +6851,11 @@
       if (templateDateMetric) {
         const state = metricRangeState(templatePreviewState, templateDateMetric);
         const tools = e.target.closest('.archive-card-range-tools');
-        state.start = tools.querySelector('[data-template-card-date-start]').value;
-        state.end = tools.querySelector('[data-template-card-date-end]').value;
-        if (state.start > state.end) return showToast('开始日期不能晚于结束日期');
-        state.range = '自定义';
+        const startInput = tools.querySelector('[data-template-card-date-start]');
+        const endInput = tools.querySelector('[data-template-card-date-end]');
+        if (!startInput || !endInput) return;
+        const applied = applyCustomMetricRange(state, startInput.value, endInput.value);
+        if (!applied) return;
         renderTemplatePreviewMetrics();
         return;
       }
@@ -6559,7 +6890,7 @@
       if (e.target.matches('[data-indicator-metric-field]') && indicatorEditorState.draft) {
         const metric = indicatorEditorState.draft.metrics[Number(e.target.dataset.indicatorMetricIndex)];
         metric[e.target.dataset.indicatorMetricField] = e.target.value;
-        if (e.target.dataset.indicatorMetricField === 'name' && e.target.value) metric.display = recommendedIndicatorDisplay(e.target.value);
+        if (e.target.dataset.indicatorMetricField === 'name' && e.target.value && !metric.display) metric.display = recommendedIndicatorDisplay(e.target.value);
         indicatorEditorState.dirty = true;
         patientPageState.dirty = true;
         renderIndicatorMetricEditor();
