@@ -819,6 +819,7 @@
     .checkin-record-icon.body { background: #64c689; box-shadow: 0 8px 18px rgba(100,198,137,.2); }
     .checkin-record-icon.lipid { background: #f0a83d; box-shadow: 0 8px 18px rgba(240,168,61,.2); }
     .checkin-record-icon.uric { background: #a177ff; box-shadow: 0 8px 18px rgba(161,119,255,.2); }
+    .checkin-record-icon.water { background: #26c6cf; box-shadow: 0 8px 18px rgba(38,198,207,.2); }
     .checkin-record-icon svg { width: 20px; height: 20px; }
     .checkin-record-body { min-width: 0; flex: 1; }
     .checkin-record strong { display: block; margin-bottom: 6px; color: #263752; font-size: 15px; }
@@ -1610,6 +1611,7 @@
     .checkin-record-thumb.body { color: #3da96a; background: #effaf4; border-color: #d6f0e1; }
     .checkin-record-thumb.lipid { color: #c98211; background: #fff8e8; border-color: #ffe8b9; }
     .checkin-record-thumb.uric { color: #7b4cff; background: #f5efff; border-color: #e5d8ff; }
+    .checkin-record-thumb.water { color: #10b9c7; background: #ecfbff; border-color: #c9f3f8; }
     .checkin-food-overview { max-width: none; margin: 0 0 24px; padding: 18px; border: 1px solid #ffd8c5; border-radius: 12px; background: linear-gradient(135deg, #fff7f1, #fffdfb); box-shadow: 0 10px 24px rgba(255,136,77,.08); }
     .checkin-food-ai { height: 24px; padding: 0 8px; border-radius: 5px; display: inline-flex; align-items: center; color: #fff; background: #ff6b2b; font-size: 12px; font-weight: 800; }
     .checkin-food-macro-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; }
@@ -1636,6 +1638,30 @@
     .checkin-advice-title { color: #43516a; font-size: 14px; font-weight: 600; }
     .checkin-advice-time { margin-left: auto; color: #9aa5b5; font-size: 14px; white-space: nowrap; }
     .checkin-advice-body { padding: 18px 16px 24px; color: #263752; font-size: 16px; line-height: 1.8; font-weight: 500; }
+    .checkin-water-overview { max-width: 760px; margin: 0 0 24px; padding: 18px; border: 1px solid #cdeff5; border-radius: 12px; background: linear-gradient(135deg, #f1fdff 0%, #f8fbff 100%); box-shadow: 0 12px 26px rgba(16,185,199,.08); }
+    .checkin-water-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; }
+    .checkin-water-summary-card { position: relative; min-height: 100px; padding: 15px 16px; overflow: hidden; border: 1px solid rgba(255,255,255,.95); border-radius: 10px; background: rgba(255,255,255,.88); box-shadow: 0 8px 18px rgba(37,55,81,.04); }
+    .checkin-water-summary-card::before { content: ""; position: absolute; left: 0; top: 0; right: 0; height: 4px; background: var(--water-tone, #10b9c7); }
+    .checkin-water-summary-card::after { content: ""; position: absolute; right: -18px; top: -18px; width: 62px; height: 62px; border-radius: 50%; background: var(--water-bg, rgba(16,185,199,.1)); }
+    .checkin-water-summary-card:nth-child(2) { --water-tone: #3154ff; --water-bg: #eef3ff; }
+    .checkin-water-summary-card:nth-child(3) { --water-tone: #35c46f; --water-bg: #ecfbf2; }
+    .checkin-water-summary-card:nth-child(4) { --water-tone: #ff9a1f; --water-bg: #fff6e8; }
+    .checkin-water-summary-card span { position: relative; z-index: 1; color: #64738a; font-size: 13px; font-weight: 800; }
+    .checkin-water-summary-card strong { position: relative; z-index: 1; display: block; margin: 12px 0 8px; color: #10233f; font-size: 28px; line-height: 1; }
+    .checkin-water-summary-card small { margin-left: 4px; color: #7d8aa0; font-size: 12px; font-weight: 700; }
+    .checkin-water-list { max-width: 760px; display: grid; gap: 14px; }
+    .checkin-water-card { border: 1px solid #e1edf6; border-radius: 10px; overflow: hidden; background: #fff; box-shadow: 0 8px 18px rgba(37,55,81,.04); }
+    .checkin-water-row { min-height: 72px; padding: 14px 16px; display: grid; grid-template-columns: 44px minmax(0, 1fr) auto 28px; gap: 14px; align-items: center; }
+    .checkin-water-icon { width: 44px; height: 44px; display: grid; place-items: center; border-radius: 10px; color: #10b9c7; background: #e9fbfd; }
+    .checkin-water-icon svg { width: 21px; height: 21px; stroke-width: 2; }
+    .checkin-water-main strong { display: block; color: #1f304b; font-size: 15px; font-weight: 800; }
+    .checkin-water-main span { display: block; margin-top: 5px; color: #738196; font-size: 12px; }
+    .checkin-water-value { color: #10233f; font-size: 20px; font-weight: 800; white-space: nowrap; }
+    .checkin-water-value small { margin-left: 4px; color: #738196; font-size: 12px; font-weight: 700; }
+    .checkin-water-detail-btn { width: 28px; height: 28px; display: inline-grid; place-items: center; border: 1px solid #d7e8f5; border-radius: 6px; color: #3154ff; background: #fff; }
+    .checkin-water-detail-btn svg { width: 16px; height: 16px; stroke-width: 2; }
+    .checkin-water-detail-btn:hover { border-color: #3154ff; background: #f4f7ff; }
+    .checkin-water-advice { padding: 14px; border-top: 1px solid #eef2f7; background: #fff; }
     .checkin-sport-summary { max-width: 760px; margin: 0 0 24px; padding: 18px; border: 1px solid #dfe3ff; border-radius: 12px; background: linear-gradient(135deg, #f8f9ff 0%, #eef1ff 100%); box-shadow: 0 12px 26px rgba(88,97,255,.08); }
     .checkin-sport-summary-title { margin-bottom: 14px; color: #4250cf; font-size: 13px; font-weight: 800; }
     .checkin-sport-summary-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
@@ -2068,6 +2094,7 @@
                     <option value="用药">用药/补充</option>
                     <option>运动</option>
                     <option>饮食</option>
+                    <option>饮水</option>
                     <option>血脂</option>
                     <option>尿酸</option>
                     <option>腰围</option>
@@ -2123,6 +2150,7 @@
                 <tr data-checkin-eval-row data-patient="王患者" data-type="用药"><td><span class="checkin-patient-cell"><span class="checkin-patient-avatar"></span>王患者</span></td><td>男</td><td>45</td><td>166****8834</td><td>用药/补充</td><td>2025-07-03 09:00</td><td>张医生</td><td>2025-07-03 09:25</td><td><span class="checkin-actions"><button class="checkin-evaluate-action" data-open-checkin-review="edit">处理</button><button class="checkin-view-action" data-open-checkin-review="view">查看</button></span></td></tr>
                 <tr data-checkin-eval-row data-patient="赵患者" data-type="运动"><td><span class="checkin-patient-cell"><span class="checkin-patient-avatar"></span>赵患者</span></td><td>女</td><td>28</td><td>166****8844</td><td>运动</td><td>2025-07-02 19:30</td><td>张医生</td><td>2025-07-02 20:10</td><td><span class="checkin-actions"><button class="checkin-evaluate-action" data-open-checkin-review="edit">处理</button><button class="checkin-view-action" data-open-checkin-review="view">查看</button></span></td></tr>
                 <tr data-checkin-eval-row data-patient="陈患者" data-type="饮食"><td><span class="checkin-patient-cell"><span class="checkin-patient-avatar"></span>陈患者</span></td><td>男</td><td>36</td><td>166****8854</td><td>饮食</td><td>2025-07-02 12:30</td><td>张医生</td><td>2025-07-02 13:10</td><td><span class="checkin-actions"><button class="checkin-evaluate-action" data-open-checkin-review="edit">处理</button><button class="checkin-view-action" data-open-checkin-review="view">查看</button></span></td></tr>
+                <tr data-checkin-eval-row data-patient="何患者" data-type="饮水"><td><span class="checkin-patient-cell"><span class="checkin-patient-avatar"></span>何患者</span></td><td>女</td><td>29</td><td>166****8860</td><td>饮水</td><td>2025-07-02 14:20</td><td>--</td><td>--</td><td><span class="checkin-actions"><button class="checkin-evaluate-action" data-open-checkin-review="edit">处理</button><button class="checkin-view-action" data-open-checkin-review="view">查看</button></span></td></tr>
                 <tr data-checkin-eval-row data-patient="刘患者" data-type="血脂"><td><span class="checkin-patient-cell"><span class="checkin-patient-avatar"></span>刘患者</span></td><td>女</td><td>52</td><td>166****8864</td><td>血脂</td><td>2025-07-02 10:00</td><td>张医生</td><td>2025-07-02 10:40</td><td><span class="checkin-actions"><button class="checkin-evaluate-action" data-open-checkin-review="edit">处理</button><button class="checkin-view-action" data-open-checkin-review="view">查看</button></span></td></tr>
                 <tr data-checkin-eval-row data-patient="孙患者" data-type="尿酸"><td><span class="checkin-patient-cell"><span class="checkin-patient-avatar"></span>孙患者</span></td><td>男</td><td>47</td><td>166****8874</td><td>尿酸</td><td>2025-07-01 16:00</td><td>张医生</td><td>2025-07-01 16:35</td><td><span class="checkin-actions"><button class="checkin-evaluate-action" data-open-checkin-review="edit">处理</button><button class="checkin-view-action" data-open-checkin-review="view">查看</button></span></td></tr>
                 <tr data-checkin-eval-row data-patient="周患者" data-type="腰围"><td><span class="checkin-patient-cell"><span class="checkin-patient-avatar"></span>周患者</span></td><td>女</td><td>39</td><td>166****8884</td><td>腰围</td><td>2025-07-01 07:40</td><td>张医生</td><td>2025-07-01 08:15</td><td><span class="checkin-actions"><button class="checkin-evaluate-action" data-open-checkin-review="edit">处理</button><button class="checkin-view-action" data-open-checkin-review="view">查看</button></span></td></tr>
@@ -2427,7 +2455,7 @@
       <div class="checkin-modal-form">
         <div class="checkin-modal-row">
           <label class="required">打卡类型</label>
-          <div class="checkin-modal-control"><select id="planCheckinType"><option>饮食</option><option>运动</option><option value="用药">用药/补充</option><option>体重</option><option>血压</option><option>血糖</option><option>血脂</option><option>尿酸</option><option>心率</option><option>腰围</option></select></div>
+          <div class="checkin-modal-control"><select id="planCheckinType"><option>饮食</option><option>饮水</option><option>运动</option><option value="用药">用药/补充</option><option>体重</option><option>血压</option><option>血糖</option><option>血脂</option><option>尿酸</option><option>心率</option><option>腰围</option></select></div>
         </div>
         <div class="checkin-modal-row">
           <label class="required">打卡名称</label>
@@ -4334,7 +4362,7 @@
       renderArchiveDetails(visibleMetrics);
     }
 
-    const checkinTypeOrder = ['饮食', '用药', '运动', '血压', '血糖', '腰围', '体重', '心率', '血脂', '尿酸'];
+    const checkinTypeOrder = ['饮食', '饮水', '用药', '运动', '血压', '血糖', '腰围', '体重', '心率', '血脂', '尿酸'];
     function checkinDisplayType(type) {
       return type === '用药' ? '用药/补充' : type;
     }
@@ -4419,7 +4447,8 @@
         glucose: '<path d="M12 3c3 4 6 7 6 11a6 6 0 0 1-12 0c0-4 3-7 6-11Z"/>',
         body: '<path d="M8 4h8l2 6-3 10H9L6 10zM9 10h6"/>',
         lipid: '<path d="M6 17c5-8 7-8 12 0M6 17h12M8 12h8"/>',
-        uric: '<path d="M7 4h10M9 4v6l-3 6a3 3 0 0 0 3 4h6a3 3 0 0 0 3-4l-3-6V4"/>'
+        uric: '<path d="M7 4h10M9 4v6l-3 6a3 3 0 0 0 3 4h6a3 3 0 0 0 3-4l-3-6V4"/>',
+        water: '<path d="M12 3c2.8 3.8 5 6.8 5 10a5 5 0 0 1-10 0c0-3.2 2.2-6.2 5-10Z"/><path d="M9.5 15.5c1 .9 3.2 1 4.8-.5"/>'
       };
       return `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor">${icons[type] || icons.food}</svg>`;
     }
@@ -5404,7 +5433,7 @@
     function syncPlanCheckinNameWithType() {
       const type = document.getElementById('planCheckinType')?.value || '饮食';
       const nameInput = document.getElementById('planCheckinName');
-      const typeNames = ['饮食', '运动', '用药', '体重', '血压', '血糖', '血脂', '尿酸', '心率', '腰围'];
+      const typeNames = ['饮食', '饮水', '运动', '用药', '体重', '血压', '血糖', '血脂', '尿酸', '心率', '腰围'];
       const displayType = type === '用药' ? '用药/补充' : type;
       if (nameInput && (!nameInput.value.trim() || typeNames.some(item => nameInput.value === `${item}打卡` || nameInput.value === `${checkinDisplayType(item)}打卡`))) {
         nameInput.value = `${displayType}打卡`;
@@ -5421,6 +5450,20 @@
         content: checkinReviewInitialMealContent,
         viewText: checkinReviewDietText,
         draftText: checkinReviewDietDraft
+      },
+      '饮水': {
+        title: '饮水打卡内容',
+        assistantTitle: 'AI 饮水管理辅助点评',
+        recordType: 'water',
+        waterRecord: {
+          type: '温水',
+          amount: '450',
+          unit: 'ml',
+          time: '2025-07-02 14:20',
+          note: '午后主动补充饮水，患者反馈无腹胀、恶心等不适。'
+        },
+        viewText: '本次饮水记录为午后温水 450ml，记录时间和备注完整。建议继续分次少量饮水，避免一次性大量饮水；如患者存在肾功能或心功能限制，应结合医嘱控制每日总饮水量。',
+        draftText: '本次饮水记录较完整，建议继续保持分次饮水，并结合方案目标提醒患者关注每日累计饮水量。'
       },
       '血糖': {
         title: '血糖打卡内容',
@@ -5644,6 +5687,21 @@
         </section>
       `;
       }
+      if (data.recordType === 'water') {
+        const record = data.waterRecord || {};
+        return `
+        <section class="checkin-review-single">
+          <div class="checkin-review-primary-value">
+            <div class="checkin-review-primary-label">饮水量</div>
+            <div class="checkin-review-primary-number"><strong>${record.amount || '--'}</strong><small>${record.unit || ''}</small></div>
+          </div>
+          <div class="checkin-review-single-grid">
+            <div class="checkin-review-single-item"><span>饮水类型</span><strong>${record.type || '--'}</strong></div>
+            <div class="checkin-review-single-item note"><span>备注</span><strong>${record.note || '--'}</strong></div>
+          </div>
+        </section>
+      `;
+      }
       if (data.recordType === 'multiMetric') {
         return `
         <section class="checkin-review-single">
@@ -5749,7 +5807,7 @@
       if (patientAge) patientAge.textContent = cells[2]?.textContent.trim() ? `${cells[2].textContent.trim()}岁` : '24岁';
       if (patientPhone) patientPhone.textContent = cells[3]?.textContent.trim() || '166****8814';
       if (contentTitle) contentTitle.textContent = data.title;
-      if (checkinTime) checkinTime.textContent = `打卡时间:${cells[5]?.textContent.trim() || '2025-07-03 12:30'}`;
+      if (checkinTime) checkinTime.textContent = `打卡时间:${cells[6]?.textContent.trim() || '2025-07-03 12:30'}`;
       if (assistantTitle) assistantTitle.textContent = 'AI专员';
       if (content) content.innerHTML = type === '饮食' ? data.content : renderCheckinMetricContent(data);
       if (modal) modal.dataset.checkinType = type;
@@ -7041,6 +7099,7 @@
     (function () {
       var checkinRecordsV2 = [
         { id: 'food-202606121230', type: '饮食', content: '总热量 468 Kcal', time: '2026/06/12 12:30', icon: 'food' },
+        { id: 'water-202606181000', type: '饮水', content: '温水 300 ml', time: '2026/06/18 10:00', icon: 'water' },
         { id: 'glucose-202606121805', type: '血糖', content: '5.8 mmol/L，餐后', time: '2026/06/12 18:05', icon: 'glucose' },
         { id: 'medicine-202606121900', type: '用药', content: '二甲双胍 0.5g，晚餐后', time: '2026/06/12 19:00', icon: 'medicine' },
         { id: 'sport-202606242030', type: '运动', content: '总时长 108分钟，总卡路里 569千卡', time: '2026/06/24 20:30', icon: 'sport' },
@@ -7048,10 +7107,13 @@
         { id: 'glucose-202606240600', type: '血糖', content: '5 mmol/L，空腹', time: '2026/06/24 06:00', icon: 'glucose' },
         { id: 'lipid-202606241807', type: '血脂', content: '低密度脂蛋白胆固醇：0.1 mmol/L', time: '2026/06/24 18:07', icon: 'lipid' },
         { id: 'uric-202606241600', type: '尿酸', content: '355 umol/L', time: '2026/06/24 16:00', icon: 'uric' },
+        { id: 'water-202606241420', type: '饮水', content: '当日饮水 1500 ml', time: '2026/06/24 14:20', icon: 'water' },
         { id: 'food-202606241215', type: '饮食', content: '总热量 1416 kcal', time: '2026/06/24 12:15', icon: 'food' },
+        { id: 'water-202606241110', type: '饮水', content: '白开水 350 ml', time: '2026/06/24 11:10', icon: 'water' },
         { id: 'uric-202606240900', type: '尿酸', content: '378 umol/L', time: '2026/06/24 09:00', icon: 'uric' },
         { id: 'lipid-202606240830', type: '血脂', content: '低密度脂蛋白胆固醇：0.1 mmol/L', time: '2026/06/24 08:30', icon: 'lipid' },
         { id: 'uric-202606240830', type: '尿酸', content: '362 umol/L', time: '2026/06/24 08:30', icon: 'uric' },
+        { id: 'water-202606240730', type: '饮水', content: '温水 300 ml', time: '2026/06/24 07:30', icon: 'water' },
         { id: 'heart-202606240821', type: '心率', content: '72 次/分', time: '2026/06/24 08:21', icon: 'vital' },
         { id: 'bp-202606241210', type: '血压', content: '130/82 mmHg，脉搏 78 次/分', time: '2026/06/24 12:10', icon: 'vital' },
         { id: 'weight-202606240818', type: '体重', content: '68.1 kg', time: '2026/06/24 08:18', icon: 'body' },
@@ -7088,6 +7150,13 @@
         { date: '2026-05-12', name: '晚餐', time: '2026/05/12 18:53', kcal: 805, protein: 53, fat: 26, carb: 122 }
       ];
       var detailDataV2 = {
+        water: { target: 2000, rows: [
+          { type: '温水', amount: 450, time: '2026/06/24 14:20', note: '午后主动补充饮水，患者反馈无腹胀、恶心等不适。', advices: [{ source: 'doctor', title: '随访管理团队-张医生', time: '2026/06/24 15:00', content: '本次饮水记录完整，午后补水节奏较好。建议继续按少量多次方式饮水，晚间避免一次性大量饮水影响睡眠。' }] },
+          { type: '矿泉水', amount: 400, time: '2026/06/24 13:30', note: '午餐后补水。' },
+          { type: '白开水', amount: 350, time: '2026/06/24 11:10', note: '午前补水，未反馈特殊不适。' },
+          { type: '温水', amount: 300, time: '2026/06/24 07:30', note: '晨起后少量饮水。' },
+          { type: '温水', amount: 300, time: '2026/06/18 10:00', note: '上午补水记录。' }
+        ] },
         sport: { summary: [['569', 'kcal', '累计消耗'], ['108', '分钟', '累计时长']], rows: [
           { name: '慢跑', duration: '18分钟', time: '2026/06/24 20:30', kcal: '144 千卡', intensity: '高强度', note: '晚间慢跑完成度较好，运动后无明显胸闷、头晕反馈。', advices: [{ source: 'doctor', title: '运动康复团队-李医生', time: '2021/01/10 17:00', content: '本次慢跑强度较高，完成情况较好；建议运动后补充水分并做 5 分钟拉伸，晚间避免继续高强度训练。' }] },
           { name: '瑜伽', duration: '15分钟', time: '2026/06/24 19:20', kcal: '45 千卡', intensity: '低强度', note: '以拉伸和呼吸训练为主，适合作为晚间放松训练。' },
@@ -7388,6 +7457,26 @@
         if (!drawer || !body || !row) return;
         if (title) title.textContent = row.name + '详情';
         body.innerHTML = renderSportDetailDrawerV2(row);
+        mask?.classList.add('open');
+        mask?.setAttribute('aria-hidden', 'false');
+        drawer.classList.add('open');
+        drawer.setAttribute('aria-hidden', 'false');
+      }
+      function renderWaterDetailDrawerV2(row) {
+        var advices = row.advices || [];
+        var advice = advices.length ? '<section class="meal-detail-section meal-detail-advice"><div class="meal-detail-section-title">综合评价与建议</div><div class="checkin-meal-advice-list">' + advices.map(renderAdviceCardV2).join('') + '</div></section>' : '';
+        return '<div class="meal-detail-meta"><span>' + esc(row.type) + '</span><time>记录时间：' + esc(row.time) + '</time></div><section class="meal-detail-total"><div><strong>' + esc(row.amount) + '</strong><small>ml · 单次饮水量</small></div><div class="meal-detail-macros"><div class="meal-detail-macro"><span>饮水类型</span><strong>' + esc(row.type) + '</strong></div></div></section><section class="meal-detail-section"><div class="meal-detail-section-title">备注</div><div class="meal-detail-note">' + esc(row.note || '暂无备注') + '</div></section>' + advice;
+      }
+      function openWaterDetailDrawerV2(rowIndex) {
+        var rows = waterRowsV2();
+        var row = rows[Number(rowIndex)] || rows[0];
+        var drawer = document.getElementById('mealDetailDrawer');
+        var mask = document.getElementById('mealDetailMask');
+        var body = document.getElementById('mealDetailBody');
+        var title = document.getElementById('mealDetailTitle');
+        if (!drawer || !body || !row) return;
+        if (title) title.textContent = '饮水详情';
+        body.innerHTML = renderWaterDetailDrawerV2(row);
         mask?.classList.add('open');
         mask?.setAttribute('aria-hidden', 'false');
         drawer.classList.add('open');
@@ -7840,6 +7929,43 @@
         }).join('');
         return summary + '<h3 class="checkin-subtitle">餐次明细</h3>' + dateGroups;
       }
+      function waterRowsV2() {
+        var water = detailDataV2.water || { rows: [] };
+        return rowsInSelectedRangeV2(water.rows || []).sort(function (a, b) { return String(b.time).localeCompare(String(a.time)); });
+      }
+      function waterSummaryRowsV2(rows) {
+        if (!rows.length) return [];
+        var activeRecord = checkinRecordsV2.find(function (item) { return item.id === checkinState.activeRecordId; });
+        var activeKey = activeRecord && activeRecord.type === '饮水' ? keyV2(activeRecord) : '';
+        var targetKey = activeKey || rows.map(keyV2).filter(Boolean).sort().pop();
+        return rows.filter(function (row) { return keyV2(row) === targetKey; });
+      }
+      function renderWaterAdviceV2(row) {
+        var advices = row.advices || [];
+        if (!advices.length) return '';
+        return '<div class="checkin-water-advice"><div class="checkin-meal-advice-title">综合评价与建议</div><div class="checkin-meal-advice-list">' + advices.map(renderAdviceCardV2).join('') + '</div></div>';
+      }
+      function renderWaterDetailV2() {
+        var rows = waterRowsV2();
+        if (!rows.length) return '<div class="checkin-empty-note">暂无饮水记录</div>';
+        var summaryRows = waterSummaryRowsV2(rows);
+        var total = summaryRows.reduce(function (sum, row) { return sum + Number(row.amount || 0); }, 0);
+        var target = (detailDataV2.water && detailDataV2.water.target) || 2000;
+        var gap = Math.max(0, target - total);
+        var summaryItems = [
+          ['当日饮水总量', total, 'ml'],
+          ['次数', summaryRows.length, '次'],
+          ['目标值', target, 'ml'],
+          ['还差多少', gap, 'ml']
+        ];
+        var summary = '<section class="checkin-water-overview"><div class="checkin-water-grid">' + summaryItems.map(function (item) {
+          return '<div class="checkin-water-summary-card"><span>' + esc(item[0]) + '</span><strong>' + esc(item[1]) + '<small>' + esc(item[2]) + '</small></strong></div>';
+        }).join('') + '</div></section>';
+        var list = '<h3 class="checkin-subtitle">饮水记录</h3><section class="checkin-water-list">' + renderDateGroupedRecordsV2(rows, function (row, index) {
+          return '<article class="checkin-water-card"><div class="checkin-water-row"><span class="checkin-water-icon" aria-hidden="true">' + checkinIcon('water') + '</span><div class="checkin-water-main"><strong>' + esc(row.type) + '</strong><span>' + esc(recordCardTimeV2(row.time)) + '</span></div><div class="checkin-water-value">' + esc(row.amount) + '<small>ml</small></div><button class="checkin-water-detail-btn" data-open-water-detail="' + index + '" aria-label="查看饮水详情"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="m9 18 6-6-6-6"/></svg></button></div>' + renderWaterAdviceV2(row) + '</article>';
+        }) + '</section>';
+        return summary + list;
+      }
       renderCheckinDetail = function () {
         var detail = document.getElementById('checkinDetail');
         if (!detail) return;
@@ -7889,6 +8015,9 @@
             var advice = renderMealAdviceListV2(meal);
             return '<section class="checkin-detail-group"><div class="checkin-detail-group-head"><span class="checkin-meal-head-main">' + esc(meal.name) + '<time class="checkin-meal-head-time">' + esc(meal.time) + '</time></span>' + detailButton + '</div>' + renderMealRowsV2(meal) + '<div class="checkin-meal-upload"><div class="checkin-meal-upload-figure"><span class="checkin-upload-image ' + esc(meal.photo) + '" aria-hidden="true"></span><time class="checkin-meal-upload-time">' + esc(meal.time) + '</time></div></div>' + advice + '</section>';
           }).join('');
+        }
+        if (kind === 'water') {
+          return renderWaterDetailV2();
         }
         if (kind === 'sport') {
           var sport = detailDataV2.sport;
@@ -7953,6 +8082,11 @@
         var sportButton = event.target.closest('[data-open-sport-detail]');
         if (sportButton) {
           openSportDetailDrawerV2(sportButton.dataset.openSportDetail);
+          return;
+        }
+        var waterButton = event.target.closest('[data-open-water-detail]');
+        if (waterButton) {
+          openWaterDetailDrawerV2(waterButton.dataset.openWaterDetail);
           return;
         }
         var medicineButton = event.target.closest('[data-open-medicine-detail]');
