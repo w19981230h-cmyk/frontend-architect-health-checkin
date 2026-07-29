@@ -1639,7 +1639,7 @@
     .checkin-advice-time { margin-left: auto; color: #9aa5b5; font-size: 14px; white-space: nowrap; }
     .checkin-advice-body { padding: 18px 16px 24px; color: #263752; font-size: 16px; line-height: 1.8; font-weight: 500; }
     .checkin-water-overview { max-width: 760px; margin: 0 0 24px; padding: 18px; border: 1px solid #cdeff5; border-radius: 12px; background: linear-gradient(135deg, #f1fdff 0%, #f8fbff 100%); box-shadow: 0 12px 26px rgba(16,185,199,.08); }
-    .checkin-water-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; }
+    .checkin-water-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
     .checkin-water-summary-card { position: relative; min-height: 100px; padding: 15px 16px; overflow: hidden; border: 1px solid rgba(255,255,255,.95); border-radius: 10px; background: rgba(255,255,255,.88); box-shadow: 0 8px 18px rgba(37,55,81,.04); }
     .checkin-water-summary-card::before { content: ""; position: absolute; left: 0; top: 0; right: 0; height: 4px; background: var(--water-tone, #10b9c7); }
     .checkin-water-summary-card::after { content: ""; position: absolute; right: -18px; top: -18px; width: 62px; height: 62px; border-radius: 50%; background: var(--water-bg, rgba(16,185,199,.1)); }
@@ -7950,13 +7950,9 @@
         if (!rows.length) return '<div class="checkin-empty-note">暂无饮水记录</div>';
         var summaryRows = waterSummaryRowsV2(rows);
         var total = summaryRows.reduce(function (sum, row) { return sum + Number(row.amount || 0); }, 0);
-        var target = (detailDataV2.water && detailDataV2.water.target) || 2000;
-        var gap = Math.max(0, target - total);
         var summaryItems = [
           ['当日饮水总量', total, 'ml'],
-          ['次数', summaryRows.length, '次'],
-          ['目标值', target, 'ml'],
-          ['还差多少', gap, 'ml']
+          ['次数', summaryRows.length, '次']
         ];
         var summary = '<section class="checkin-water-overview"><div class="checkin-water-grid">' + summaryItems.map(function (item) {
           return '<div class="checkin-water-summary-card"><span>' + esc(item[0]) + '</span><strong>' + esc(item[1]) + '<small>' + esc(item[2]) + '</small></strong></div>';
