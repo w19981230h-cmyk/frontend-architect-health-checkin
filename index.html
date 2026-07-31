@@ -45,6 +45,8 @@
     .menu-item, .submenu-item, .notice, .user-card { display: flex; align-items: center; height: 40px; border-radius: 6px; color: #15387e; font-weight: 700; line-height: 1; position: relative; }
     .menu-item { padding: 0 14px; gap: 11px; margin-bottom: 4px; }
     .menu-item svg, .notice svg { width: 16px; height: 16px; stroke-width: 2; flex: 0 0 auto; }
+    .menu-item.active { color: var(--blue); background: #eaf1ff; font-weight: 700; }
+    .menu-item.active::before { content: ""; position: absolute; left: 0; top: 9px; bottom: 9px; width: 3px; border-radius: 0 3px 3px 0; background: var(--blue); }
     .chevron { width: 14px; height: 14px; margin-left: auto; color: #3159b8; }
     .submenu { padding: 2px 0 0; }
     .submenu-item { color: #667287; font-weight: 500; padding-left: 52px; margin: 2px 2px 2px 0; }
@@ -114,6 +116,117 @@
     .list-view { display: none; }
     .list-view.active { display: flex; }
     .submenu-item[data-list-view] { cursor: pointer; }
+    .menu-item[data-list-view] { cursor: pointer; }
+    .list-main.workbench-main { padding: 22px 32px 0 28px; background: radial-gradient(circle at 62% 6%, #f7f9ff 0, #f2f6ff 36%, #eef4ff 100%); }
+    .list-main.workbench-main .page-title { height: 56px; align-items: center; gap: 16px; color: #1e2c45; font-size: 22px; font-weight: 700; }
+    .list-main.workbench-main .page-title::before { content: ""; width: 28px; height: 28px; border-radius: 50%; background: #f7faff; box-shadow: 0 8px 22px rgba(41,61,104,.08); background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg' fill='none' stroke='%2337475f' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m15 18-6-6 6-6'/%3E%3C/svg%3E"); background-size: 16px 16px; background-position: center; background-repeat: no-repeat; }
+    .workbench-view { padding: 0; overflow: auto; border-radius: 0; background: transparent; box-shadow: none; }
+    .workbench-shell { width: min(1080px, calc(100vw - 278px)); min-height: 710px; margin: 18px auto 0; padding: 21px 24px 21px; display: grid; grid-template-columns: 328px minmax(0, 1fr); gap: 24px; border: 1px solid rgba(255,255,255,.85); border-radius: 20px; background: linear-gradient(130deg, rgba(213,224,255,.72) 0%, rgba(244,247,255,.68) 46%, rgba(245,247,255,.86) 100%); box-shadow: 0 22px 60px rgba(76,98,158,.16); }
+    .workbench-ai-card { position: relative; min-height: 668px; padding: 36px 25px 22px; overflow: hidden; border-radius: 16px; background: linear-gradient(180deg, rgba(230,236,255,.85), rgba(186,202,255,.72)); }
+    .workbench-ai-card::before { content: "AI"; position: absolute; left: 42px; top: 116px; color: rgba(255,255,255,.32); font-size: 184px; line-height: 1; font-weight: 900; letter-spacing: 12px; -webkit-text-stroke: 4px rgba(255,255,255,.22); color: transparent; }
+    .workbench-ai-badge { position: relative; z-index: 1; width: fit-content; height: 32px; padding: 0 14px; display: inline-flex; align-items: center; gap: 7px; border-radius: 7px; color: #fff; background: linear-gradient(135deg, #6678ff, #3154ff); font-weight: 800; box-shadow: 0 8px 18px rgba(49,84,255,.18); }
+    .workbench-ai-badge::before { content: "✦"; font-size: 15px; }
+    .workbench-greeting { position: relative; z-index: 1; margin: 24px 0 6px; color: #082b84; font-size: 24px; font-weight: 800; letter-spacing: .5px; }
+    .workbench-subtext { position: relative; z-index: 1; margin: 0; color: #214a9e; font-size: 15px; }
+    .workbench-robot { position: relative; z-index: 1; height: 345px; margin-top: 24px; }
+    .robot-platform { position: absolute; left: 52px; right: 44px; bottom: 8px; height: 54px; border: 2px solid rgba(255,255,255,.88); border-radius: 50%; background: linear-gradient(180deg, rgba(255,255,255,.72), rgba(204,216,255,.45)); box-shadow: 0 18px 35px rgba(74,93,172,.18); }
+    .robot-body { position: absolute; left: 126px; top: 156px; width: 92px; height: 112px; border-radius: 44px 44px 34px 34px; background: linear-gradient(145deg, #ffffff, #dbe5ff); box-shadow: inset -8px -8px 18px rgba(65,84,151,.12), 0 18px 26px rgba(70,88,170,.16); }
+    .robot-head { position: absolute; left: 95px; top: 70px; width: 154px; height: 112px; border-radius: 46px; background: linear-gradient(145deg, #ffffff, #dce5ff); box-shadow: 0 18px 30px rgba(68,86,160,.22); }
+    .robot-face { position: absolute; left: 18px; top: 27px; width: 118px; height: 62px; border-radius: 30px; background: radial-gradient(circle at 33% 52%, #85efff 0 13px, #3462ff 17px, transparent 22px), radial-gradient(circle at 68% 52%, #85efff 0 13px, #3462ff 17px, transparent 22px), #11152c; box-shadow: inset 0 0 18px rgba(115,160,255,.55); }
+    .robot-face::after { content: ""; position: absolute; left: 48px; top: 15px; width: 44px; height: 4px; border-radius: 999px; background: #6cdcff; opacity: .9; }
+    .robot-ear { position: absolute; top: 106px; width: 24px; height: 54px; border-radius: 16px; background: linear-gradient(180deg, #e7efff, #9fc5ff); box-shadow: inset 0 0 0 3px rgba(255,255,255,.7); }
+    .robot-ear.left { left: 77px; }
+    .robot-ear.right { left: 243px; }
+    .robot-arm { position: absolute; width: 24px; height: 78px; border-radius: 999px; background: linear-gradient(180deg, #f9fbff, #a9c4ff); transform-origin: top center; }
+    .robot-arm.left { left: 96px; top: 164px; transform: rotate(-22deg); }
+    .robot-arm.right { left: 226px; top: 166px; transform: rotate(23deg); }
+    .robot-hand { position: absolute; width: 30px; height: 30px; border-radius: 50%; background: #fff; box-shadow: inset 0 0 0 5px #b8ccff; }
+    .robot-hand.left { left: 76px; top: 222px; }
+    .robot-hand.right { left: 248px; top: 224px; }
+    .robot-leg { position: absolute; top: 254px; width: 22px; height: 66px; border-radius: 999px; background: linear-gradient(180deg, #fdfdff, #afc4ff); }
+    .robot-leg.left { left: 140px; transform: rotate(10deg); }
+    .robot-leg.right { left: 184px; transform: rotate(-10deg); }
+    .robot-ghost-card { position: absolute; left: 26px; top: 154px; width: 98px; height: 72px; border-radius: 10px; background: rgba(119,148,255,.28); box-shadow: inset 0 0 0 1px rgba(255,255,255,.45); }
+    .robot-ghost-card::before { content: ""; position: absolute; left: 18px; top: 20px; width: 12px; height: 12px; border-radius: 3px; background: #ffe8a3; box-shadow: 0 22px 0 #ffe8a3, 30px 0 0 rgba(255,255,255,.65), 30px 22px 0 rgba(255,255,255,.65); }
+    .robot-ghost-chart { position: absolute; right: 18px; top: 208px; width: 92px; height: 62px; border-radius: 9px; background: rgba(255,255,255,.4); box-shadow: inset 0 0 0 1px rgba(255,255,255,.65); }
+    .robot-ghost-chart::before { content: ""; position: absolute; left: 12px; right: 12px; bottom: 15px; height: 32px; background: linear-gradient(135deg, transparent 43%, rgba(68,105,255,.78) 44% 52%, transparent 53%), linear-gradient(25deg, transparent 57%, rgba(109,196,255,.75) 58% 66%, transparent 67%); }
+    .workbench-auto-card { position: absolute; left: 25px; right: 25px; bottom: 21px; z-index: 2; padding: 20px 24px 18px; border: 1px solid rgba(255,255,255,.82); border-radius: 12px; background: rgba(255,255,255,.72); box-shadow: 0 14px 36px rgba(84,104,176,.14); backdrop-filter: blur(8px); }
+    .workbench-auto-title { margin-bottom: 24px; color: #0e3495; font-size: 16px; font-weight: 800; }
+    .workbench-auto-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px; }
+    .workbench-auto-item { position: relative; color: #243653; }
+    .workbench-auto-item + .workbench-auto-item { padding-left: 26px; border-left: 1px solid rgba(76,101,210,.45); }
+    .workbench-auto-item span { display: inline-flex; align-items: center; gap: 7px; color: #3863ff; font-size: 12px; font-weight: 800; }
+    .workbench-auto-item span::before { content: ""; width: 16px; height: 16px; border-radius: 4px; background: #89a6ff; }
+    .workbench-auto-item strong { display: block; margin: 9px 0 4px; font-size: 22px; line-height: 1; }
+    .workbench-auto-item small { color: #7385af; font-size: 11px; }
+    .workbench-auto-item small em { color: #5a77ff; font-style: normal; }
+    .workbench-right { min-width: 0; padding: 0 0 2px; }
+    .workbench-stats { height: 100px; padding: 0 22px; display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); align-items: center; border: 1px solid rgba(255,255,255,.9); border-radius: 14px; background: rgba(255,255,255,.26); box-shadow: inset 0 0 0 1px rgba(202,211,239,.55); }
+    .workbench-stat span { display: block; color: #66738a; font-size: 13px; }
+    .workbench-stat strong { display: inline-block; margin-top: 9px; color: #20304c; font-size: 22px; line-height: 1; }
+    .workbench-stat b { margin-left: 2px; color: #8b96aa; font-size: 12px; font-weight: 500; }
+    .workbench-stat small { display: block; margin-top: 8px; color: #8a95aa; font-size: 12px; }
+    .workbench-stat .red { color: #ff5369; }
+    .workbench-stat .green { color: #36c76f; }
+    .workbench-stat .blue { color: #4d6dff; }
+    .workbench-section-title { margin: 29px 0 18px 4px; display: flex; align-items: center; gap: 10px; color: #0d318b; font-size: 20px; font-weight: 800; }
+    .workbench-section-title::before { content: ""; width: 18px; height: 18px; border-radius: 5px; background: #5c78ff; box-shadow: inset 0 -6px 0 rgba(255,255,255,.22); }
+    .workbench-todos { padding: 20px 24px 16px; border: 1px solid rgba(255,255,255,.78); border-radius: 16px; background: rgba(255,255,255,.25); box-shadow: inset 0 0 0 1px rgba(212,220,242,.55); }
+    .workbench-todo { min-height: 78px; padding: 17px 27px 17px 18px; display: grid; grid-template-columns: 42px minmax(0, 1fr) auto; align-items: center; gap: 18px; border-radius: 14px; background: rgba(255,255,255,.7); box-shadow: 0 12px 28px rgba(78,96,150,.08); }
+    .workbench-todo + .workbench-todo { margin-top: 18px; }
+    .workbench-todo-icon { width: 42px; height: 42px; border-radius: 8px; display: grid; place-items: center; color: #5b74ff; background: #eef3ff; }
+    .workbench-todo-icon svg { width: 22px; height: 22px; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+    .workbench-todo-main { min-width: 0; }
+    .workbench-todo-head { display: flex; align-items: center; gap: 10px; color: #263752; font-size: 16px; font-weight: 800; }
+    .workbench-priority { height: 26px; padding: 0 10px; display: inline-flex; align-items: center; border-radius: 7px; color: #ff4960; background: #ffeaf0; font-size: 14px; font-weight: 700; }
+    .workbench-todo-desc { display: block; margin-top: 8px; color: #7c8798; font-size: 14px; }
+    .workbench-todo-action { color: #1f2d46; font-size: 14px; font-weight: 700; white-space: nowrap; }
+    .workbench-todo-action .split { margin: 0 15px; color: #b7c0d0; font-weight: 500; }
+    .list-main.workbench-main { min-height: 100vh; padding: 22px 28px 24px; }
+    .workbench-view.active { display: block; }
+    .workbench-shell { width: 100%; min-height: calc(100vh - 104px); margin: 18px 0 0; grid-template-columns: minmax(360px, 38%) minmax(520px, 1fr); align-items: stretch; }
+    .workbench-ai-card { min-height: 0; padding: 0; display: flex; background: rgba(255,255,255,.58); border: 1px solid rgba(255,255,255,.86); box-shadow: inset 0 0 0 1px rgba(208,218,247,.5); }
+    .workbench-ai-card::before,
+    .workbench-ai-card > :not(.workbench-chat) { display: none; }
+    .workbench-chat { flex: 1; min-height: 0; display: flex; flex-direction: column; position: relative; z-index: 3; }
+    .workbench-chat-head { height: 76px; padding: 0 22px; display: flex; align-items: center; gap: 14px; border-bottom: 1px solid rgba(205,216,245,.75); }
+    .workbench-chat-avatar { position: relative; width: 48px; height: 48px; border-radius: 16px; display: grid; place-items: center; overflow: hidden; background: radial-gradient(circle at 30% 20%, #9af5ff 0 12%, transparent 30%), linear-gradient(135deg, #5d6dff 0%, #22c7dc 100%); box-shadow: 0 14px 30px rgba(55, 91, 210, .25), inset 0 0 0 1px rgba(255,255,255,.45); }
+    .workbench-chat-avatar::before { content: ""; position: absolute; inset: 10px 8px 12px; border-radius: 12px; background: linear-gradient(180deg, #18223f, #0b1024); box-shadow: inset 0 0 12px rgba(89,161,255,.55), 0 0 12px rgba(63,104,255,.28); }
+    .workbench-chat-avatar::after { content: ""; position: absolute; left: 15px; top: 21px; width: 7px; height: 7px; border-radius: 50%; background: #75f5ff; box-shadow: 11px 0 0 #75f5ff, 0 0 9px #75f5ff, 11px 0 9px #75f5ff; }
+    .workbench-chat-avatar span { position: absolute; left: 18px; right: 18px; top: 14px; height: 3px; border-radius: 999px; background: #8beeff; box-shadow: 0 0 7px rgba(139,238,255,.8); }
+    .workbench-chat-avatar i { position: absolute; right: 5px; bottom: 5px; width: 10px; height: 10px; border: 2px solid #fff; border-radius: 50%; background: #32d37f; box-shadow: 0 0 10px rgba(50,211,127,.8); }
+    .workbench-chat-title { color: #183058; font-size: 18px; font-weight: 800; }
+    .workbench-chat-subtitle { margin-top: 5px; color: #7a89a4; font-size: 13px; }
+    .workbench-chat-body { flex: 1; min-height: 0; overflow: auto; padding: 22px; display: flex; flex-direction: column; gap: 14px; }
+    .workbench-message { max-width: 88%; padding: 13px 15px; border-radius: 14px; color: #243653; line-height: 1.65; font-size: 14px; box-shadow: 0 8px 20px rgba(52,74,130,.06); }
+    .workbench-message.ai { align-self: flex-start; border-top-left-radius: 5px; background: #fff; border: 1px solid #e5ebf7; }
+    .workbench-message.user { align-self: flex-end; border-top-right-radius: 5px; color: #fff; background: linear-gradient(135deg, #3154ff, #6a7cff); }
+    .workbench-message strong { display: block; margin-bottom: 5px; color: inherit; font-size: 14px; }
+    .workbench-chat-body > .workbench-message { display: none; }
+    .workbench-chat-body > .workbench-message.live-message { display: block; }
+    .workbench-ai-insight { align-self: stretch; padding: 14px; border: 1px solid #dce6ff; border-radius: 14px; background: linear-gradient(135deg, #fff, #f6f9ff); box-shadow: 0 10px 26px rgba(58,83,150,.07); }
+    .workbench-ai-insight-title { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; color: #1d3152; font-size: 14px; font-weight: 800; }
+    .workbench-ai-insight-title span { height: 22px; padding: 0 8px; border-radius: 999px; display: inline-flex; align-items: center; color: #3154ff; background: #edf3ff; font-size: 12px; font-weight: 700; }
+    .workbench-ai-metrics { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
+    .workbench-ai-metric { padding: 10px; border-radius: 10px; background: #f7f9ff; border: 1px solid #e7edfb; }
+    .workbench-ai-metric b { display: block; color: #1b2d4c; font-size: 18px; line-height: 1; }
+    .workbench-ai-metric small { display: block; margin-top: 7px; color: #76849b; font-size: 12px; }
+    .workbench-suggestion-card { align-self: stretch; padding: 14px; border-radius: 14px; border: 1px solid #e3e9f5; background: #fff; }
+    .workbench-suggestion-card h3 { margin: 0 0 10px; color: #1d3152; font-size: 14px; }
+    .workbench-suggestion-card ol { margin: 0; padding-left: 20px; color: #42526c; line-height: 1.8; }
+    .workbench-suggestion-card li::marker { color: #3154ff; font-weight: 800; }
+    .workbench-risk-card { align-self: stretch; padding: 13px 14px; border-radius: 14px; border: 1px solid #ffe0e7; background: #fff7f9; color: #3d4960; line-height: 1.7; }
+    .workbench-risk-card strong { display: block; margin-bottom: 6px; color: #ef4860; }
+    .workbench-quick-row { display: flex; flex-wrap: wrap; gap: 8px; padding: 0 22px 14px; }
+    .workbench-quick-row button { height: 30px; padding: 0 12px; border: 1px solid #dce5ff; border-radius: 999px; color: #3154ff; background: rgba(255,255,255,.82); font-size: 13px; }
+    .workbench-chat-input { margin: 0 18px 18px; padding: 10px 10px 10px 14px; display: grid; grid-template-columns: minmax(0, 1fr) 38px; align-items: center; gap: 8px; border: 1px solid #cfdcff; border-radius: 14px; background: #fff; box-shadow: 0 12px 28px rgba(65,89,164,.1); }
+    .workbench-chat-input input { width: 100%; height: 36px; border: 0; outline: none; color: #22314d; font-size: 14px; }
+    .workbench-chat-input button { width: 38px; height: 38px; border-radius: 10px; display: grid; place-items: center; color: #fff; background: #3154ff; }
+    .workbench-chat-input svg { width: 18px; height: 18px; }
+    @media (max-width: 1280px) {
+      .workbench-shell { width: 100%; grid-template-columns: 340px minmax(0, 1fr); gap: 20px; }
+      .workbench-stats { grid-template-columns: repeat(3, minmax(0, 1fr)); height: auto; gap: 18px; padding: 18px 22px; }
+    }
     .indicator-toolbar .search { width: 280px; }
     .dashboard-grid { flex: 1; min-height: 0; overflow: auto; display: grid; grid-template-columns: repeat(4, minmax(220px, 1fr)); align-content: start; gap: 16px; padding: 4px 2px 18px; }
     .dashboard-card { min-height: 168px; border: 1px solid #e8ecf3; border-radius: 6px; background: #fff; padding: 18px; display: flex; flex-direction: column; cursor: pointer; transition: border-color .16s, box-shadow .16s; }
@@ -671,27 +784,38 @@
     .checkin-review-tip { margin: 16px 4px 0; color: #a2abbc; font-size: 12px; line-height: 1.55; }
 
     /* 患者档案 */
-    .archive-page { min-width: 1440px; height: 100vh; overflow: auto; color: #34425a; background: #eaf1fa; }
+    .archive-page { position: fixed; left: 200px; top: 0; right: 0; bottom: 0; z-index: 30; min-width: 0; height: 100vh; overflow: auto; color: #34425a; background: #eaf1fa; }
     .archive-topbar { position: sticky; top: 0; z-index: 10; height: 54px; padding: 0 18px; display: flex; align-items: center; gap: 8px; border-bottom: 1px solid #dce5f1; background: #eaf1fa; }
     .archive-back { width: 28px; height: 28px; display: grid; place-items: center; border-radius: 50%; color: #6e7c91; background: rgba(255,255,255,.55); }
     .archive-back:hover { color: #3154ff; background: #fff; }
     .archive-back svg { width: 17px; height: 17px; }
     .archive-title { margin: 0; color: #2c3b55; font-size: 17px; font-weight: 800; }
-    .archive-shell { min-height: calc(100vh - 54px); padding: 0 14px 18px; display: grid; grid-template-columns: 316px minmax(0, 1fr); gap: 16px; }
-    .archive-sidebar { position: sticky; top: 54px; align-self: start; height: calc(100vh - 68px); min-height: 620px; overflow: hidden; border: 1px solid #dce6f3; border-radius: 9px; background: #f5f8fd; }
-    .archive-side-cover { height: 126px; background: linear-gradient(145deg, rgba(226,235,255,.65), rgba(247,250,255,.9)), url('patient-archive-reference.png'); background-size: 2048px 1263px; background-position: 0 -58px; }
-    .archive-side-patient { min-height: 72px; margin-top: -22px; padding: 0 20px 14px; border-bottom: 1px dashed #dfe6f0; display: grid; grid-template-columns: 58px minmax(0, 1fr); column-gap: 12px; align-items: center; }
-    .archive-side-avatar { width: 58px; height: 58px; border: 3px solid #fff; border-radius: 50%; background-image: url('patient-archive-reference.png'); background-size: 2048px 1263px; background-position: -34px -171px; box-shadow: 0 3px 12px rgba(48,72,122,.16); }
-    .archive-side-line { display: flex; align-items: center; gap: 13px; color: #4d5b70; font-size: 13px; }
-    .archive-side-line strong { color: #334158; font-size: 14px; }
-    .archive-side-phone { grid-column: 2; margin-top: -12px; color: #8c98a9; font-size: 12px; }
+    .archive-shell { min-height: calc(100vh - 54px); padding: 0 14px 18px; display: grid; grid-template-columns: 276px minmax(0, 1fr); gap: 24px; }
+    .archive-sidebar { position: sticky; top: 54px; align-self: start; height: calc(100vh - 68px); min-height: 620px; overflow: hidden; border: 1px solid #dce6f3; border-radius: 9px; background: #f4f7fc; }
+    .archive-side-cover { position: relative; height: 118px; overflow: hidden; background: linear-gradient(135deg, #dff0ff 0%, #eef3ff 46%, #e9edff 100%); }
+    .archive-side-cover::before { content: ""; position: absolute; left: -20px; top: 38px; width: 144px; height: 76px; border-radius: 62% 38% 45% 55%; background: linear-gradient(135deg, rgba(101,191,255,.7), rgba(175,219,255,.2)); transform: rotate(-7deg); }
+    .archive-side-cover::after { content: ""; position: absolute; right: -28px; top: 14px; width: 196px; height: 114px; border-radius: 60% 40% 42% 58%; background: radial-gradient(circle at 50% 50%, rgba(121,135,255,.65) 0 2px, transparent 3px), linear-gradient(120deg, rgba(127,142,255,.5), rgba(255,255,255,.2)); background-size: 8px 8px, 100% 100%; transform: rotate(12deg); box-shadow: -46px 18px 0 rgba(198,219,255,.55); }
+    .archive-side-patient { min-height: 66px; margin-top: -18px; padding: 0 20px 12px; border-bottom: 1px dashed #dfe6f0; display: grid; grid-template-columns: 58px minmax(0, 1fr); column-gap: 12px; align-items: center; background: linear-gradient(180deg, rgba(244,247,252,.72), #f4f7fc 42%); }
+    .archive-side-avatar { position: relative; width: 58px; height: 58px; border: 3px solid #fff; border-radius: 50%; overflow: hidden; background: linear-gradient(180deg, #6d89ff 0 56%, #e5ecff 57% 100%); box-shadow: 0 4px 12px rgba(48,72,122,.18); }
+    .archive-side-avatar::before { content: ""; position: absolute; left: 14px; top: 11px; width: 30px; height: 34px; border-radius: 42% 42% 45% 45%; background: linear-gradient(180deg, #ffd7bc 0 72%, #f6bc9b 73%); box-shadow: 0 -8px 0 #24344f; }
+    .archive-side-avatar::after { content: ""; position: absolute; left: 10px; right: 10px; bottom: -2px; height: 20px; border-radius: 16px 16px 0 0; background: #eef4ff; box-shadow: inset 0 6px 0 #3472ff; }
+    .archive-side-line { display: flex; align-items: center; gap: 12px; color: #2f3c52; font-size: 13px; line-height: 1; }
+    .archive-side-line strong { color: #25334b; font-size: 14px; font-weight: 800; }
+    .archive-side-phone { grid-column: 2; margin-top: -11px; color: #8c98a9; font-size: 12px; }
     .archive-side-nav { padding: 24px 16px; }
-    .archive-nav-item { width: 100%; height: 52px; margin-bottom: 8px; padding: 0 13px; display: flex; align-items: center; gap: 10px; border-radius: 6px; color: #7c899b; font-size: 14px; font-weight: 700; text-align: left; }
+    .archive-nav-item { width: 100%; height: 48px; margin-bottom: 12px; padding: 0 13px; display: flex; align-items: center; gap: 10px; border-radius: 6px; color: #8b96a8; font-size: 14px; font-weight: 700; text-align: left; }
     .archive-nav-item:hover { color: #3154ff; background: rgba(255,255,255,.72); }
     .archive-nav-item.active { color: #214cff; background: #fff; box-shadow: 0 4px 16px rgba(40,70,130,.05); }
     .archive-nav-item.active::before { content: ''; width: 3px; height: 28px; margin-left: -13px; border-radius: 0 3px 3px 0; background: #3154ff; }
     .archive-nav-item svg { width: 19px; height: 19px; flex: 0 0 auto; }
+    .archive-sidebar:has(.archive-nav-item[data-archive-tab="history"].active) .archive-nav-item[data-archive-tab="checkin"] { display: flex; }
+    .archive-page.history-document-mode { min-width: 0; overflow: auto; background: #eaf1fa; }
+    .archive-page.history-document-mode .archive-shell { min-height: calc(100vh - 54px); padding: 0 14px 18px; display: grid; grid-template-columns: 276px minmax(0, 1fr); gap: 24px; }
+    .archive-page.history-document-mode .archive-main { min-width: 0; display: flex; flex-direction: column; gap: 16px; }
     .archive-main { min-width: 0; display: flex; flex-direction: column; gap: 16px; }
+    .archive-page.history-document-mode .archive-main { min-height: calc(100vh - 86px); }
+    .archive-history-panel.is-visible,
+    .archive-history-panel[style*="display: block"] { display: block !important; }
     .archive-overview { position: relative; min-height: 562px; overflow: hidden; border: 1px solid #d8e4f3; border-radius: 10px; background: linear-gradient(135deg, #dce9fb, #f3f7fd 60%, #e8f0fb); }
     .archive-person-art { position: absolute; left: 0; top: 0; width: 286px; height: 430px; background-image: url('patient-archive-reference.png'); background-size: 2048px 1263px; background-position: -348px -58px; background-repeat: no-repeat; }
     .archive-person-art::after { content: ''; position: absolute; inset: 0; background: linear-gradient(90deg, transparent 75%, #e5eefb), linear-gradient(180deg, transparent 75%, #e5eefb); pointer-events: none; }
@@ -782,6 +906,343 @@
     .archive-monitor-chart .bar-a { fill: #5f82ff; }
     .archive-monitor-chart .bar-b { fill: #a4baff; }
     .archive-panel[hidden] { display: none; }
+    .archive-history-panel { height: calc(100vh - 86px); min-height: 0; overflow: hidden; }
+    .archive-page.history-document-mode .archive-history-panel { display: block !important; width: 100%; height: calc(100vh - 86px); min-height: 0; padding: 0; overflow: hidden; }
+    .archive-history-card { position: relative; height: 100%; display: grid; grid-template-columns: clamp(252px, 32vw, 280px) minmax(0, 1fr); grid-template-rows: 56px minmax(0, 1fr); overflow: hidden; border: 1px solid #dce6f2; border-radius: 10px; background: #fff; box-shadow: 0 4px 16px rgba(31,51,82,.04); }
+    .archive-page.history-document-mode .archive-history-card { width: 100%; height: 100%; min-height: 0; margin: 0; grid-template-columns: clamp(252px, 32vw, 280px) minmax(0, 1fr); grid-template-rows: 56px minmax(0, 1fr); border: 1px solid #dce6f2; border-radius: 10px; box-shadow: 0 4px 16px rgba(31,51,82,.04); }
+    .archive-page:has(.archive-nav-item[data-archive-tab="history"].active) .archive-main > .archive-panel { display: none !important; }
+    .archive-page:has(.archive-nav-item[data-archive-tab="history"].active) .archive-main > .archive-history-panel { display: block !important; visibility: visible; opacity: 1; }
+    .archive-history-head { grid-column: 1 / -1; height: 56px; padding: 0 24px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid #e4ebf4; }
+    .archive-history-title { margin: 0; padding-left: 10px; border-left: 3px solid #3154ff; color: #263752; font-size: 17px; font-weight: 800; }
+    .archive-history-actions { display: flex; align-items: center; gap: 10px; }
+    .archive-logic-btn { height: 32px; padding: 0 14px; display: inline-flex; align-items: center; gap: 7px; border: 1px solid #d8e2f0; border-radius: 4px; color: #334158; background: #fff; font-size: 13px; font-weight: 700; }
+    .archive-logic-btn.active { color: #fff; border-color: #3154ff; background: #3154ff; }
+    .archive-logic-point { position: absolute; z-index: 12; width: 22px; height: 22px; display: none; place-items: center; border: 2px solid #fff; border-radius: 50%; color: #fff; background: #3154ff; font-size: 12px; font-weight: 800; box-shadow: 0 6px 16px rgba(49,84,255,.32); cursor: move; user-select: none; }
+    .archive-logic-point.active { background: #ff8a00; box-shadow: 0 6px 18px rgba(255,138,0,.36); }
+    .archive-history-card.logic-mode .archive-logic-point { display: grid; }
+    .archive-logic-point.p1 { left: 18px; top: 84px; }
+    .archive-logic-point.p2 { left: clamp(236px, 30vw, 262px); top: 96px; }
+    .archive-logic-point.p3 { right: 132px; top: 14px; }
+    .archive-logic-point.p4 { right: 28px; top: 118px; }
+    .archive-logic-point.p5 { right: 214px; top: 14px; }
+    .archive-logic-point.p6 { left: clamp(360px, 42vw, 440px); bottom: 118px; }
+    .archive-logic-drawer { position: absolute; z-index: 11; left: 56px; top: 116px; width: min(332px, 38vw); display: none; flex-direction: column; border: 1px solid #dce6f2; border-radius: 8px; background: #fff; box-shadow: 0 18px 44px rgba(21,38,72,.16); }
+    .archive-history-card.logic-mode .archive-logic-drawer.open { display: flex; }
+    .archive-logic-head { min-height: 48px; padding: 0 12px 0 14px; display: flex; align-items: center; justify-content: space-between; gap: 10px; border-bottom: 1px solid #edf1f7; }
+    .archive-logic-head strong { min-width: 0; flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: #1f2f4a; font-size: 15px; font-weight: 800; }
+    .archive-logic-head button:not(.archive-logic-tool) { flex: 0 0 auto; width: 26px; height: 26px; display: grid; place-items: center; border-radius: 4px; color: #64748b; background: #f3f6fb; font-size: 17px; }
+    .archive-logic-body { flex: 1; min-height: 0; padding: 14px; overflow: auto; background: #f8fbff; }
+    .archive-logic-section { display: none; margin-bottom: 12px; padding: 14px; border: 1px solid #dfe8f5; border-radius: 8px; background: #fff; }
+    .archive-logic-section.active { display: block; }
+    .archive-logic-section h3 { margin: 0 0 9px; display: flex; align-items: center; gap: 8px; color: #20304c; font-size: 14px; font-weight: 800; }
+    .archive-logic-section h3 span { width: 20px; height: 20px; display: grid; place-items: center; border-radius: 50%; color: #fff; background: #3154ff; font-size: 11px; }
+    .archive-logic-section p { margin: 0; color: #52617a; font-size: 13px; line-height: 1.75; }
+    .archive-logic-section ul { margin: 8px 0 0; padding-left: 18px; color: #52617a; font-size: 13px; line-height: 1.75; }
+    .archive-logic-section li { margin: 3px 0; }
+    .archive-logic-tools { flex: 0 0 auto; display: flex; align-items: center; gap: 6px; }
+    .archive-logic-tool { width: auto !important; min-width: 34px; height: 26px !important; padding: 0 8px !important; display: inline-flex !important; align-items: center; justify-content: center; border: 1px solid #d8e2f0; border-radius: 4px; color: #3154ff; background: #fff; font-size: 12px !important; font-weight: 800; line-height: 1; white-space: nowrap; }
+    .archive-logic-tool.primary { color: #fff; border-color: #3154ff; background: #3154ff; }
+    .archive-logic-tool.danger { color: #ff4d5f; border-color: #ffd5dc; background: #fff7f9; }
+    .archive-logic-point-modal { position: fixed; inset: 0; z-index: 80; display: none; align-items: center; justify-content: center; background: rgba(21,31,52,.28); }
+    .archive-logic-point-modal.open { display: flex; }
+    .archive-logic-point-dialog { width: 420px; border-radius: 10px; overflow: hidden; background: #fff; box-shadow: 0 24px 72px rgba(21,38,72,.22); }
+    .archive-logic-point-head { height: 52px; padding: 0 18px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid #edf1f7; }
+    .archive-logic-point-head strong { color: #1f2f4a; font-size: 16px; font-weight: 800; }
+    .archive-logic-point-close { width: 28px; height: 28px; border-radius: 6px; color: #64748b; background: #f3f6fb; font-size: 18px; }
+    .archive-logic-point-form { padding: 18px; display: grid; gap: 12px; }
+    .archive-logic-point-field { display: grid; gap: 6px; color: #52617a; font-size: 13px; font-weight: 700; }
+    .archive-logic-point-field input,
+    .archive-logic-point-field textarea { width: 100%; border: 1px solid #dce6f2; border-radius: 6px; color: #22314c; background: #fff; font-size: 14px; outline: none; }
+    .archive-logic-point-field input { height: 36px; padding: 0 10px; }
+    .archive-logic-point-field textarea { min-height: 94px; padding: 9px 10px; resize: vertical; line-height: 1.6; }
+    .archive-logic-point-field input:focus,
+    .archive-logic-point-field textarea:focus { border-color: #3154ff; box-shadow: 0 0 0 2px rgba(49,84,255,.10); }
+    .archive-logic-point-foot { padding: 0 18px 18px; display: flex; justify-content: flex-end; gap: 10px; }
+    .archive-logic-point-foot button { height: 34px; padding: 0 16px; border-radius: 6px; font-size: 14px; font-weight: 700; }
+    .archive-logic-point-foot .ghost { border: 1px solid #d8e2f0; color: #334158; background: #fff; }
+    .archive-logic-point-foot .primary { color: #fff; background: #3154ff; }
+    .archive-history-card.logic-mode .archive-logic-point:hover { transform: translateY(-1px); box-shadow: 0 8px 20px rgba(49,84,255,.38); }
+    .archive-history-card.logic-editing .archive-logic-point { pointer-events: auto; outline: 2px dashed rgba(49,84,255,.28); outline-offset: 3px; }
+    .archive-history-card.logic-editing .archive-logic-body [contenteditable="true"] { border-radius: 4px; outline: 1px dashed #9bb3ff; background: #f7f9ff; }
+    .archive-history-card.logic-editing .archive-logic-section { box-shadow: inset 3px 0 0 #3154ff; }
+    .archive-logic-edit-tip { margin: 0 0 12px; padding: 9px 10px; border: 1px solid #dbe6ff; border-radius: 6px; color: #52617a; background: #eef4ff; font-size: 12px; line-height: 1.6; }
+    .archive-upload-btn, .archive-parse-btn { height: 32px; padding: 0 14px; display: inline-flex; align-items: center; gap: 7px; border: 1px solid #e0e6ef; border-radius: 4px !important; color: #334158; background: #fff; font-size: 13px; font-weight: 700; }
+    .archive-parse-btn { position: relative; }
+    .archive-parse-badge { min-width: 18px; height: 18px; padding: 0 5px; display: none; align-items: center; justify-content: center; border-radius: 999px; color: #fff; background: #ff4d5f; font-size: 11px; font-weight: 800; line-height: 18px; box-shadow: 0 3px 8px rgba(255,77,95,.28); }
+    .archive-parse-badge.show { display: inline-flex; }
+    .archive-upload-btn { border-color: #3154ff; color: #fff; background: #3154ff; box-shadow: 0 4px 10px rgba(49,84,255,.16); }
+    .archive-upload-btn:hover { background: #2447ff; }
+    .archive-parse-btn:hover { color: #3154ff; border-color: #b9c7ff; background: #f7f9ff; }
+    .archive-upload-btn svg, .archive-parse-btn svg, .history-action svg { width: 16px; height: 16px; }
+    .archive-upload-modal { position: fixed; inset: 0; z-index: 90; display: none; align-items: center; justify-content: center; background: rgba(17,25,42,.28); }
+    .archive-upload-modal.open { display: flex; }
+    .archive-upload-dialog { width: min(780px, 86vw); height: min(520px, 72vh); display: grid; grid-template-rows: 72px 1fr 72px; border-radius: 6px; overflow: hidden; background: #fff; box-shadow: 0 18px 54px rgba(18,32,60,.22); }
+    .archive-upload-head { padding: 0 24px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid #edf0f5; }
+    .archive-upload-head h2 { margin: 0; color: #263752; font-size: 18px; font-weight: 800; }
+    .archive-upload-close { width: 32px; height: 32px; display: grid; place-items: center; border-radius: 50%; color: #263752; background: #f4f6fa; font-size: 22px; line-height: 1; }
+    .archive-upload-body { position: relative; padding: 24px 28px; }
+    .archive-upload-tip { position: absolute; left: 28px; bottom: -50px; z-index: 1; margin: 0; color: #9aa5b5; font-size: 13px; }
+    .archive-upload-tip::before { content: '支持拖拽或点击上传，最多可上传 20 个文件，支持 PDF、PNG、JPG 格式。'; color: #9aa5b5; }
+    .archive-upload-tip { font-size: 0; }
+    .archive-upload-tip::before { font-size: 13px; }
+    .archive-upload-body .archive-upload-merge { margin: 0 0 18px; color: #52617a; }
+    .archive-upload-box { width: 86px; height: 86px; display: grid; place-items: center; border: 1px dashed #e4e9f2; border-radius: 4px; color: #263752; background: #f7f8fb; font-size: 46px; font-weight: 300; line-height: 1; }
+    .archive-upload-file-input { display: none; }
+    .archive-upload-box.is-hidden { display: none; }
+    .archive-upload-item { position: relative; width: 86px; height: 86px; margin: 0 12px 12px 0; display: inline-flex; align-items: center; justify-content: center; vertical-align: top; border: 1px solid #dce4f0; border-radius: 4px; overflow: hidden; background: #f7f9fc; }
+    .archive-upload-item img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .archive-upload-file-card { width: 100%; height: 100%; padding: 10px 8px; display: grid; align-content: center; justify-items: center; gap: 7px; color: #52617a; text-align: center; }
+    .archive-upload-file-icon { min-width: 34px; height: 22px; padding: 0 6px; display: inline-flex; align-items: center; justify-content: center; border-radius: 4px; color: #3154ff; background: #eef3ff; font-size: 11px; font-weight: 800; }
+    .archive-upload-file-name { max-width: 70px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 11px; line-height: 14px; }
+    .archive-upload-delete { position: absolute; top: 4px; right: 4px; width: 20px; height: 20px; display: grid; place-items: center; border-radius: 4px; color: #fff; background: rgba(17,25,42,.72); font-size: 16px; line-height: 1; }
+    .archive-upload-foot { padding: 0 24px; display: flex; align-items: center; justify-content: space-between; gap: 14px; border-top: 1px solid #edf0f5; }
+    .archive-upload-footer-meta { min-width: 0; flex: 1; display: flex; align-items: center; gap: 14px; }
+    .archive-upload-remark { display: none; }
+    .archive-upload-remark span { flex: 0 0 auto; color: #34425a; }
+    .archive-upload-remark-input { width: 100%; height: 34px; padding: 0 10px; border: 1px solid #dce4f0; border-radius: 4px; color: #263752; background: #fff; outline: none; }
+    .archive-upload-remark-input:focus { border-color: #3154ff; box-shadow: 0 0 0 2px rgba(49,84,255,.08); }
+    .archive-upload-merge { flex: 0 0 auto; display: flex; align-items: center; gap: 7px; color: #52617a; font-size: 13px; white-space: nowrap; }
+    .archive-upload-foot .archive-upload-merge { display: none; }
+    .archive-upload-merge input { width: 15px; height: 15px; margin: 0; accent-color: #3154ff; }
+    .archive-upload-actions { flex: 0 0 auto; display: flex; align-items: center; gap: 12px; }
+    .archive-upload-foot button { min-width: 80px; height: 34px; border-radius: 4px !important; font-size: 14px; }
+    .archive-upload-cancel { color: #34425a; background: #f5f6f9; }
+    .archive-upload-confirm { color: #fff; background: #1d33ff; }
+    .archive-parse-backdrop { position: fixed; z-index: 900; inset: 0; visibility: hidden; pointer-events: none; background: rgba(15, 23, 42, .34); opacity: 0; transition: opacity .2s ease, visibility .2s ease; }
+    .archive-parse-backdrop.open { visibility: visible; pointer-events: auto; opacity: 1; }
+    .archive-parse-drawer { position: fixed; z-index: 910; top: 0; right: 0; width: 520px; max-width: calc(100vw - 32px); height: 100vh; display: flex; flex-direction: column; background: #fff; border-left: 1px solid #dfe7f4; box-shadow: -20px 0 48px rgba(15,23,42,.22); transform: translateX(102%); transition: transform .2s ease; }
+    .archive-parse-drawer.open { transform: translateX(0); }
+    .archive-parse-head { height: 64px; flex: 0 0 auto; padding: 0 20px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid #edf1f7; }
+    .archive-parse-head h2 { margin: 0; color: #1f2f4a; font-size: 18px; font-weight: 800; }
+    .archive-parse-close { width: 32px; height: 32px; display: grid; place-items: center; border-radius: 50%; color: #64748b; background: #f3f6fb; font-size: 22px; line-height: 1; }
+    .archive-parse-tabs { flex: 0 0 auto; padding: 14px 18px 8px; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; border-bottom: 1px solid #edf1f7; background: #fbfdff; }
+    .archive-parse-tab { height: 36px; border: 1px solid #d9d9d9; border-radius: 6px; color: rgba(0,0,0,.88); background: #fff; font-size: 14px; font-weight: 400; box-shadow: 0 2px 0 rgba(0,0,0,.02); transition: all .2s; }
+    .archive-parse-tab:hover { color: #1677ff; border-color: #4096ff; }
+    .archive-parse-tab.active { color: #1677ff; border-color: #1677ff; background: #fff; }
+    .archive-parse-body { flex: 1; min-height: 0; padding: 16px 18px 22px; overflow: auto; background: #f7faff; }
+    .archive-parse-card { margin-bottom: 12px; border: 1px solid #dfe7f4; border-radius: 10px; overflow: visible; background: #fff; box-shadow: 0 8px 22px rgba(29,45,85,.06); }
+    .archive-parse-card-head { min-height: 58px; padding: 12px 14px; display: flex; align-items: center; justify-content: space-between; gap: 12px; background: #f8fbff; }
+    .archive-parse-title { min-width: 0; }
+    .archive-parse-title strong { display: block; color: #1f2f4a; font-size: 15px; font-weight: 800; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .archive-parse-title span { display: block; margin-top: 5px; color: #7b8799; font-size: 12px; }
+    .archive-parse-status { flex: 0 0 auto; padding: 3px 9px; border-radius: 999px; font-size: 12px; font-weight: 800; }
+    .archive-parse-status.running { color: #1d4dff; background: #edf3ff; }
+    .archive-parse-status.pending { color: #d97706; background: #fff4da; }
+    .archive-parse-status.done { color: #16a36a; background: #eaf9f1; }
+    .archive-parse-status.failed { color: #ef4444; background: #fff1f1; }
+    .archive-parse-card-body { padding: 14px; }
+    .archive-parse-loading { display: flex; align-items: center; gap: 10px; color: #53627a; font-size: 13px; }
+    .archive-parse-spinner { width: 18px; height: 18px; border: 2px solid #dbe6ff; border-top-color: #3154ff; border-radius: 50%; animation: archiveParseSpin .9s linear infinite; }
+    .archive-parse-progress { margin-top: 12px; height: 6px; border-radius: 6px; overflow: hidden; background: #edf2f9; }
+    .archive-parse-progress i { display: block; width: 48%; height: 100%; border-radius: inherit; background: linear-gradient(90deg, #3154ff, #6aa5ff); animation: archiveParseMove 1.4s ease-in-out infinite; }
+    .archive-parse-form { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+    .archive-parse-field { padding: 8px 11px; border: 1px solid #d9d9d9; border-radius: 6px; background: #fff; transition: all .2s; }
+    .archive-parse-field:focus-within { border-color: #4096ff; box-shadow: 0 0 0 2px rgba(5,145,255,.1); }
+    .archive-parse-field span { display: block; margin-bottom: 5px; color: #7b8799; font-size: 12px; }
+    .archive-parse-field strong { color: #22314c; font-size: 14px; font-weight: 800; }
+    .archive-parse-field.required span::before { content: '*'; margin-right: 3px; color: #ef4444; }
+    .archive-parse-field input { width: 100%; height: 28px; padding: 0; border: 0; outline: none; color: rgba(0,0,0,.88); background: transparent; font-size: 14px; font-weight: 500; }
+    .archive-parse-field input::placeholder { color: rgba(0,0,0,.25); font-weight: 400; }
+    .archive-parse-field.searchable { position: relative; padding-right: 34px; }
+    .archive-parse-field.searchable::after { content: ''; position: absolute; right: 13px; top: 50%; width: 7px; height: 7px; border-right: 1.5px solid rgba(0,0,0,.45); border-bottom: 1.5px solid rgba(0,0,0,.45); transform: translateY(-20%) rotate(45deg); pointer-events: none; }
+    .archive-parse-field.searchable:focus-within::after { border-color: #1677ff; }
+    .archive-parse-field.searchable input { padding-right: 8px; }
+    .archive-parse-field.searchable.open { z-index: 12; }
+    .archive-combobox-menu { position: absolute; z-index: 30; top: calc(100% + 6px); left: 0; right: 0; max-height: 188px; padding: 4px; overflow-y: auto; border: 1px solid #d9d9d9; border-radius: 6px; background: #fff; box-shadow: 0 6px 16px rgba(0,0,0,.08), 0 3px 6px -4px rgba(0,0,0,.12); display: none; }
+    .archive-parse-field.searchable.open .archive-combobox-menu { display: block; }
+    .archive-combobox-option { min-height: 32px; padding: 6px 8px; display: flex; align-items: center; border-radius: 4px; color: rgba(0,0,0,.88); font-size: 14px; font-weight: 400; cursor: pointer; }
+    .archive-combobox-option:hover, .archive-combobox-option.active { background: #f5f7fb; }
+    .archive-combobox-empty { min-height: 32px; padding: 7px 8px; color: rgba(0,0,0,.25); font-size: 14px; }
+    .archive-parse-actions { margin-top: 12px; display: flex; align-items: center; justify-content: flex-end; gap: 10px; }
+    .archive-parse-primary, .archive-parse-secondary { height: 32px; padding: 4px 15px; border-radius: 6px; font-size: 14px; font-weight: 400; box-shadow: 0 2px 0 rgba(0,0,0,.02); transition: all .2s; }
+    .archive-parse-primary { color: #fff; background: #1677ff; }
+    .archive-parse-primary:hover { background: #4096ff; }
+    .archive-parse-secondary { color: #1677ff; border: 1px solid #1677ff; background: #fff; }
+    .archive-parse-secondary:hover { color: #4096ff; border-color: #4096ff; }
+    .archive-parse-empty { padding: 42px 16px; color: #8b97a8; text-align: center; font-size: 14px; }
+    @keyframes archiveParseSpin { to { transform: rotate(360deg); } }
+    @keyframes archiveParseMove { 0% { transform: translateX(-80%); } 50% { transform: translateX(80%); } 100% { transform: translateX(180%); } }
+    .archive-history-list { min-height: 0; padding: 16px 24px 24px; overflow-y: auto; border-right: 1px solid #e4ebf4; }
+    .history-tabs { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 0; margin-bottom: 10px; padding: 0; border-radius: 6px; background: #f6f8fc; }
+    .history-tab { min-width: 0; min-height: 52px; padding: 6px 4px 5px; display: flex; flex-direction: column; align-items: center; justify-content: center; color: #52617a; font-size: 13px; font-weight: 700; line-height: 15px; text-align: center; white-space: normal; word-break: keep-all; overflow-wrap: normal; border-radius: 6px; }
+    .history-tab small { display: block; margin-top: 2px; color: #a1abb9; font-size: 10px; line-height: 12px; font-weight: 400; }
+    .history-tab.active { color: #1d3fff; background: #fff; box-shadow: 0 1px 0 rgba(49,84,255,.12); }
+    .history-tab.active::after { content: ''; width: 22px; height: 3px; margin-top: 4px; border-radius: 3px; background: #1d3fff; }
+    .history-search { position: relative; display: block; margin: 10px 0; }
+    .history-search svg { position: absolute; left: 10px; top: 50%; width: 15px; height: 15px; color: #9aa8ba; transform: translateY(-50%); pointer-events: none; }
+    .history-search input { width: 100%; height: 34px; padding: 0 10px 0 32px; border: 1px solid #dce5f2; border-radius: 6px; color: #22314c; background: #fff; font-size: 13px; outline: none; transition: all .2s; }
+    .history-search input:focus { border-color: #3154ff; box-shadow: 0 0 0 2px rgba(49,84,255,.10); }
+    .history-search input::placeholder { color: #a6b2c3; }
+    .history-empty-result { display: none; padding: 28px 8px; color: #8b97a8; font-size: 13px; text-align: center; }
+    .history-empty-result.show { display: block; }
+    .history-tree { display: grid; gap: 12px; color: #2f3d55; }
+    .history-date { display: flex; align-items: center; justify-content: space-between; gap: 8px; min-height: 24px; color: #52617a; font-size: 13px; font-weight: 800; }
+    .history-date-line { min-width: 0; display: flex; align-items: center; gap: 8px; min-height: 22px; }
+    .history-date-name { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .history-date .arrow { width: 12px; color: #b8c2d0; font-size: 12px; }
+    .history-date.active { color: #1d3fff; }
+    .history-date[data-history-toggle], .history-category[data-history-toggle] { cursor: pointer; user-select: none; }
+    .history-type-tag { width: fit-content; height: 22px; padding: 0 8px; display: inline-flex; align-items: center; border-radius: 4px; font-size: 12px; font-weight: 700; line-height: 1; }
+    .history-type-tag.inpatient { color: #3154ff; background: #eef3ff; }
+    .history-type-tag.outpatient { color: #11a874; background: #eafaf4; }
+    .history-type-tag.emergency { color: #ff6b2c; background: #fff1e9; }
+    .history-type-tag.checkup { color: #8b5cf6; background: #f3ecff; }
+    .history-upload-tag { flex: 0 0 auto; height: 20px; padding: 0 6px; display: inline-flex; align-items: center; border-radius: 4px; font-size: 11px; font-weight: 700; line-height: 1; }
+    .history-upload-tag.patient { color: #3154ff; background: #eef3ff; }
+    .history-upload-tag.nurse { color: #11a874; background: #eafaf4; }
+    .history-upload-tag.sync { color: #7c5cff; background: #f2edff; }
+    .history-file > .history-upload-tag { display: none; }
+    .history-children { margin: -4px 0 4px 17px; padding: 6px 0 6px 18px; display: grid; gap: 12px; border-left: 1px solid #edf1f6; }
+    .history-date.collapsed + .history-children, .history-category.collapsed + .history-subchildren { display: none; }
+    .history-category { min-height: 24px; display: flex; align-items: center; gap: 8px; color: #2f3d55; font-size: 13px; font-weight: 800; }
+    .history-category .arrow { width: 12px; color: #b8c2d0; font-size: 12px; }
+    .history-subchildren { margin: -4px 0 2px 20px; padding: 4px 0 4px 14px; display: grid; gap: 10px; border-left: 1px solid #edf1f6; }
+    .history-file { min-height: 24px; display: flex; align-items: center; gap: 8px; color: #52617a; font-size: 13px; }
+    .history-file[data-history-file] { cursor: pointer; }
+    .history-file-name { min-width: 0; flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .history-file.active, .history-file.active .history-file-name { color: #1d3fff; font-weight: 800; }
+    .history-file-meta { flex: 1; min-width: 0; display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: center; gap: 8px; }
+    .history-file-time { color: #7a879a; font-size: 12px; font-weight: 700; white-space: nowrap; }
+    .history-external-file { min-height: 24px; padding: 0; display: flex; align-items: center; gap: 8px; color: #52617a; font-size: 13px; font-weight: 800; border-radius: 4px; cursor: pointer; }
+    .history-external-file.active, .history-external-file.active .history-file-name, .history-external-file.active .history-file-time { color: #1d3fff; font-weight: 800; }
+    .history-file-tag { width: 22px; height: 22px; display: grid; place-items: center; border-radius: 4px; color: #3154ff; background: #eef3ff; font-size: 12px; font-weight: 800; }
+    .history-date.selected { min-height: 32px; padding: 5px 0 5px 34px; border-radius: 4px; background: #f5f7fb; }
+    .archive-history-viewer { position: relative; min-width: 0; min-height: 0; padding: 18px 18px 16px; overflow-y: auto; }
+    .history-viewer-actions { position: absolute; top: 16px; right: 18px; display: flex; gap: 10px; }
+    .history-action { width: 28px; height: 28px; display: grid; place-items: center; border-radius: 4px; color: #52617a; background: #f6f8fc; }
+    .history-action:hover { color: #3154ff; background: #eef3ff; }
+    .history-note { color: #98a4b4; font-size: 12px; line-height: 1.7; }
+    .history-report-title { margin: -18px 0 44px; color: #2b3b55; font-size: clamp(24px, 3.4vw, 30px); font-weight: 900; text-align: center; letter-spacing: 1px; }
+    .history-report-meta { margin: 0 0 22px; display: grid; grid-template-columns: 1fr 1fr; gap: 36px; color: #52617a; font-size: 14px; }
+    .history-report-meta strong { margin-right: 24px; color: #52617a; font-weight: 500; letter-spacing: 8px; }
+    .history-thumbs { margin-bottom: 20px; display: flex; align-items: center; gap: 10px; }
+    .history-thumb { width: 42px; height: 52px; border: 1px solid #cfd8e6; border-radius: 3px; background: #fff; box-shadow: 0 1px 3px rgba(31,51,82,.08); }
+    .history-thumb.active { border-color: #3154ff; box-shadow: 0 0 0 1px #3154ff; }
+    .history-thumb::before { content: ''; display: block; height: 100%; margin: 7px; background: repeating-linear-gradient(to bottom, #a7b1c0 0 1px, transparent 1px 6px); opacity: .75; }
+    .history-document-stage { min-height: min(65vh, 524px); padding: 28px 0; display: flex; justify-content: center; border-radius: 12px; background: #f7f7fa; }
+    .archive-page.history-document-mode .history-document-stage { min-height: min(65vh, 526px); padding: clamp(18px, 3vh, 28px) 0; align-items: flex-start; }
+    .history-mode-page { min-height: 100%; color: #2a3853; }
+    .history-mode-head { margin: 0 0 18px; display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; }
+    .history-mode-kicker { margin: 0 0 8px; color: #7b8799; font-size: 12px; }
+    .history-mode-title { margin: 0; color: #243450; font-size: 26px; font-weight: 900; line-height: 1.25; }
+    .history-mode-source { flex: 0 0 auto; display: inline-flex; align-items: center; gap: 8px; margin-right: 78px; color: #708098; font-size: 12px; }
+    .history-manual-title { margin: 0 0 18px; padding-right: 74px; color: #243450; font-size: 16px; font-weight: 800; line-height: 1.5; text-align: center; }
+    .history-manual-meta { margin: 16px 16px 14px; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px 18px; }
+    .history-manual-meta-item { min-height: 46px; padding: 10px 12px; border: 1px solid #e6edf6; border-radius: 6px; background: #f8fafd; }
+    .history-manual-meta-item span { display: block; margin-bottom: 5px; color: #7c889b; font-size: 12px; }
+    .history-manual-meta-item strong { color: #22314c; font-size: 14px; font-weight: 800; }
+    .history-manual-lock-note { margin: 0 16px 14px; padding: 10px 12px; border: 1px solid #d8e5ff; border-radius: 6px; color: #52617a; background: #f7faff; font-size: 13px; line-height: 1.6; }
+    .history-upload-title { margin: 2px 16px 10px; color: #22314c; font-size: 15px; font-weight: 800; }
+    .history-manual-thumbs { margin: 0 16px 18px; padding: 12px; display: flex; align-items: center; gap: 12px; border: 1px solid #e3ebf5; border-radius: 8px; background: #fbfcff; }
+    .history-manual-thumb { width: 72px; height: 88px; padding: 0; border: 1px solid #d7e1ee; border-radius: 6px; overflow: hidden; background: #fff; box-shadow: 0 2px 8px rgba(35,55,88,.06); cursor: zoom-in; }
+    .history-manual-thumb.active { border-color: #3154ff; box-shadow: 0 0 0 1px #3154ff; }
+    .history-manual-thumb i { display: block; width: 100%; height: 100%; background: linear-gradient(180deg, #f7fafc 0 18%, #fff 18% 100%); position: relative; }
+    .history-manual-thumb i::before { content: ''; position: absolute; inset: 18px 10px 10px; background: repeating-linear-gradient(to bottom, #9da8b8 0 2px, transparent 2px 9px); opacity: .75; }
+    .history-manual-thumb i::after { content: ''; position: absolute; top: 8px; left: 10px; width: 28px; height: 6px; border-radius: 6px; background: #3154ff; opacity: .18; }
+    .history-manual-thumb.image i { background: linear-gradient(180deg, #dff1ff 0 48%, #f7fbff 48%); }
+    .history-manual-thumb.image i::before { inset: auto 8px 10px; height: 38px; border-radius: 5px; background: linear-gradient(140deg, transparent 0 42%, #56aa68 43% 68%, transparent 69%), linear-gradient(35deg, #426cff 0 46%, transparent 47%), linear-gradient(180deg, #eef8ff, #cfe6ff); opacity: 1; }
+    .history-manual-thumb.image i::after { top: 12px; left: 12px; width: 12px; height: 12px; border-radius: 50%; background: #ffbe45; box-shadow: 34px 50px 0 -3px rgba(255,255,255,.9); opacity: 1; }
+    .history-manual-thumb.pdf i { display: flex; align-items: center; justify-content: center; background: linear-gradient(180deg, #fff7f7, #fff); color: #ff4d4f; font-size: 16px; font-style: normal; font-weight: 900; }
+    .history-manual-thumb.pdf i::before { content: 'PDF'; position: static; inset: auto; background: none; opacity: 1; }
+    .history-manual-thumb.pdf i::after { content: ''; top: 0; right: 0; left: auto; width: 18px; height: 18px; border-radius: 0 0 0 6px; background: linear-gradient(135deg, #ffd7d8 50%, #fff 50%); opacity: 1; }
+    .history-ai-summary { margin: 16px 16px 0; padding: 14px 16px; border: 1px solid #dbe8ff; border-radius: 8px; background: linear-gradient(135deg, #f8fbff, #f4f7ff); color: #34435f; font-size: 14px; line-height: 1.8; }
+    .history-ai-summary strong { display: inline-flex; align-items: center; margin-right: 8px; color: #1d4dff; font-weight: 900; }
+    .history-info-card, .history-interpret-card, .history-sync-card { margin-bottom: 16px; border: 1px solid #dfe7f2; border-radius: 8px; background: #fff; overflow: hidden; }
+    .history-card-title { min-height: 42px; padding: 0 16px; display: flex; align-items: center; justify-content: space-between; gap: 12px; border-bottom: 1px solid #e8eef6; color: #22314c; font-size: 15px; font-weight: 800; }
+    .history-card-title-note { color: #98a4b4; font-size: 12px; font-weight: 500; }
+    .history-info-grid { padding: 16px; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px 20px; }
+    .history-info-item { min-height: 52px; padding: 10px 12px; border-radius: 6px; background: #f7f9fc; }
+    .history-info-label { display: block; margin-bottom: 6px; color: #7b8799; font-size: 12px; }
+    .history-info-value { color: #22314c; font-size: 14px; font-weight: 800; }
+    .history-interpret-list { padding: 16px; display: grid; gap: 14px; }
+    .history-interpret-row { padding: 14px 16px; border: 1px solid #e5ebf4; border-radius: 8px; color: #44536c; font-size: 14px; line-height: 1.85; background: #fbfcff; }
+    .history-interpret-row strong { display: block; margin-bottom: 8px; color: #1d4dff; font-weight: 900; }
+    .history-interpret-row.abnormal { border-color: #f6d58a; background: #fff9e8; }
+    .history-interpret-row.abnormal strong { color: #d68a00; }
+    .history-interpret-row.analysis { background: #f8fbff; }
+    .history-interpret-row.suggestion { background: #fbfff9; border-color: #e0efd9; }
+    .history-sync-summary { padding: 16px; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+    .history-sync-item { min-height: 80px; padding: 14px 16px; border: 1px solid #e2e9f3; border-radius: 8px; background: linear-gradient(180deg, #fbfdff, #f7faff); }
+    .history-sync-item span { display: block; margin-bottom: 10px; color: #7b8799; font-size: 12px; }
+    .history-sync-item strong { color: #182943; font-size: 20px; font-weight: 900; }
+    .history-sync-table { margin: 0 16px 16px; border: 1px solid #e2e9f3; border-radius: 8px; overflow: hidden; }
+    .history-sync-row { min-height: 42px; padding: 0 14px; display: grid; grid-template-columns: 150px minmax(0, 1fr); align-items: center; border-bottom: 1px solid #edf2f7; color: #40506a; font-size: 14px; }
+    .history-sync-row:last-child { border-bottom: 0; }
+    .history-sync-row strong { color: #253653; font-weight: 800; }
+    .medical-paper { width: clamp(220px, 31vw, 256px); min-height: clamp(430px, 60vw, 494px); padding: 18px 20px; color: #202734; background: #fff; box-shadow: 0 1px 3px rgba(31,51,82,.08); font-size: 8px; line-height: 1.55; }
+    .medical-paper-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; margin-bottom: 8px; }
+    .medical-qr { width: 34px; height: 34px; background: repeating-linear-gradient(90deg, #101820 0 3px, transparent 3px 6px), repeating-linear-gradient(0deg, rgba(16,24,32,.9) 0 3px, transparent 3px 6px); opacity: .8; }
+    .medical-paper h3 { margin: 0; flex: 1; text-align: center; color: #2b3446; font-size: 10px; line-height: 1.35; }
+    .medical-paper.record-sheet { width: min(590px, 92%); min-height: auto; padding: 42px 54px; color: #26344f; box-shadow: none; font-size: 14px; line-height: 1.78; }
+    .record-sheet-title { margin: 0 0 28px; padding-bottom: 24px; border-bottom: 1px solid #e6e9ef; color: #25324d; font-size: 30px; font-weight: 900; line-height: 1.2; text-align: center; letter-spacing: 1px; }
+    .record-sheet-top { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px 26px; margin-bottom: 16px; color: #536079; font-size: 12px; }
+    .record-sheet-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px 52px; margin-bottom: 26px; color: #34415b; }
+    .record-sheet-field { display: grid; grid-template-columns: 74px minmax(0, 1fr); gap: 12px; align-items: start; }
+    .record-sheet-field label, .record-sheet-section label { color: #6b768c; font-weight: 700; letter-spacing: 4px; white-space: nowrap; }
+    .record-sheet-section { display: grid; grid-template-columns: 74px minmax(0, 1fr); gap: 16px; margin: 14px 0; color: #34415b; }
+    .record-sheet-divider { height: 1px; margin: 22px 0; background: #e6e9ef; }
+    .record-sheet-sign { margin-top: 28px; display: grid; justify-content: end; gap: 12px; color: #34415b; }
+    .record-sheet-table { width: 100%; margin: 14px 0; border-collapse: collapse; color: #34415b; font-size: 12px; line-height: 1.5; }
+    .record-sheet-table th, .record-sheet-table td { padding: 8px 10px; border: 1px solid #e5e9f1; text-align: center; vertical-align: middle; }
+    .record-sheet-table th { background: #f7f8fb; color: #56627a; font-weight: 700; }
+    .record-radio-line { display: flex; flex-wrap: wrap; gap: 16px; color: #34415b; }
+    .record-radio::before { content: ''; width: 9px; height: 9px; margin-right: 6px; display: inline-block; border: 1px solid #aeb7c8; border-radius: 50%; vertical-align: -1px; }
+    .record-radio.checked::before { border-color: #536079; box-shadow: inset 0 0 0 3px #536079; }
+    .lab-up { color: #f04438; font-weight: 900; }
+    .lab-down { color: #3154ff; font-weight: 900; }
+    .medical-stamp { width: 32px; height: 32px; border: 2px dotted #9aa4b2; border-radius: 50%; opacity: .7; }
+    .medical-row { display: flex; justify-content: space-between; border-bottom: 1px solid #eceff4; }
+    .medical-block { margin-top: 7px; }
+    .medical-line { height: 7px; margin-bottom: 4px; background: linear-gradient(90deg, #2d3442 var(--w, 80%), transparent 0); opacity: .68; }
+    .medical-table { margin-top: 10px; display: grid; grid-template-columns: repeat(4, 1fr); gap: 4px 9px; border-top: 1px solid #7e8795; border-bottom: 1px solid #7e8795; padding: 8px 0; }
+    .medical-page-no { margin-top: 8px; text-align: center; color: #707a89; }
+    .history-lightbox { position: fixed; inset: 0; z-index: 80; display: none; align-items: center; justify-content: center; padding: 40px; background: rgba(18,30,52,.62); }
+    .history-lightbox.open { display: flex; }
+    .history-lightbox-card { width: min(520px, 88vw); height: min(720px, 82vh); padding: 34px 42px; border-radius: 10px; background: #fff; box-shadow: 0 24px 70px rgba(0,0,0,.28); position: relative; }
+    .history-lightbox-close { position: absolute; top: 12px; right: 12px; width: 30px; height: 30px; border-radius: 50%; color: #52617a; background: #f3f6fb; font-size: 20px; line-height: 1; }
+    .history-lightbox-paper { width: 100%; height: 100%; border: 1px solid #e0e6ef; background: linear-gradient(180deg, #f8fafc 0 12%, #fff 12% 100%); position: relative; overflow: hidden; }
+    .history-lightbox-paper::before { content: ''; position: absolute; inset: 76px 48px 48px; background: repeating-linear-gradient(to bottom, #7f8795 0 3px, transparent 3px 18px); opacity: .75; }
+    .history-lightbox-paper::after { content: '病历报告预览'; position: absolute; top: 34px; left: 0; right: 0; text-align: center; color: #263752; font-size: 18px; font-weight: 900; }
+    .medical-record-page { min-width: 0; height: 100vh; overflow: hidden; background: #fff; color: #2a3853; }
+    .medical-record-shell { width: min(100vw, 1440px); height: 100vh; margin: 0 auto; display: grid; grid-template-columns: clamp(252px, 32vw, 280px) minmax(0, 1fr); grid-template-rows: 56px minmax(0, 1fr); overflow: hidden; border-radius: 8px; background: #fff; }
+    .medical-record-head { grid-column: 1 / -1; height: 56px; padding: 0 24px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid #e7edf5; }
+    .medical-record-title { margin: 0; padding-left: 10px; border-left: 3px solid #1d4dff; color: #223149; font-size: 18px; font-weight: 800; }
+    .medical-record-upload { height: 32px; padding: 0 14px; display: inline-flex; align-items: center; gap: 8px; border: 1px solid #e0e6ef; border-radius: 4px; color: #314058; background: #fff; font-size: 13px; font-weight: 700; }
+    .medical-record-upload svg, .medical-record-action svg { width: 16px; height: 16px; }
+    .medical-record-side { min-height: 0; padding: 16px 24px 24px; overflow-y: auto; border-right: 1px solid #e7edf5; }
+    .medical-record-tabs { display: grid; grid-template-columns: repeat(5, 1fr); margin-bottom: 18px; border-radius: 6px; background: #f6f8fc; }
+    .medical-record-tab { height: 48px; display: flex; flex-direction: column; align-items: center; justify-content: center; color: #263752; font-size: 13px; font-weight: 700; border-radius: 6px; }
+    .medical-record-tab small { margin-top: 3px; color: #9aa6b8; font-size: 10px; font-weight: 400; }
+    .medical-record-tab.active { color: #1d3fff; background: #fff; box-shadow: 0 1px 0 rgba(49,84,255,.12); }
+    .medical-record-tab.active::after { content: ''; width: 22px; height: 3px; margin-top: 4px; border-radius: 3px; background: #1d3fff; }
+    .medical-record-tree { display: grid; gap: 12px; }
+    .medical-record-date { min-height: 24px; display: flex; align-items: center; gap: 10px; color: #263752; font-size: 15px; font-weight: 800; }
+    .medical-record-date.active { color: #1d3fff; }
+    .medical-record-arrow { width: 12px; color: #b8c2d0; font-size: 12px; }
+    .medical-record-children { margin: -4px 0 4px 17px; padding: 6px 0 6px 18px; display: grid; gap: 12px; border-left: 1px solid #edf1f6; }
+    .medical-record-file { min-height: 24px; display: flex; align-items: center; gap: 8px; color: #52617a; font-size: 13px; }
+    .medical-record-file.active { color: #1d3fff; font-weight: 700; }
+    .medical-record-file-tag { width: 22px; height: 22px; display: grid; place-items: center; border-radius: 4px; color: #3154ff; background: #eef3ff; font-size: 12px; font-weight: 800; }
+    .medical-record-date.selected { height: 32px; padding-left: 34px; border-radius: 4px; background: #f5f7fb; }
+    .medical-record-view { position: relative; min-width: 0; min-height: 0; padding: 18px 18px 16px; overflow-y: auto; }
+    .medical-record-actions { position: absolute; top: 16px; right: 18px; display: flex; gap: 10px; }
+    .medical-record-action { width: 28px; height: 28px; display: grid; place-items: center; border-radius: 4px; color: #52617a; background: #f6f8fc; }
+    .medical-record-note { color: #98a4b4; font-size: 12px; line-height: 1.7; }
+    .medical-record-name { margin: -18px 0 44px; color: #2b3b55; font-size: clamp(24px, 3.4vw, 30px); font-weight: 900; text-align: center; letter-spacing: 1px; }
+    .medical-record-meta { margin: 0 0 22px; display: grid; grid-template-columns: 1fr 1fr; gap: 36px; color: #52617a; font-size: 14px; }
+    .medical-record-meta strong { margin-right: 24px; color: #52617a; font-weight: 500; letter-spacing: 8px; }
+    .medical-record-thumbs { margin-bottom: 20px; display: flex; align-items: center; gap: 10px; }
+    .medical-record-thumb { width: 42px; height: 52px; border: 1px solid #cfd8e6; border-radius: 3px; background: #fff; box-shadow: 0 1px 3px rgba(31,51,82,.08); }
+    .medical-record-thumb.active { border-color: #3154ff; box-shadow: 0 0 0 1px #3154ff; }
+    .medical-record-thumb::before { content: ''; display: block; height: 100%; margin: 7px; background: repeating-linear-gradient(to bottom, #a7b1c0 0 1px, transparent 1px 6px); opacity: .75; }
+    .medical-record-stage { min-height: min(65vh, 526px); padding: clamp(18px, 3vh, 28px) 0; display: flex; justify-content: center; align-items: flex-start; border-radius: 12px; background: #f7f7fa; }
+    @media (max-width: 760px) {
+      .archive-page.history-document-mode .archive-history-card { grid-template-columns: 1fr; grid-template-rows: 56px 282px minmax(0, 1fr); }
+      .archive-page.history-document-mode .archive-history-list { border-right: 0; border-bottom: 1px solid #e4ebf4; }
+      .archive-page.history-document-mode .archive-history-viewer { padding: 16px; }
+      .history-report-meta { grid-template-columns: 1fr; gap: 8px; }
+      .history-document-stage { min-height: 420px; }
+    }
     .checkin-panel { height: calc(100vh - 86px); min-height: 0; overflow: hidden; border: 1px solid #dce6f2; border-radius: 9px; background: #fff; box-shadow: 0 4px 16px rgba(31,51,82,.04); }
     .checkin-head { height: 56px; padding: 0 22px; display: flex; align-items: center; gap: 10px; border-bottom: 1px solid #e5ebf3; color: #253751; font-size: 15px; font-weight: 800; }
     .checkin-head svg { width: 18px; height: 18px; color: #61708a; stroke-width: 2.6; }
@@ -1928,7 +2389,7 @@
       <aside class="sidebar">
         <div class="brand"><div class="seal" aria-hidden="true"></div><span>AI患者管理系统</span></div>
         <nav class="menu">
-          <div class="menu-section"><div class="menu-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="4" y="5" width="16" height="11" rx="1.5"/><path d="M8 20h8M12 16v4"/></svg><span>工作台</span></div></div>
+          <div class="menu-section"><div class="menu-item" data-list-view="workbench"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="4" y="5" width="16" height="11" rx="1.5"/><path d="M8 20h8M12 16v4"/></svg><span>工作台</span></div></div>
           <div class="menu-section"><div class="menu-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M8 4h8l3 3v13H5V4h3Z"/><path d="M9 12h6M9 16h4"/></svg><span>任务管理</span><svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="m18 15-6-6-6 6"/></svg></div><div class="submenu"><div class="submenu-item" data-list-view="healthTasks">健康任务</div><div class="submenu-item">预警任务</div><div class="submenu-item" data-list-view="checkinEvaluation">评价任务</div></div></div>
           <div class="menu-section"><div class="menu-item" data-list-view="patients"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8Z"/><path d="M4 21a8 8 0 0 1 16 0"/></svg><span>患者管理</span><svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="m18 15-6-6-6 6"/></svg></div><div class="submenu"><div class="submenu-item" data-list-view="patients">全部患者</div><div class="submenu-item" data-patient-team-list>团队患者</div></div></div>
           <div class="menu-section">
@@ -1943,6 +2404,115 @@
       </aside>
       <main class="list-main">
         <header class="page-title" id="listPageTitle">方案管理</header>
+        <section class="list-panel list-view workbench-view" id="workbenchView">
+          <div class="workbench-shell">
+            <section class="workbench-ai-card">
+              <div class="workbench-chat">
+                <div class="workbench-chat-head">
+                  <div class="workbench-chat-avatar" aria-hidden="true"><span></span><i></i></div>
+                  <div>
+                    <div class="workbench-chat-title">AI小助手</div>
+                    <div class="workbench-chat-subtitle">实时整理待办、随访和患者运营线索</div>
+                  </div>
+                </div>
+                <div class="workbench-chat-body" id="workbenchChatBody">
+                  <div class="workbench-ai-insight">
+                    <div class="workbench-ai-insight-title">今日智能洞察 <span>实时分析</span></div>
+                    <div class="workbench-ai-metrics">
+                      <div class="workbench-ai-metric"><b>5</b><small>重点待办</small></div>
+                      <div class="workbench-ai-metric"><b>3</b><small>高优任务</small></div>
+                      <div class="workbench-ai-metric"><b>32</b><small>逾期随访</small></div>
+                    </div>
+                  </div>
+                  <div class="workbench-risk-card"><strong>AI 风险提醒</strong>当前高优任务集中在入组审核、患者手机号补充和外呼失败处理，若延后处理会影响今日随访触达率。</div>
+                  <div class="workbench-suggestion-card">
+                    <h3>推荐处理路径</h3>
+                    <ol>
+                      <li>先审核待入组患者，避免预分组患者积压。</li>
+                      <li>补齐缺失手机号，再触发二次外呼。</li>
+                      <li>最后处理今日待办随访，保持完成率稳定。</li>
+                    </ol>
+                  </div>
+                  <div class="workbench-message ai"><strong>张医生，上午好！</strong>今日已为您整理 5 条重点待办，优先处理患者入组审核、手机号补充和 AI 外呼失败任务。</div>
+                  <div class="workbench-message user">帮我看一下今天最需要先处理什么？</div>
+                  <div class="workbench-message ai"><strong>建议优先顺序</strong>先处理高优任务：待审核患者入组、补充患者手机号、AI 外呼失败处理。完成后再进入今日待办随访任务。</div>
+                </div>
+                <div class="workbench-quick-row">
+                  <button type="button" data-workbench-quick="汇总今日待办">汇总今日待办</button>
+                  <button type="button" data-workbench-quick="查看高优任务">查看高优任务</button>
+                  <button type="button" data-workbench-quick="生成随访建议">生成随访建议</button>
+                </div>
+                <label class="workbench-chat-input">
+                  <input id="workbenchChatInput" placeholder="问问 AI 小助手今天需要处理什么..." />
+                  <button type="button" data-workbench-send aria-label="发送"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="m22 2-7 20-4-9-9-4 20-7Z"/><path d="M22 2 11 13"/></svg></button>
+                </label>
+              </div>
+              <div class="workbench-ai-badge">AI小助手</div>
+              <h1 class="workbench-greeting">张医生，上午好！</h1>
+              <p class="workbench-subtext">AI小助手已为您整理今日工作信息</p>
+              <div class="workbench-robot" aria-hidden="true">
+                <span class="robot-ghost-card"></span>
+                <span class="robot-ghost-chart"></span>
+                <span class="robot-ear left"></span>
+                <span class="robot-ear right"></span>
+                <span class="robot-arm left"></span>
+                <span class="robot-arm right"></span>
+                <span class="robot-hand left"></span>
+                <span class="robot-hand right"></span>
+                <span class="robot-body"></span>
+                <span class="robot-head"><span class="robot-face"></span></span>
+                <span class="robot-leg left"></span>
+                <span class="robot-leg right"></span>
+                <span class="robot-platform"></span>
+              </div>
+              <div class="workbench-auto-card">
+                <div class="workbench-auto-title">AI小助手今日已自动执行</div>
+                <div class="workbench-auto-grid">
+                  <div class="workbench-auto-item"><span>智能分组</span><strong>2431 <b>例患者</b></strong><small>累计 <em>154771</em></small></div>
+                  <div class="workbench-auto-item"><span>智能外呼</span><strong>2431 <b>次外呼</b></strong><small>累计 <em>154771</em></small></div>
+                </div>
+              </div>
+            </section>
+            <section class="workbench-right">
+              <div class="workbench-stats">
+                <div class="workbench-stat"><span>&#20170;&#26085;&#20837;&#32452;</span><strong>124</strong><b>&#20363;</b><small>&#36739;&#26152;&#26085; <em class="green">+12</em></small></div>
+                <div class="workbench-stat"><span>&#26234;&#33021;&#20998;&#32452;</span><strong>2,431</strong><b>&#20363;</b><small>&#32047;&#35745; <em class="blue">154771</em></small></div>
+                <div class="workbench-stat"><span>&#25163;&#21160;&#20998;&#32452;</span><strong>86</strong><b>&#20363;</b><small>&#24453;&#30830;&#35748; <em class="red">5</em></small></div>
+                <div class="workbench-stat"><span>&#31649;&#29702;&#20013;</span><strong>23</strong><b>&#20154;</b><small>&#38543;&#35775;&#20013; <em class="green">32</em></small></div>
+                <div class="workbench-stat"><span>&#26234;&#33021;&#22806;&#21628;</span><strong>2,431</strong><b>&#27425;</b><small>&#22833;&#36133; <em class="red">3</em></small></div>
+                <div class="workbench-stat"><span>&#20170;&#26085;&#23436;&#25104;</span><strong>7,171</strong><b>&#20363;</b><small>&#26412;&#26376; <em class="blue">12414</em></small></div>
+              </div>
+              <h2 class="workbench-section-title">&#20170;&#26085;&#24453;&#21150;</h2>
+              <div class="workbench-todos">
+                <article class="workbench-todo">
+                  <span class="workbench-todo-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="9" cy="7" r="4"/><path d="M3 21v-2a6 6 0 0 1 6-6h1"/><path d="m16 17 2 2 4-5"/></svg></span>
+                  <div class="workbench-todo-main"><div class="workbench-todo-head">&#24453;&#23457;&#26680;&#24739;&#32773;&#20837;&#32452;<span class="workbench-priority">&#39640;&#20248;</span></div><span class="workbench-todo-desc">&#20849;5&#20010;&#39044;&#20998;&#32452;&#24739;&#32773;&#24453;&#23457;&#26680;</span></div>
+                  <button class="workbench-todo-action">&#21069;&#24448;&#23457;&#26680;</button>
+                </article>
+                <article class="workbench-todo">
+                  <span class="workbench-todo-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="4" y="4" width="6" height="6" rx="1.5"/><rect x="14" y="4" width="6" height="6" rx="1.5"/><rect x="4" y="14" width="6" height="6" rx="1.5"/><rect x="14" y="14" width="6" height="6" rx="1.5"/></svg></span>
+                  <div class="workbench-todo-main"><div class="workbench-todo-head">补充患者手机号<span class="workbench-priority">高优</span></div><span class="workbench-todo-desc">共5个预分组患者待审核</span></div>
+                  <button class="workbench-todo-action">再次外呼<span class="split">|</span>前往补充</button>
+                </article>
+                <article class="workbench-todo">
+                  <span class="workbench-todo-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7l.5 2.4a2 2 0 0 1-.5 1.8l-1 1a14 14 0 0 0 5.8 5.8l1-1a2 2 0 0 1 1.8-.5l2.4.5a2 2 0 0 1 1.7 2Z"/><path d="m16 3 5 5"/><path d="m21 3-5 5"/></svg></span>
+                  <div class="workbench-todo-main"><div class="workbench-todo-head">AI外呼失败处理<span class="workbench-priority">高优</span></div><span class="workbench-todo-desc">共5个预分组患者待审核</span></div>
+                  <button class="workbench-todo-action">前往审核</button>
+                </article>
+                <article class="workbench-todo">
+                  <span class="workbench-todo-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="4" y="5" width="16" height="15" rx="2"/><path d="M8 3v4M16 3v4M4 10h16"/><path d="M9 15h4"/><path d="m15 14 2 2 3-4"/></svg></span>
+                  <div class="workbench-todo-main"><div class="workbench-todo-head">今日待办随访任务</div><span class="workbench-todo-desc">共5个预分组患者待审核</span></div>
+                  <button class="workbench-todo-action">前往审核</button>
+                </article>
+                <article class="workbench-todo">
+                  <span class="workbench-todo-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="5" y="3" width="14" height="18" rx="2"/><path d="M9 8h6M9 12h6M9 16h3"/><path d="m15 16 1.5 1.5L20 14"/></svg></span>
+                  <div class="workbench-todo-main"><div class="workbench-todo-head">今日待办随访任务</div><span class="workbench-todo-desc">共5个预分组患者待审核</span></div>
+                  <button class="workbench-todo-action">前往审核</button>
+                </article>
+              </div>
+            </section>
+          </div>
+        </section>
         <section class="list-panel list-view active plan-management-view" id="planManagementView">
           <div class="plan-shell">
             <div class="plan-topbar">
@@ -2600,7 +3170,7 @@
           <button class="archive-nav-item active" data-archive-tab="basic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="9" cy="10" r="2"/><path d="M6 16c.8-2 5.2-2 6 0M14 9h4M14 13h4"/></svg>健康概览</button>
           <button class="archive-nav-item" data-archive-tab="health"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M8 4v4a4 4 0 0 0 8 0V4M6 4h4M14 4h4M12 12v2a5 5 0 0 0 10 0v-2"/><circle cx="20" cy="10" r="2"/></svg>健康管理</button>
           <button class="archive-nav-item" data-archive-tab="checkin"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="4" y="5" width="16" height="15" rx="2"/><path d="M8 3v4M16 3v4M4 10h16M8 14h3M13 14h3M8 17h3"/></svg>健康打卡</button>
-          <button class="archive-nav-item" data-archive-tab="history"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M5 4h12l2 2v14H5z"/><path d="M8 9h8M8 13h8M8 17h5M8 2v4M16 2v4"/></svg>病历档案</button>
+          <button class="archive-nav-item" data-archive-tab="history"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M5 4h12l2 2v14H5z"/><path d="M8 9h8M8 13h8M8 17h5M8 2v4M16 2v4"/></svg>病历文档</button>
         </nav>
       </aside>
       <main class="archive-main">
@@ -2661,6 +3231,79 @@
             </section>
           </section>
         </section>
+        <section class="archive-panel archive-history-panel" data-archive-panel="history" hidden>
+          <div class="archive-history-card">
+            <header class="archive-history-head">
+              <h2 class="archive-history-title">病历档案</h2>
+              <div class="archive-history-actions">
+                <button class="archive-parse-btn" data-archive-parse-report><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M4 5h16v14H4z"/><path d="M8 9h8M8 13h5"/></svg>解析报告<span class="archive-parse-badge" data-archive-parse-count></span></button>
+                <button class="archive-upload-btn" data-open-archive-upload><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M12 5v14M5 12h14"/></svg>上传资料</button>
+              </div>
+            </header>
+            <aside class="archive-history-list">
+              <div class="history-tabs">
+                <button class="history-tab active" data-history-tab-filter="all">全部<small>12条</small></button>
+                <button class="history-tab" data-history-tab-filter="visit">就诊<br>记录<small>4条</small></button>
+                <button class="history-tab" data-history-tab-filter="prescription">处方<br>记录<small>3条</small></button>
+                <button class="history-tab" data-history-tab-filter="report">报告单<small>5条</small></button>
+              </div>
+              <div class="history-tree">
+                <div class="history-date active" data-history-toggle data-history-group="visit"><span class="history-date-line"><span class="arrow">▼</span><span class="history-date-name">2024-02-02 住院病历</span><span class="history-type-tag inpatient">住院</span></span></div>
+                <div class="history-children">
+                  <div class="history-category" data-history-toggle><span class="arrow">▼</span><span>病案首页</span></div>
+                  <div class="history-subchildren"><div class="history-file active"><span class="history-file-name">住院病案首页</span><span class="history-upload-tag patient">患者上传</span></div></div>
+                  <div class="history-category" data-history-toggle><span class="arrow">▼</span><span>出院记录</span></div>
+                  <div class="history-subchildren"><div class="history-file"><span class="history-file-name">出院小结</span><span class="history-upload-tag sync">自动同步</span></div></div>
+                  <div class="history-category" data-history-toggle><span class="arrow">▼</span><span>护理记录</span></div>
+                  <div class="history-subchildren"><div class="history-file"><span class="history-file-name">首次护理记录单</span><span class="history-upload-tag nurse">医护上传</span></div></div>
+                  <div class="history-category" data-history-toggle><span class="arrow">▼</span><span>检查记录</span></div>
+                  <div class="history-subchildren"><div class="history-file"><span class="history-file-name">胸部CT检查报告</span><span class="history-upload-tag sync">自动同步</span></div></div>
+                </div>
+                <div class="history-date" data-history-toggle data-history-group="visit"><span class="history-date-line"><span class="arrow">▼</span><span class="history-date-name">2024-02-02 门诊病历</span><span class="history-type-tag outpatient">门诊</span></span></div>
+                <div class="history-children">
+                  <div class="history-file"><span class="history-file-name">门诊病历记录</span><span class="history-upload-tag nurse">医护上传</span></div>
+                  <div class="history-file"><span class="history-file-name">血常规检查检验报告</span><span class="history-upload-tag patient">患者上传</span></div>
+                </div>
+                <div class="history-date collapsed" data-history-toggle data-history-group="prescription"><span class="history-date-line"><span class="arrow">▶</span><span class="history-date-name">2024-02-01 用药处方</span><span class="history-type-tag outpatient">门诊</span></span></div>
+                <div class="history-children"><div class="history-file"><span class="history-file-name">门诊处方笺</span><span class="history-upload-tag sync">自动同步</span></div><div class="history-file"><span class="history-file-name">用药清单</span><span class="history-upload-tag nurse">医护上传</span></div><div class="history-file"><span class="history-file-name">补充用药记录</span><span class="history-upload-tag patient">患者上传</span></div></div>
+                <div class="history-date collapsed" data-history-toggle data-history-group="report"><span class="history-date-line"><span class="arrow">▶</span><span class="history-date-name">2024-01-28 体检报告</span><span class="history-type-tag checkup">体检</span></span></div>
+                <div class="history-children"><div class="history-file"><span class="history-file-name">体检报告</span><span class="history-upload-tag nurse">医护上传</span></div><div class="history-file"><span class="history-file-name">肝肾功能检验报告</span><span class="history-upload-tag sync">自动同步</span></div></div>
+                <div class="history-date collapsed" data-history-toggle data-history-group="report"><span class="history-date-line"><span class="arrow">▶</span><span class="history-date-name">2024-01-20 急诊资料</span><span class="history-type-tag emergency">急诊</span></span></div>
+                <div class="history-children"><div class="history-file"><span class="history-file-name">急诊病历报告</span><span class="history-upload-tag patient">患者上传</span></div></div>
+                <div class="history-date selected"><span class="history-date-line"><span>2024-02-02</span></span></div>
+              </div>
+            </aside>
+            <section class="archive-history-viewer">
+              <div class="history-viewer-actions">
+                <button class="history-action" aria-label="编辑"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg></button>
+                <button class="history-action" aria-label="删除"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M3 6h18M8 6V4h8v2M6 6l1 14h10l1-14M10 11v5M14 11v5"/></svg></button>
+              </div>
+              <div class="history-note">*本资料由患者上传<br>*非本院资料</div>
+              <h2 class="history-report-title">病历治疗名称</h2>
+              <div class="history-report-meta">
+                <div><strong>姓名</strong>陈患者</div>
+                <div><strong>日期</strong>2024/02/10 01:00</div>
+              </div>
+              <div class="history-thumbs">
+                <span class="history-thumb active"></span>
+                <span class="history-thumb"></span>
+                <span class="history-thumb"></span>
+              </div>
+              <div class="history-document-stage">
+                <article class="medical-paper" aria-label="病历报告预览">
+                  <div class="medical-paper-head"><span class="medical-qr"></span><h3>南方医科大学中西医结合医院<br>门（急）诊电子病历</h3><span class="medical-stamp"></span></div>
+                  <div class="medical-row"><span>姓名：陈患者</span><span>性别：女</span><span>年龄：55岁</span></div>
+                  <div class="medical-row"><span>科室：综合内科</span><span>就诊时间：2025/6/4 14:33:11</span></div>
+                  <div class="medical-block"><div class="medical-line" style="--w:92%"></div><div class="medical-line" style="--w:78%"></div><div class="medical-line" style="--w:88%"></div><div class="medical-line" style="--w:70%"></div></div>
+                  <div class="medical-block"><div class="medical-line" style="--w:95%"></div><div class="medical-line" style="--w:84%"></div><div class="medical-line" style="--w:91%"></div><div class="medical-line" style="--w:76%"></div><div class="medical-line" style="--w:89%"></div><div class="medical-line" style="--w:82%"></div></div>
+                  <div class="medical-block"><div class="medical-line" style="--w:92%"></div><div class="medical-line" style="--w:86%"></div><div class="medical-line" style="--w:74%"></div><div class="medical-line" style="--w:95%"></div><div class="medical-line" style="--w:80%"></div></div>
+                  <div class="medical-table"><span>西药 30g</span><span>葛根 20g</span><span>黄芪 15g</span><span>陈皮 10g</span><span>山药 10g</span><span>茯苓 15g</span><span>麦冬 15g</span><span>砂仁 6g</span><span>甘草 20g</span><span>薏米 10g</span><span>水煎服</span><span>7剂</span></div>
+                  <div class="medical-page-no">1/2</div>
+                </article>
+              </div>
+            </section>
+          </div>
+        </section>
       </main>
     </div>
   </section>
@@ -2707,6 +3350,81 @@
   <div class="modal-mask" id="patientSaveModal" aria-hidden="true">
     <div class="publish-confirm" role="dialog" aria-modal="true" aria-labelledby="patientSaveTitle"><div class="publish-confirm-body"><h2 id="patientSaveTitle">确认保存</h2><p>是否保存当前指标看板模板的配置内容？</p></div><div class="publish-confirm-foot"><button class="secondary-btn" data-cancel-patient-save>取消</button><button class="confirm-btn" data-confirm-patient-save>确定</button></div></div>
   </div>
+  <div class="archive-upload-modal" id="archiveUploadModal" aria-hidden="true">
+    <div class="archive-upload-dialog" role="dialog" aria-modal="true" aria-labelledby="archiveUploadTitle">
+      <header class="archive-upload-head"><h2 id="archiveUploadTitle">上传病历资料</h2><button class="archive-upload-close" data-close-archive-upload aria-label="关闭">×</button></header>
+      <section class="archive-upload-body">
+        <input class="archive-upload-file-input" id="archiveUploadInput" type="file" accept=".pdf,image/png,image/jpeg" multiple>
+        <label class="archive-upload-merge" for="archiveUploadMergeTop">
+          <input type="checkbox" id="archiveUploadMergeTop">
+          <span>以上内容属于同一份报告，合并解读。</span>
+        </label>
+        <p class="archive-upload-tip">• 可拖拽或点击上传，支持多文件上传（PDF，PNG，JPG）</p>
+        <button class="archive-upload-box" data-archive-upload-trigger aria-label="添加文件">+</button>
+      </section>
+      <footer class="archive-upload-foot">
+        <div class="archive-upload-footer-meta">
+          <label class="archive-upload-remark" for="archiveUploadRemark">
+            <span>备注信息</span>
+            <input class="archive-upload-remark-input" id="archiveUploadRemark" type="text" placeholder="请输入备注信息">
+          </label>
+          <label class="archive-upload-merge" for="archiveUploadMerge">
+            <input type="checkbox" id="archiveUploadMerge">
+            <span>以上内容属于同一份报告，合并解读。</span>
+          </label>
+        </div>
+        <div class="archive-upload-actions">
+          <button class="archive-upload-cancel" data-close-archive-upload>取消</button>
+          <button class="archive-upload-confirm" data-confirm-archive-upload>确定</button>
+        </div>
+      </footer>
+    </div>
+  </div>
+  <div class="archive-parse-backdrop" id="archiveParseBackdrop" data-close-archive-parse aria-hidden="true"></div>
+  <aside class="archive-parse-drawer" id="archiveParseDrawer" aria-hidden="true" aria-labelledby="archiveParseTitle">
+    <header class="archive-parse-head">
+      <h2 id="archiveParseTitle">报告解析</h2>
+      <button class="archive-parse-close" data-close-archive-parse aria-label="关闭">×</button>
+    </header>
+    <div class="archive-parse-tabs" role="tablist" aria-label="报告解析状态">
+      <button class="archive-parse-tab active" data-archive-parse-tab="all">全部</button>
+      <button class="archive-parse-tab" data-archive-parse-tab="pending">待补充</button>
+      <button class="archive-parse-tab" data-archive-parse-tab="done">已完成</button>
+      <button class="archive-parse-tab" data-archive-parse-tab="failed">已失败</button>
+    </div>
+    <div class="archive-parse-body" id="archiveParseBody"></div>
+  </aside>
+  <datalist id="archiveParsePatientOptions">
+    <option value="陈患者"></option>
+    <option value="黄尚忠"></option>
+    <option value="张患者"></option>
+    <option value="李智明"></option>
+    <option value="黄可睿"></option>
+    <option value="冯金柳"></option>
+    <option value="农业宝"></option>
+    <option value="余玉梅"></option>
+    <option value="梁再兴"></option>
+    <option value="韦望林"></option>
+    <option value="刘五妹"></option>
+    <option value="陈惠者"></option>
+    <option value="孙患者"></option>
+    <option value="周患者"></option>
+    <option value="李患者"></option>
+    <option value="王患者"></option>
+    <option value="赵患者"></option>
+    <option value="钱患者"></option>
+    <option value="吴患者"></option>
+    <option value="郑患者"></option>
+    <option value="冯患者"></option>
+    <option value="刘患者"></option>
+    <option value="何患者"></option>
+    <option value="高患者"></option>
+  </datalist>
+  <datalist id="archiveParseTypeOptions">
+    <option value="就诊记录"></option>
+    <option value="处方记录"></option>
+    <option value="报告单"></option>
+  </datalist>
   <div class="modal-mask" id="patientIndicatorModal" aria-hidden="true">
     <div class="indicator-modal" role="dialog" aria-modal="true" aria-labelledby="patientIndicatorModalTitle">
       <div class="modal-head"><h2 id="patientIndicatorModalTitle">添加指标</h2><button class="modal-close" data-close-patient-indicator aria-label="关闭">×</button></div>
@@ -3272,20 +3990,35 @@
     }
 
     function showListView(view) {
+      const isWorkbench = view === 'workbench';
       const isPlans = view === 'plans';
       const isScale = view === 'scale';
       const isIndicator = view === 'indicator';
       const isPatients = view === 'patients';
       const isHealthTasks = view === 'healthTasks';
       const isCheckinEvaluation = view === 'checkinEvaluation';
-      document.getElementById('planManagementView').classList.toggle('active', isPlans);
-      document.getElementById('scaleManagementView').classList.toggle('active', isScale);
-      document.getElementById('indicatorTemplateView').classList.toggle('active', isIndicator);
-      document.getElementById('patientListView').classList.toggle('active', isPatients);
-      document.getElementById('healthTaskView').classList.toggle('active', isHealthTasks);
-      document.getElementById('checkinEvaluationView').classList.toggle('active', isCheckinEvaluation);
-      document.getElementById('listPageTitle').textContent = isHealthTasks ? '健康任务' : isCheckinEvaluation ? '评价任务' : isPatients ? '全部患者' : isIndicator ? '指标模板' : isScale ? '量表管理' : '方案管理';
-      document.querySelectorAll('[data-list-view]').forEach(item => item.classList.toggle('active', item.dataset.listView === view));
+      document.getElementById('workbenchView')?.classList.toggle('active', isWorkbench);
+      document.getElementById('planManagementView')?.classList.toggle('active', isPlans);
+      document.getElementById('scaleManagementView')?.classList.toggle('active', isScale);
+      document.getElementById('indicatorTemplateView')?.classList.toggle('active', isIndicator);
+      document.getElementById('patientListView')?.classList.toggle('active', isPatients);
+      document.getElementById('healthTaskView')?.classList.toggle('active', isHealthTasks);
+      document.getElementById('checkinEvaluationView')?.classList.toggle('active', isCheckinEvaluation);
+      if (document.getElementById('listPageTitle')) document.getElementById('listPageTitle').textContent = isHealthTasks ? '健康任务' : isCheckinEvaluation ? '评价任务' : isPatients ? '全部患者' : isIndicator ? '指标模板' : isScale ? '量表管理' : '方案管理';
+      const listTitleMap = { workbench: '工作台', healthTasks: '健康任务', checkinEvaluation: '评价任务', patients: '全部患者', indicator: '指标模板', scale: '量表管理', plans: '方案管理' };
+      if (document.getElementById('listPageTitle')) document.getElementById('listPageTitle').textContent = listTitleMap[view] || '方案管理';
+      document.querySelector('.list-main')?.classList.toggle('workbench-main', isWorkbench);
+      document.querySelectorAll('[data-list-view]').forEach(item => {
+        const section = item.closest('.menu-section');
+        const childView = section?.querySelector(`.submenu-item[data-list-view="${view}"]`);
+        const isParentWithActiveChild = item.classList.contains('menu-item') && !!childView;
+        item.classList.toggle('active', item.dataset.listView === view && !isParentWithActiveChild);
+      });
+      document.querySelectorAll('.menu-section').forEach(section => {
+        const menuItem = section.querySelector(':scope > .menu-item');
+        if (!menuItem) return;
+        menuItem.classList.toggle('active', menuItem.dataset.listView === view && !section.querySelector('.submenu-item.active'));
+      });
       if (isIndicator) renderIndicatorList();
       if (isPatients) renderPatientList();
       if (isHealthTasks) {
@@ -4498,14 +5231,20 @@
       renderArchiveBoard('90天减肥计划');
       document.querySelectorAll('[data-archive-tab]').forEach(button => button.classList.toggle('active', button.dataset.archiveTab === 'basic'));
       document.querySelectorAll('[data-archive-panel]').forEach(panel => { panel.hidden = panel.dataset.archivePanel !== 'basic'; });
-      document.querySelectorAll('.page').forEach(page => page.classList.remove('active'));
+      document.querySelectorAll('.page').forEach(page => {
+        if (page.id !== 'listPage') page.classList.remove('active');
+      });
+      document.getElementById('listPage').classList.add('active');
+      document.getElementById('patientArchivePage').classList.remove('history-document-mode');
       document.getElementById('patientArchivePage').classList.add('active');
       document.querySelector('.archive-page').scrollTop = 0;
     }
 
     function closePatientArchive() {
+      document.getElementById('patientArchivePage').classList.remove('history-document-mode');
       document.getElementById('patientArchivePage').classList.remove('active');
       document.getElementById('listPage').classList.add('active');
+      document.getElementById('listPage')?.scrollTo?.(0, 0);
       showListView('patients');
     }
 
@@ -5943,7 +6682,47 @@
       };
     }
 
+    document.addEventListener('keydown', e => {
+      if (e.key === 'Enter' && e.target?.id === 'workbenchChatInput') {
+        e.preventDefault();
+        document.querySelector('[data-workbench-send]')?.click();
+      }
+    });
+
     document.addEventListener('click', e => {
+      const workbenchQuick = e.target.closest('[data-workbench-quick]');
+      if (workbenchQuick) {
+        const input = document.getElementById('workbenchChatInput');
+        if (input) input.value = workbenchQuick.dataset.workbenchQuick || workbenchQuick.textContent.trim();
+        document.querySelector('[data-workbench-send]')?.click();
+        return;
+      }
+      const workbenchSend = e.target.closest('[data-workbench-send]');
+      if (workbenchSend) {
+        const input = document.getElementById('workbenchChatInput');
+        const body = document.getElementById('workbenchChatBody');
+        const text = (input?.value || '').trim();
+        if (!text || !body) return;
+        const userMessage = document.createElement('div');
+        userMessage.className = 'workbench-message user live-message';
+        userMessage.textContent = text;
+        const aiMessage = document.createElement('div');
+        aiMessage.className = 'workbench-message ai live-message';
+        aiMessage.innerHTML = '<strong>AI小助手</strong>已根据当前工作台数据生成建议：优先处理高优待办，并关注今日随访完成率和外呼失败任务。';
+        if (text.includes('高优')) {
+          aiMessage.innerHTML = '<strong>高优任务识别</strong>当前有 3 类高优任务：待审核患者入组、补充患者手机号、AI 外呼失败处理。建议按影响范围从入组审核开始处理。';
+        } else if (text.includes('汇总') || text.includes('待办')) {
+          aiMessage.innerHTML = '<strong>今日待办汇总</strong>今日共 5 条待办，其中 3 条高优；进行中随访 124 个，逾期 32 个。建议先处理高优，再清理逾期随访。';
+        } else if (text.includes('随访')) {
+          aiMessage.innerHTML = '<strong>随访建议</strong>优先联系昨日未触达与今日到期患者；对外呼失败患者先补齐手机号，再安排二次外呼，避免影响随访完成率。';
+        } else {
+          aiMessage.innerHTML = '<strong>AI小助手</strong>已根据当前工作台数据生成建议：优先处理高优待办，并关注今日随访完成率和外呼失败任务。';
+        }
+        body.append(userMessage, aiMessage);
+        input.value = '';
+        body.scrollTop = body.scrollHeight;
+        return;
+      }
       const rangeClear = e.target.closest('[data-range-clear]');
       if (rangeClear) {
         e.preventDefault();
@@ -6233,9 +7012,23 @@
       if (archiveTab) {
         document.querySelectorAll('[data-archive-tab]').forEach(button => button.classList.toggle('active', button === archiveTab));
         const targetPanel = document.querySelector(`[data-archive-panel="${archiveTab.dataset.archiveTab}"]`);
+        const isHistoryTab = archiveTab.dataset.archiveTab === 'history';
         document.querySelectorAll('[data-archive-panel]').forEach(panel => {
+          panel.style.display = '';
+          panel.classList.remove('is-visible');
           panel.hidden = targetPanel ? panel !== targetPanel : panel.dataset.archivePanel !== 'basic';
         });
+        const archivePage = document.getElementById('patientArchivePage');
+        if (isHistoryTab && targetPanel) {
+          targetPanel.hidden = false;
+          targetPanel.style.display = 'block';
+          targetPanel.classList.add('is-visible');
+        }
+        archivePage?.classList.toggle('history-document-mode', isHistoryTab);
+        if (archivePage) {
+          archivePage.scrollTop = 0;
+          archivePage.scrollLeft = 0;
+        }
         if (archiveTab.dataset.archiveTab !== 'basic') showToast(`${archiveTab.textContent.trim()}模块已切换`);
         return;
       }
@@ -6793,6 +7586,14 @@
     });
 
     document.addEventListener('input', e => {
+      if (e.target.matches('[data-archive-combobox]')) {
+        filterArchiveParseCombobox(e.target);
+        return;
+      }
+      if (e.target.matches('#patientArchivePage [data-history-search]')) {
+        applyArchiveHistoryFilters(e.target.closest('.archive-history-list'));
+        return;
+      }
       if (e.target.closest('#planCheckinModal')) {
         updatePlanCheckinConfig(e.target);
       }
@@ -8133,5 +8934,1555 @@
       window.__checkinV2Ready = true;
     })();
   </script>
+  <script>
+    (function () {
+      if (!document.querySelector('.page.active')) {
+        document.getElementById('listPage')?.classList.add('active');
+      }
+    })();
+  </script>
+  <script>
+    (function () {
+      function buildArchiveHistoryMarkup() {
+        return `
+          <section class="archive-panel archive-history-panel is-visible" data-archive-panel="history">
+            <div class="archive-history-card">
+              <header class="archive-history-head">
+                <h2 class="archive-history-title">病历档案</h2>
+                <div class="archive-history-actions">
+                  <button class="archive-parse-btn" data-archive-parse-report><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M4 5h16v14H4z"/><path d="M8 9h8M8 13h5"/></svg>解析报告<span class="archive-parse-badge" data-archive-parse-count></span></button>
+                  <button class="archive-upload-btn" data-open-archive-upload><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M12 5v14M5 12h14"/></svg>上传资料</button>
+                </div>
+              </header>
+              <aside class="archive-history-list">
+                <div class="history-tabs">
+                  <button class="history-tab active" data-history-tab-filter="all">全部<small>12条</small></button>
+                  <button class="history-tab" data-history-tab-filter="visit">就诊<br>记录<small>4条</small></button>
+                  <button class="history-tab" data-history-tab-filter="prescription">处方<br>记录<small>3条</small></button>
+                  <button class="history-tab" data-history-tab-filter="report">报告单<small>5条</small></button>
+                </div>
+                <div class="history-tree">
+                  <div class="history-date active" data-history-toggle data-history-group="visit"><span class="history-date-line"><span class="arrow">▼</span><span class="history-date-name">2024-02-02 住院病历</span><span class="history-type-tag inpatient">住院</span><span class="history-upload-tag sync">自动同步</span></span></div>
+                  <div class="history-children">
+                    <div class="history-category" data-history-toggle><span class="arrow">▼</span><span>病案首页</span></div>
+                    <div class="history-subchildren"><div class="history-file active"><span class="history-file-name">住院病案首页</span><span class="history-upload-tag patient">患者上传</span></div></div>
+                    <div class="history-category" data-history-toggle><span class="arrow">▼</span><span>出院记录</span></div>
+                    <div class="history-subchildren"><div class="history-file"><span class="history-file-name">出院小结</span><span class="history-upload-tag sync">自动同步</span></div></div>
+                    <div class="history-category" data-history-toggle><span class="arrow">▼</span><span>护理记录</span></div>
+                    <div class="history-subchildren"><div class="history-file"><span class="history-file-name">首次护理记录单</span><span class="history-upload-tag nurse">医护上传</span></div></div>
+                    <div class="history-category" data-history-toggle><span class="arrow">▼</span><span>检查记录</span></div>
+                    <div class="history-subchildren"><div class="history-file"><span class="history-file-name">胸部CT检查报告</span><span class="history-upload-tag sync">自动同步</span></div></div>
+                  </div>
+                  <div class="history-date" data-history-toggle data-history-group="visit"><span class="history-date-line"><span class="arrow">▼</span><span class="history-date-name">2024-02-02 门诊病历</span><span class="history-type-tag outpatient">门诊</span><span class="history-upload-tag sync">自动同步</span></span></div>
+                  <div class="history-children">
+                    <div class="history-file"><span class="history-file-name">门诊病历记录</span><span class="history-upload-tag nurse">医护上传</span></div>
+                    <div class="history-file"><span class="history-file-name">血常规检查检验报告</span><span class="history-upload-tag patient">患者上传</span></div>
+                  </div>
+                  <div class="history-date collapsed" data-history-toggle data-history-group="prescription"><span class="history-date-line"><span class="arrow">▶</span><span class="history-date-name">2024-02-01 用药处方</span><span class="history-type-tag outpatient">门诊</span><span class="history-upload-tag sync">自动同步</span></span></div>
+                  <div class="history-children"><div class="history-file"><span class="history-file-name">门诊处方笺</span><span class="history-upload-tag sync">自动同步</span></div><div class="history-file"><span class="history-file-name">用药清单</span><span class="history-upload-tag nurse">医护上传</span></div><div class="history-file"><span class="history-file-name">补充用药记录</span><span class="history-upload-tag patient">患者上传</span></div></div>
+                  <div class="history-date collapsed" data-history-toggle data-history-group="report"><span class="history-date-line"><span class="arrow">▶</span><span class="history-date-name">2024-01-28 体检报告</span><span class="history-type-tag checkup">体检</span><span class="history-upload-tag sync">自动同步</span></span></div>
+                  <div class="history-children"><div class="history-file"><span class="history-file-name">体检报告</span><span class="history-upload-tag nurse">医护上传</span></div><div class="history-file"><span class="history-file-name">肝肾功能检验报告</span><span class="history-upload-tag sync">自动同步</span></div></div>
+                  <div class="history-date collapsed" data-history-toggle data-history-group="report"><span class="history-date-line"><span class="arrow">▶</span><span class="history-date-name">2024-01-20 急诊资料</span><span class="history-type-tag emergency">急诊</span><span class="history-upload-tag sync">自动同步</span></span></div>
+                  <div class="history-children"><div class="history-file"><span class="history-file-name">急诊病历报告</span><span class="history-upload-tag patient">患者上传</span></div></div>
+                  <div class="history-date selected"><span class="history-date-line"><span>2024-02-02</span></span></div>
+                </div>
+              </aside>
+              <section class="archive-history-viewer">
+                <div class="history-viewer-actions">
+                  <button class="history-action" aria-label="编辑"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg></button>
+                  <button class="history-action" aria-label="删除"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M3 6h18M8 6V4h8v2M6 6l1 14h10l1-14M10 11v5M14 11v5"/></svg></button>
+                </div>
+                <div class="history-note">*本资料由患者上传<br>*非本院资料</div>
+                <h2 class="history-report-title">病历治疗名称</h2>
+                <div class="history-report-meta">
+                  <div><strong>姓名</strong>陈患者</div>
+                  <div><strong>日期</strong>2024/02/10 01:00</div>
+                </div>
+                <div class="history-thumbs"><span class="history-thumb active"></span><span class="history-thumb"></span><span class="history-thumb"></span></div>
+                <div class="history-document-stage">
+                  <article class="medical-paper" aria-label="病历报告预览">
+                    <div class="medical-paper-head"><span class="medical-qr"></span><h3>南方医科大学中西医结合医院<br>门（急）诊电子病历</h3><span class="medical-stamp"></span></div>
+                    <div class="medical-row"><span>姓名：陈患者</span><span>性别：女</span><span>年龄：55岁</span></div>
+                    <div class="medical-row"><span>科室：综合内科</span><span>就诊时间：2025/6/4 14:33:11</span></div>
+                    <div class="medical-block"><div class="medical-line" style="--w:92%"></div><div class="medical-line" style="--w:78%"></div><div class="medical-line" style="--w:88%"></div><div class="medical-line" style="--w:70%"></div></div>
+                    <div class="medical-block"><div class="medical-line" style="--w:95%"></div><div class="medical-line" style="--w:84%"></div><div class="medical-line" style="--w:91%"></div><div class="medical-line" style="--w:76%"></div><div class="medical-line" style="--w:89%"></div><div class="medical-line" style="--w:82%"></div></div>
+                    <div class="medical-block"><div class="medical-line" style="--w:92%"></div><div class="medical-line" style="--w:86%"></div><div class="medical-line" style="--w:74%"></div><div class="medical-line" style="--w:95%"></div><div class="medical-line" style="--w:80%"></div></div>
+                    <div class="medical-table"><span>西药 30g</span><span>葛根 20g</span><span>黄芪 15g</span><span>陈皮 10g</span><span>山药 10g</span><span>茯苓 15g</span><span>麦冬 15g</span><span>砂仁 6g</span><span>甘草 20g</span><span>薏米 10g</span><span>水煎服</span><span>7剂</span></div>
+                    <div class="medical-page-no">1/2</div>
+                  </article>
+                </div>
+              </section>
+            </div>
+          </section>`;
+      }
+
+      const archiveHistoryRecords = {
+        inpatientHome: { title: '住院病案首页', date: '2024/02/02 09:20', name: '陈患者', source: '住院病历', note: '*本资料由院内系统同步', pages: 3 },
+        dischargeSummary: { title: '出院小结', date: '2024/02/10 10:30', name: '陈患者', source: '住院病历', note: '*本资料由院内系统同步', pages: 2 },
+        nursingFirst: { title: '首次护理记录单', date: '2024/02/02 14:10', name: '陈患者', source: '住院病历', note: '*本资料由院内系统同步', pages: 2 },
+        nursingAssessment: { title: '护理评估记录', date: '2024/02/03 08:40', name: '陈患者', source: '住院病历', note: '*本资料由院内系统同步', pages: 2 },
+        chestCt: { title: '胸部CT检查报告', date: '2024/02/04 16:20', name: '陈患者', source: '住院病历', note: '*本资料由院内系统同步', pages: 1 },
+        ecg: { title: '心电图检查报告', date: '2024/02/05 09:15', name: '陈患者', source: '住院病历', note: '*本资料由院内系统同步', pages: 1 },
+        bloodRoutine: { title: '血常规检查检验报告', date: '2024/02/06 07:40', name: '陈患者', source: '住院病历', note: '*本资料由院内系统同步', pages: 1 },
+        liverKidney: { title: '肝肾功能检验报告', date: '2024/02/07 07:55', name: '陈患者', source: '住院病历', note: '*本资料由院内系统同步', pages: 1 },
+        outpatientRecord: { title: '门诊病历记录', date: '2024/02/02 10:12', name: '陈患者', source: '门诊病历', note: '*本资料由院内系统同步', pages: 2 },
+        outpatientBlood: { title: '血常规检查检验报告', date: '2024/02/02 10:38', name: '陈患者', source: '门诊病历', note: '*本资料由院内系统同步', pages: 1 },
+        prescription: { title: '门诊处方笺', date: '2024/02/01 15:30', name: '陈患者', source: '门诊病历', note: '*本资料由院内系统同步', pages: 1 },
+        medicineList: { title: '用药清单', date: '2024/02/01 15:36', name: '陈患者', source: '门诊病历', note: '*本资料由院内系统同步', pages: 1 },
+        checkupReport: { title: '体检报告', date: '2024/01/28 09:00', name: '陈患者', source: '体检报告', note: '*本资料由院内系统同步', pages: 4 },
+        emergencyRecord: { title: '急诊病历报告', date: '2024/01/20 21:30', name: '陈患者', source: '急诊资料', note: '*本资料由院内系统同步', pages: 2 },
+        patientUploadDiet: { title: '饮食记录补充资料', date: '2024/02/02 18:40', name: '陈患者', source: '患者上传', reportType: '院外随访资料', hospital: '患者自行上传', note: '*本资料由患者上传<br>*非本院资料', pages: 2, interpretation: { ai: 'AI已对本次患者上传资料进行图文识别与随访语义分析。资料主要围绕近期饮食记录、餐次图片和患者自述展开，整体信息能支持医护初步判断患者近期膳食结构，但仍建议结合连续打卡、体重、血糖或血脂等数据共同评估。', abnormal: '从当前资料看，未发现需要立即处理的危急异常内容；但上传资料属于患者自填与图片补充，医学证据强度低于院内检验检查报告。图片中主食和动物性蛋白占比较明显，蔬菜、水果和饮水记录不够连续，若患者存在糖脂代谢异常，应关注总热量、精制碳水和晚餐后血糖波动。', analysis: '本资料可作为院外生活方式管理的补充依据。患者能够主动上传饮食信息，说明随访依从性较好；但单次资料不能直接判断长期饮食习惯。结合常规慢病管理经验，建议重点关注三点：一是每日主食量和烹饪方式是否稳定，二是蛋白质来源是否以鱼、禽、蛋、豆制品等优质蛋白为主，三是晚间是否存在加餐、甜饮或高盐加工食品摄入。', suggestion: '建议医护在下次随访中引导患者连续上传3到7天三餐图片，并同步记录饮水、运动和餐后不适情况。若患者合并高血糖、高血脂或体重管理目标，可优先建议减少油炸、煎烤和高糖饮品，增加深色蔬菜、全谷物和优质蛋白比例；如后续出现体重快速变化、餐后血糖持续升高或明显胃肠不适，应及时调整随访计划。' } },
+        nurseUploadPressure: { title: '家庭血压记录单', date: '2024/02/01 08:10', name: '陈患者', source: '医护上传', reportType: '家庭监测资料', hospital: '随访管理团队', note: '*本资料由医护上传<br>*非本院资料', pages: 1, interpretation: { ai: 'AI已读取医护上传的家庭血压监测资料，并结合慢病随访场景完成初步解读。该资料由医护整理上传，字段规范性和可信度相对更高，可作为近期血压趋势判断的辅助依据。', abnormal: '记录中可见部分晨间血压存在轻度升高趋势，但暂未达到单次危急值提示。若患者伴随头痛、胸闷、心悸、视物模糊等症状，需要优先复核测量值并联系医生；若无症状，则建议结合至少连续7天的早晚血压均值进行判断。', analysis: '家庭血压受测量姿势、袖带位置、测量前活动、情绪紧张、咖啡因摄入和睡眠质量影响较大。当前资料显示医护已对记录进行整理，适合用于判断随访执行情况；但若缺少测量场景说明，仍可能存在偏差。建议重点看早晨起床后、服药前以及晚上睡前两个固定时段的数据变化。', suggestion: '建议继续要求患者固定时间测量，测量前安静休息5分钟，避免运动、吸烟、饮酒或饮用浓茶咖啡后立即测量。若连续多日家庭血压均值高于目标范围，应由医生评估是否需要调整用药或随访频次；医护可在系统内标记异常趋势，并提醒患者保留原始记录。' } },
+        patientUploadImage: { title: '院外检查照片', date: '2024/01/26 11:25', name: '陈患者', source: '患者上传', reportType: '院外检查资料', hospital: '南方社区门诊', note: '*本资料由患者上传<br>*非本院资料', pages: 3, interpretation: { ai: 'AI已对患者上传的院外检查照片进行版面识别和文字抽取。当前照片能够辨认资料名称、报告日期和部分检查信息，但拍摄角度、清晰度和边缘完整性会影响识别准确率，因此该解读仅作为辅助参考。', abnormal: '由于原图存在局部反光和边缘裁切，部分字段识别置信度偏低。当前未能确认是否存在明确危急值；若报告涉及血常规、肝肾功能、影像结论或病理结果，建议医护核对原图中异常标记、参考范围和医生结论，避免遗漏关键风险。', analysis: '院外检查照片常见问题包括图片倾斜、字号过小、缺少完整页眉页脚、患者姓名或日期不完整等。当前资料可以作为初步归档线索，但不能替代正式报告。若后续用于健康画像、异常指标统计或随访决策，应优先以清晰原件、PDF或医院同步数据为准。', suggestion: '建议患者重新上传完整、正向、无遮挡的报告照片，并确保姓名、报告时间、资料类型、就诊医院和检查结论均可见。医护在确认资料真实有效后，可将关键异常项录入患者档案；若报告提示急性异常、疑似重大疾病或需要复查，应及时发起人工随访。' } }
+      };
+
+      function archiveHistoryFile(id, title, uploadText) {
+        const record = archiveHistoryRecords[id];
+        const uploadLabel = uploadText || ((record?.source === '患者上传' || record?.source === '医护上传') ? record.source : '');
+        const uploadClass = uploadLabel === '患者上传' ? 'patient' : uploadLabel === '医护上传' ? 'nurse' : 'sync';
+        const upload = uploadLabel ? `<span class="history-upload-tag ${uploadClass}">${uploadLabel}</span>` : '';
+        return `<div class="history-file" data-history-file="${id}"><span class="history-file-name">${title}</span>${upload}</div>`;
+      }
+
+      function archiveHistoryExternalFile(id, time, title, uploadText) {
+        return `<div class="history-external-file" data-history-file="${id}" data-history-group="report">
+          <span class="history-file-meta"><span class="history-file-time">${time}</span><span class="history-file-name">${title}</span><span class="history-upload-tag ${uploadText === '患者上传' ? 'patient' : 'nurse'}">${uploadText}</span></span>
+        </div>`;
+      }
+
+      function archiveHistoryPaperMarkup(record) {
+        const lineShift = (record.title.length % 5) * 3;
+        return `<article class="medical-paper" aria-label="${record.title}预览">
+          <div class="medical-paper-head"><span class="medical-qr"></span><h3>南方医科大学中西医结合医院<br>${record.title}</h3><span class="medical-stamp"></span></div>
+          <div class="medical-row"><span>姓名：${record.name}</span><span>性别：女</span><span>年龄：55岁</span></div>
+          <div class="medical-row"><span>资料来源：${record.source}</span><span>记录时间：${record.date}</span></div>
+          <div class="medical-block"><div class="medical-line" style="--w:${92 - lineShift}%"></div><div class="medical-line" style="--w:${78 + lineShift}%"></div><div class="medical-line" style="--w:88%"></div><div class="medical-line" style="--w:70%"></div></div>
+          <div class="medical-block"><div class="medical-line" style="--w:95%"></div><div class="medical-line" style="--w:84%"></div><div class="medical-line" style="--w:91%"></div><div class="medical-line" style="--w:76%"></div><div class="medical-line" style="--w:89%"></div><div class="medical-line" style="--w:82%"></div></div>
+          <div class="medical-block"><div class="medical-line" style="--w:92%"></div><div class="medical-line" style="--w:86%"></div><div class="medical-line" style="--w:74%"></div><div class="medical-line" style="--w:95%"></div><div class="medical-line" style="--w:80%"></div></div>
+          <div class="medical-table"><span>白术 30g</span><span>葛根 20g</span><span>黄芪 15g</span><span>陈皮 10g</span><span>山药 10g</span><span>茯苓 15g</span><span>麦冬 15g</span><span>砂仁 6g</span><span>甘草 20g</span><span>薏米 10g</span><span>水煎服</span><span>7剂</span></div>
+          <div class="medical-page-no">1/${record.pages || 2}</div>
+        </article>`;
+      }
+
+      function archiveHistoryActionsMarkup(canEdit = true) {
+        if (!canEdit) return '';
+        return `<div class="history-viewer-actions">
+          <button class="history-action" aria-label="编辑"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg></button>
+          <button class="history-action" aria-label="删除"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M3 6h18M8 6V4h8v2M6 6l1 14h10l1-14M10 11v5M14 11v5"/></svg></button>
+        </div>`;
+      }
+
+      function renderManualUploadHistory(record) {
+        const interpretation = record.interpretation || {
+          abnormal: '暂无明确异常项。',
+          analysis: '该资料为手动上传内容，需结合原始报告和患者近期随访记录综合判断。',
+          suggestion: '建议医护完成资料核验后，将关键结论同步到患者健康档案。'
+        };
+        const canEdit = record.source === '医护上传';
+        return `${archiveHistoryActionsMarkup(canEdit)}
+          <section class="history-mode-page">
+            <h2 class="history-manual-title">${record.title}</h2>
+            <section class="history-info-card">
+              <div class="history-manual-meta">
+                <div class="history-manual-meta-item"><span>姓名</span><strong>${record.name}</strong></div>
+                <div class="history-manual-meta-item"><span>报告时间</span><strong>${record.date}</strong></div>
+                <div class="history-manual-meta-item"><span>资料类型</span><strong>${record.reportType || record.source}</strong></div>
+                <div class="history-manual-meta-item"><span>就诊医院</span><strong>${record.hospital || '未填写'}</strong></div>
+              </div>
+              ${canEdit ? '' : '<div class="history-manual-lock-note">内容由患者自己上传，不允许修改删除。</div>'}
+              <div class="history-upload-title">上传资料</div>
+              <div class="history-manual-thumbs" aria-label="报告图片缩略图">
+                <button class="history-manual-thumb image active" data-history-preview-thumb aria-label="查看上传图片"><i></i></button>
+                <button class="history-manual-thumb pdf" data-history-preview-thumb aria-label="查看PDF资料"><i></i></button>
+              </div>
+            </section>
+            <section class="history-interpret-card">
+              <div class="history-card-title"><span>AI智能分析</span><span class="history-card-title-note">内容由AI生成，请仔细辨别</span></div>
+              <div class="history-interpret-list">
+                <div class="history-interpret-row abnormal"><strong>异常</strong><span>${interpretation.abnormal}</span></div>
+                <div class="history-interpret-row analysis"><strong>智能分析</strong><span>${interpretation.analysis}</span></div>
+                <div class="history-interpret-row suggestion"><strong>智能建议</strong><span>${interpretation.suggestion}</span></div>
+              </div>
+            </section>
+          </section>`;
+      }
+
+      function renderSyncedHistory(record) {
+        const isPrescription = record.title.includes('处方') || record.title.includes('用药');
+        const isCheck = record.title.includes('检查') || record.title.includes('检验') || record.title.includes('报告');
+        const summary = isPrescription
+          ? [['处方来源', record.source], ['药品数量', '7项'], ['用法状态', '已同步']]
+          : isCheck
+            ? [['报告来源', record.source], ['异常指标', '2项'], ['报告页数', `${record.pages || 1}页`]]
+            : [['病历来源', record.source], ['记录节点', '完整'], ['报告页数', `${record.pages || 1}页`]];
+        const rows = isPrescription
+          ? [['资料名称', record.title], ['姓名', record.name], ['处方时间', record.date], ['药品明细', '白术、葛根、黄芪、陈皮等'], ['同步来源', '院内HIS系统']]
+          : isCheck
+            ? [['资料名称', record.title], ['姓名', record.name], ['报告时间', record.date], ['关键结果', '白细胞、低密度脂蛋白等指标需关注'], ['同步来源', '院内LIS/PACS系统']]
+            : [['资料名称', record.title], ['姓名', record.name], ['记录时间', record.date], ['病历类型', record.source], ['同步来源', '院内电子病历系统']];
+        return `${archiveHistoryActionsMarkup()}
+          <section class="history-mode-page">
+            <div class="history-mode-head">
+              <div>
+                <p class="history-mode-kicker">医院同步资料</p>
+                <h2 class="history-mode-title">${record.title}</h2>
+              </div>
+              <span class="history-mode-source"><span class="history-upload-tag sync">自动同步</span></span>
+            </div>
+            <section class="history-sync-card">
+              <div class="history-card-title">同步病历数据</div>
+              <div class="history-sync-summary">${summary.map(item => `<div class="history-sync-item"><span>${item[0]}</span><strong>${item[1]}</strong></div>`).join('')}</div>
+              <div class="history-sync-table">${rows.map(item => `<div class="history-sync-row"><strong>${item[0]}</strong><span>${item[1]}</span></div>`).join('')}</div>
+            </section>
+            <div class="history-document-stage">${archiveHistoryPaperMarkup(record)}</div>
+          </section>`;
+      }
+
+      function renderArchiveHistoryDetail(id) {
+        const record = archiveHistoryRecords[id] || archiveHistoryRecords.inpatientHome;
+        const viewer = document.querySelector('#patientArchivePage .archive-history-viewer');
+        if (!viewer) return;
+        const isManualUpload = record.source === '患者上传' || record.source === '医护上传';
+        viewer.innerHTML = isManualUpload ? renderManualUploadHistory(record) : renderSyncedHistory(record);
+      }
+
+      function recordSheetField(label, value) {
+        return `<div class="record-sheet-field"><label>${label}</label><span>${value}</span></div>`;
+      }
+
+      function renderInpatientHomeSheet() {
+        const baseFields = [
+          ['姓名', '陈患者'], ['性别', '男'], ['出生年月', '2024年12月15日'], ['年龄', '42岁'],
+          ['国籍', '中国'], ['民族', '汉族'], ['身份证号', '440666626666666666'], ['职业', '务农'],
+          ['出生地', '广东省（区、市）肇庆市某某县 电话 16626676646 邮政 150000'],
+          ['户口地址', '广东省（区、市）肇庆市某某县 邮政 150000']
+        ];
+        return `<article class="medical-paper record-sheet record-inpatient-home" aria-label="住院病案首页">
+          <h2 class="record-sheet-title">住院病案首页</h2>
+          <div class="record-sheet-top"><span>健康卡号：02021010</span><span>共计住院次数：2次</span><span>病案号：02021010</span></div>
+          <div class="record-sheet-grid">${baseFields.slice(0, 8).map(item => recordSheetField(item[0], item[1])).join('')}</div>
+          ${baseFields.slice(8).map(item => `<div class="record-sheet-section"><label>${item[0]}</label><span>${item[1]}</span></div>`).join('')}
+          <div class="record-sheet-divider"></div>
+          <div class="record-sheet-grid">
+            ${recordSheetField('入院时间', '2024/02/10 14:00')}
+            ${recordSheetField('入院科室', '呼吸内科（住院部）')}
+            ${recordSheetField('入院病房', '708病房')}
+            ${recordSheetField('出院科室', '呼吸内科（住院部）')}
+            ${recordSheetField('出院时间', '2024/02/10 14:00')}
+            ${recordSheetField('入院天数', '5天')}
+          </div>
+          <div class="record-sheet-section"><label>入院诊断</label><span>糖尿病　疾病编码：GHJV615451</span></div>
+          <div class="record-radio-line"><span>入院病情：</span><span class="record-radio checked">有</span><span class="record-radio">临床未定</span><span class="record-radio">情况不明</span><span class="record-radio">无</span></div>
+          <table class="record-sheet-table">
+            <thead><tr><th>出院诊断</th><th>疾病编码</th><th>入院病情</th><th>出院诊断</th></tr></thead>
+            <tbody>
+              <tr><td>主诊：不得侵犯他人合法权益，说明为什么得出该匹配度</td><td>KHJJ42115</td><td>情况不明</td><td>已死亡</td></tr>
+              <tr><td>其它：不得侵犯他人合法权益</td><td>KHJJ42115</td><td>情况不明</td><td>已死亡</td></tr>
+              <tr><td>其它：不得侵犯他人合法权益</td><td>KHJJ42115</td><td>情况不明</td><td>已死亡</td></tr>
+            </tbody>
+          </table>
+          <div class="record-sheet-section"><label>损伤中毒</label><span>在当前门诊环境中，医院专家号源紧张，“一号难求”问题长期存在，传统加号多依赖线下窗口申请或人为协调。</span></div>
+          <div class="record-sheet-grid">
+            ${recordSheetField('科主任', '张主任')}
+            ${recordSheetField('主任医师', '张医师')}
+            ${recordSheetField('住院医师', '张医师')}
+            ${recordSheetField('责任护士', '陈护士')}
+            ${recordSheetField('质控医师', '张医生')}
+            ${recordSheetField('质控日期', '2024/01/10')}
+          </div>
+          <table class="record-sheet-table">
+            <thead><tr><th>手术及操作编码</th><th>手术日期</th><th>手术级别</th><th>手术及操作名称</th><th>切口愈合等级</th><th>麻醉方式</th></tr></thead>
+            <tbody><tr><td>215416556</td><td>2024/01/10</td><td>Ⅱv</td><td>诊疗中的问题根治疾病类型</td><td>1级别</td><td>全身麻醉</td></tr><tr><td>215416556</td><td>2024/01/10</td><td>Ⅱv</td><td>诊疗中的问题根治疾病类型</td><td>1级别</td><td>全身麻醉</td></tr></tbody>
+          </table>
+          <div class="record-sheet-section"><label>住院费用</label><span>总费用 157.15元（自费金额：25.12元）</span></div>
+          <table class="record-sheet-table"><tbody><tr><td>1.综合医疗服务类</td><td>一般医疗服务费 12.00元</td></tr><tr><td>2.诊断类</td><td>实验室诊断费 12.00元</td></tr><tr><td>3.治疗类</td><td>非手术治疗项目费 --</td></tr><tr><td>4.康复类</td><td>康复费 --</td></tr><tr><td>5.中医类</td><td>中医诊断 -- 中医治疗 --</td></tr><tr><td>6.西药类</td><td>西药费 --</td></tr></tbody></table>
+        </article>`;
+      }
+
+      function renderOutpatientSheet() {
+        const sections = ['主诉', '现病史', '过敏史', '个人历', '体格检查', '辅助检查', '诊断', '处理', '医嘱'];
+        const text = '对匹配度结果提供简要解释，说明为什么得出该匹配度（例如突出关键症状、年龄、既往病史等影响因素）';
+        return `<article class="medical-paper record-sheet" aria-label="门急诊病历">
+          <h2 class="record-sheet-title">门(急)诊病历</h2>
+          <div class="record-sheet-grid">
+            ${recordSheetField('姓名', '陈患者')}${recordSheetField('性别', '男')}
+            ${recordSheetField('年龄', '42岁')}${recordSheetField('门诊号', '0078-144')}
+            ${recordSheetField('就诊科室', '显微创伤骨科足踝外科')}${recordSheetField('就诊时间', '2024/02/10 01:00')}
+          </div>
+          <div class="record-sheet-divider"></div>
+          ${sections.map((label, index) => `<div class="record-sheet-section"><label>${label}</label><span>${index === 1 || index === 3 || label === '体格检查' ? '若预问诊单已关联挂号单或加号申请单，点击「重新填写」将先解除原关联，再创建新的预问诊单，并、既往病史等影响因素。' : text}</span></div>`).join('')}
+          <div class="record-sheet-divider"></div>
+          <div class="record-sheet-sign"><span>医生签名：陈医生</span><span>2024/05/02</span></div>
+        </article>`;
+      }
+
+      function renderDischargeSheet() {
+        const sections = ['入院情况', '入院诊断', '治疗经过', '出院诊断', '出院情况', '出院医嘱'];
+        return `<article class="medical-paper record-sheet" aria-label="出院记录">
+          <h2 class="record-sheet-title">出院记录</h2>
+          <div class="record-sheet-grid">
+            ${recordSheetField('姓名', '陈患者')}${recordSheetField('年龄', '42岁')}
+            ${recordSheetField('性别', '男')}${recordSheetField('入院科室', '显微创伤骨科足踝外科')}
+            ${recordSheetField('住院号', '0078-144')}${recordSheetField('入院ID', '12411111')}
+            ${recordSheetField('入院床位', '412-4床')}${recordSheetField('入院日期', '2024/12/14')}
+            ${recordSheetField('入院天数', '5天')}${recordSheetField('出院日期', '2024/12/20')}
+          </div>
+          <div class="record-sheet-divider"></div>
+          ${sections.map((label, index) => `<div class="record-sheet-section"><label>${label}</label><span>${index === 1 || index === 3 ? '若预问诊单已关联挂号单或加号申请单，点击「重新填写」将先解除原关联，再创建新的预问诊单，并、既往病史等影响因素。' : '对匹配度结果提供简要解释，说明为什么得出该匹配度（例如突出关键症状、年龄、既往病史等影响因素）'}</span></div>`).join('')}
+          <div class="record-sheet-divider"></div>
+          <div class="record-sheet-sign"><span>医生签名：陈医生</span><span>2024/05/02</span></div>
+        </article>`;
+      }
+
+      function renderBloodRoutineSheet() {
+        return `<article class="medical-paper record-sheet" aria-label="血常规检查检验报告">
+          <h2 class="record-sheet-title">血常规检查检验报告</h2>
+          <div class="record-sheet-grid">
+            ${recordSheetField('姓名', '陈患者')}${recordSheetField('性别', '男')}
+            ${recordSheetField('年龄', '42岁')}${recordSheetField('患者类型', '住院')}
+            ${recordSheetField('门诊/住院号', '21561212121')}${recordSheetField('科室', '显微创伤骨科足踝外科')}
+            ${recordSheetField('床号', '412-4床')}${recordSheetField('申请单号', '2316548-lki')}
+            ${recordSheetField('样本类型', '血液')}${recordSheetField('样本编号', '156561-UVHU')}
+            ${recordSheetField('采样时间', '2024/15/10 13:00:00')}${recordSheetField('送检时间', '2024/15/10 13:00:00')}
+          </div>
+          <div class="record-sheet-section"><label>临床诊断</label><span>项目的英文代号，如“白细胞”的代号为“WBC”，或称“编码/代码/英文”等（都是同个意思不同叫法）</span></div>
+          <table class="record-sheet-table">
+            <thead><tr><th>序号</th><th>代号</th><th>项目名称</th><th>结果</th><th>单位</th><th>参考区间</th><th>检查方法</th></tr></thead>
+            <tbody>
+              <tr><td>01</td><td>LDL-C</td><td>嗜碱性粒细胞绝对值</td><td>2.24 <span class="lab-up">↑</span></td><td>mm/L</td><td>40-200</td><td>免疫抑制法</td></tr>
+              <tr><td>02</td><td>LDTm</td><td>嗜碱性粒细胞绝对值</td><td>2.24 <span class="lab-down">↓</span></td><td>mm/L</td><td>40-200</td><td>免疫抑制法</td></tr>
+              <tr><td>03</td><td>LDTm</td><td>嗜碱性粒细胞绝对值</td><td>2.24 <span class="lab-up">↑</span></td><td>mm/L</td><td>健康人群:2.58--3.3<br>高危人群:2.59</td><td>免疫抑制法</td></tr>
+              <tr><td>08</td><td>LDTm</td><td>嗜碱性粒细胞绝对值</td><td>2.24</td><td>mm/L</td><td>40-200</td><td>免疫抑制法</td></tr>
+              <tr><td>08</td><td>LDTm</td><td>嗜碱性粒细胞绝对值</td><td>2.24</td><td>mm/L</td><td>40-200</td><td>免疫抑制法</td></tr>
+            </tbody>
+          </table>
+          <div class="record-sheet-grid">
+            ${recordSheetField('检验时间', '2024/12/12 13:00:13')}${recordSheetField('报告时间', '2024/12/12 13:01:01')}
+            ${recordSheetField('检验医师', '王医生')}${recordSheetField('采样医生', '张医生')}
+          </div>
+        </article>`;
+      }
+
+      function renderRecordSheetById(id) {
+        if (id === 'inpatientHome') return renderInpatientHomeSheet();
+        if (id === 'outpatientRecord') return renderOutpatientSheet();
+        if (id === 'dischargeSummary') return renderDischargeSheet();
+        if (id === 'bloodRoutine' || id === 'outpatientBlood') return renderBloodRoutineSheet();
+        return null;
+      }
+
+      function isManualHistorySource(record, id) {
+        return ['patientUploadDiet', 'nurseUploadPressure', 'patientUploadImage'].includes(id)
+          || /上传|涓婁紶|浼/.test(record?.source || '');
+      }
+
+      renderArchiveHistoryDetail = function (id) {
+        const record = archiveHistoryRecords[id] || archiveHistoryRecords.inpatientHome;
+        const viewer = document.querySelector('#patientArchivePage .archive-history-viewer');
+        if (!viewer) return;
+        const specialSheet = renderRecordSheetById(id);
+        if (specialSheet) {
+          viewer.innerHTML = `${archiveHistoryActionsMarkup()}
+            <div class="history-note">${record.note}</div>
+            <h2 class="history-report-title">${record.title}</h2>
+            <div class="history-report-meta">
+              <div><strong>姓名</strong>${record.name}</div>
+              <div><strong>日期</strong>${record.date}</div>
+            </div>
+            <div class="history-thumbs"><span class="history-thumb active"></span><span class="history-thumb"></span><span class="history-thumb"></span></div>
+            <div class="history-document-stage">${specialSheet}</div>`;
+          return;
+        }
+        const isManualUpload = record.source === '患者上传' || record.source === '医护上传';
+        viewer.innerHTML = isManualUpload ? renderManualUploadHistory(record) : renderSyncedHistory(record);
+      };
+
+      renderArchiveHistoryDetail = function (id) {
+        const record = archiveHistoryRecords[id] || archiveHistoryRecords.inpatientHome;
+        const viewer = document.querySelector('#patientArchivePage .archive-history-viewer');
+        if (!viewer) return;
+        const isManualUpload = isManualHistorySource(record, id);
+        const specialSheet = renderRecordSheetById(id);
+        if (specialSheet) {
+          viewer.innerHTML = isManualUpload
+            ? `${archiveHistoryActionsMarkup()}
+              <div class="history-note">${record.note}</div>
+              <h2 class="history-report-title">${record.title}</h2>
+              <div class="history-report-meta">
+                <div><strong>姓名</strong>${record.name}</div>
+                <div><strong>日期</strong>${record.date}</div>
+              </div>
+              <div class="history-thumbs"><span class="history-thumb active"></span><span class="history-thumb"></span><span class="history-thumb"></span></div>
+              <div class="history-document-stage">${specialSheet}</div>`
+            : `<div class="history-document-stage">${specialSheet}</div>`;
+          return;
+        }
+        viewer.innerHTML = isManualUpload
+          ? renderManualUploadHistory(record)
+          : `<div class="history-document-stage">${archiveHistoryPaperMarkup(record)}</div>`;
+      };
+
+      buildArchiveHistoryMarkup = function () {
+        return `
+          <section class="archive-panel archive-history-panel is-visible" data-archive-panel="history">
+            <div class="archive-history-card">
+              <header class="archive-history-head">
+                <h2 class="archive-history-title">病历档案</h2>
+                <div class="archive-history-actions">
+                  <button class="archive-parse-btn" data-archive-parse-report><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M4 5h16v14H4z"/><path d="M8 9h8M8 13h5"/></svg>解析报告<span class="archive-parse-badge" data-archive-parse-count></span></button>
+                  <button class="archive-upload-btn" data-open-archive-upload><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M12 5v14M5 12h14"/></svg>上传资料</button>
+                </div>
+              </header>
+              <aside class="archive-history-list">
+                <div class="history-tabs">
+                  <button class="history-tab active" data-history-tab-filter="all">全部<small>17条</small></button>
+                  <button class="history-tab" data-history-tab-filter="visit">就诊<br>记录<small>9条</small></button>
+                  <button class="history-tab" data-history-tab-filter="prescription">处方<br>记录<small>3条</small></button>
+                  <button class="history-tab" data-history-tab-filter="report">报告单<small>5条</small></button>
+                </div>
+                <label class="history-search" aria-label="病历数据检索">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="11" cy="11" r="7"/><path d="m16.5 16.5 4 4"/></svg>
+                  <input type="text" data-history-search placeholder="输入病历名称、时间、报告名称检索">
+                </label>
+                <div class="history-tree">
+                  <div class="history-date active" data-history-toggle data-history-group="visit"><span class="history-date-line"><span class="arrow">▼</span><span class="history-date-name">2024-02-02 住院病历</span><span class="history-type-tag inpatient">住院</span></span></div>
+                  <div class="history-children">
+                    <div class="history-category" data-history-toggle><span class="arrow">▼</span><span>病案首页</span></div>
+                    <div class="history-subchildren">${archiveHistoryFile('inpatientHome', '住院病案首页')}</div>
+                    <div class="history-category" data-history-toggle><span class="arrow">▼</span><span>出院记录</span></div>
+                    <div class="history-subchildren">${archiveHistoryFile('dischargeSummary', '出院小结')}</div>
+                    <div class="history-category" data-history-toggle><span class="arrow">▼</span><span>护理记录</span></div>
+                    <div class="history-subchildren">${archiveHistoryFile('nursingFirst', '首次护理记录单')}${archiveHistoryFile('nursingAssessment', '护理评估记录')}</div>
+                    <div class="history-category" data-history-toggle><span class="arrow">▼</span><span>检查记录</span></div>
+                    <div class="history-subchildren">${archiveHistoryFile('chestCt', '胸部CT检查报告')}${archiveHistoryFile('ecg', '心电图检查报告')}</div>
+                    <div class="history-category" data-history-toggle><span class="arrow">▼</span><span>检验记录</span></div>
+                    <div class="history-subchildren">${archiveHistoryFile('bloodRoutine', '血常规检查检验报告')}${archiveHistoryFile('liverKidney', '肝肾功能检验报告')}</div>
+                  </div>
+                  <div class="history-date" data-history-toggle data-history-group="visit"><span class="history-date-line"><span class="arrow">▼</span><span class="history-date-name">2024-02-02 门诊病历</span><span class="history-type-tag outpatient">门诊</span></span></div>
+                  <div class="history-children">${archiveHistoryFile('outpatientRecord', '门诊病历记录')}${archiveHistoryFile('outpatientBlood', '血常规检查检验报告')}</div>
+                  <div class="history-date collapsed" data-history-toggle data-history-group="prescription"><span class="history-date-line"><span class="arrow">▶</span><span class="history-date-name">2024-02-01 用药处方</span><span class="history-type-tag outpatient">门诊</span></span></div>
+                  <div class="history-children">${archiveHistoryFile('prescription', '门诊处方笺')}${archiveHistoryFile('medicineList', '用药清单')}${archiveHistoryFile('patientUploadDiet', '补充用药记录')}</div>
+                  <div class="history-date collapsed" data-history-toggle data-history-group="report"><span class="history-date-line"><span class="arrow">▶</span><span class="history-date-name">2024-01-28 体检报告</span><span class="history-type-tag checkup">体检</span></span></div>
+                  <div class="history-children">${archiveHistoryFile('checkupReport', '体检报告')}${archiveHistoryFile('liverKidney', '肝肾功能检验报告')}</div>
+                  <div class="history-date collapsed" data-history-toggle data-history-group="report"><span class="history-date-line"><span class="arrow">▶</span><span class="history-date-name">2024-01-20 急诊资料</span><span class="history-type-tag emergency">急诊</span></span></div>
+                  <div class="history-children">${archiveHistoryFile('emergencyRecord', '急诊病历报告')}</div>
+                  ${archiveHistoryExternalFile('patientUploadDiet', '2024-02-02 18:40', '饮食记录补充资料', '患者上传')}
+                  ${archiveHistoryExternalFile('nurseUploadPressure', '2024-02-01 08:10', '家庭血压记录单', '医护上传')}
+                  ${archiveHistoryExternalFile('patientUploadImage', '2024-01-26 11:25', '院外检查照片', '患者上传')}
+                </div>
+                <div class="history-empty-result">暂无匹配的病历数据</div>
+              </aside>
+              <section class="archive-history-viewer"></section>
+            </div>
+          </section>`;
+      };
+
+      const ARCHIVE_LOGIC_STORAGE_KEY = 'archiveHistoryLogicConfigV2';
+      function getArchiveLogicCard() {
+        return document.querySelector('#patientArchivePage .archive-history-card');
+      }
+      function setArchiveLogicEditing(card, editing) {
+        if (!card) return;
+        card.classList.toggle('logic-editing', editing);
+        card.querySelectorAll('.archive-logic-section h3, .archive-logic-section p, .archive-logic-section li').forEach(node => {
+          node.removeAttribute('contenteditable');
+        });
+        card.querySelectorAll('.archive-logic-section.active h3, .archive-logic-section.active p, .archive-logic-section.active li').forEach(node => {
+          node.setAttribute('contenteditable', editing ? 'true' : 'false');
+        });
+        const editBtn = card.querySelector('[data-edit-archive-logic]');
+        if (editBtn) editBtn.textContent = editing ? '退出编辑' : '编辑';
+        if (editing && !card.querySelector('.archive-logic-edit-tip')) {
+          card.querySelector('.archive-logic-body')?.insertAdjacentHTML('afterbegin', '<p class="archive-logic-edit-tip">编辑模式：可直接修改说明文字，也可以拖动页面上的编号点。选中编号点后支持改编号或删除点，点击“保存”后会保存在当前浏览器。</p>');
+        }
+        if (!editing) card.querySelector('.archive-logic-edit-tip')?.remove();
+      }
+      function normalizeArchiveLogicSections(card) {
+        if (!card) return;
+        card.querySelectorAll('.archive-logic-section').forEach((section, index) => {
+          if (!section.dataset.logicSection) section.dataset.logicSection = String(index + 1);
+          section.classList.remove('active');
+        });
+      }
+      function applyArchiveLogicConfig(card) {
+        if (!card) return;
+        try {
+          const saved = JSON.parse(localStorage.getItem(ARCHIVE_LOGIC_STORAGE_KEY) || '{}');
+          if (saved.bodyHtml) {
+            const body = card.querySelector('.archive-logic-body');
+            if (body) body.innerHTML = saved.bodyHtml;
+          }
+          if (saved.points) {
+            Object.entries(saved.points).forEach(([key, pos]) => {
+              const point = card.querySelector(`.archive-logic-point.${key}`);
+              if (point && pos?.left && pos?.top) {
+                point.style.left = pos.left;
+                point.style.top = pos.top;
+                point.style.right = 'auto';
+              }
+            });
+          }
+        } catch (error) {
+          console.warn('archive logic config parse failed', error);
+        }
+        normalizeArchiveLogicSections(card);
+        setArchiveLogicEditing(card, false);
+      }
+      function saveArchiveLogicConfig(card) {
+        if (!card) return;
+        const body = card.querySelector('.archive-logic-body');
+        const cleanBody = body?.cloneNode(true);
+        cleanBody?.querySelector('.archive-logic-edit-tip')?.remove();
+        cleanBody?.querySelectorAll('[contenteditable]').forEach(node => node.removeAttribute('contenteditable'));
+        const points = {};
+        card.querySelectorAll('.archive-logic-point').forEach(point => {
+          const key = Array.from(point.classList).find(name => /^p\d+$/.test(name));
+          if (!key) return;
+          points[key] = { left: point.style.left || getComputedStyle(point).left, top: point.style.top || getComputedStyle(point).top };
+        });
+        localStorage.setItem(ARCHIVE_LOGIC_STORAGE_KEY, JSON.stringify({ bodyHtml: cleanBody?.innerHTML || '', points }));
+        setArchiveLogicEditing(card, false);
+        if (typeof showToast === 'function') showToast('逻辑说明已保存', 'top');
+      }
+      function storeArchiveLogicConfig(card) {
+        if (!card) return;
+        const body = card.querySelector('.archive-logic-body');
+        const cleanBody = body?.cloneNode(true);
+        cleanBody?.querySelector('.archive-logic-edit-tip')?.remove();
+        cleanBody?.querySelectorAll('[contenteditable]').forEach(node => node.removeAttribute('contenteditable'));
+        const points = {};
+        card.querySelectorAll('.archive-logic-point').forEach(point => {
+          const key = Array.from(point.classList).find(name => /^p\d+$/.test(name));
+          if (!key) return;
+          points[key] = {
+            left: point.style.left || getComputedStyle(point).left,
+            top: point.style.top || getComputedStyle(point).top
+          };
+        });
+        localStorage.setItem(ARCHIVE_LOGIC_STORAGE_KEY, JSON.stringify({ bodyHtml: cleanBody?.innerHTML || '', points }));
+      }
+      function persistArchiveLogicPointPositions(card) {
+        if (!card) return;
+        let saved = {};
+        try {
+          saved = JSON.parse(localStorage.getItem(ARCHIVE_LOGIC_STORAGE_KEY) || '{}');
+        } catch (error) {
+          saved = {};
+        }
+        const points = {};
+        card.querySelectorAll('.archive-logic-point').forEach(point => {
+          const key = Array.from(point.classList).find(name => /^p\d+$/.test(name));
+          if (!key) return;
+          points[key] = {
+            left: point.style.left || getComputedStyle(point).left,
+            top: point.style.top || getComputedStyle(point).top
+          };
+        });
+        localStorage.setItem(ARCHIVE_LOGIC_STORAGE_KEY, JSON.stringify({ ...saved, points }));
+      }
+      function escapeArchiveLogicHtml(value) {
+        return String(value || '').replace(/[&<>"']/g, char => ({
+          '&': '&amp;',
+          '<': '&lt;',
+          '>': '&gt;',
+          '"': '&quot;',
+          "'": '&#39;'
+        }[char]));
+      }
+      function addArchiveLogicSection(card, payload = {}) {
+        if (!card) return;
+        const numbers = Array.from(card.querySelectorAll('.archive-logic-point'))
+          .map(point => Number(point.dataset.logicPoint || '0'))
+          .filter(Boolean);
+        const next = Number(payload.number) || Math.max(0, ...numbers) + 1;
+        if (card.querySelector(`.archive-logic-point[data-logic-point="${next}"]`)) {
+          if (typeof showToast === 'function') showToast('该编号已存在，请换一个编号。', 'top');
+          return;
+        }
+        const title = escapeArchiveLogicHtml(String(payload.title || '新增说明').trim());
+        const description = escapeArchiveLogicHtml(String(payload.description || '点击这里编辑这条说明的内容。可拖动页面上的数字点，把说明标记到对应界面位置。').trim());
+        const lines = String(payload.lines || '这里填写第一个规则点。\n这里填写第二个规则点。')
+          .split(/\n+/)
+          .map(line => escapeArchiveLogicHtml(line.trim()))
+          .filter(Boolean);
+        const point = document.createElement('span');
+        point.className = `archive-logic-point p${next}`;
+        point.dataset.logicPoint = String(next);
+        point.textContent = String(next);
+        point.style.left = `${Math.min(card.clientWidth - 54, 72 + (next - 1) * 34)}px`;
+        point.style.top = `${Math.min(card.clientHeight - 54, 92 + (next - 1) * 26)}px`;
+        card.insertBefore(point, card.querySelector('.archive-logic-drawer'));
+
+        const body = card.querySelector('.archive-logic-body');
+        if (body) {
+          body.insertAdjacentHTML('beforeend', `
+            <section class="archive-logic-section" data-logic-section="${next}">
+              <h3><span>${next}</span>${title}</h3>
+              <p>${description}</p>
+              ${lines.length ? `<ul>${lines.map(line => `<li>${line}</li>`).join('')}</ul>` : ''}
+            </section>`);
+        }
+        showArchiveLogicSection(card, String(next));
+        setArchiveLogicEditing(card, true);
+        storeArchiveLogicConfig(card);
+      }
+      function openArchiveLogicPointModal(card) {
+        if (!card) return;
+        let modal = document.getElementById('archiveLogicPointModal');
+        const numbers = Array.from(card.querySelectorAll('.archive-logic-point'))
+          .map(point => Number(point.dataset.logicPoint || '0'))
+          .filter(Boolean);
+        const next = Math.max(0, ...numbers) + 1;
+        if (!modal) {
+          document.body.insertAdjacentHTML('beforeend', `
+            <div class="archive-logic-point-modal" id="archiveLogicPointModal" aria-hidden="true">
+              <div class="archive-logic-point-dialog">
+                <div class="archive-logic-point-head">
+                  <strong>新增说明点</strong>
+                  <button class="archive-logic-point-close" type="button" data-close-archive-logic-point-modal aria-label="关闭">×</button>
+                </div>
+                <div class="archive-logic-point-form">
+                  <label class="archive-logic-point-field">编号<input data-archive-logic-point-number type="number" min="1"></label>
+                  <label class="archive-logic-point-field">说明标题<input data-archive-logic-point-title type="text" placeholder="请输入说明标题"></label>
+                  <label class="archive-logic-point-field">说明内容<textarea data-archive-logic-point-description placeholder="请输入该点对应的说明内容"></textarea></label>
+                  <label class="archive-logic-point-field">规则明细<textarea data-archive-logic-point-lines placeholder="一行一条，可不填"></textarea></label>
+                </div>
+                <div class="archive-logic-point-foot">
+                  <button class="ghost" type="button" data-close-archive-logic-point-modal>取消</button>
+                  <button class="primary" type="button" data-save-archive-logic-point-modal>保存</button>
+                </div>
+              </div>
+            </div>`);
+          modal = document.getElementById('archiveLogicPointModal');
+        }
+        modal.__archiveLogicCard = card;
+        modal.querySelector('[data-archive-logic-point-number]').value = next;
+        modal.querySelector('[data-archive-logic-point-title]').value = '';
+        modal.querySelector('[data-archive-logic-point-description]').value = '';
+        modal.querySelector('[data-archive-logic-point-lines]').value = '';
+        modal.classList.add('open');
+        modal.setAttribute('aria-hidden', 'false');
+        setTimeout(() => modal.querySelector('[data-archive-logic-point-title]')?.focus(), 0);
+      }
+      function saveArchiveLogicPointModal() {
+        const modal = document.getElementById('archiveLogicPointModal');
+        const card = modal?.__archiveLogicCard;
+        if (!modal || !card) return;
+        const number = modal.querySelector('[data-archive-logic-point-number]')?.value;
+        const title = modal.querySelector('[data-archive-logic-point-title]')?.value;
+        const description = modal.querySelector('[data-archive-logic-point-description]')?.value;
+        const lines = modal.querySelector('[data-archive-logic-point-lines]')?.value;
+        if (!/^[1-9]\d{0,2}$/.test(String(number || '').trim())) {
+          if (typeof showToast === 'function') showToast('编号只能填写正整数。', 'top');
+          return;
+        }
+        if (!String(title || '').trim()) {
+          if (typeof showToast === 'function') showToast('请填写说明标题。', 'top');
+          return;
+        }
+        addArchiveLogicSection(card, { number, title, description, lines });
+        modal.classList.remove('open');
+        modal.setAttribute('aria-hidden', 'true');
+      }
+      function addArchiveLogicLine(card) {
+        if (!card) return;
+        const section = card.querySelector('.archive-logic-section.active');
+        if (!section) return;
+        let list = section.querySelector('ul');
+        if (!list) {
+          section.insertAdjacentHTML('beforeend', '<ul></ul>');
+          list = section.querySelector('ul');
+        }
+        const row = document.createElement('li');
+        row.textContent = '新增一行说明，可直接编辑内容。';
+        list.appendChild(row);
+        setArchiveLogicEditing(card, true);
+        row.setAttribute('contenteditable', 'true');
+        row.focus();
+        storeArchiveLogicConfig(card);
+      }
+      function getActiveArchiveLogicKey(card) {
+        return card?.querySelector('.archive-logic-point.active')?.dataset.logicPoint
+          || card?.querySelector('.archive-logic-section.active')?.dataset.logicSection
+          || card?.querySelector('.archive-logic-point')?.dataset.logicPoint
+          || '';
+      }
+      function renameArchiveLogicPoint(card) {
+        if (!card) return;
+        const oldKey = getActiveArchiveLogicKey(card);
+        if (!oldKey) return;
+        const input = window.prompt('请输入新的编号', oldKey);
+        if (input === null) return;
+        const newKey = String(input).trim();
+        if (!/^[1-9]\d{0,2}$/.test(newKey)) {
+          if (typeof showToast === 'function') showToast('编号只能填写正整数。', 'top');
+          return;
+        }
+        const duplicate = Array.from(card.querySelectorAll('.archive-logic-point'))
+          .some(point => point.dataset.logicPoint === newKey && point.dataset.logicPoint !== oldKey);
+        if (duplicate) {
+          if (typeof showToast === 'function') showToast('该编号已存在，请换一个编号。', 'top');
+          return;
+        }
+        const point = card.querySelector(`.archive-logic-point[data-logic-point="${oldKey}"]`);
+        const section = card.querySelector(`.archive-logic-section[data-logic-section="${oldKey}"]`);
+        if (point) {
+          Array.from(point.classList).forEach(name => {
+            if (/^p\d+$/.test(name)) point.classList.remove(name);
+          });
+          point.classList.add(`p${newKey}`);
+          point.dataset.logicPoint = newKey;
+          point.textContent = newKey;
+        }
+        if (section) {
+          section.dataset.logicSection = newKey;
+          const badge = section.querySelector('h3 span');
+          if (badge) badge.textContent = newKey;
+        }
+        showArchiveLogicSection(card, newKey);
+        setArchiveLogicEditing(card, true);
+        storeArchiveLogicConfig(card);
+      }
+      function deleteArchiveLogicPoint(card) {
+        if (!card) return;
+        const key = getActiveArchiveLogicKey(card);
+        if (!key) return;
+        card.querySelector(`.archive-logic-point[data-logic-point="${key}"]`)?.remove();
+        card.querySelector(`.archive-logic-section[data-logic-section="${key}"]`)?.remove();
+        const nextKey = card.querySelector('.archive-logic-point')?.dataset.logicPoint || '';
+        if (nextKey) {
+          showArchiveLogicSection(card, nextKey);
+        } else {
+          const drawer = card.querySelector('.archive-logic-drawer');
+          drawer?.classList.remove('open');
+          drawer?.setAttribute('aria-hidden', 'true');
+        }
+        setArchiveLogicEditing(card, true);
+        storeArchiveLogicConfig(card);
+      }
+      function showArchiveLogicSection(card, key) {
+        if (!card) return;
+        const drawer = card.querySelector('.archive-logic-drawer');
+        drawer?.classList.add('open');
+        drawer?.setAttribute('aria-hidden', 'false');
+        drawer?.querySelectorAll('.archive-logic-section').forEach(section => {
+          section.classList.toggle('active', section.dataset.logicSection === key);
+        });
+        card.querySelectorAll('.archive-logic-point').forEach(point => {
+          point.classList.toggle('active', point.dataset.logicPoint === key);
+        });
+        const activeSection = drawer?.querySelector('.archive-logic-section.active h3');
+        const title = activeSection?.textContent?.replace(/^\d+/, '').trim() || '逻辑说明';
+        const headTitle = drawer?.querySelector('.archive-logic-head strong');
+        if (headTitle) headTitle.textContent = title;
+        const point = card.querySelector(`.archive-logic-point[data-logic-point="${key}"]`);
+        if (drawer && point) {
+          const cardRect = card.getBoundingClientRect();
+          const pointRect = point.getBoundingClientRect();
+          const drawerWidth = drawer.offsetWidth || 360;
+          const drawerHeight = drawer.offsetHeight || 220;
+          const left = Math.min(card.clientWidth - drawerWidth - 18, Math.max(18, pointRect.left - cardRect.left + 32));
+          const top = Math.min(card.clientHeight - drawerHeight - 18, Math.max(66, pointRect.top - cardRect.top + 28));
+          drawer.style.left = `${Math.round(left)}px`;
+          drawer.style.top = `${Math.round(top)}px`;
+        }
+        setArchiveLogicEditing(card, card.classList.contains('logic-editing'));
+      }
+      function resetArchiveLogicConfig(card) {
+        localStorage.removeItem(ARCHIVE_LOGIC_STORAGE_KEY);
+        if (card) {
+          card.querySelector('.archive-logic-drawer')?.remove();
+          card.querySelectorAll('.archive-logic-point').forEach(point => point.remove());
+          ensureArchiveLogicMode();
+          const newCard = getArchiveLogicCard();
+          newCard?.classList.add('logic-mode');
+          newCard?.querySelector('[data-toggle-archive-logic]')?.classList.add('active');
+          newCard?.querySelector('.archive-logic-drawer')?.classList.remove('open');
+          newCard?.querySelector('.archive-logic-drawer')?.setAttribute('aria-hidden', 'true');
+        }
+        if (typeof showToast === 'function') showToast('已恢复默认逻辑说明', 'top');
+      }
+
+      function ensureArchiveLogicMode() {
+        const card = document.querySelector('#patientArchivePage .archive-history-card');
+        if (!card) return;
+        const actions = card.querySelector('.archive-history-actions');
+        if (actions && !actions.querySelector('[data-toggle-archive-logic]')) {
+          actions.insertAdjacentHTML('afterbegin', '<button class="archive-logic-btn" data-toggle-archive-logic type="button">逻辑说明</button>');
+        }
+        if (!card.querySelector('.archive-logic-drawer')) {
+          card.insertAdjacentHTML('beforeend', `
+            <span class="archive-logic-point p1" data-logic-point="1">1</span>
+            <span class="archive-logic-point p2" data-logic-point="2">2</span>
+            <span class="archive-logic-point p3" data-logic-point="3">3</span>
+            <span class="archive-logic-point p4" data-logic-point="4">4</span>
+            <span class="archive-logic-point p5" data-logic-point="5">5</span>
+            <span class="archive-logic-point p6" data-logic-point="6">6</span>
+            <aside class="archive-logic-drawer" aria-hidden="true">
+              <div class="archive-logic-head"><strong>病历文档逻辑说明</strong><div class="archive-logic-tools"><button class="archive-logic-tool" type="button" data-add-archive-logic>新增点</button><button class="archive-logic-tool" type="button" data-rename-archive-logic-point>改编号</button><button class="archive-logic-tool danger" type="button" data-delete-archive-logic-point>删除点</button><button class="archive-logic-tool" type="button" data-add-archive-logic-line>新增行</button><button class="archive-logic-tool" type="button" data-edit-archive-logic>编辑</button><button class="archive-logic-tool primary" type="button" data-save-archive-logic>保存</button><button class="archive-logic-tool" type="button" data-reset-archive-logic>重置</button><button type="button" data-close-archive-logic aria-label="关闭">×</button></div></div>
+              <div class="archive-logic-body">
+                <section class="archive-logic-section" data-logic-section="1">
+                  <h3><span>1</span>病历来源</h3>
+                  <p>病历档案统一承载医院自动同步、患者上传、医护上传三类资料。不同来源决定展示结构、权限和是否需要人工补充。</p>
+                  <ul>
+                    <li>医院自动同步：如住院病案首页、门诊病历、处方、检验检查报告，按原始病历结构展示。</li>
+                    <li>患者上传：患者自行补充图片或 PDF，仅支持查看和 AI 解读，不允许编辑删除。</li>
+                    <li>医护上传：医护代患者补充资料，支持查看、编辑、删除和报告解析。</li>
+                  </ul>
+                </section>
+                <section class="archive-logic-section" data-logic-section="2">
+                  <h3><span>2</span>目录与筛选</h3>
+                  <p>目录顶部按全部、就诊记录、处方记录、报告单四类切换，并展示与当前目录一致的数量。筛选只影响中间目录，不改变左侧患者档案功能菜单。</p>
+                  <ul>
+                    <li>一级病历按“时间 + 名称”展示，例如 2024-02-02 住院病历、2024-02-01 用药处方。</li>
+                    <li>住院、门诊、急诊、体检标签跟随一级病历展示；自动同步标签只跟随这些同步来源展示。</li>
+                    <li>患者上传、医护上传标签只标记手动上传资料；当前资料选中后蓝色字体加粗。</li>
+                  </ul>
+                </section>
+                <section class="archive-logic-section" data-logic-section="3">
+                  <h3><span>3</span>右侧详情展示</h3>
+                  <p>右侧内容区根据资料来源切换展示方式。医院同步资料按同步结构还原；患者或医护上传资料统一展示病历基本信息、上传资料和报告解读信息。</p>
+                  <ul>
+                    <li>手动上传资料顶部居中展示病历名称，标题 16px 加粗。</li>
+                    <li>基础信息展示姓名、报告时间、资料类型、就诊医院。</li>
+                    <li>上传资料只展示图片缩略图和 PDF 缩略图，点击后支持放大查看。</li>
+                    <li>报告解读分为异常、智能分析、智能建议；异常使用黄色提示风格。</li>
+                  </ul>
+                </section>
+                <section class="archive-logic-section" data-logic-section="4">
+                  <h3><span>4</span>权限与操作</h3>
+                  <p>编辑权限由资料来源决定，避免误改患者上传资料或医院同步资料。右侧操作只在符合权限时展示。</p>
+                  <ul>
+                    <li>医院同步资料：只查看，不编辑、不删除。</li>
+                    <li>患者上传资料：只查看，不编辑、不删除。</li>
+                    <li>医护上传资料：支持编辑和删除，右上角展示修改、删除图标。</li>
+                  </ul>
+                </section>
+                <section class="archive-logic-section" data-logic-section="5">
+                  <h3><span>5</span>报告解析抽屉</h3>
+                  <p>点击解析报告后从右侧打开抽屉。若存在解析中、待补充、已失败任务，外部按钮显示数量，超过 99 显示 99+。</p>
+                  <ul>
+                    <li>抽屉状态包括全部、待补充、已完成、已失败；解析中的动态加载只在全部页展示。</li>
+                    <li>未识别出名称和时间的资料统一显示 image1、image2，不伪造报告名称。</li>
+                    <li>待补充字段包含报告名称、报告时间、归属患者、资料类型、就诊医院。</li>
+                    <li>报告名称、报告时间、归属患者、资料类型为必填；就诊医院非必填。</li>
+                    <li>归属患者来自当前医护所在团队的患者名单；资料类型只允许就诊记录、处方记录、报告单，并支持关键字检索。</li>
+                  </ul>
+                </section>
+                <section class="archive-logic-section" data-logic-section="6">
+                  <h3><span>6</span>归档与查看</h3>
+                  <p>待补充资料完成必填信息后，点击保存并归档进入已完成状态。已完成资料只展示名称和时间，并提供查看按钮。</p>
+                  <ul>
+                    <li>归档时按资料类型进入对应目录：就诊记录、处方记录、报告单。</li>
+                    <li>点击查看后关闭解析抽屉，并在右侧病历详情区展示对应报告。</li>
+                    <li>解析失败任务展示失败原因，支持重新解读。</li>
+                    <li>上传资料支持图片和 PDF；若 AI 能识别必填字段则自动归档，否则进入待补充或已失败。</li>
+                  </ul>
+                </section>
+              </div>
+            </aside>`);
+        }
+        applyArchiveLogicConfig(card);
+      }
+
+      function normalizeArchiveHistoryPanel() {
+        const panel = document.querySelector('#patientArchivePage .archive-history-panel');
+        if (!panel) return;
+        if (!panel.querySelector('[data-history-file]')) {
+          panel.outerHTML = buildArchiveHistoryMarkup();
+        }
+        const firstFile = document.querySelector('#patientArchivePage [data-history-file]');
+        firstFile?.classList.add('active');
+        renderArchiveHistoryDetail(firstFile?.dataset.historyFile || 'inpatientHome');
+        ensureArchiveLogicMode();
+      }
+
+      function applyArchiveHistoryFilters(historyList) {
+        if (!historyList) return;
+        const activeTab = historyList.querySelector('[data-history-tab-filter].active');
+        const filter = activeTab?.dataset.historyTabFilter || 'all';
+        const keyword = (historyList.querySelector('[data-history-search]')?.value || '').trim().toLowerCase();
+        let visibleCount = 0;
+        const matchesKeyword = node => !keyword || (node?.textContent || '').toLowerCase().includes(keyword);
+        historyList.querySelectorAll('.history-tree > .history-date').forEach(dateRow => {
+          const group = dateRow.dataset.historyGroup;
+          const nextChildren = dateRow.nextElementSibling?.classList.contains('history-children') ? dateRow.nextElementSibling : null;
+          const groupMatch = group ? (filter === 'all' || group === filter) : filter === 'all';
+          const keywordMatch = matchesKeyword(dateRow) || matchesKeyword(nextChildren);
+          const visible = groupMatch && keywordMatch;
+          dateRow.style.display = visible ? '' : 'none';
+          if (nextChildren) nextChildren.style.display = visible ? '' : 'none';
+          if (visible) visibleCount += 1;
+        });
+        historyList.querySelectorAll('.history-tree > .history-external-file').forEach(fileRow => {
+          const group = fileRow.dataset.historyGroup;
+          const visible = (filter === 'all' || group === filter) && matchesKeyword(fileRow);
+          fileRow.style.display = visible ? '' : 'none';
+          if (visible) visibleCount += 1;
+        });
+        historyList.querySelector('.history-empty-result')?.classList.toggle('show', visibleCount === 0);
+      }
+
+      setTimeout(normalizeArchiveHistoryPanel, 0);
+
+      const archiveUploadState = { files: [] };
+      function getArchiveUploadModal() {
+        return document.getElementById('archiveUploadModal');
+      }
+      function refreshArchiveUploadList() {
+        const modal = getArchiveUploadModal();
+        const box = modal?.querySelector('.archive-upload-box');
+        if (!modal || !box) return;
+        modal.querySelectorAll('.archive-upload-item').forEach(item => item.remove());
+        archiveUploadState.files.forEach((file, index) => {
+          const item = document.createElement('div');
+          item.className = 'archive-upload-item';
+          item.dataset.archiveUploadIndex = String(index);
+          const isImage = file.type?.startsWith('image/') || /\.(png|jpe?g)$/i.test(file.name || '');
+          if (isImage) {
+            const img = document.createElement('img');
+            img.alt = file.name || '上传图片';
+            img.src = URL.createObjectURL(file);
+            item.appendChild(img);
+          } else {
+            const card = document.createElement('div');
+            card.className = 'archive-upload-file-card';
+            card.innerHTML = '<span class="archive-upload-file-icon">PDF</span><span class="archive-upload-file-name"></span>';
+            card.querySelector('.archive-upload-file-name').textContent = file.name || '资料文件';
+            item.appendChild(card);
+          }
+          const del = document.createElement('button');
+          del.type = 'button';
+          del.className = 'archive-upload-delete';
+          del.dataset.archiveUploadDelete = String(index);
+          del.setAttribute('aria-label', '删除上传文件');
+          del.textContent = '×';
+          item.appendChild(del);
+          box.before(item);
+        });
+        box.classList.toggle('is-hidden', archiveUploadState.files.length >= 20);
+      }
+      function addArchiveUploadFiles(fileList) {
+        const incoming = Array.from(fileList || []);
+        const available = Math.max(0, 20 - archiveUploadState.files.length);
+        archiveUploadState.files.push(...incoming.slice(0, available));
+        if (incoming.length > available && typeof showToast === 'function') showToast('最多可上传20个文件', 'top');
+        refreshArchiveUploadList();
+      }
+      function resetArchiveUploadFiles() {
+        archiveUploadState.files = [];
+        const input = document.getElementById('archiveUploadInput');
+        if (input) input.value = '';
+        refreshArchiveUploadList();
+      }
+
+      const archiveParseItems = [
+        { status: 'running', title: 'image1', time: '', text: 'AI正在识别报告名称、报告时间、就诊人、资料类型和就诊医院。' },
+        { status: 'pending', title: 'image2', time: '', patient: '', type: '', hospital: '' },
+        { status: 'pending', title: 'image4', time: '', patient: '', type: '', hospital: '' },
+        { status: 'done', title: '家庭血压记录单', time: '2024/02/01 08:10', patient: '陈患者', type: '家庭监测资料', hospital: '随访管理团队', pages: '1页', fields: '5项', fileId: 'nurseUploadPressure' },
+        { status: 'done', title: '院外检查照片', time: '2024/01/26 11:25', patient: '陈患者', type: '院外检查资料', hospital: '南方社区门诊', pages: '3张', fields: '6项', fileId: 'patientUploadImage' },
+        { status: 'done', title: '血常规检查检验报告', time: '2024/02/02 10:38', patient: '陈患者', type: '检验报告', hospital: '南方社区门诊', pages: '2页', fields: '12项', fileId: 'patientUploadImage' },
+        { status: 'failed', title: 'image3', time: '', reason: '图片清晰度较低，关键字段未识别完整。' },
+        { status: 'failed', title: 'image5', time: '', reason: 'PDF页码损坏，无法完成结构化解析。' }
+      ];
+      const archiveParseStatusText = { running: '解析中', pending: '待补充', done: '已完成', failed: '已失败' };
+      const archiveParseSelectOptions = {
+        patient: ['陈患者', '黄尚忠', '张患者', '李智明', '黄可睿', '冯金柳', '农业宝', '余玉梅', '梁再兴', '韦望林', '刘五妹', '陈惠者', '孙患者', '周患者', '李患者', '王患者', '赵患者', '钱患者', '吴患者', '郑患者', '冯患者', '刘患者', '何患者', '高患者'],
+        type: ['就诊记录', '处方记录', '报告单']
+      };
+      let archiveParseActiveTab = 'all';
+      function archiveParseComboboxMarkup(kind, value, placeholder) {
+        const options = archiveParseSelectOptions[kind] || [];
+        return `<input type="text" value="${value || ''}" placeholder="${placeholder}" autocomplete="off" data-archive-combobox="${kind}"><div class="archive-combobox-menu">${options.map(option => `<div class="archive-combobox-option" data-archive-combobox-option="${option}">${option}</div>`).join('')}</div>`;
+      }
+      function filterArchiveParseCombobox(input, showAll = false) {
+        const field = input?.closest('.archive-parse-field.searchable');
+        const menu = field?.querySelector('.archive-combobox-menu');
+        if (!field || !menu) return;
+        const options = archiveParseSelectOptions[input.dataset.archiveCombobox] || [];
+        const keyword = showAll ? '' : (input.value || '').trim().toLowerCase();
+        const matched = options.filter(option => option.toLowerCase().includes(keyword));
+        menu.innerHTML = matched.length
+          ? matched.map(option => `<div class="archive-combobox-option" data-archive-combobox-option="${option}">${option}</div>`).join('')
+          : '<div class="archive-combobox-empty">暂无匹配数据</div>';
+        field.classList.add('open');
+      }
+      function closeArchiveParseComboboxes(except) {
+        document.querySelectorAll('.archive-parse-field.searchable.open').forEach(field => {
+          if (field !== except) field.classList.remove('open');
+        });
+      }
+      function updateArchiveParseBadge() {
+        const count = archiveParseItems.filter(item => ['running', 'pending', 'failed'].includes(item.status)).length;
+        document.querySelectorAll('[data-archive-parse-count]').forEach(badge => {
+          badge.textContent = count > 99 ? '99+' : String(count);
+          badge.classList.toggle('show', count > 0);
+        });
+      }
+      function renderArchiveParseItem(item) {
+        const statusText = archiveParseStatusText[item.status] || '解析中';
+        const displayTitle = item.title || '待补充资料';
+        const displayTime = item.time || '未识别';
+        let body = '';
+        if (item.status === 'running') {
+          body = `<div class="archive-parse-loading"><span class="archive-parse-spinner"></span><span>${item.text}</span></div><div class="archive-parse-progress"><i></i></div>`;
+        } else if (item.status === 'pending') {
+          body = `<div class="archive-parse-form">
+            <label class="archive-parse-field required"><span>报告名称</span><input type="text" value="${item.title}" placeholder="请输入报告名称"></label>
+            <label class="archive-parse-field required"><span>报告时间</span><input type="date" value="${item.time}" aria-label="选择报告日期"></label>
+            <label class="archive-parse-field searchable required"><span>归属患者</span>${archiveParseComboboxMarkup('patient', '陈患者', '请选择或搜索归属患者')}</label>
+            <label class="archive-parse-field searchable required"><span>资料类型</span>${archiveParseComboboxMarkup('type', '报告单', '请选择或搜索资料类型')}</label>
+            <label class="archive-parse-field"><span>就诊医院</span><input type="text" value="${item.hospital}" placeholder="请输入就诊医院"></label>
+          </div><div class="archive-parse-actions"><button class="archive-parse-primary" data-archive-complete-fields>保存并归档</button></div>`;
+        } else if (item.status === 'done') {
+          body = `<div class="archive-parse-actions"><button class="archive-parse-secondary" data-archive-view-parsed="${item.fileId}">查看</button></div>`;
+        } else {
+          body = `<div class="archive-parse-field"><span>失败原因</span><strong>${item.reason}</strong></div><div class="archive-parse-actions"><button class="archive-parse-primary" data-archive-reparse>重新解读</button></div>`;
+        }
+        return `<article class="archive-parse-card">
+          <div class="archive-parse-card-head">
+            <div class="archive-parse-title"><strong>${displayTitle}</strong><span>报告时间：${displayTime}</span></div>
+            <span class="archive-parse-status ${item.status}">${statusText}</span>
+          </div>
+          <div class="archive-parse-card-body">${body}</div>
+        </article>`;
+      }
+      function renderArchiveParseDrawer(tab = archiveParseActiveTab) {
+        archiveParseActiveTab = tab;
+        const drawer = document.getElementById('archiveParseDrawer');
+        const body = document.getElementById('archiveParseBody');
+        if (!drawer || !body) return;
+        drawer.querySelectorAll('[data-archive-parse-tab]').forEach(btn => btn.classList.toggle('active', btn.dataset.archiveParseTab === tab));
+        const rows = archiveParseItems.filter(item => tab === 'all' ? true : item.status === tab);
+        body.innerHTML = rows.length ? rows.map(renderArchiveParseItem).join('') : '<div class="archive-parse-empty">暂无解析报告</div>';
+      }
+      function openArchiveParseDrawer() {
+        const drawer = document.getElementById('archiveParseDrawer');
+        const backdrop = document.getElementById('archiveParseBackdrop');
+        renderArchiveParseDrawer('all');
+        updateArchiveParseBadge();
+        backdrop?.classList.add('open');
+        backdrop?.setAttribute('aria-hidden', 'false');
+        drawer?.classList.add('open');
+        drawer?.setAttribute('aria-hidden', 'false');
+      }
+      function closeArchiveParseDrawer() {
+        const drawer = document.getElementById('archiveParseDrawer');
+        const backdrop = document.getElementById('archiveParseBackdrop');
+        drawer?.classList.remove('open');
+        drawer?.setAttribute('aria-hidden', 'true');
+        backdrop?.classList.remove('open');
+        backdrop?.setAttribute('aria-hidden', 'true');
+      }
+      setTimeout(updateArchiveParseBadge, 0);
+
+      document.addEventListener('change', function (event) {
+        if (event.target?.id === 'archiveUploadInput') {
+          addArchiveUploadFiles(event.target.files);
+          event.target.value = '';
+          event.preventDefault();
+          event.stopImmediatePropagation();
+        }
+      }, true);
+
+      let archiveLogicDrag = null;
+      let archiveLogicMoved = false;
+      document.addEventListener('mousedown', function (event) {
+        const point = event.target.closest('.archive-history-card.logic-mode .archive-logic-point');
+        if (!point) return;
+        const card = point.closest('.archive-history-card');
+        const cardRect = card.getBoundingClientRect();
+        const pointRect = point.getBoundingClientRect();
+        archiveLogicDrag = {
+          point,
+          card,
+          offsetX: event.clientX - pointRect.left,
+          offsetY: event.clientY - pointRect.top,
+          cardLeft: cardRect.left,
+          cardTop: cardRect.top
+        };
+        archiveLogicMoved = false;
+        event.preventDefault();
+        event.stopImmediatePropagation();
+      }, true);
+      document.addEventListener('mousemove', function (event) {
+        if (!archiveLogicDrag) return;
+        const maxLeft = Math.max(0, archiveLogicDrag.card.clientWidth - archiveLogicDrag.point.offsetWidth);
+        const maxTop = Math.max(0, archiveLogicDrag.card.clientHeight - archiveLogicDrag.point.offsetHeight);
+        const left = Math.min(maxLeft, Math.max(0, event.clientX - archiveLogicDrag.cardLeft - archiveLogicDrag.offsetX));
+        const top = Math.min(maxTop, Math.max(0, event.clientY - archiveLogicDrag.cardTop - archiveLogicDrag.offsetY));
+        archiveLogicDrag.point.style.left = `${Math.round(left)}px`;
+        archiveLogicDrag.point.style.top = `${Math.round(top)}px`;
+        archiveLogicDrag.point.style.right = 'auto';
+        archiveLogicDrag.point.classList.add('active');
+        archiveLogicMoved = true;
+        const activeKey = archiveLogicDrag.point.dataset.logicPoint;
+        if (activeKey && archiveLogicDrag.card.querySelector('.archive-logic-drawer.open')) {
+          showArchiveLogicSection(archiveLogicDrag.card, activeKey);
+        }
+        event.preventDefault();
+      }, true);
+      document.addEventListener('mouseup', function () {
+        if (archiveLogicDrag && archiveLogicMoved) {
+          persistArchiveLogicPointPositions(archiveLogicDrag.card);
+          setTimeout(() => { archiveLogicMoved = false; }, 120);
+        }
+        archiveLogicDrag = null;
+      }, true);
+
+      document.addEventListener('click', function (event) {
+        const archiveLogicPoint = event.target.closest('.archive-history-card.logic-mode .archive-logic-point');
+        if (archiveLogicPoint) {
+          if (archiveLogicMoved) {
+            archiveLogicMoved = false;
+            event.preventDefault();
+            event.stopImmediatePropagation();
+            return;
+          }
+          showArchiveLogicSection(archiveLogicPoint.closest('.archive-history-card'), archiveLogicPoint.dataset.logicPoint);
+          event.preventDefault();
+          event.stopImmediatePropagation();
+          return;
+        }
+        const archiveLogicAdd = event.target.closest('[data-add-archive-logic]');
+        if (archiveLogicAdd) {
+          openArchiveLogicPointModal(archiveLogicAdd.closest('.archive-history-card'));
+          event.preventDefault();
+          event.stopImmediatePropagation();
+          return;
+        }
+        const archiveLogicPointSave = event.target.closest('[data-save-archive-logic-point-modal]');
+        if (archiveLogicPointSave) {
+          saveArchiveLogicPointModal();
+          event.preventDefault();
+          event.stopImmediatePropagation();
+          return;
+        }
+        if (event.target.closest('[data-close-archive-logic-point-modal]') || event.target.id === 'archiveLogicPointModal') {
+          const modal = document.getElementById('archiveLogicPointModal');
+          modal?.classList.remove('open');
+          modal?.setAttribute('aria-hidden', 'true');
+          event.preventDefault();
+          event.stopImmediatePropagation();
+          return;
+        }
+        const archiveLogicLineAdd = event.target.closest('[data-add-archive-logic-line]');
+        if (archiveLogicLineAdd) {
+          addArchiveLogicLine(archiveLogicLineAdd.closest('.archive-history-card'));
+          event.preventDefault();
+          event.stopImmediatePropagation();
+          return;
+        }
+        const archiveLogicRename = event.target.closest('[data-rename-archive-logic-point]');
+        if (archiveLogicRename) {
+          renameArchiveLogicPoint(archiveLogicRename.closest('.archive-history-card'));
+          event.preventDefault();
+          event.stopImmediatePropagation();
+          return;
+        }
+        const archiveLogicDelete = event.target.closest('[data-delete-archive-logic-point]');
+        if (archiveLogicDelete) {
+          deleteArchiveLogicPoint(archiveLogicDelete.closest('.archive-history-card'));
+          event.preventDefault();
+          event.stopImmediatePropagation();
+          return;
+        }
+        const archiveLogicEdit = event.target.closest('[data-edit-archive-logic]');
+        if (archiveLogicEdit) {
+          const card = archiveLogicEdit.closest('.archive-history-card');
+          setArchiveLogicEditing(card, !card?.classList.contains('logic-editing'));
+          event.preventDefault();
+          event.stopImmediatePropagation();
+          return;
+        }
+        const archiveLogicSave = event.target.closest('[data-save-archive-logic]');
+        if (archiveLogicSave) {
+          saveArchiveLogicConfig(archiveLogicSave.closest('.archive-history-card'));
+          event.preventDefault();
+          event.stopImmediatePropagation();
+          return;
+        }
+        const archiveLogicReset = event.target.closest('[data-reset-archive-logic]');
+        if (archiveLogicReset) {
+          const card = archiveLogicReset.closest('.archive-history-card');
+          resetArchiveLogicConfig(card);
+          event.preventDefault();
+          event.stopImmediatePropagation();
+          return;
+        }
+        const archiveLogicToggle = event.target.closest('[data-toggle-archive-logic]');
+        if (archiveLogicToggle) {
+          const card = archiveLogicToggle.closest('.archive-history-card');
+          card?.classList.toggle('logic-mode');
+          const open = !!card?.classList.contains('logic-mode');
+          archiveLogicToggle.classList.toggle('active', open);
+          const drawer = card?.querySelector('.archive-logic-drawer');
+          drawer?.classList.remove('open');
+          drawer?.setAttribute('aria-hidden', 'true');
+          if (!open) setArchiveLogicEditing(card, false);
+          event.preventDefault();
+          event.stopImmediatePropagation();
+          return;
+        }
+        const archiveLogicClose = event.target.closest('[data-close-archive-logic]');
+        if (archiveLogicClose) {
+          const card = archiveLogicClose.closest('.archive-history-card');
+          setArchiveLogicEditing(card, false);
+          card?.querySelector('.archive-logic-drawer')?.classList.remove('open');
+          card?.querySelector('.archive-logic-drawer')?.setAttribute('aria-hidden', 'true');
+          event.preventDefault();
+          event.stopImmediatePropagation();
+          return;
+        }
+        const openArchiveUpload = event.target.closest('[data-open-archive-upload]');
+        if (openArchiveUpload) {
+          const modal = document.getElementById('archiveUploadModal');
+          modal?.classList.add('open');
+          modal?.setAttribute('aria-hidden', 'false');
+          event.preventDefault();
+          event.stopImmediatePropagation();
+          return;
+        }
+        const archiveUploadTrigger = event.target.closest('[data-archive-upload-trigger]');
+        if (archiveUploadTrigger) {
+          document.getElementById('archiveUploadInput')?.click();
+          event.preventDefault();
+          event.stopImmediatePropagation();
+          return;
+        }
+        const archiveUploadDelete = event.target.closest('[data-archive-upload-delete]');
+        if (archiveUploadDelete) {
+          archiveUploadState.files.splice(Number(archiveUploadDelete.dataset.archiveUploadDelete), 1);
+          refreshArchiveUploadList();
+          event.preventDefault();
+          event.stopImmediatePropagation();
+          return;
+        }
+        const confirmArchiveUpload = event.target.closest('[data-confirm-archive-upload]');
+        if (confirmArchiveUpload) {
+          const modal = document.getElementById('archiveUploadModal');
+          modal?.classList.remove('open');
+          modal?.setAttribute('aria-hidden', 'true');
+          resetArchiveUploadFiles();
+          if (typeof showToast === 'function') showToast('资料上传成功，AI正在进行解析，请稍后。', 'top');
+          event.preventDefault();
+          event.stopImmediatePropagation();
+          return;
+        }
+        if (event.target.closest('[data-close-archive-upload]') || event.target.id === 'archiveUploadModal') {
+          const modal = document.getElementById('archiveUploadModal');
+          modal?.classList.remove('open');
+          modal?.setAttribute('aria-hidden', 'true');
+          event.preventDefault();
+          event.stopImmediatePropagation();
+          return;
+        }
+        const parseArchiveReport = event.target.closest('[data-archive-parse-report]');
+        if (parseArchiveReport) {
+          openArchiveParseDrawer();
+          event.preventDefault();
+          event.stopImmediatePropagation();
+          return;
+        }
+        const closeArchiveParse = event.target.closest('[data-close-archive-parse]');
+        if (closeArchiveParse) {
+          closeArchiveParseDrawer();
+          event.preventDefault();
+          event.stopImmediatePropagation();
+          return;
+        }
+        const archiveComboboxOption = event.target.closest('[data-archive-combobox-option]');
+        if (archiveComboboxOption) {
+          const field = archiveComboboxOption.closest('.archive-parse-field.searchable');
+          const input = field?.querySelector('[data-archive-combobox]');
+          if (input) input.value = archiveComboboxOption.dataset.archiveComboboxOption || archiveComboboxOption.textContent.trim();
+          field?.classList.remove('open');
+          event.preventDefault();
+          event.stopImmediatePropagation();
+          return;
+        }
+        const archiveComboboxInput = event.target.closest('[data-archive-combobox]');
+        if (archiveComboboxInput) {
+          const field = archiveComboboxInput.closest('.archive-parse-field.searchable');
+          closeArchiveParseComboboxes(field);
+          filterArchiveParseCombobox(archiveComboboxInput, true);
+          event.stopImmediatePropagation();
+          return;
+        }
+        closeArchiveParseComboboxes();
+        const archiveParseTab = event.target.closest('[data-archive-parse-tab]');
+        if (archiveParseTab) {
+          renderArchiveParseDrawer(archiveParseTab.dataset.archiveParseTab || 'all');
+          event.preventDefault();
+          event.stopImmediatePropagation();
+          return;
+        }
+        const completeArchiveFields = event.target.closest('[data-archive-complete-fields]');
+        if (completeArchiveFields) {
+          if (typeof showToast === 'function') showToast('必填信息已补充，报告已归档。', 'top');
+          renderArchiveParseDrawer('done');
+          event.preventDefault();
+          event.stopImmediatePropagation();
+          return;
+        }
+        const viewParsedArchive = event.target.closest('[data-archive-view-parsed]');
+        if (viewParsedArchive) {
+          closeArchiveParseDrawer();
+          renderArchiveHistoryDetail(viewParsedArchive.dataset.archiveViewParsed || 'patientUploadDiet');
+          document.querySelectorAll('#patientArchivePage [data-history-file]').forEach(file => file.classList.toggle('active', file.dataset.historyFile === viewParsedArchive.dataset.archiveViewParsed));
+          event.preventDefault();
+          event.stopImmediatePropagation();
+          return;
+        }
+        const archiveReparse = event.target.closest('[data-archive-reparse]');
+        if (archiveReparse) {
+          if (typeof showToast === 'function') showToast('已重新发起报告解析。', 'top');
+          renderArchiveParseDrawer('all');
+          event.preventDefault();
+          event.stopImmediatePropagation();
+          return;
+        }
+        const previewThumb = event.target.closest('#patientArchivePage [data-history-preview-thumb]');
+        if (previewThumb) {
+          let lightbox = document.getElementById('historyLightbox');
+          if (!lightbox) {
+            document.body.insertAdjacentHTML('beforeend', '<div class="history-lightbox" id="historyLightbox" aria-hidden="true"><div class="history-lightbox-card"><button class="history-lightbox-close" data-close-history-lightbox aria-label="关闭">×</button><div class="history-lightbox-paper"></div></div></div>');
+            lightbox = document.getElementById('historyLightbox');
+          }
+          lightbox.classList.add('open');
+          lightbox.setAttribute('aria-hidden', 'false');
+          event.preventDefault();
+          event.stopImmediatePropagation();
+          return;
+        }
+        if (event.target.closest('[data-close-history-lightbox]') || event.target.id === 'historyLightbox') {
+          const lightbox = document.getElementById('historyLightbox');
+          lightbox?.classList.remove('open');
+          lightbox?.setAttribute('aria-hidden', 'true');
+          event.preventDefault();
+          event.stopImmediatePropagation();
+          return;
+        }
+        const historyFile = event.target.closest('#patientArchivePage [data-history-file]');
+        if (historyFile) {
+          document.querySelectorAll('#patientArchivePage [data-history-file]').forEach(item => {
+            item.classList.toggle('active', item === historyFile);
+          });
+          renderArchiveHistoryDetail(historyFile.dataset.historyFile);
+          event.preventDefault();
+          event.stopImmediatePropagation();
+          return;
+        }
+        const historyTabFilter = event.target.closest('#patientArchivePage [data-history-tab-filter]');
+        if (historyTabFilter) {
+          const historyList = historyTabFilter.closest('.archive-history-list');
+          historyList?.querySelectorAll('[data-history-tab-filter]').forEach(tab => {
+            tab.classList.toggle('active', tab === historyTabFilter);
+          });
+          applyArchiveHistoryFilters(historyList);
+          event.preventDefault();
+          event.stopImmediatePropagation();
+          return;
+        }
+        const historyToggle = event.target.closest('#patientArchivePage [data-history-toggle]');
+        if (historyToggle) {
+          const arrow = historyToggle.querySelector('.arrow');
+          historyToggle.classList.toggle('collapsed');
+          if (arrow) arrow.textContent = historyToggle.classList.contains('collapsed') ? '▶' : '▼';
+          event.preventDefault();
+          event.stopImmediatePropagation();
+          return;
+        }
+        const archiveTab = event.target.closest('#patientArchivePage [data-archive-tab]');
+        if (!archiveTab) return;
+        const archivePage = document.getElementById('patientArchivePage');
+        const archiveMain = document.querySelector('#patientArchivePage .archive-main');
+        if (archiveTab.dataset.archiveTab === 'history' && archiveMain) {
+          document.querySelectorAll('#patientArchivePage .archive-history-panel').forEach(panel => panel.remove());
+          archiveMain.insertAdjacentHTML('beforeend', buildArchiveHistoryMarkup());
+        }
+        const targetPanel = document.querySelector(`#patientArchivePage [data-archive-panel="${archiveTab.dataset.archiveTab}"]`);
+        if (!archivePage || !targetPanel) return;
+        event.preventDefault();
+        event.stopImmediatePropagation();
+        document.querySelectorAll('#patientArchivePage [data-archive-tab]').forEach(button => {
+          button.classList.toggle('active', button === archiveTab);
+        });
+        document.querySelectorAll('#patientArchivePage [data-archive-panel]').forEach(panel => {
+          panel.classList.remove('is-visible');
+          panel.hidden = panel !== targetPanel;
+          panel.style.display = panel === targetPanel ? '' : 'none';
+        });
+        targetPanel.hidden = false;
+        targetPanel.style.display = archiveTab.dataset.archiveTab === 'history' ? 'block' : '';
+        targetPanel.classList.add('is-visible');
+        archivePage.classList.toggle('history-document-mode', archiveTab.dataset.archiveTab === 'history');
+        if (archiveTab.dataset.archiveTab === 'history') normalizeArchiveHistoryPanel();
+        archivePage.scrollTop = 0;
+        archivePage.scrollLeft = 0;
+      }, true);
+    })();
+  </script>
+  <script src="js/upload-inline-fix-v2.js"></script>
+<script>
+(() => {
+  if (window.__medicalUploadPlusInlineFixV2) return;
+  window.__medicalUploadPlusInlineFixV2 = true;
+
+  const STYLE_ID = "medical-upload-plus-inline-fix-style-v2";
+  const GRID_CLASS = "medical-upload-photo-grid";
+  const ADD_CLASS = "medical-upload-add-tile";
+  const MAX_FILES = 20;
+  const TILE_SIZE = 72;
+
+  function injectStyle() {
+    if (document.getElementById(STYLE_ID)) return;
+    const style = document.createElement("style");
+    style.id = STYLE_ID;
+    style.textContent = `
+      .${GRID_CLASS} {
+        display: grid !important;
+        grid-template-columns: repeat(5, ${TILE_SIZE}px);
+        gap: 12px;
+        align-items: start;
+        width: max-content;
+        max-width: calc(${TILE_SIZE}px * 5 + 12px * 4);
+        margin: 14px 0 0;
+      }
+      .${GRID_CLASS} > * {
+        width: ${TILE_SIZE}px !important;
+        height: ${TILE_SIZE}px !important;
+        margin: 0 !important;
+        flex: 0 0 ${TILE_SIZE}px !important;
+      }
+      .${GRID_CLASS} img {
+        width: 100% !important;
+        height: 100% !important;
+        object-fit: cover !important;
+        border-radius: 4px;
+        display: block;
+      }
+      .${ADD_CLASS} {
+        border: 1px dashed #d8e3f3;
+        background: #f8fbff;
+        color: #182b4d;
+        font-size: 32px;
+        line-height: 1;
+        border-radius: 4px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .${ADD_CLASS}:hover {
+        border-color: #2f5bff;
+        color: #2f5bff;
+        background: #eef5ff;
+      }
+    `;
+    document.head.appendChild(style);
+  }
+
+  function textOf(el) {
+    return (el?.textContent || "").replace(/\s+/g, "");
+  }
+
+  function findUploadModal() {
+    return Array.from(document.querySelectorAll("div")).find((el) => {
+      const text = textOf(el);
+      const rect = el.getBoundingClientRect();
+      return text.includes("上传病历资料") &&
+        rect.width >= 480 &&
+        rect.width <= 980 &&
+        rect.height >= 260 &&
+        rect.height <= 760;
+    });
+  }
+
+  function findThumbNodes(modal) {
+    const imgs = Array.from(modal.querySelectorAll("img")).filter((img) => {
+      const rect = img.getBoundingClientRect();
+      return rect.width >= 36 && rect.width <= 120 && rect.height >= 36 && rect.height <= 120;
+    });
+    const nodes = [];
+    imgs.forEach((img) => {
+      const node = img.closest(".medical-upload-thumb,.upload-thumb,.file-thumb,.ant-upload-list-item,li") || img.parentElement;
+      if (node && modal.contains(node) && !nodes.includes(node) && !node.classList.contains(ADD_CLASS)) {
+        nodes.push(node);
+      }
+    });
+    return nodes;
+  }
+
+  function findAnchor(modal, thumbs) {
+    if (thumbs[0]?.parentElement) return thumbs[0].parentElement;
+    const mergeLabel = Array.from(modal.querySelectorAll("label,div")).find((el) => textOf(el).includes("合并解读"));
+    return mergeLabel?.parentElement || modal;
+  }
+
+  function ensureGrid(modal, thumbs) {
+    let grid = modal.querySelector(`.${GRID_CLASS}`);
+    if (grid) return grid;
+
+    grid = document.createElement("div");
+    grid.className = GRID_CLASS;
+    const anchor = findAnchor(modal, thumbs);
+    if (thumbs.length && thumbs[0].parentElement === anchor && anchor.parentElement) {
+      anchor.parentElement.insertBefore(grid, anchor);
+    } else if (anchor === modal) {
+      const bodyStart = Array.from(modal.children).find((child) => child.getBoundingClientRect().height > 40) || modal.firstElementChild;
+      (bodyStart || modal).insertAdjacentElement("afterend", grid);
+    } else {
+      anchor.insertAdjacentElement("afterend", grid);
+    }
+    return grid;
+  }
+
+  function ensureAddTile(modal, grid, count) {
+    let addTile = grid.querySelector(`.${ADD_CLASS}`);
+    if (!addTile) {
+      addTile = document.createElement("button");
+      addTile.type = "button";
+      addTile.className = ADD_CLASS;
+      addTile.setAttribute("aria-label", "添加图片");
+      addTile.textContent = "+";
+      addTile.addEventListener("click", () => {
+        const input = modal.querySelector('input[type="file"]');
+        if (input) input.click();
+      });
+    }
+    addTile.style.display = count >= MAX_FILES ? "none" : "";
+    grid.appendChild(addTile);
+  }
+
+  function applyUploadGrid() {
+    injectStyle();
+    const modal = findUploadModal();
+    if (!modal) return;
+    const thumbs = findThumbNodes(modal);
+    const grid = ensureGrid(modal, thumbs);
+    thumbs.forEach((node) => grid.appendChild(node));
+    ensureAddTile(modal, grid, thumbs.length);
+  }
+
+  const schedule = () => requestAnimationFrame(applyUploadGrid);
+  schedule();
+  window.addEventListener("load", schedule);
+  new MutationObserver(schedule).observe(document.body, { childList: true, subtree: true });
+  setInterval(applyUploadGrid, 800);
+})();
+</script>
+<script src="./medical-upload-plus-fix.js"></script>
+  <script src="medical-upload-grid-order-fix.js?v=20260731-upload-grid-order"></script>
+<script src="./medical-upload-modal-final-fix.js?v=20260731-upload-final-1"></script>
+  <script src="./medical-upload-modal-grid-order-fix.js?v=20260731-upload-grid-fix"></script>
+<script src="./medical-upload-modal-grid-normalize.js?v=20260731-grid-normalize"></script>
+<script src="./medical-upload-modal-upload-flow-fix.js?v=20260731-upload-flow-v5"></script>
+  <script src="./medical-upload-modal-v6.js?v=20260731-upload-flow"></script>
+  <script src="medical-upload-modal-v7.js"></script>
+<script src="medical-upload-modal-v8.js"></script>
+<script src="medical-upload-modal-v9.js"></script>
+  <script src="medical-upload-modal-v10.js"></script>
 </body>
 </html>

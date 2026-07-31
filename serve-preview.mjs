@@ -2,7 +2,7 @@ import { createReadStream, existsSync, statSync } from "node:fs";
 import { extname, join, normalize } from "node:path";
 import { createServer } from "node:http";
 
-const root = "D:\\project\\Frontend Architect";
+const root = "D:\\projectnew\\Frontend Architect";
 const port = 5173;
 
 const contentTypes = {
