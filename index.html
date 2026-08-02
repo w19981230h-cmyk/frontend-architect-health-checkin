@@ -9404,6 +9404,56 @@
           section.classList.remove('active');
         });
       }
+      function getArchiveLogicPointKey(point) {
+        return Array.from(point?.classList || []).find(name => /^p\d+$/.test(name)) || '';
+      }
+      function ensureArchiveLogicPoint(card, key) {
+        if (!card || !/^p\d+$/.test(key)) return null;
+        let point = card.querySelector(`.archive-logic-point.${key}`);
+        if (point) return point;
+        const number = key.replace(/^p/, '');
+        point = document.createElement('span');
+        point.className = `archive-logic-point ${key}`;
+        point.dataset.logicPoint = number;
+        point.textContent = number;
+        card.insertBefore(point, card.querySelector('.archive-logic-drawer'));
+        return point;
+      }
+      function getArchiveLogicPointPosition(card, point) {
+        const cardWidth = Math.max(1, card.clientWidth - point.offsetWidth);
+        const cardHeight = Math.max(1, card.clientHeight - point.offsetHeight);
+        const left = parseFloat(point.style.left || getComputedStyle(point).left) || 0;
+        const top = parseFloat(point.style.top || getComputedStyle(point).top) || 0;
+        const leftPct = Math.min(100, Math.max(0, left / cardWidth * 100));
+        const topPct = Math.min(100, Math.max(0, top / cardHeight * 100));
+        return { left: `${Math.round(left)}px`, top: `${Math.round(top)}px`, leftPct, topPct };
+      }
+      function applyArchiveLogicPointPosition(card, point, pos) {
+        if (!card || !point || !pos) return;
+        const cardWidth = Math.max(1, card.clientWidth - point.offsetWidth);
+        const cardHeight = Math.max(1, card.clientHeight - point.offsetHeight);
+        const hasPct = Number.isFinite(Number(pos.leftPct)) && Number.isFinite(Number(pos.topPct));
+        const left = hasPct ? `${Math.round(cardWidth * Number(pos.leftPct) / 100)}px` : pos.left;
+        const top = hasPct ? `${Math.round(cardHeight * Number(pos.topPct) / 100)}px` : pos.top;
+        if (left && top) {
+          point.style.left = left;
+          point.style.top = top;
+          point.style.right = 'auto';
+          point.style.bottom = 'auto';
+        }
+      }
+      function refreshArchiveLogicPointPositions(card = getArchiveLogicCard()) {
+        if (!card) return;
+        try {
+          const saved = JSON.parse(localStorage.getItem(ARCHIVE_LOGIC_STORAGE_KEY) || '{}');
+          Object.entries(saved.points || {}).forEach(([key, pos]) => {
+            const point = ensureArchiveLogicPoint(card, key);
+            applyArchiveLogicPointPosition(card, point, pos);
+          });
+        } catch (error) {
+          console.warn('archive logic point refresh failed', error);
+        }
+      }
       function applyArchiveLogicConfig(card) {
         if (!card) return;
         try {
@@ -9414,12 +9464,8 @@
           }
           if (saved.points) {
             Object.entries(saved.points).forEach(([key, pos]) => {
-              const point = card.querySelector(`.archive-logic-point.${key}`);
-              if (point && pos?.left && pos?.top) {
-                point.style.left = pos.left;
-                point.style.top = pos.top;
-                point.style.right = 'auto';
-              }
+              const point = ensureArchiveLogicPoint(card, key);
+              applyArchiveLogicPointPosition(card, point, pos);
             });
           }
         } catch (error) {
@@ -9436,9 +9482,9 @@
         cleanBody?.querySelectorAll('[contenteditable]').forEach(node => node.removeAttribute('contenteditable'));
         const points = {};
         card.querySelectorAll('.archive-logic-point').forEach(point => {
-          const key = Array.from(point.classList).find(name => /^p\d+$/.test(name));
+          const key = getArchiveLogicPointKey(point);
           if (!key) return;
-          points[key] = { left: point.style.left || getComputedStyle(point).left, top: point.style.top || getComputedStyle(point).top };
+          points[key] = getArchiveLogicPointPosition(card, point);
         });
         localStorage.setItem(ARCHIVE_LOGIC_STORAGE_KEY, JSON.stringify({ bodyHtml: cleanBody?.innerHTML || '', points }));
         setArchiveLogicEditing(card, false);
@@ -9452,12 +9498,9 @@
         cleanBody?.querySelectorAll('[contenteditable]').forEach(node => node.removeAttribute('contenteditable'));
         const points = {};
         card.querySelectorAll('.archive-logic-point').forEach(point => {
-          const key = Array.from(point.classList).find(name => /^p\d+$/.test(name));
+          const key = getArchiveLogicPointKey(point);
           if (!key) return;
-          points[key] = {
-            left: point.style.left || getComputedStyle(point).left,
-            top: point.style.top || getComputedStyle(point).top
-          };
+          points[key] = getArchiveLogicPointPosition(card, point);
         });
         localStorage.setItem(ARCHIVE_LOGIC_STORAGE_KEY, JSON.stringify({ bodyHtml: cleanBody?.innerHTML || '', points }));
       }
@@ -9471,12 +9514,9 @@
         }
         const points = {};
         card.querySelectorAll('.archive-logic-point').forEach(point => {
-          const key = Array.from(point.classList).find(name => /^p\d+$/.test(name));
+          const key = getArchiveLogicPointKey(point);
           if (!key) return;
-          points[key] = {
-            left: point.style.left || getComputedStyle(point).left,
-            top: point.style.top || getComputedStyle(point).top
-          };
+          points[key] = getArchiveLogicPointPosition(card, point);
         });
         localStorage.setItem(ARCHIVE_LOGIC_STORAGE_KEY, JSON.stringify({ ...saved, points }));
       }
@@ -10030,6 +10070,11 @@
         }
         archiveLogicDrag = null;
       }, true);
+      let archiveLogicResizeTimer = null;
+      window.addEventListener('resize', function () {
+        clearTimeout(archiveLogicResizeTimer);
+        archiveLogicResizeTimer = setTimeout(() => refreshArchiveLogicPointPositions(), 120);
+      });
 
       document.addEventListener('click', function (event) {
         const archiveLogicPoint = event.target.closest('.archive-history-card.logic-mode .archive-logic-point');
