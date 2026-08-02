@@ -10324,9 +10324,12 @@
       }, true);
     })();
   </script>
-  <script src="js/upload-inline-fix-v2.js"></script>
+  <!-- Upload modal patch scripts are intentionally disabled on initial page load.
+       They repeatedly observe and mutate the DOM, which can crash Chromium when the
+       prototype is opened directly from the filesystem. -->
 <script>
 (() => {
+  return;
   if (window.__medicalUploadPlusInlineFixV2) return;
   window.__medicalUploadPlusInlineFixV2 = true;
 
@@ -10473,16 +10476,5 @@
   setInterval(applyUploadGrid, 800);
 })();
 </script>
-<script src="./medical-upload-plus-fix.js"></script>
-  <script src="medical-upload-grid-order-fix.js?v=20260731-upload-grid-order"></script>
-<script src="./medical-upload-modal-final-fix.js?v=20260731-upload-final-1"></script>
-  <script src="./medical-upload-modal-grid-order-fix.js?v=20260731-upload-grid-fix"></script>
-<script src="./medical-upload-modal-grid-normalize.js?v=20260731-grid-normalize"></script>
-<script src="./medical-upload-modal-upload-flow-fix.js?v=20260731-upload-flow-v5"></script>
-  <script src="./medical-upload-modal-v6.js?v=20260731-upload-flow"></script>
-  <script src="medical-upload-modal-v7.js"></script>
-<script src="medical-upload-modal-v8.js"></script>
-<script src="medical-upload-modal-v9.js"></script>
-  <script src="medical-upload-modal-v10.js"></script>
 </body>
 </html>
