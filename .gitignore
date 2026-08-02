@@ -4,6 +4,8 @@ dist/
 .agents/
 *.png
 *.log
+.ui-annotations.json
+.ui-annotations.tmp.json
 *.zip
 _write_test.txt
 builder-preview.html

@@ -917,8 +917,9 @@
     .archive-history-actions { display: flex; align-items: center; gap: 10px; }
     .archive-logic-btn { height: 32px; padding: 0 14px; display: inline-flex; align-items: center; gap: 7px; border: 1px solid #d8e2f0; border-radius: 4px; color: #334158; background: #fff; font-size: 13px; font-weight: 700; }
     .archive-logic-btn.active { color: #fff; border-color: #3154ff; background: #3154ff; }
-    .archive-logic-point { position: absolute; z-index: 12; width: 22px; height: 22px; display: none; place-items: center; border: 2px solid #fff; border-radius: 50%; color: #fff; background: #3154ff; font-size: 12px; font-weight: 800; box-shadow: 0 6px 16px rgba(49,84,255,.32); cursor: move; user-select: none; }
+    .archive-logic-point { position: absolute; z-index: 12; width: 24px; height: 24px; display: none; place-items: center; border: 2px solid #fff; border-radius: 50%; color: #fff; background: #3154ff; font-size: 12px; font-weight: 800; box-shadow: 0 5px 14px rgba(49,84,255,.34); cursor: grab; user-select: none; touch-action: none; }
     .archive-logic-point.active { background: #ff8a00; box-shadow: 0 6px 18px rgba(255,138,0,.36); }
+    .archive-logic-point.dragging { cursor: grabbing; background: #ff8a00; box-shadow: 0 8px 20px rgba(255,138,0,.42); transform: scale(1.08); }
     .archive-history-card.logic-mode .archive-logic-point { display: grid; }
     .archive-logic-point.p1 { left: 18px; top: 84px; }
     .archive-logic-point.p2 { left: clamp(236px, 30vw, 262px); top: 96px; }
@@ -980,16 +981,21 @@
     .archive-upload-head { padding: 0 24px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid #edf0f5; }
     .archive-upload-head h2 { margin: 0; color: #263752; font-size: 18px; font-weight: 800; }
     .archive-upload-close { width: 32px; height: 32px; display: grid; place-items: center; border-radius: 50%; color: #263752; background: #f4f6fa; font-size: 22px; line-height: 1; }
-    .archive-upload-body { position: relative; padding: 24px 28px; }
-    .archive-upload-tip { position: absolute; left: 28px; bottom: -50px; z-index: 1; margin: 0; color: #9aa5b5; font-size: 13px; }
+    .archive-upload-body { position: relative; min-height: 0; padding: 24px 28px; overflow-y: auto; }
+    .archive-upload-tip { margin: 0; color: #9aa5b5; font-size: 13px; white-space: nowrap; }
     .archive-upload-tip::before { content: '支持拖拽或点击上传，最多可上传 20 个文件，支持 PDF、PNG、JPG 格式。'; color: #9aa5b5; }
     .archive-upload-tip { font-size: 0; }
     .archive-upload-tip::before { font-size: 13px; }
     .archive-upload-body .archive-upload-merge { margin: 0 0 18px; color: #52617a; }
-    .archive-upload-box { width: 86px; height: 86px; display: grid; place-items: center; border: 1px dashed #e4e9f2; border-radius: 4px; color: #263752; background: #f7f8fb; font-size: 46px; font-weight: 300; line-height: 1; }
+    .archive-upload-grid { width: 478px !important; max-width: 100%; display: grid !important; grid-template-columns: repeat(5, 86px) !important; grid-auto-flow: row !important; grid-auto-rows: 86px !important; column-gap: 12px !important; row-gap: 12px !important; align-content: start; transition: background-color .16s ease, box-shadow .16s ease; }
+    .archive-upload-grid > .archive-upload-item,
+    .archive-upload-grid > .archive-upload-box { position: relative !important; float: none !important; width: 86px !important; height: 86px !important; margin: 0 !important; }
+    .archive-upload-grid.is-dragover { border-radius: 6px; background: #f4f7ff; box-shadow: 0 0 0 6px #f4f7ff; }
+    .archive-upload-box { width: 86px; height: 86px; margin: 0; display: grid; place-items: center; border: 1px dashed #d7dfec; border-radius: 4px; color: #263752; background: #f7f8fb; font-size: 46px; font-weight: 300; line-height: 1; transition: border-color .16s ease, color .16s ease, background-color .16s ease; }
+    .archive-upload-box:hover { border-color: #3154ff; color: #3154ff; background: #f2f5ff; }
     .archive-upload-file-input { display: none; }
     .archive-upload-box.is-hidden { display: none; }
-    .archive-upload-item { position: relative; width: 86px; height: 86px; margin: 0 12px 12px 0; display: inline-flex; align-items: center; justify-content: center; vertical-align: top; border: 1px solid #dce4f0; border-radius: 4px; overflow: hidden; background: #f7f9fc; }
+    .archive-upload-item { position: relative; width: 86px; height: 86px; margin: 0; display: flex; align-items: center; justify-content: center; border: 1px solid #dce4f0; border-radius: 4px; overflow: hidden; background: #f7f9fc; }
     .archive-upload-item img { width: 100%; height: 100%; object-fit: cover; display: block; }
     .archive-upload-file-card { width: 100%; height: 100%; padding: 10px 8px; display: grid; align-content: center; justify-items: center; gap: 7px; color: #52617a; text-align: center; }
     .archive-upload-file-icon { min-width: 34px; height: 22px; padding: 0 6px; display: inline-flex; align-items: center; justify-content: center; border-radius: 4px; color: #3154ff; background: #eef3ff; font-size: 11px; font-weight: 800; }
@@ -1062,7 +1068,8 @@
     .archive-parse-empty { padding: 42px 16px; color: #8b97a8; text-align: center; font-size: 14px; }
     @keyframes archiveParseSpin { to { transform: rotate(360deg); } }
     @keyframes archiveParseMove { 0% { transform: translateX(-80%); } 50% { transform: translateX(80%); } 100% { transform: translateX(180%); } }
-    .archive-history-list { min-height: 0; padding: 16px 24px 24px; overflow-y: auto; border-right: 1px solid #e4ebf4; }
+    .archive-history-list { min-height: 0; padding: 16px 24px 24px; overflow-y: auto; border-right: 1px solid #e4ebf4; scrollbar-width: none; -ms-overflow-style: none; }
+    .archive-history-list::-webkit-scrollbar { width: 0; height: 0; display: none; }
     .history-tabs { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 0; margin-bottom: 10px; padding: 0; border-radius: 6px; background: #f6f8fc; }
     .history-tab { min-width: 0; min-height: 52px; padding: 6px 4px 5px; display: flex; flex-direction: column; align-items: center; justify-content: center; color: #52617a; font-size: 13px; font-weight: 700; line-height: 15px; text-align: center; white-space: normal; word-break: keep-all; overflow-wrap: normal; border-radius: 6px; }
     .history-tab small { display: block; margin-top: 2px; color: #a1abb9; font-size: 10px; line-height: 12px; font-weight: 400; }
@@ -2029,6 +2036,41 @@
     .rule-marker svg { width: 14px; height: 14px; pointer-events: none; }
     .rule-marker-host { position: relative !important; }
     .review-mode [data-rule-id]:hover { outline: 1px dashed rgba(36,71,255,.45); outline-offset: 2px; }
+    .ui-annotation-root.ui-annotation-static-root { position: relative !important; }
+    .ui-annotation-toolbar { position: fixed; z-index: 1300; right: 22px; bottom: 22px; display: flex; align-items: center; gap: 8px; padding: 7px; border: 1px solid #dbe4f3; border-radius: 10px; background: rgba(255,255,255,.96); box-shadow: 0 12px 32px rgba(25,45,82,.18); backdrop-filter: blur(8px); }
+    .ui-annotation-toggle { height: 36px; padding: 0 14px; display: inline-flex; align-items: center; gap: 8px; border-radius: 7px; color: #fff; background: #3154ff; font-size: 14px; font-weight: 800; box-shadow: 0 5px 14px rgba(49,84,255,.24); }
+    .ui-annotation-toggle::before { content: '+'; width: 18px; height: 18px; display: grid; place-items: center; border: 1.5px solid currentColor; border-radius: 50%; font-size: 16px; line-height: 1; }
+    .ui-annotation-toggle.active { color: #fff; background: #ff8a00; box-shadow: 0 5px 14px rgba(255,138,0,.24); }
+    .ui-annotation-count { min-width: 28px; height: 28px; padding: 0 7px; display: grid; place-items: center; border-radius: 999px; color: #3154ff; background: #eef3ff; font-size: 12px; font-weight: 800; }
+    body.ui-annotation-mode .page.active,
+    body.ui-annotation-mode [role="dialog"][aria-modal="true"],
+    body.ui-annotation-mode .ui-annotation-root { cursor: crosshair !important; }
+    body.ui-annotation-mode .ui-annotation-toolbar,
+    body.ui-annotation-mode .ui-annotation-editor,
+    body.ui-annotation-mode .ui-annotation-point { cursor: grab !important; }
+    .ui-annotation-point { position: absolute; z-index: 1200; width: 24px; height: 24px; display: grid; place-items: center; border: 2px solid #fff; border-radius: 50%; color: #fff; background: #3154ff; box-shadow: 0 5px 14px rgba(49,84,255,.34); font-size: 12px; font-weight: 800; line-height: 1; transform: translate(-50%, -50%); cursor: grab !important; user-select: none; touch-action: none; }
+    .ui-annotation-point:hover,
+    .ui-annotation-point.active { background: #ff8a00; box-shadow: 0 6px 16px rgba(255,138,0,.34); transform: translate(-50%, -50%) scale(1.08); }
+    .ui-annotation-point.dragging { cursor: grabbing !important; background: #ff8a00; box-shadow: 0 8px 20px rgba(255,138,0,.42); transform: translate(-50%, -50%) scale(1.12); }
+    .ui-annotation-editor { position: fixed; z-index: 1400; right: 22px; bottom: 76px; width: min(360px, calc(100vw - 32px)); display: none; overflow: hidden; border: 1px solid #dbe4f3; border-radius: 10px; background: #fff; box-shadow: 0 18px 48px rgba(20,38,72,.24); }
+    .ui-annotation-editor.open { display: block; }
+    .ui-annotation-editor-head { height: 48px; padding: 0 14px 0 16px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid #edf1f7; }
+    .ui-annotation-editor-head strong { color: #20304c; font-size: 15px; font-weight: 800; }
+    .ui-annotation-editor-close { width: 28px; height: 28px; display: grid; place-items: center; border-radius: 6px; color: #64748b; background: #f3f6fb; font-size: 18px; }
+    .ui-annotation-editor-body { padding: 14px 16px; display: grid; gap: 12px; }
+    .ui-annotation-field { display: grid; gap: 6px; color: #52617a; font-size: 12px; font-weight: 700; }
+    .ui-annotation-field input,
+    .ui-annotation-field textarea { width: 100%; border: 1px solid #dce5f2; border-radius: 6px; color: #263752; background: #fff; outline: none; font-size: 14px; }
+    .ui-annotation-field input { height: 36px; padding: 0 10px; }
+    .ui-annotation-field textarea { min-height: 92px; padding: 9px 10px; resize: vertical; line-height: 1.6; }
+    .ui-annotation-field input:focus,
+    .ui-annotation-field textarea:focus { border-color: #3154ff; box-shadow: 0 0 0 2px rgba(49,84,255,.1); }
+    .ui-annotation-context { padding: 8px 10px; overflow: hidden; border-radius: 6px; color: #7d899c; background: #f7f9fc; font-size: 11px; text-overflow: ellipsis; white-space: nowrap; }
+    .ui-annotation-editor-foot { padding: 0 16px 14px; display: flex; justify-content: flex-end; gap: 8px; }
+    .ui-annotation-editor-foot button { height: 34px; padding: 0 14px; border-radius: 6px; font-size: 13px; font-weight: 700; }
+    .ui-annotation-delete { margin-right: auto; color: #ff4d5f; background: #fff1f3; }
+    .ui-annotation-cancel { color: #52617a; background: #f3f6fa; }
+    .ui-annotation-save { color: #fff; background: #3154ff; }
     .rule-drawer { position: fixed; z-index: 120; top: 0; right: 0; width: 430px; max-width: calc(100vw - 32px); height: 100vh; border-left: 1px solid #dfe5f2; background: #fff; box-shadow: -12px 0 34px rgba(29,45,85,.14); transform: translateX(102%); transition: transform .2s ease; display: flex; flex-direction: column; }
     .rule-drawer.open { transform: translateX(0); }
     .rule-drawer-head { height: 64px; flex: 0 0 auto; padding: 0 20px; border-bottom: 1px solid #edf0f5; display: flex; align-items: center; justify-content: space-between; }
@@ -3359,11 +3401,11 @@
           <input type="checkbox" id="archiveUploadMergeTop">
           <span>以上内容属于同一份报告，合并解读。</span>
         </label>
-        <p class="archive-upload-tip">• 可拖拽或点击上传，支持多文件上传（PDF，PNG，JPG）</p>
         <button class="archive-upload-box" data-archive-upload-trigger aria-label="添加文件">+</button>
       </section>
       <footer class="archive-upload-foot">
         <div class="archive-upload-footer-meta">
+          <p class="archive-upload-tip">支持拖拽或点击上传，最多可上传 20 个文件，支持 PDF、PNG、JPG 格式。</p>
           <label class="archive-upload-remark" for="archiveUploadRemark">
             <span>备注信息</span>
             <input class="archive-upload-remark-input" id="archiveUploadRemark" type="text" placeholder="请输入备注信息">
@@ -9031,9 +9073,9 @@
         medicineList: { title: '用药清单', date: '2024/02/01 15:36', name: '陈患者', source: '门诊病历', note: '*本资料由院内系统同步', pages: 1 },
         checkupReport: { title: '体检报告', date: '2024/01/28 09:00', name: '陈患者', source: '体检报告', note: '*本资料由院内系统同步', pages: 4 },
         emergencyRecord: { title: '急诊病历报告', date: '2024/01/20 21:30', name: '陈患者', source: '急诊资料', note: '*本资料由院内系统同步', pages: 2 },
-        patientUploadDiet: { title: '饮食记录补充资料', date: '2024/02/02 18:40', name: '陈患者', source: '患者上传', reportType: '院外随访资料', hospital: '患者自行上传', note: '*本资料由患者上传<br>*非本院资料', pages: 2, interpretation: { ai: 'AI已对本次患者上传资料进行图文识别与随访语义分析。资料主要围绕近期饮食记录、餐次图片和患者自述展开，整体信息能支持医护初步判断患者近期膳食结构，但仍建议结合连续打卡、体重、血糖或血脂等数据共同评估。', abnormal: '从当前资料看，未发现需要立即处理的危急异常内容；但上传资料属于患者自填与图片补充，医学证据强度低于院内检验检查报告。图片中主食和动物性蛋白占比较明显，蔬菜、水果和饮水记录不够连续，若患者存在糖脂代谢异常，应关注总热量、精制碳水和晚餐后血糖波动。', analysis: '本资料可作为院外生活方式管理的补充依据。患者能够主动上传饮食信息，说明随访依从性较好；但单次资料不能直接判断长期饮食习惯。结合常规慢病管理经验，建议重点关注三点：一是每日主食量和烹饪方式是否稳定，二是蛋白质来源是否以鱼、禽、蛋、豆制品等优质蛋白为主，三是晚间是否存在加餐、甜饮或高盐加工食品摄入。', suggestion: '建议医护在下次随访中引导患者连续上传3到7天三餐图片，并同步记录饮水、运动和餐后不适情况。若患者合并高血糖、高血脂或体重管理目标，可优先建议减少油炸、煎烤和高糖饮品，增加深色蔬菜、全谷物和优质蛋白比例；如后续出现体重快速变化、餐后血糖持续升高或明显胃肠不适，应及时调整随访计划。' } },
-        nurseUploadPressure: { title: '家庭血压记录单', date: '2024/02/01 08:10', name: '陈患者', source: '医护上传', reportType: '家庭监测资料', hospital: '随访管理团队', note: '*本资料由医护上传<br>*非本院资料', pages: 1, interpretation: { ai: 'AI已读取医护上传的家庭血压监测资料，并结合慢病随访场景完成初步解读。该资料由医护整理上传，字段规范性和可信度相对更高，可作为近期血压趋势判断的辅助依据。', abnormal: '记录中可见部分晨间血压存在轻度升高趋势，但暂未达到单次危急值提示。若患者伴随头痛、胸闷、心悸、视物模糊等症状，需要优先复核测量值并联系医生；若无症状，则建议结合至少连续7天的早晚血压均值进行判断。', analysis: '家庭血压受测量姿势、袖带位置、测量前活动、情绪紧张、咖啡因摄入和睡眠质量影响较大。当前资料显示医护已对记录进行整理，适合用于判断随访执行情况；但若缺少测量场景说明，仍可能存在偏差。建议重点看早晨起床后、服药前以及晚上睡前两个固定时段的数据变化。', suggestion: '建议继续要求患者固定时间测量，测量前安静休息5分钟，避免运动、吸烟、饮酒或饮用浓茶咖啡后立即测量。若连续多日家庭血压均值高于目标范围，应由医生评估是否需要调整用药或随访频次；医护可在系统内标记异常趋势，并提醒患者保留原始记录。' } },
-        patientUploadImage: { title: '院外检查照片', date: '2024/01/26 11:25', name: '陈患者', source: '患者上传', reportType: '院外检查资料', hospital: '南方社区门诊', note: '*本资料由患者上传<br>*非本院资料', pages: 3, interpretation: { ai: 'AI已对患者上传的院外检查照片进行版面识别和文字抽取。当前照片能够辨认资料名称、报告日期和部分检查信息，但拍摄角度、清晰度和边缘完整性会影响识别准确率，因此该解读仅作为辅助参考。', abnormal: '由于原图存在局部反光和边缘裁切，部分字段识别置信度偏低。当前未能确认是否存在明确危急值；若报告涉及血常规、肝肾功能、影像结论或病理结果，建议医护核对原图中异常标记、参考范围和医生结论，避免遗漏关键风险。', analysis: '院外检查照片常见问题包括图片倾斜、字号过小、缺少完整页眉页脚、患者姓名或日期不完整等。当前资料可以作为初步归档线索，但不能替代正式报告。若后续用于健康画像、异常指标统计或随访决策，应优先以清晰原件、PDF或医院同步数据为准。', suggestion: '建议患者重新上传完整、正向、无遮挡的报告照片，并确保姓名、报告时间、资料类型、就诊医院和检查结论均可见。医护在确认资料真实有效后，可将关键异常项录入患者档案；若报告提示急性异常、疑似重大疾病或需要复查，应及时发起人工随访。' } }
+        patientUploadDiet: { title: '饮食记录补充资料', date: '2024/02/02 18:40', name: '陈患者', source: '患者上传', reportType: '就诊记录', hospital: '南方社区门诊', note: '*本资料由患者上传<br>*非本院资料', pages: 2, interpretation: { ai: 'AI已对本次患者上传资料进行图文识别与随访语义分析。资料主要围绕近期饮食记录、餐次图片和患者自述展开，整体信息能支持医护初步判断患者近期膳食结构，但仍建议结合连续打卡、体重、血糖或血脂等数据共同评估。', abnormal: '从当前资料看，未发现需要立即处理的危急异常内容；但上传资料属于患者自填与图片补充，医学证据强度低于院内检验检查报告。图片中主食和动物性蛋白占比较明显，蔬菜、水果和饮水记录不够连续，若患者存在糖脂代谢异常，应关注总热量、精制碳水和晚餐后血糖波动。', analysis: '本资料可作为院外生活方式管理的补充依据。患者能够主动上传饮食信息，说明随访依从性较好；但单次资料不能直接判断长期饮食习惯。结合常规慢病管理经验，建议重点关注三点：一是每日主食量和烹饪方式是否稳定，二是蛋白质来源是否以鱼、禽、蛋、豆制品等优质蛋白为主，三是晚间是否存在加餐、甜饮或高盐加工食品摄入。', suggestion: '建议医护在下次随访中引导患者连续上传3到7天三餐图片，并同步记录饮水、运动和餐后不适情况。若患者合并高血糖、高血脂或体重管理目标，可优先建议减少油炸、煎烤和高糖饮品，增加深色蔬菜、全谷物和优质蛋白比例；如后续出现体重快速变化、餐后血糖持续升高或明显胃肠不适，应及时调整随访计划。' } },
+        nurseUploadPressure: { title: '家庭血压记录单', date: '2024/02/01 08:10', name: '陈患者', source: '医护上传', reportType: '报告单', hospital: '南方医科大学中西医结合医院', note: '*本资料由医护上传<br>*非本院资料', pages: 1, interpretation: { ai: 'AI已读取医护上传的家庭血压监测资料，并结合慢病随访场景完成初步解读。该资料由医护整理上传，字段规范性和可信度相对更高，可作为近期血压趋势判断的辅助依据。', abnormal: '记录中可见部分晨间血压存在轻度升高趋势，但暂未达到单次危急值提示。若患者伴随头痛、胸闷、心悸、视物模糊等症状，需要优先复核测量值并联系医生；若无症状，则建议结合至少连续7天的早晚血压均值进行判断。', analysis: '家庭血压受测量姿势、袖带位置、测量前活动、情绪紧张、咖啡因摄入和睡眠质量影响较大。当前资料显示医护已对记录进行整理，适合用于判断随访执行情况；但若缺少测量场景说明，仍可能存在偏差。建议重点看早晨起床后、服药前以及晚上睡前两个固定时段的数据变化。', suggestion: '建议继续要求患者固定时间测量，测量前安静休息5分钟，避免运动、吸烟、饮酒或饮用浓茶咖啡后立即测量。若连续多日家庭血压均值高于目标范围，应由医生评估是否需要调整用药或随访频次；医护可在系统内标记异常趋势，并提醒患者保留原始记录。' } },
+        patientUploadImage: { title: '院外检查照片', date: '2024/01/26 11:25', name: '陈患者', source: '患者上传', reportType: '报告单', hospital: '南方社区门诊', note: '*本资料由患者上传<br>*非本院资料', pages: 3, interpretation: { ai: 'AI已对患者上传的院外检查照片进行版面识别和文字抽取。当前照片能够辨认资料名称、报告日期和部分检查信息，但拍摄角度、清晰度和边缘完整性会影响识别准确率，因此该解读仅作为辅助参考。', abnormal: '由于原图存在局部反光和边缘裁切，部分字段识别置信度偏低。当前未能确认是否存在明确危急值；若报告涉及血常规、肝肾功能、影像结论或病理结果，建议医护核对原图中异常标记、参考范围和医生结论，避免遗漏关键风险。', analysis: '院外检查照片常见问题包括图片倾斜、字号过小、缺少完整页眉页脚、患者姓名或日期不完整等。当前资料可以作为初步归档线索，但不能替代正式报告。若后续用于健康画像、异常指标统计或随访决策，应优先以清晰原件、PDF或医院同步数据为准。', suggestion: '建议患者重新上传完整、正向、无遮挡的报告照片，并确保姓名、报告时间、资料类型、就诊医院和检查结论均可见。医护在确认资料真实有效后，可将关键异常项录入患者档案；若报告提示急性异常、疑似重大疾病或需要复查，应及时发起人工随访。' } }
       };
 
       function archiveHistoryFile(id, title, uploadText) {
@@ -9072,6 +9114,14 @@
         </div>`;
       }
 
+      function archiveReportDateOnly(value) {
+        return String(value || '').trim().split(/[ T]/)[0] || '未填写';
+      }
+
+      function archiveStandardReportType(value) {
+        return ['就诊记录', '处方记录', '报告单'].includes(value) ? value : '报告单';
+      }
+
       function renderManualUploadHistory(record) {
         const interpretation = record.interpretation || {
           abnormal: '暂无明确异常项。',
@@ -9085,8 +9135,8 @@
             <section class="history-info-card">
               <div class="history-manual-meta">
                 <div class="history-manual-meta-item"><span>姓名</span><strong>${record.name}</strong></div>
-                <div class="history-manual-meta-item"><span>报告时间</span><strong>${record.date}</strong></div>
-                <div class="history-manual-meta-item"><span>资料类型</span><strong>${record.reportType || record.source}</strong></div>
+                <div class="history-manual-meta-item"><span>报告时间</span><strong>${archiveReportDateOnly(record.date)}</strong></div>
+                <div class="history-manual-meta-item"><span>资料类型</span><strong>${archiveStandardReportType(record.reportType)}</strong></div>
                 <div class="history-manual-meta-item"><span>就诊医院</span><strong>${record.hospital || '未填写'}</strong></div>
               </div>
               ${canEdit ? '' : '<div class="history-manual-lock-note">内容由患者自己上传，不允许修改删除。</div>'}
@@ -9454,6 +9504,7 @@
           console.warn('archive logic point refresh failed', error);
         }
       }
+      window.__refreshArchiveLogicPointPositions = refreshArchiveLogicPointPositions;
       function applyArchiveLogicConfig(card) {
         if (!card) return;
         try {
@@ -9486,7 +9537,9 @@
           if (!key) return;
           points[key] = getArchiveLogicPointPosition(card, point);
         });
-        localStorage.setItem(ARCHIVE_LOGIC_STORAGE_KEY, JSON.stringify({ bodyHtml: cleanBody?.innerHTML || '', points }));
+        const config = { bodyHtml: cleanBody?.innerHTML || '', points };
+        localStorage.setItem(ARCHIVE_LOGIC_STORAGE_KEY, JSON.stringify(config));
+        window.__syncArchiveLogicConfig?.(config);
         setArchiveLogicEditing(card, false);
         if (typeof showToast === 'function') showToast('逻辑说明已保存', 'top');
       }
@@ -9502,7 +9555,9 @@
           if (!key) return;
           points[key] = getArchiveLogicPointPosition(card, point);
         });
-        localStorage.setItem(ARCHIVE_LOGIC_STORAGE_KEY, JSON.stringify({ bodyHtml: cleanBody?.innerHTML || '', points }));
+        const config = { bodyHtml: cleanBody?.innerHTML || '', points };
+        localStorage.setItem(ARCHIVE_LOGIC_STORAGE_KEY, JSON.stringify(config));
+        window.__syncArchiveLogicConfig?.(config);
       }
       function persistArchiveLogicPointPositions(card) {
         if (!card) return;
@@ -9518,7 +9573,9 @@
           if (!key) return;
           points[key] = getArchiveLogicPointPosition(card, point);
         });
-        localStorage.setItem(ARCHIVE_LOGIC_STORAGE_KEY, JSON.stringify({ ...saved, points }));
+        const config = { ...saved, points };
+        localStorage.setItem(ARCHIVE_LOGIC_STORAGE_KEY, JSON.stringify(config));
+        window.__syncArchiveLogicConfig?.(config);
       }
       function escapeArchiveLogicHtml(value) {
         return String(value || '').replace(/[&<>"']/g, char => ({
@@ -9865,15 +9922,34 @@
 
       setTimeout(normalizeArchiveHistoryPanel, 0);
 
+      const ARCHIVE_UPLOAD_LIMIT = 20;
       const archiveUploadState = { files: [] };
       function getArchiveUploadModal() {
         return document.getElementById('archiveUploadModal');
+      }
+      function ensureArchiveUploadGrid(modal, box) {
+        let grid = modal.querySelector('.archive-upload-grid');
+        if (!grid) {
+          grid = document.createElement('div');
+          grid.className = 'archive-upload-grid';
+          grid.setAttribute('aria-label', '待上传文件列表');
+          box.before(grid);
+          grid.appendChild(box);
+        } else if (box.parentElement !== grid) {
+          grid.appendChild(box);
+        }
+        return grid;
       }
       function refreshArchiveUploadList() {
         const modal = getArchiveUploadModal();
         const box = modal?.querySelector('.archive-upload-box');
         if (!modal || !box) return;
-        modal.querySelectorAll('.archive-upload-item').forEach(item => item.remove());
+        const grid = ensureArchiveUploadGrid(modal, box);
+        modal.querySelectorAll('.archive-upload-item').forEach(item => {
+          const preview = item.querySelector('img[src^="blob:"]');
+          if (preview) URL.revokeObjectURL(preview.src);
+          item.remove();
+        });
         archiveUploadState.files.forEach((file, index) => {
           const item = document.createElement('div');
           item.className = 'archive-upload-item';
@@ -9898,15 +9974,18 @@
           del.setAttribute('aria-label', '删除上传文件');
           del.textContent = '×';
           item.appendChild(del);
-          box.before(item);
+          grid.insertBefore(item, box);
         });
-        box.classList.toggle('is-hidden', archiveUploadState.files.length >= 20);
+        box.classList.toggle('is-hidden', archiveUploadState.files.length >= ARCHIVE_UPLOAD_LIMIT);
+        grid.dataset.fileCount = String(archiveUploadState.files.length);
       }
       function addArchiveUploadFiles(fileList) {
-        const incoming = Array.from(fileList || []);
-        const available = Math.max(0, 20 - archiveUploadState.files.length);
+        const incomingFiles = Array.from(fileList || []);
+        const incoming = incomingFiles.filter(file => file.type === 'application/pdf' || file.type?.startsWith('image/') || /\.(pdf|png|jpe?g)$/i.test(file.name || ''));
+        const available = Math.max(0, ARCHIVE_UPLOAD_LIMIT - archiveUploadState.files.length);
         archiveUploadState.files.push(...incoming.slice(0, available));
-        if (incoming.length > available && typeof showToast === 'function') showToast('最多可上传20个文件', 'top');
+        if (incomingFiles.length !== incoming.length && typeof showToast === 'function') showToast('仅支持 PDF、PNG、JPG 格式', 'top');
+        if (incoming.length > available && typeof showToast === 'function') showToast('最多可上传 20 个文件', 'top');
         refreshArchiveUploadList();
       }
       function resetArchiveUploadFiles() {
@@ -9916,13 +9995,15 @@
         refreshArchiveUploadList();
       }
 
+      setTimeout(refreshArchiveUploadList, 0);
+
       const archiveParseItems = [
         { status: 'running', title: 'image1', time: '', text: 'AI正在识别报告名称、报告时间、就诊人、资料类型和就诊医院。' },
         { status: 'pending', title: 'image2', time: '', patient: '', type: '', hospital: '' },
         { status: 'pending', title: 'image4', time: '', patient: '', type: '', hospital: '' },
-        { status: 'done', title: '家庭血压记录单', time: '2024/02/01 08:10', patient: '陈患者', type: '家庭监测资料', hospital: '随访管理团队', pages: '1页', fields: '5项', fileId: 'nurseUploadPressure' },
-        { status: 'done', title: '院外检查照片', time: '2024/01/26 11:25', patient: '陈患者', type: '院外检查资料', hospital: '南方社区门诊', pages: '3张', fields: '6项', fileId: 'patientUploadImage' },
-        { status: 'done', title: '血常规检查检验报告', time: '2024/02/02 10:38', patient: '陈患者', type: '检验报告', hospital: '南方社区门诊', pages: '2页', fields: '12项', fileId: 'patientUploadImage' },
+        { status: 'done', title: '家庭血压记录单', time: '2024/02/01', patient: '陈患者', type: '报告单', hospital: '南方医科大学中西医结合医院', pages: '1页', fields: '5项', fileId: 'nurseUploadPressure' },
+        { status: 'done', title: '院外检查照片', time: '2024/01/26', patient: '陈患者', type: '报告单', hospital: '南方社区门诊', pages: '3张', fields: '6项', fileId: 'patientUploadImage' },
+        { status: 'done', title: '血常规检查检验报告', time: '2024/02/02', patient: '陈患者', type: '报告单', hospital: '南方社区门诊', pages: '2页', fields: '12项', fileId: 'patientUploadImage' },
         { status: 'failed', title: 'image3', time: '', reason: '图片清晰度较低，关键字段未识别完整。' },
         { status: 'failed', title: 'image5', time: '', reason: 'PDF页码损坏，无法完成结构化解析。' }
       ];
@@ -9963,7 +10044,7 @@
       function renderArchiveParseItem(item) {
         const statusText = archiveParseStatusText[item.status] || '解析中';
         const displayTitle = item.title || '待补充资料';
-        const displayTime = item.time || '未识别';
+        const displayTime = item.time ? archiveReportDateOnly(item.time) : '未识别';
         let body = '';
         if (item.status === 'running') {
           body = `<div class="archive-parse-loading"><span class="archive-parse-spinner"></span><span>${item.text}</span></div><div class="archive-parse-progress"><i></i></div>`;
@@ -10026,9 +10107,28 @@
         }
       }, true);
 
+      document.addEventListener('dragover', function (event) {
+        const grid = event.target.closest('.archive-upload-grid');
+        if (!grid) return;
+        event.preventDefault();
+        grid.classList.add('is-dragover');
+      }, true);
+      document.addEventListener('dragleave', function (event) {
+        const grid = event.target.closest('.archive-upload-grid');
+        if (!grid || grid.contains(event.relatedTarget)) return;
+        grid.classList.remove('is-dragover');
+      }, true);
+      document.addEventListener('drop', function (event) {
+        const grid = event.target.closest('.archive-upload-grid');
+        if (!grid) return;
+        event.preventDefault();
+        grid.classList.remove('is-dragover');
+        addArchiveUploadFiles(event.dataTransfer?.files);
+      }, true);
+
       let archiveLogicDrag = null;
       let archiveLogicMoved = false;
-      document.addEventListener('mousedown', function (event) {
+      document.addEventListener('pointerdown', function (event) {
         const point = event.target.closest('.archive-history-card.logic-mode .archive-logic-point');
         if (!point) return;
         const card = point.closest('.archive-history-card');
@@ -10040,14 +10140,15 @@
           offsetX: event.clientX - pointRect.left,
           offsetY: event.clientY - pointRect.top,
           cardLeft: cardRect.left,
-          cardTop: cardRect.top
+          cardTop: cardRect.top,
+          pointerId: event.pointerId
         };
         archiveLogicMoved = false;
         event.preventDefault();
         event.stopImmediatePropagation();
       }, true);
-      document.addEventListener('mousemove', function (event) {
-        if (!archiveLogicDrag) return;
+      document.addEventListener('pointermove', function (event) {
+        if (!archiveLogicDrag || event.pointerId !== archiveLogicDrag.pointerId) return;
         const maxLeft = Math.max(0, archiveLogicDrag.card.clientWidth - archiveLogicDrag.point.offsetWidth);
         const maxTop = Math.max(0, archiveLogicDrag.card.clientHeight - archiveLogicDrag.point.offsetHeight);
         const left = Math.min(maxLeft, Math.max(0, event.clientX - archiveLogicDrag.cardLeft - archiveLogicDrag.offsetX));
@@ -10056,19 +10157,30 @@
         archiveLogicDrag.point.style.top = `${Math.round(top)}px`;
         archiveLogicDrag.point.style.right = 'auto';
         archiveLogicDrag.point.classList.add('active');
+        archiveLogicDrag.point.classList.add('dragging');
         archiveLogicMoved = true;
         const activeKey = archiveLogicDrag.point.dataset.logicPoint;
         if (activeKey && archiveLogicDrag.card.querySelector('.archive-logic-drawer.open')) {
           showArchiveLogicSection(archiveLogicDrag.card, activeKey);
         }
         event.preventDefault();
+        event.stopImmediatePropagation();
       }, true);
-      document.addEventListener('mouseup', function () {
-        if (archiveLogicDrag && archiveLogicMoved) {
-          persistArchiveLogicPointPositions(archiveLogicDrag.card);
+      document.addEventListener('pointerup', function (event) {
+        if (!archiveLogicDrag || event.pointerId !== archiveLogicDrag.pointerId) return;
+        const finishedDrag = archiveLogicDrag;
+        finishedDrag.point.classList.remove('dragging');
+        if (archiveLogicMoved) {
+          persistArchiveLogicPointPositions(finishedDrag.card);
           setTimeout(() => { archiveLogicMoved = false; }, 120);
         }
         archiveLogicDrag = null;
+      }, true);
+      document.addEventListener('pointercancel', function (event) {
+        if (!archiveLogicDrag || event.pointerId !== archiveLogicDrag.pointerId) return;
+        archiveLogicDrag.point.classList.remove('dragging');
+        archiveLogicDrag = null;
+        archiveLogicMoved = false;
       }, true);
       let archiveLogicResizeTimer = null;
       window.addEventListener('resize', function () {
@@ -10183,6 +10295,7 @@
         const openArchiveUpload = event.target.closest('[data-open-archive-upload]');
         if (openArchiveUpload) {
           const modal = document.getElementById('archiveUploadModal');
+          refreshArchiveUploadList();
           modal?.classList.add('open');
           modal?.setAttribute('aria-hidden', 'false');
           event.preventDefault();
@@ -10519,6 +10632,631 @@
   window.addEventListener("load", schedule);
   new MutationObserver(schedule).observe(document.body, { childList: true, subtree: true });
   setInterval(applyUploadGrid, 800);
+})();
+</script>
+<script>
+(() => {
+  if (window.__uiScopedAnnotationsV1) return;
+  window.__uiScopedAnnotationsV1 = true;
+
+  const STORAGE_KEY = 'uiScopedAnnotationsV1';
+  const ANNOTATION_SYNC_URL = '/__ui_annotations';
+  const ARCHIVE_LOGIC_SYNC_KEY = '__archiveLogicConfigV2';
+  let annotationMode = false;
+  let currentContext = '';
+  let currentRoot = null;
+  let editingContext = '';
+  let editingId = '';
+  let annotationSyncTimer = 0;
+  let annotationSyncBusy = false;
+  let annotationDrag = null;
+  let suppressAnnotationClick = false;
+
+  function readAnnotationStore() {
+    try {
+      const parsed = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
+      return parsed && typeof parsed === 'object' ? parsed : {};
+    } catch (error) {
+      return {};
+    }
+  }
+
+  function writeAnnotationStore(store) {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(store));
+    scheduleAnnotationSync();
+  }
+
+  function mergeAnnotationStores(localStore, remoteStore) {
+    const merged = { ...(remoteStore || {}) };
+    const remoteMeta = remoteStore?.__annotationMetaV1 && typeof remoteStore.__annotationMetaV1 === 'object'
+      ? remoteStore.__annotationMetaV1
+      : {};
+    const localMeta = localStore?.__annotationMetaV1 && typeof localStore.__annotationMetaV1 === 'object'
+      ? localStore.__annotationMetaV1
+      : {};
+    const deletedPoints = {
+      ...(remoteMeta.deletedPoints || {}),
+      ...(localMeta.deletedPoints || {})
+    };
+    merged.__annotationMetaV1 = {
+      ...remoteMeta,
+      ...localMeta,
+      migratedContexts: {
+        ...(remoteMeta.migratedContexts || {}),
+        ...(localMeta.migratedContexts || {})
+      },
+      deletedPoints
+    };
+    Object.entries(localStore || {}).forEach(([contextKey, localValue]) => {
+      if (contextKey === '__annotationMetaV1') return;
+      const remoteValue = merged[contextKey];
+      if (Array.isArray(localValue)) {
+        const points = Array.isArray(remoteValue) ? [...remoteValue] : [];
+        const pointIndex = new Map(points.map((point, index) => [point?.id, index]).filter(([id]) => id));
+        localValue.forEach(point => {
+          if (!point) return;
+          const index = point.id ? pointIndex.get(point.id) : undefined;
+          if (index === undefined) {
+            points.push({ ...point });
+            if (point.id) pointIndex.set(point.id, points.length - 1);
+            return;
+          }
+          const remotePoint = points[index] || {};
+          const localTime = Date.parse(point.updatedAt || point.createdAt || 0) || 0;
+          const remoteTime = Date.parse(remotePoint.updatedAt || remotePoint.createdAt || 0) || 0;
+          if (localTime >= remoteTime) points[index] = { ...remotePoint, ...point };
+        });
+        // Deletion is a permanent tombstone. An older open tab may still have
+        // the point locally and update its anchor metadata; that must not
+        // recreate an annotation the user already deleted.
+        merged[contextKey] = points.filter(point => !point?.id || !deletedPoints[point.id]);
+      } else if (localValue && typeof localValue === 'object') {
+        const remoteObject = remoteValue && typeof remoteValue === 'object' && !Array.isArray(remoteValue) ? remoteValue : {};
+        merged[contextKey] = { ...remoteObject, ...localValue };
+      } else if (remoteValue === undefined) {
+        merged[contextKey] = localValue;
+      }
+    });
+    Object.entries(merged).forEach(([contextKey, value]) => {
+      if (contextKey === '__annotationMetaV1' || !Array.isArray(value)) return;
+      merged[contextKey] = value.filter(point => !point?.id || !deletedPoints[point.id]);
+    });
+    return merged;
+  }
+
+  function scheduleAnnotationSync(delay = 120) {
+    clearTimeout(annotationSyncTimer);
+    annotationSyncTimer = setTimeout(syncAnnotationStore, delay);
+  }
+
+  async function syncAnnotationStore() {
+    if (annotationSyncBusy) return;
+    annotationSyncBusy = true;
+    try {
+      const response = await fetch(ANNOTATION_SYNC_URL, { cache: 'no-store' });
+      if (!response.ok) return;
+      const remoteStore = await response.json();
+      const localStore = readAnnotationStore();
+      const mergedStore = mergeAnnotationStores(localStore, remoteStore);
+      const localJson = JSON.stringify(localStore);
+      const mergedJson = JSON.stringify(mergedStore);
+      if (mergedJson !== localJson) localStorage.setItem(STORAGE_KEY, mergedJson);
+      const syncedArchiveLogic = mergedStore[ARCHIVE_LOGIC_SYNC_KEY];
+      if (syncedArchiveLogic && typeof syncedArchiveLogic === 'object') {
+        const archiveLogicJson = JSON.stringify(syncedArchiveLogic);
+        if (localStorage.getItem('archiveHistoryLogicConfigV2') !== archiveLogicJson) {
+          localStorage.setItem('archiveHistoryLogicConfigV2', archiveLogicJson);
+          window.__refreshArchiveLogicPointPositions?.();
+        }
+      }
+      await fetch(ANNOTATION_SYNC_URL, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: mergedJson
+      });
+      if (mergedJson !== localJson) renderScopedAnnotations();
+    } catch (error) {
+      // Static hosting without the preview sync endpoint keeps using localStorage.
+    } finally {
+      annotationSyncBusy = false;
+    }
+  }
+
+  function isVisibleAnnotationElement(element) {
+    if (!element) return false;
+    const style = getComputedStyle(element);
+    const rect = element.getBoundingClientRect();
+    return style.display !== 'none' && style.visibility !== 'hidden' && rect.width > 0 && rect.height > 0;
+  }
+
+  function activeAnnotationPage() {
+    return document.querySelector('.page.active') || document.body;
+  }
+
+  function annotationPageKey(page = activeAnnotationPage()) {
+    const pageId = page.id || 'main';
+    const archiveTab = page.querySelector?.('[data-archive-tab].active')?.dataset.archiveTab || '';
+    const historyFile = page.querySelector?.('[data-history-file].active')?.dataset.historyFile || '';
+    const parts = [`page:${pageId}`];
+    if (archiveTab) parts.push(`tab:${archiveTab}`);
+    if (archiveTab === 'history') parts.push(`file:${historyFile || 'default'}`);
+    return parts.join('|');
+  }
+
+  function annotationLayerScore(element) {
+    let score = 0;
+    let node = element;
+    while (node && node !== document.body) {
+      const zIndex = Number.parseInt(getComputedStyle(node).zIndex, 10);
+      if (Number.isFinite(zIndex)) score = Math.max(score, zIndex);
+      node = node.parentElement;
+    }
+    return score;
+  }
+
+  function activeAnnotationOverlay() {
+    const selectors = [
+      '[role="dialog"][aria-modal="true"]',
+      '.archive-parse-drawer.open',
+      '.checkin-exec-drawer.open',
+      '.meal-detail-drawer.open',
+      '.rule-drawer.open',
+      '.archive-logic-drawer.open',
+      '.health-checkin-detail-mask.open > *',
+      '.checkin-review-modal.open > *',
+      '.archive-logic-point-modal.open > *',
+      '.archive-upload-modal.open > *',
+      '.history-lightbox.open > *',
+      '.modal-mask.open > *',
+      '.plan-checkin-modal.open > *',
+      '.health-task-action-menu.open',
+      '.patient-advanced-panel.open',
+      '.archive-parse-field.searchable.open .archive-combobox-menu',
+      '.archive-date-range-panel',
+      '.patient-value-dropdown.open'
+    ];
+    const candidates = Array.from(document.querySelectorAll(selectors.join(',')))
+      .filter(element => !element.closest('#uiAnnotationToolbar, #uiAnnotationEditor') && isVisibleAnnotationElement(element));
+    return candidates
+      .map((element, index) => ({ element, index, score: annotationLayerScore(element) }))
+      .sort((a, b) => a.score - b.score || a.index - b.index)
+      .pop()?.element || null;
+  }
+
+  function annotationOverlayState(overlay) {
+    const activeTab = overlay?.querySelector('[data-archive-parse-tab].active, [role="tab"][aria-selected="true"], [data-tab].active');
+    if (!activeTab) return '';
+    return activeTab.dataset.archiveParseTab || activeTab.dataset.tab || activeTab.getAttribute('aria-label') || activeTab.textContent?.replace(/\s+/g, ' ').trim() || '';
+  }
+
+  function annotationOverlayId(overlay) {
+    const shell = overlay.closest('[id], .archive-upload-modal, .modal-mask, .plan-checkin-modal, .checkin-review-modal, .health-checkin-detail-mask');
+    if (shell?.id) return shell.id;
+    if (overlay.id) return overlay.id;
+    const className = Array.from(overlay.classList || []).find(name => /(drawer|dialog|modal|lightbox|panel|menu)/.test(name));
+    return className || overlay.getAttribute('aria-labelledby') || 'overlay';
+  }
+
+  function annotationContextInfo() {
+    const page = activeAnnotationPage();
+    const baseKey = annotationPageKey(page);
+    const overlay = activeAnnotationOverlay();
+    if (overlay) {
+      const overlayId = annotationOverlayId(overlay);
+      const overlayState = annotationOverlayState(overlay);
+      const stateKey = overlayState ? `|view:${overlayState}` : '';
+      return { key: `${baseKey}|overlay:${overlayId}${stateKey}`, root: overlay, label: `浮层 · ${overlayId}${overlayState ? ` · ${overlayState}` : ''}` };
+    }
+    const activeFile = page.querySelector?.('[data-history-file].active .history-file-name')?.textContent?.trim();
+    const activeTab = page.querySelector?.('[data-archive-tab].active')?.textContent?.replace(/\s+/g, ' ').trim();
+    const label = [page.id || '当前页面', activeTab, activeFile].filter(Boolean).join(' · ');
+    return { key: baseKey, root: page, label };
+  }
+
+  function annotationAnchorKey(element, contextRoot) {
+    if (!element || element === contextRoot) return 'root';
+    if (element.id) return `#${element.id}`;
+    const uniqueClass = Array.from(element.classList || []).find(className => {
+      try {
+        return contextRoot.querySelectorAll(`.${className}`).length === 1;
+      } catch (error) {
+        return false;
+      }
+    });
+    return uniqueClass ? `.${uniqueClass}` : '';
+  }
+
+  function annotationAnchorRoot(contextRoot, anchorKey) {
+    if (!contextRoot || !anchorKey || anchorKey === 'root') return contextRoot;
+    try {
+      const candidate = anchorKey.startsWith('#') ? document.querySelector(anchorKey) : contextRoot.querySelector(anchorKey);
+      return candidate && contextRoot.contains(candidate) ? candidate : contextRoot;
+    } catch (error) {
+      return contextRoot;
+    }
+  }
+
+  function isAnnotationScrollContainer(element) {
+    if (!element || !isVisibleAnnotationElement(element)) return false;
+    const style = getComputedStyle(element);
+    const overflowY = style.overflowY || style.overflow;
+    const overflowX = style.overflowX || style.overflow;
+    return ((overflowY === 'auto' || overflowY === 'scroll') && element.scrollHeight > element.clientHeight + 2)
+      || ((overflowX === 'auto' || overflowX === 'scroll') && element.scrollWidth > element.clientWidth + 2);
+  }
+
+  function closestAnnotationScrollAnchor(target, contextRoot) {
+    let node = target instanceof Element ? target : target?.parentElement;
+    while (node && node !== contextRoot) {
+      if (isAnnotationScrollContainer(node) && annotationAnchorKey(node, contextRoot)) return node;
+      node = node.parentElement;
+    }
+    return isAnnotationScrollContainer(contextRoot) ? contextRoot : contextRoot;
+  }
+
+  function migrateAnnotationPointAnchor(item, contextRoot) {
+    if (item.anchorVersion === 3) return false;
+    const pendingParseBody = contextRoot.matches?.('.archive-parse-drawer')
+      ? contextRoot.querySelector('.archive-parse-body')
+      : null;
+    if (pendingParseBody && (pendingParseBody.childElementCount === 0 || pendingParseBody.scrollHeight <= pendingParseBody.clientHeight + 2)) return false;
+    const oldBounds = annotationViewportBounds(contextRoot);
+    const viewportX = oldBounds.left + Number(item.x || 0) * oldBounds.width;
+    const viewportY = oldBounds.top + Number(item.y || 0) * oldBounds.height;
+    const matched = Array.from(contextRoot.querySelectorAll('*'))
+      .filter(isAnnotationScrollContainer)
+      .filter(container => {
+        const rect = container.getBoundingClientRect();
+        return viewportX >= rect.left && viewportX <= rect.right && viewportY >= rect.top && viewportY <= rect.bottom;
+      })
+      .sort((a, b) => {
+        const aRect = a.getBoundingClientRect();
+        const bRect = b.getBoundingClientRect();
+        return aRect.width * aRect.height - bRect.width * bRect.height;
+      })[0];
+    const anchorRoot = matched || contextRoot;
+    const anchorRect = anchorRoot.getBoundingClientRect();
+    const anchorWidth = Math.max(1, anchorRoot.scrollWidth, anchorRoot.clientWidth);
+    const anchorHeight = Math.max(1, anchorRoot.scrollHeight, anchorRoot.clientHeight);
+    item.anchor = annotationAnchorKey(anchorRoot, contextRoot) || 'root';
+    item.anchorVersion = 3;
+    item.x = Math.min(.985, Math.max(.015, (viewportX - anchorRect.left + anchorRoot.scrollLeft) / anchorWidth));
+    item.y = Math.min(.985, Math.max(.015, (viewportY - anchorRect.top + anchorRoot.scrollTop) / anchorHeight));
+    item.updatedAt = new Date().toISOString();
+    return true;
+  }
+
+  function ensureAnnotationUi() {
+    if (!document.getElementById('uiAnnotationToolbar')) {
+      document.body.insertAdjacentHTML('beforeend', `
+        <div class="ui-annotation-toolbar" id="uiAnnotationToolbar">
+          <button class="ui-annotation-toggle" id="uiAnnotationToggle" type="button" title="开启后点击界面空白位置添加备注；按住 Alt 可在控件上打点">界面标注</button>
+          <span class="ui-annotation-count" id="uiAnnotationCount" title="当前页面的备注数量">0</span>
+        </div>
+        <section class="ui-annotation-editor" id="uiAnnotationEditor" aria-hidden="true">
+          <div class="ui-annotation-editor-head"><strong id="uiAnnotationEditorTitle">备注点</strong><button class="ui-annotation-editor-close" type="button" data-close-ui-annotation aria-label="关闭">×</button></div>
+          <div class="ui-annotation-editor-body">
+            <div class="ui-annotation-context" id="uiAnnotationContext"></div>
+            <label class="ui-annotation-field">标题<input id="uiAnnotationTitle" type="text" maxlength="80" placeholder="请输入备注标题"></label>
+            <label class="ui-annotation-field">备注内容<textarea id="uiAnnotationBody" maxlength="1000" placeholder="请输入这个位置的备注说明"></textarea></label>
+          </div>
+          <div class="ui-annotation-editor-foot">
+            <button class="ui-annotation-delete" type="button" data-delete-ui-annotation>删除</button>
+            <button class="ui-annotation-cancel" type="button" data-close-ui-annotation>关闭</button>
+            <button class="ui-annotation-save" type="button" data-save-ui-annotation>保存</button>
+          </div>
+        </section>`);
+    }
+  }
+
+  function legacyAnnotationContextKeys(contextKey) {
+    const keys = [];
+    const overlayToken = '|overlay:';
+    const overlayIndex = contextKey.indexOf(overlayToken);
+    if (overlayIndex >= 0) {
+      const prefix = contextKey.slice(0, overlayIndex);
+      const overlayPart = contextKey.slice(overlayIndex + overlayToken.length);
+      const overlayId = overlayPart.split('|view:')[0];
+      if (overlayId) keys.push(`${prefix}|modal:${overlayId}`);
+    }
+    return keys;
+  }
+
+  function migrateLegacyAnnotationContext(contextKey) {
+    const store = readAnnotationStore();
+    const meta = store.__annotationMetaV1 && typeof store.__annotationMetaV1 === 'object'
+      ? store.__annotationMetaV1
+      : { migratedContexts: {} };
+    if (!meta.migratedContexts || typeof meta.migratedContexts !== 'object') meta.migratedContexts = {};
+    if (meta.migratedContexts[contextKey]) return Array.isArray(store[contextKey]) ? store[contextKey] : [];
+
+    const merged = Array.isArray(store[contextKey]) ? [...store[contextKey]] : [];
+    const knownIds = new Set(merged.map(point => point?.id).filter(Boolean));
+    legacyAnnotationContextKeys(contextKey).forEach(legacyKey => {
+      const legacyPoints = Array.isArray(store[legacyKey]) ? store[legacyKey] : [];
+      legacyPoints.forEach(point => {
+        if (!point || (point.id && knownIds.has(point.id))) return;
+        merged.push({ ...point });
+        if (point.id) knownIds.add(point.id);
+      });
+    });
+
+    store[contextKey] = merged;
+    meta.migratedContexts[contextKey] = true;
+    store.__annotationMetaV1 = meta;
+    writeAnnotationStore(store);
+    return merged;
+  }
+
+  function annotationPointsFor(contextKey) {
+    return migrateLegacyAnnotationContext(contextKey);
+  }
+
+  function saveAnnotationPoints(contextKey, points) {
+    const store = readAnnotationStore();
+    store[contextKey] = points;
+    writeAnnotationStore(store);
+  }
+
+  function annotationViewportBounds(root) {
+    const rect = root.getBoundingClientRect();
+    const left = Math.max(0, rect.left);
+    const top = Math.max(0, rect.top);
+    const right = Math.min(window.innerWidth, rect.right);
+    const bottom = Math.min(window.innerHeight, rect.bottom);
+    return {
+      left,
+      top,
+      width: Math.max(1, right - left),
+      height: Math.max(1, bottom - top)
+    };
+  }
+
+  function closeAnnotationEditor() {
+    const editor = document.getElementById('uiAnnotationEditor');
+    editor?.classList.remove('open');
+    editor?.setAttribute('aria-hidden', 'true');
+    document.querySelectorAll('.ui-annotation-point.active').forEach(point => point.classList.remove('active'));
+    editingContext = '';
+    editingId = '';
+  }
+
+  function openAnnotationEditor(contextKey, id) {
+    const item = annotationPointsFor(contextKey).find(point => point.id === id);
+    if (!item) return;
+    editingContext = contextKey;
+    editingId = id;
+    const editor = document.getElementById('uiAnnotationEditor');
+    document.getElementById('uiAnnotationEditorTitle').textContent = `备注点 ${item.number}`;
+    document.getElementById('uiAnnotationContext').textContent = contextKey;
+    document.getElementById('uiAnnotationTitle').value = item.title || '';
+    document.getElementById('uiAnnotationBody').value = item.body || '';
+    editor.classList.add('open');
+    editor.setAttribute('aria-hidden', 'false');
+    document.querySelectorAll('.ui-annotation-point').forEach(point => point.classList.toggle('active', point.dataset.annotationId === id));
+    setTimeout(() => document.getElementById('uiAnnotationTitle')?.focus(), 0);
+  }
+
+  function renderScopedAnnotations() {
+    ensureAnnotationUi();
+    const info = annotationContextInfo();
+    document.querySelectorAll('.ui-annotation-point').forEach(point => point.remove());
+    document.querySelectorAll('.ui-annotation-root, .ui-annotation-static-root').forEach(root => root.classList.remove('ui-annotation-root', 'ui-annotation-static-root'));
+    currentContext = info.key;
+    currentRoot = info.root;
+    if (!currentRoot) return;
+    currentRoot.classList.add('ui-annotation-root');
+    if (getComputedStyle(currentRoot).position === 'static') currentRoot.classList.add('ui-annotation-static-root');
+    const points = annotationPointsFor(currentContext);
+    let migratedAnchors = false;
+    points.forEach(item => {
+      if (migrateAnnotationPointAnchor(item, currentRoot)) migratedAnchors = true;
+      const pointRoot = annotationAnchorRoot(currentRoot, item.anchor);
+      pointRoot.classList.add('ui-annotation-root');
+      if (getComputedStyle(pointRoot).position === 'static') pointRoot.classList.add('ui-annotation-static-root');
+      const width = Math.max(1, pointRoot.scrollWidth, pointRoot.clientWidth);
+      const height = Math.max(1, pointRoot.scrollHeight, pointRoot.clientHeight);
+      const point = document.createElement('button');
+      point.type = 'button';
+      point.className = 'ui-annotation-point';
+      point.dataset.annotationId = item.id;
+      point.dataset.annotationContext = currentContext;
+      point.textContent = String(item.number);
+      point.title = item.title || `备注点 ${item.number}`;
+      if (editingContext === currentContext && editingId === item.id) point.classList.add('active');
+      point.style.left = `${Math.round(Number(item.x || 0) * width)}px`;
+      point.style.top = `${Math.round(Number(item.y || 0) * height)}px`;
+      pointRoot.appendChild(point);
+    });
+    if (migratedAnchors) saveAnnotationPoints(currentContext, points);
+    const count = document.getElementById('uiAnnotationCount');
+    if (count) count.textContent = String(points.length);
+    if (editingContext && editingContext !== currentContext) closeAnnotationEditor();
+  }
+
+  function createAnnotationAt(event) {
+    const info = annotationContextInfo();
+    if (!info.root || !info.root.contains(event.target)) return false;
+    const anchorRoot = closestAnnotationScrollAnchor(event.target, info.root);
+    const anchor = annotationAnchorKey(anchorRoot, info.root) || 'root';
+    const rect = anchorRoot.getBoundingClientRect();
+    const width = Math.max(1, anchorRoot.scrollWidth, anchorRoot.clientWidth);
+    const height = Math.max(1, anchorRoot.scrollHeight, anchorRoot.clientHeight);
+    const x = Math.min(.985, Math.max(.015, (event.clientX - rect.left + anchorRoot.scrollLeft) / width));
+    const y = Math.min(.985, Math.max(.015, (event.clientY - rect.top + anchorRoot.scrollTop) / height));
+    const points = annotationPointsFor(info.key);
+    const number = Math.max(0, ...points.map(point => Number(point.number) || 0)) + 1;
+    const id = `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
+    points.push({ id, number, x, y, anchor, anchorVersion: 3, title: `备注 ${number}`, body: '', createdAt: new Date().toISOString() });
+    saveAnnotationPoints(info.key, points);
+    renderScopedAnnotations();
+    openAnnotationEditor(info.key, id);
+    return true;
+  }
+
+  function saveCurrentAnnotation() {
+    if (!editingContext || !editingId) return;
+    const points = annotationPointsFor(editingContext);
+    const item = points.find(point => point.id === editingId);
+    if (!item) return;
+    item.title = document.getElementById('uiAnnotationTitle')?.value.trim() || `备注 ${item.number}`;
+    item.body = document.getElementById('uiAnnotationBody')?.value.trim() || '';
+    item.updatedAt = new Date().toISOString();
+    saveAnnotationPoints(editingContext, points);
+    closeAnnotationEditor();
+    renderScopedAnnotations();
+    if (typeof showToast === 'function') showToast('界面备注已保存', 'top');
+  }
+
+  function deleteCurrentAnnotation() {
+    if (!editingContext || !editingId) return;
+    const store = readAnnotationStore();
+    const meta = store.__annotationMetaV1 && typeof store.__annotationMetaV1 === 'object'
+      ? store.__annotationMetaV1
+      : {};
+    meta.deletedPoints = meta.deletedPoints && typeof meta.deletedPoints === 'object' ? meta.deletedPoints : {};
+    meta.deletedPoints[editingId] = new Date().toISOString();
+    store.__annotationMetaV1 = meta;
+    store[editingContext] = annotationPointsFor(editingContext).filter(point => point.id !== editingId);
+    writeAnnotationStore(store);
+    closeAnnotationEditor();
+    renderScopedAnnotations();
+    if (typeof showToast === 'function') showToast('界面备注已删除', 'top');
+  }
+
+  function toggleAnnotationMode() {
+    annotationMode = !annotationMode;
+    document.body.classList.toggle('ui-annotation-mode', annotationMode);
+    const button = document.getElementById('uiAnnotationToggle');
+    button?.classList.toggle('active', annotationMode);
+    if (button) button.textContent = annotationMode ? '正在标注' : '界面标注';
+    closeAnnotationEditor();
+    renderScopedAnnotations();
+    if (typeof showToast === 'function') showToast(annotationMode ? '点击空白位置添加备注；控件仍可正常操作' : '已退出界面标注', 'top');
+  }
+
+  ensureAnnotationUi();
+  renderScopedAnnotations();
+  window.__syncArchiveLogicConfig = config => {
+    if (!config || typeof config !== 'object') return;
+    const store = readAnnotationStore();
+    store[ARCHIVE_LOGIC_SYNC_KEY] = config;
+    writeAnnotationStore(store);
+  };
+  scheduleAnnotationSync(0);
+  setInterval(syncAnnotationStore, 4000);
+
+  document.getElementById('uiAnnotationToggle')?.addEventListener('click', toggleAnnotationMode);
+  document.querySelector('[data-save-ui-annotation]')?.addEventListener('click', saveCurrentAnnotation);
+  document.querySelector('[data-delete-ui-annotation]')?.addEventListener('click', deleteCurrentAnnotation);
+  document.querySelectorAll('[data-close-ui-annotation]').forEach(button => button.addEventListener('click', closeAnnotationEditor));
+
+  window.addEventListener('pointerdown', event => {
+    const marker = event.target.closest?.('.ui-annotation-point');
+    if (!marker) return;
+    const info = annotationContextInfo();
+    if (!info.root || info.key !== marker.dataset.annotationContext) return;
+    annotationDrag = {
+      marker,
+      root: marker.parentElement || info.root,
+      context: marker.dataset.annotationContext,
+      id: marker.dataset.annotationId,
+      pointerId: event.pointerId,
+      startX: event.clientX,
+      startY: event.clientY,
+      x: null,
+      y: null,
+      moved: false
+    };
+  }, true);
+
+  window.addEventListener('pointermove', event => {
+    if (!annotationDrag || event.pointerId !== annotationDrag.pointerId) return;
+    const distance = Math.hypot(event.clientX - annotationDrag.startX, event.clientY - annotationDrag.startY);
+    if (!annotationDrag.moved && distance < 3) return;
+    annotationDrag.moved = true;
+    const rect = annotationDrag.root.getBoundingClientRect();
+    const width = Math.max(1, annotationDrag.root.scrollWidth, annotationDrag.root.clientWidth);
+    const height = Math.max(1, annotationDrag.root.scrollHeight, annotationDrag.root.clientHeight);
+    annotationDrag.x = Math.min(.985, Math.max(.015, (event.clientX - rect.left + annotationDrag.root.scrollLeft) / width));
+    annotationDrag.y = Math.min(.985, Math.max(.015, (event.clientY - rect.top + annotationDrag.root.scrollTop) / height));
+    annotationDrag.marker.classList.add('dragging');
+    annotationDrag.marker.style.left = `${Math.round(annotationDrag.x * width)}px`;
+    annotationDrag.marker.style.top = `${Math.round(annotationDrag.y * height)}px`;
+    event.preventDefault();
+    event.stopImmediatePropagation();
+  }, true);
+
+  window.addEventListener('pointerup', event => {
+    if (!annotationDrag || event.pointerId !== annotationDrag.pointerId) return;
+    const drag = annotationDrag;
+    annotationDrag = null;
+    drag.marker.classList.remove('dragging');
+    if (!drag.moved || drag.x === null || drag.y === null) return;
+    const points = annotationPointsFor(drag.context);
+    const point = points.find(item => item.id === drag.id);
+    if (point) {
+      point.x = drag.x;
+      point.y = drag.y;
+      point.updatedAt = new Date().toISOString();
+      saveAnnotationPoints(drag.context, points);
+    }
+    suppressAnnotationClick = true;
+    setTimeout(() => { suppressAnnotationClick = false; }, 0);
+    renderScopedAnnotations();
+    event.preventDefault();
+    event.stopImmediatePropagation();
+  }, true);
+
+  window.addEventListener('click', event => {
+    if (event.target.closest('#uiAnnotationToolbar, #uiAnnotationEditor')) return;
+    const marker = event.target.closest('.ui-annotation-point');
+    if (marker) {
+      event.preventDefault();
+      event.stopImmediatePropagation();
+      if (suppressAnnotationClick) return;
+      openAnnotationEditor(marker.dataset.annotationContext, marker.dataset.annotationId);
+      return;
+    }
+    if (annotationMode) {
+      const interactive = event.target.closest('button, a, input, textarea, select, [role="button"], [data-history-file], [data-archive-tab], [data-open-archive-upload]');
+      if (!interactive || event.altKey) {
+        if (createAnnotationAt(event)) {
+          event.preventDefault();
+          event.stopImmediatePropagation();
+          return;
+        }
+      }
+    }
+    setTimeout(renderScopedAnnotations, 0);
+  }, true);
+
+  window.addEventListener('keydown', event => {
+    if (event.key === 'Escape' && document.getElementById('uiAnnotationEditor')?.classList.contains('open')) {
+      closeAnnotationEditor();
+      return;
+    }
+    if (event.key === 'Escape' && annotationMode) toggleAnnotationMode();
+  }, true);
+  window.addEventListener('resize', () => requestAnimationFrame(renderScopedAnnotations));
+  document.addEventListener('transitionend', event => {
+    if (event.target === currentRoot && event.propertyName === 'transform') renderScopedAnnotations();
+  });
+  window.addEventListener('hashchange', () => setTimeout(renderScopedAnnotations, 0));
+  window.addEventListener('popstate', () => setTimeout(renderScopedAnnotations, 0));
+  window.addEventListener('storage', event => {
+    if (event.key === STORAGE_KEY) renderScopedAnnotations();
+  });
+  window.addEventListener('focus', () => scheduleAnnotationSync(0));
+  document.addEventListener('visibilitychange', () => {
+    if (!document.hidden) scheduleAnnotationSync(0);
+  });
+  new MutationObserver(mutations => {
+    if (mutations.some(mutation => !mutation.target.closest?.('#uiAnnotationEditor'))) {
+      setTimeout(renderScopedAnnotations, 0);
+      setTimeout(renderScopedAnnotations, 240);
+    }
+  }).observe(document.body, { subtree: true, attributes: true, attributeFilter: ['aria-hidden'] });
 })();
 </script>
 </body>
