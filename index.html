@@ -953,6 +953,14 @@
     .archive-logic-scope.logic-mode.logic-placing .archive-history-viewer { outline: 1px dashed rgba(49,84,255,.28); outline-offset: -6px; }
     .archive-logic-scope.logic-mode.logic-placing .archive-logic-drawer,
     .archive-logic-scope.logic-mode.logic-placing .archive-logic-point { cursor: default; }
+    body.archive-logic-global-placing .archive-main,
+    body.archive-logic-global-placing .archive-history-list,
+    body.archive-logic-global-placing .archive-history-viewer,
+    body.archive-logic-global-placing .archive-upload-dialog,
+    body.archive-logic-global-placing .archive-parse-drawer,
+    body.archive-logic-global-placing .patient-content,
+    body.archive-logic-global-placing .patient-page,
+    body.archive-logic-global-placing .page.active { cursor: crosshair; }
     .archive-logic-point-modal { position: fixed; inset: 0; z-index: 80; display: none; align-items: center; justify-content: center; background: rgba(21,31,52,.28); }
     .archive-logic-point-modal.open { display: flex; }
     .archive-logic-point-dialog { width: 420px; border-radius: 10px; overflow: hidden; background: #fff; box-shadow: 0 24px 72px rgba(21,38,72,.22); }
@@ -990,12 +998,49 @@
     .archive-upload-modal.open { display: flex; }
     .archive-upload-dialog { width: min(780px, 86vw); height: min(520px, 72vh); display: grid; grid-template-rows: 72px 1fr 72px; border-radius: 6px; overflow: hidden; background: #fff; box-shadow: 0 18px 54px rgba(18,32,60,.22); }
     .archive-upload-dialog .archive-logic-click-layer { inset: 72px 0 72px 0; z-index: 2; }
+    #patientArchivePage .archive-main.archive-logic-scope,
+    #patientArchivePage .archive-panel.archive-logic-scope,
+    #patientArchivePage .archive-history-card.archive-logic-scope,
+    #patientArchivePage .archive-history-viewer.archive-logic-scope,
+    #patientPage .patient-content.archive-logic-scope,
+    #patientPage .patient-page.archive-logic-scope,
+    .page.active.archive-logic-scope { position: relative; }
+    #patientArchivePage .archive-main.archive-logic-scope > .archive-logic-click-layer,
+    #patientArchivePage .archive-panel.archive-logic-scope > .archive-logic-click-layer,
+    #patientArchivePage .archive-history-card.archive-logic-scope > .archive-logic-click-layer,
+    #patientArchivePage .archive-history-viewer.archive-logic-scope > .archive-logic-click-layer,
+    #patientPage .patient-content.archive-logic-scope > .archive-logic-click-layer,
+    #patientPage .patient-page.archive-logic-scope > .archive-logic-click-layer,
+    .page.active.archive-logic-scope > .archive-logic-click-layer { inset: 0; z-index: 16; }
+    #patientArchivePage .archive-main.archive-logic-scope > .archive-logic-point,
+    #patientArchivePage .archive-panel.archive-logic-scope > .archive-logic-point,
+    #patientArchivePage .archive-history-card.archive-logic-scope > .archive-logic-point,
+    #patientArchivePage .archive-history-viewer.archive-logic-scope > .archive-logic-point,
+    #patientPage .patient-content.archive-logic-scope > .archive-logic-point,
+    #patientPage .patient-page.archive-logic-scope > .archive-logic-point,
+    .page.active.archive-logic-scope > .archive-logic-point { z-index: 18; }
+    #patientArchivePage .archive-main.archive-logic-scope > .archive-logic-drawer,
+    #patientArchivePage .archive-panel.archive-logic-scope > .archive-logic-drawer,
+    #patientArchivePage .archive-history-card.archive-logic-scope > .archive-logic-drawer,
+    #patientArchivePage .archive-history-viewer.archive-logic-scope > .archive-logic-drawer,
+    #patientPage .patient-content.archive-logic-scope > .archive-logic-drawer,
+    #patientPage .patient-page.archive-logic-scope > .archive-logic-drawer,
+    .page.active.archive-logic-scope > .archive-logic-drawer { z-index: 19; left: 24px; top: 24px; }
     .archive-upload-head { padding: 0 24px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid #edf0f5; }
     .archive-upload-head h2 { margin: 0; color: #263752; font-size: 18px; font-weight: 800; }
     .archive-upload-head-actions { display: flex; align-items: center; gap: 10px; }
     .archive-upload-logic-recover { height: 30px; padding: 0 10px; border: 1px solid #d8e2f0; border-radius: 4px; color: #3154ff; background: #f7f9ff; font-size: 13px; font-weight: 700; }
     .archive-upload-logic-recover:hover { border-color: #3154ff; background: #eef3ff; }
     .archive-upload-logic-recover, [data-restore-archive-logic] { display: none !important; }
+    .archive-annotation-fab { position: fixed; right: 18px; bottom: 18px; z-index: 1400; display: flex; align-items: center; gap: 8px; padding: 8px; border: 1px solid #dbe4f0; border-radius: 8px; background: rgba(255,255,255,.96); box-shadow: 0 10px 28px rgba(21,38,72,.18); }
+    .archive-annotation-action { height: 36px; padding: 0 14px; border: 1px solid #d8e2f0; border-radius: 4px; color: #2a3d5e; background: #fff; font-size: 13px; font-weight: 700; white-space: nowrap; }
+    .archive-annotation-action.primary { color: #fff; border-color: #3154ff; background: #3154ff; }
+    .archive-annotation-action.primary.is-placing { color: #fff; border-color: #ff8a00; background: #ff8a00; }
+    .archive-annotation-count { min-width: 22px; height: 22px; padding: 0 7px; display: grid; place-items: center; border-radius: 999px; color: #3154ff; background: #eef3ff; font-size: 12px; font-weight: 800; }
+    body.archive-logic-hidden .archive-logic-point,
+    body.archive-logic-hidden .archive-logic-drawer { display: none !important; }
+    body.archive-logic-hidden .archive-logic-click-layer { display: none !important; }
+    .archive-logic-point-modal { z-index: 1500; }
     .archive-upload-close { width: 32px; height: 32px; display: grid; place-items: center; border-radius: 50%; color: #263752; background: #f4f6fa; font-size: 22px; line-height: 1; }
     .archive-upload-body { position: relative; padding: 24px 28px; }
     .archive-upload-tip { position: absolute; left: 28px; bottom: -50px; z-index: 1; margin: 0; color: #9aa5b5; font-size: 13px; }
@@ -7047,6 +7092,8 @@
           archivePage.scrollLeft = 0;
         }
         if (archiveTab.dataset.archiveTab !== 'basic') showToast(`${archiveTab.textContent.trim()}模块已切换`);
+        rebuildArchiveLogicForCurrentContext(false);
+        showArchiveLogicIfCurrentScopeHasData();
         return;
       }
       const archiveMore = e.target.closest('[data-archive-more]');
@@ -9398,6 +9445,7 @@
       const ARCHIVE_LOGIC_BACKUP_KEY = 'archiveHistoryLogicConfigBackupV2';
       const ARCHIVE_LOGIC_SCOPED_STORAGE_KEY = 'archiveHistoryLogicScopedConfigV1';
       const ARCHIVE_LOGIC_SCOPED_BACKUP_KEY = 'archiveHistoryLogicScopedBackupV1';
+      const ARCHIVE_LOGIC_VISIBLE_KEY = 'archiveHistoryLogicVisibleV1';
       const ARCHIVE_LOGIC_EXPORT_KEYS = [
         ARCHIVE_LOGIC_SCOPED_STORAGE_KEY,
         ARCHIVE_LOGIC_SCOPED_BACKUP_KEY,
@@ -9526,15 +9574,81 @@
         scope.classList.add('archive-logic-scope');
         return scope;
       }
+      function isArchiveLogicNodeVisible(node) {
+        return !!(node && (node.offsetParent || node.getClientRects().length));
+      }
+      function getActiveArchivePanel() {
+        const archivePage = document.getElementById('patientArchivePage');
+        if (isArchiveLogicNodeVisible(archivePage) || archivePage?.classList.contains('active')) {
+          const activeTab = archivePage.querySelector('.archive-nav-item.active')?.dataset.archiveTab || 'basic';
+          return archivePage.querySelector('.archive-main')
+            || archivePage.querySelector(`[data-archive-panel="${activeTab}"]:not([hidden])`)
+            || archivePage.querySelector('.archive-panel:not([hidden])')
+            || archivePage.querySelector('.archive-main');
+        }
+        const patientPage = document.getElementById('patientPage');
+        if (patientPage?.classList.contains('active')) {
+          return patientPage.querySelector('.patient-content')
+            || patientPage.querySelector('.patient-page')
+            || patientPage;
+        }
+        const activePage = document.querySelector('.page.active');
+        return activePage?.querySelector('.archive-main, .patient-content, main, .page-body') || activePage || null;
+      }
       function getArchiveLogicCard() {
         const uploadDialog = document.querySelector('#archiveUploadModal.open .archive-upload-dialog');
         if (uploadDialog) return prepareArchiveLogicScope(uploadDialog);
         const parseDrawer = document.querySelector('.archive-parse-drawer.open');
         if (parseDrawer) return prepareArchiveLogicScope(parseDrawer);
-        return prepareArchiveLogicScope(document.querySelector('#patientArchivePage .archive-history-card'));
+        return prepareArchiveLogicScope(getActiveArchivePanel());
       }
       function getArchiveLogicScopeFromNode(node) {
-        return node?.closest?.('.archive-logic-scope, .archive-history-card, .archive-upload-dialog, .archive-parse-drawer') || getArchiveLogicCard();
+        return node?.closest?.('.archive-logic-scope, .archive-history-list, .archive-history-viewer, .archive-history-card, .archive-panel, .archive-main, .archive-upload-dialog, .archive-parse-drawer, .patient-content, .patient-page, .page.active') || getArchiveLogicCard();
+      }
+      function getArchiveLogicTargetScope(target) {
+        const uploadDialog = document.querySelector('#archiveUploadModal.open .archive-upload-dialog');
+        if (uploadDialog && (target === uploadDialog || uploadDialog.contains(target))) return prepareArchiveLogicScope(uploadDialog);
+        const parseDrawer = document.querySelector('.archive-parse-drawer.open');
+        if (parseDrawer && (target === parseDrawer || parseDrawer.contains(target))) return prepareArchiveLogicScope(parseDrawer);
+        const archivePage = target?.closest?.('#patientArchivePage');
+        if (archivePage && isArchiveLogicNodeVisible(archivePage)) {
+          return prepareArchiveLogicScope(archivePage.querySelector('.archive-main') || archivePage);
+        }
+        const patientPage = target?.closest?.('#patientPage');
+        if (patientPage && isArchiveLogicNodeVisible(patientPage)) {
+          return prepareArchiveLogicScope(patientPage.querySelector('.patient-content') || patientPage.querySelector('.patient-page') || patientPage);
+        }
+        const scope = target?.closest?.('.page.active');
+        if (scope && isArchiveLogicNodeVisible(scope)) return prepareArchiveLogicScope(scope);
+        return getArchiveLogicCard();
+      }
+      function archiveLogicRectContains(rect, event) {
+        return !!rect && event.clientX >= rect.left && event.clientX <= rect.right && event.clientY >= rect.top && event.clientY <= rect.bottom;
+      }
+      function getArchiveLogicScopeFromPoint(event, activeCard = getArchiveLogicCard()) {
+        const uploadDialog = document.querySelector('#archiveUploadModal.open .archive-upload-dialog');
+        if (uploadDialog) {
+          return archiveLogicRectContains(uploadDialog.getBoundingClientRect(), event) ? prepareArchiveLogicScope(uploadDialog) : null;
+        }
+        const parseDrawer = document.querySelector('.archive-parse-drawer.open');
+        if (parseDrawer) {
+          return archiveLogicRectContains(parseDrawer.getBoundingClientRect(), event) ? prepareArchiveLogicScope(parseDrawer) : null;
+        }
+        const targetScope = getArchiveLogicTargetScope(event.target);
+        const pageScope = targetScope || activeCard;
+        if (!pageScope || !isArchiveLogicNodeVisible(pageScope)) return null;
+        return archiveLogicRectContains(pageScope.getBoundingClientRect(), event) ? prepareArchiveLogicScope(pageScope) : null;
+      }
+      function getArchiveLogicPlacementPosition(card, event) {
+        const rect = card.getBoundingClientRect();
+        const contentWidth = Math.max(card.scrollWidth || 0, card.clientWidth || 0, rect.width || 0);
+        const contentHeight = Math.max(card.scrollHeight || 0, card.clientHeight || 0, rect.height || 0);
+        const maxLeft = Math.max(0, contentWidth - 22);
+        const maxTop = Math.max(0, contentHeight - 22);
+        return {
+          left: Math.round(Math.min(maxLeft, Math.max(0, event.clientX - rect.left + (card.scrollLeft || 0) - 11))),
+          top: Math.round(Math.min(maxTop, Math.max(0, event.clientY - rect.top + (card.scrollTop || 0) - 11)))
+        };
       }
       function readArchiveLogicStore(key = ARCHIVE_LOGIC_SCOPED_STORAGE_KEY) {
         try {
@@ -9747,10 +9861,23 @@
         return candidates;
       }
       function getArchiveLogicContextKey(card = getArchiveLogicCard()) {
-        const activeFile = document.querySelector('#patientArchivePage [data-history-file].active')?.dataset.historyFile;
+        const archivePage = document.getElementById('patientArchivePage');
+        const activePage = document.querySelector('.page.active');
         const modal = card?.closest?.('.archive-upload-modal.open, .archive-parse-drawer.open');
-        if (modal?.id) return `modal:${modal.id}:archive-file:${activeFile || 'default'}`;
-        return `archive-file:${activeFile || 'default'}`;
+        let baseKey = `page:${activePage?.id || 'current'}`;
+        if (isArchiveLogicNodeVisible(archivePage) || archivePage?.classList.contains('active')) {
+          const activeTab = archivePage.querySelector('.archive-nav-item.active')?.dataset.archiveTab || 'basic';
+          const activeFile = archivePage.querySelector('[data-history-file].active')?.dataset.historyFile;
+          const historyViewer = archivePage.querySelector('.archive-history-viewer');
+          const isHistoryVisible = activeTab === 'history'
+            || archivePage.querySelector('.archive-history-panel.is-visible')
+            || isArchiveLogicNodeVisible(historyViewer);
+          baseKey = isHistoryVisible
+            ? `archive-file:${activeFile || 'default'}`
+            : `archive-panel:${activeTab}`;
+        }
+        if (modal?.id) return `modal:${modal.id}:${baseKey}`;
+        return baseKey;
       }
       function findArchiveLogicRecoveredConfig(contextKey) {
         return getArchiveLogicRecoveryCandidates(contextKey)[0]?.config || null;
@@ -9889,8 +10016,8 @@
         return point;
       }
       function getArchiveLogicPointPosition(card, point) {
-        const cardWidth = Math.max(1, card.clientWidth - point.offsetWidth);
-        const cardHeight = Math.max(1, card.clientHeight - point.offsetHeight);
+        const cardWidth = Math.max(1, Math.max(card.scrollWidth || 0, card.clientWidth || 0) - point.offsetWidth);
+        const cardHeight = Math.max(1, Math.max(card.scrollHeight || 0, card.clientHeight || 0) - point.offsetHeight);
         const left = parseFloat(point.style.left || getComputedStyle(point).left) || 0;
         const top = parseFloat(point.style.top || getComputedStyle(point).top) || 0;
         const leftPct = Math.min(100, Math.max(0, left / cardWidth * 100));
@@ -9899,8 +10026,8 @@
       }
       function applyArchiveLogicPointPosition(card, point, pos) {
         if (!card || !point || !pos) return;
-        const cardWidth = Math.max(1, card.clientWidth - point.offsetWidth);
-        const cardHeight = Math.max(1, card.clientHeight - point.offsetHeight);
+        const cardWidth = Math.max(1, Math.max(card.scrollWidth || 0, card.clientWidth || 0) - point.offsetWidth);
+        const cardHeight = Math.max(1, Math.max(card.scrollHeight || 0, card.clientHeight || 0) - point.offsetHeight);
         const hasPct = Number.isFinite(Number(pos.leftPct)) && Number.isFinite(Number(pos.topPct));
         const left = pos.left || (hasPct ? `${Math.round(cardWidth * Number(pos.leftPct) / 100)}px` : '');
         const top = pos.top || (hasPct ? `${Math.round(cardHeight * Number(pos.topPct) / 100)}px` : '');
@@ -10004,20 +10131,103 @@
           btn.classList.toggle('is-placing', !!placing);
           btn.textContent = placing ? '正在标注' : '新增点';
         });
+        if (typeof updateArchiveAnnotationFab === 'function') updateArchiveAnnotationFab(card);
       }
       function startArchiveLogicPlacing(card) {
         if (!card) return;
+        archiveLogicGlobalPlacing = true;
+        archiveLogicGlobalVisible = true;
+        localStorage.setItem(ARCHIVE_LOGIC_VISIBLE_KEY, 'true');
+        document.body.classList.add('archive-logic-global-placing');
+        ensureArchiveLogicShell(card);
+        hideArchiveLogicOutside(card);
         card.classList.add('logic-mode');
         document.querySelectorAll('[data-toggle-archive-logic]').forEach(btn => btn.classList.add('active'));
         setArchiveLogicEditing(card, true);
         setArchiveLogicPlacing(card, true);
+        if (typeof updateArchiveAnnotationFab === 'function') updateArchiveAnnotationFab(card);
         if (typeof showToast === 'function') showToast('已进入点选批注模式，点击页面位置添加批注点。', 'top');
       }
       function stopArchiveLogicPlacing(card) {
-        if (!card) return;
-        setArchiveLogicPlacing(card, false);
+        archiveLogicGlobalPlacing = false;
+        document.body.classList.remove('archive-logic-global-placing');
+        document.querySelectorAll('.archive-logic-scope.logic-placing').forEach(scope => setArchiveLogicPlacing(scope, false));
+        if (card) setArchiveLogicPlacing(card, false);
+        if (typeof updateArchiveAnnotationFab === 'function') updateArchiveAnnotationFab(card);
       }
+      let archiveLogicGlobalPlacing = false;
+      let archiveLogicGlobalVisible = localStorage.getItem(ARCHIVE_LOGIC_VISIBLE_KEY) !== 'false';
       let archiveLogicAutoSaveTimer = null;
+      let archiveLogicPlacementClickSuppressed = false;
+      function getArchiveLogicPointCount(card = getArchiveLogicCard()) {
+        return card ? card.querySelectorAll('.archive-logic-point').length : 0;
+      }
+      function hideArchiveLogicOutside(activeCard) {
+        document.querySelectorAll('.archive-logic-scope.logic-mode').forEach(scope => {
+          if (scope === activeCard) return;
+          scope.classList.remove('logic-mode', 'logic-placing', 'logic-editing');
+          const drawer = scope.querySelector('.archive-logic-drawer');
+          drawer?.classList.remove('open');
+          drawer?.setAttribute('aria-hidden', 'true');
+        });
+      }
+      function ensureArchiveAnnotationFab() {
+        let fab = document.getElementById('archiveAnnotationFab');
+        if (!fab) {
+          document.body.insertAdjacentHTML('beforeend', `
+            <div class="archive-annotation-fab" id="archiveAnnotationFab">
+              <button class="archive-annotation-action primary" type="button" data-global-archive-logic-add>界面标注</button>
+              <button class="archive-annotation-action" type="button" data-global-archive-logic-toggle>隐藏备注</button>
+              <span class="archive-annotation-count" data-global-archive-logic-count>0</span>
+            </div>`);
+          fab = document.getElementById('archiveAnnotationFab');
+        }
+        return fab;
+      }
+      function updateArchiveAnnotationFab(card = getArchiveLogicCard()) {
+        const fab = ensureArchiveAnnotationFab();
+        const addBtn = fab.querySelector('[data-global-archive-logic-add]');
+        const toggleBtn = fab.querySelector('[data-global-archive-logic-toggle]');
+        const count = fab.querySelector('[data-global-archive-logic-count]');
+        addBtn?.classList.toggle('is-placing', !!archiveLogicGlobalPlacing);
+        if (addBtn) addBtn.textContent = archiveLogicGlobalPlacing ? '正在标注' : '界面标注';
+        if (toggleBtn) toggleBtn.textContent = archiveLogicGlobalVisible ? '隐藏备注' : '显示备注';
+        if (count) count.textContent = String(getArchiveLogicPointCount(card));
+        document.body.classList.toggle('archive-logic-hidden', !archiveLogicGlobalVisible);
+      }
+      function setArchiveLogicGlobalVisible(visible) {
+        archiveLogicGlobalVisible = !!visible;
+        localStorage.setItem(ARCHIVE_LOGIC_VISIBLE_KEY, archiveLogicGlobalVisible ? 'true' : 'false');
+        const card = getArchiveLogicCard();
+        if (card && archiveLogicGlobalVisible) {
+          ensureArchiveLogicMode();
+          card.classList.add('logic-mode');
+        }
+        updateArchiveAnnotationFab(card);
+      }
+      function syncArchiveLogicGlobalContext() {
+        const card = getArchiveLogicCard();
+        ensureArchiveAnnotationFab();
+        if (!card) {
+          updateArchiveAnnotationFab(null);
+          return null;
+        }
+        document.body.classList.toggle('archive-logic-global-placing', !!archiveLogicGlobalPlacing);
+        ensureArchiveLogicMode();
+        hideArchiveLogicOutside(card);
+        if (archiveLogicGlobalVisible) card.classList.add('logic-mode');
+        if (archiveLogicGlobalPlacing) {
+          card.classList.add('logic-mode');
+          setArchiveLogicEditing(card, true);
+          setArchiveLogicPlacing(card, true);
+        } else {
+          setArchiveLogicPlacing(card, false);
+        }
+        updateArchiveAnnotationFab(card);
+        return card;
+      }
+      window.__archiveLogicSync = syncArchiveLogicGlobalContext;
+      if (typeof getArchiveLogicExportPayload === 'function') window.__archiveLogicExportForCode = getArchiveLogicExportPayload;
       function scheduleArchiveLogicAutoSave(card) {
         if (!card) return;
         clearTimeout(archiveLogicAutoSaveTimer);
@@ -10047,6 +10257,7 @@
       }
       function addArchiveLogicSection(card, payload = {}) {
         if (!card) return;
+        ensureArchiveLogicShell(card);
         const numbers = Array.from(card.querySelectorAll('.archive-logic-point'))
           .map(point => Number(point.dataset.logicPoint || '0'))
           .filter(Boolean);
@@ -10063,12 +10274,16 @@
         point.textContent = String(next);
         const left = Number(payload.left);
         const top = Number(payload.top);
+        const contentWidth = Math.max(card.scrollWidth || 0, card.clientWidth || 0);
+        const contentHeight = Math.max(card.scrollHeight || 0, card.clientHeight || 0);
+        const maxLeft = Math.max(8, contentWidth - 30);
+        const maxTop = Math.max(8, contentHeight - 30);
         if (Number.isFinite(left) && Number.isFinite(top)) {
-          point.style.left = `${Math.max(8, Math.min(card.clientWidth - 30, left))}px`;
-          point.style.top = `${Math.max(8, Math.min(card.clientHeight - 30, top))}px`;
+          point.style.left = `${Math.max(8, Math.min(maxLeft, left))}px`;
+          point.style.top = `${Math.max(8, Math.min(maxTop, top))}px`;
         } else {
-          point.style.left = `${Math.min(card.clientWidth - 54, 72 + (next - 1) * 34)}px`;
-          point.style.top = `${Math.min(card.clientHeight - 54, 92 + (next - 1) * 26)}px`;
+          point.style.left = `${Math.min(maxLeft, 72 + (next - 1) * 34)}px`;
+          point.style.top = `${Math.min(maxTop, 92 + (next - 1) * 26)}px`;
         }
         card.insertBefore(point, card.querySelector('.archive-logic-drawer'));
 
@@ -10076,7 +10291,7 @@
         if (body) {
           body.querySelector('.archive-logic-empty')?.remove();
           body.insertAdjacentHTML('beforeend', `
-            <section class="archive-logic-section" data-logic-section="${next}"${payload.systemGenerated ? ' data-user-generated="true"' : ''}>
+            <section class="archive-logic-section" data-logic-section="${next}"${payload.systemGenerated ? '' : ' data-user-generated="true"'}>
               <h3><span>${next}</span>${title}</h3>
               <p class="archive-logic-rules">${rules}</p>
             </section>`);
@@ -10084,36 +10299,26 @@
         showArchiveLogicSection(card, String(next));
         setArchiveLogicEditing(card, true);
         storeArchiveLogicConfig(card);
+        if (typeof updateArchiveAnnotationFab === 'function') updateArchiveAnnotationFab(card);
+        return point;
       }
       function isArchiveLogicPlacementBlocked(target) {
         return !!target.closest([
           '.archive-logic-drawer',
           '.archive-logic-point',
-          '.archive-history-actions',
-          '.archive-patient-card',
-          '.archive-history-filter',
+          '.archive-logic-point-modal',
+          '.archive-annotation-fab',
           '[data-toggle-archive-logic]',
           '[data-add-archive-logic]',
+          'button',
+          'a',
+          '[role="button"]',
           'input',
           'textarea',
           'select',
           'label',
           '[contenteditable="true"]'
         ].join(','));
-      }
-      function handleArchiveLogicPlacementClick(event) {
-        const card = event.target.closest?.('.archive-logic-scope.logic-mode.logic-placing');
-        if (!card || isArchiveLogicPlacementBlocked(event.target)) return false;
-        const rect = card.getBoundingClientRect();
-        addArchiveLogicSection(card, {
-          left: event.clientX - rect.left - 11,
-          top: event.clientY - rect.top - 11,
-          title: '新增批注',
-          lines: '请填写批注说明。'
-        });
-        event.preventDefault();
-        event.stopImmediatePropagation();
-        return true;
       }
       function openArchiveLogicPointModal(card, pendingPosition = null) {
         if (!card) return;
@@ -10178,9 +10383,13 @@
         modal.__archiveLogicPendingPosition = null;
         modal.classList.remove('open');
         modal.setAttribute('aria-hidden', 'true');
+        syncArchiveLogicGlobalContext();
       }
       function isArchiveLogicPlacingActive(card) {
+        if (archiveLogicGlobalPlacing) return true;
         if (card?.classList.contains('logic-mode') && card.classList.contains('logic-placing')) return true;
+        const visibleBodyText = (document.body?.innerText || '').slice(-3000);
+        if (visibleBodyText.includes('正在标注') || visibleBodyText.includes('标注中')) return true;
         const scopedActive = Array.from(document.querySelectorAll('[data-add-archive-logic]')).some(btn => {
           const text = (btn.textContent || '').trim();
           return btn.classList.contains('is-placing') || text.includes('正在标注');
@@ -10192,21 +10401,23 @@
         });
       }
       function handleArchiveLogicPlacementClick(event) {
-        const activeCard = getArchiveLogicCard();
-        const scopedCard = event.target.closest?.('.archive-logic-scope.logic-mode.logic-placing');
-        const archivePage = document.getElementById('patientArchivePage');
+        const activeCard = syncArchiveLogicGlobalContext();
         const placingActive = isArchiveLogicPlacingActive(activeCard);
-        const isClickLayer = !!event.target.closest?.('[data-archive-logic-click-layer]');
-        const isArchiveAreaClick = archivePage?.contains(event.target) || scopedCard || isClickLayer;
-        const card = scopedCard || (activeCard && placingActive && isArchiveAreaClick ? activeCard : null);
-        if (!card || isArchiveLogicPlacementBlocked(event.target)) return false;
+        const pointModal = document.getElementById('archiveLogicPointModal');
+        if (!placingActive || pointModal?.classList.contains('open') || isArchiveLogicPlacementBlocked(event.target)) return false;
+        const card = getArchiveLogicScopeFromPoint(event, activeCard);
+        if (!card || !isArchiveLogicNodeVisible(card)) return false;
+        ensureArchiveLogicShell(card);
         ensureArchiveLogicClickLayer(card);
-        card.classList.add('logic-mode', 'logic-placing');
-        const rect = card.getBoundingClientRect();
-        openArchiveLogicPointModal(card, {
-          left: event.clientX - rect.left - 11,
-          top: event.clientY - rect.top - 11
-        });
+        hideArchiveLogicOutside(card);
+        archiveLogicGlobalPlacing = true;
+        archiveLogicGlobalVisible = true;
+        localStorage.setItem(ARCHIVE_LOGIC_VISIBLE_KEY, 'true');
+        document.body.classList.add('archive-logic-global-placing');
+        card.classList.add('logic-mode', 'logic-placing', 'logic-editing');
+        document.querySelectorAll('[data-toggle-archive-logic]').forEach(btn => btn.classList.add('active'));
+        openArchiveLogicPointModal(card, getArchiveLogicPlacementPosition(card, event));
+        updateArchiveAnnotationFab(card);
         event.preventDefault();
         event.stopImmediatePropagation();
         return true;
@@ -10417,9 +10628,41 @@
         if (typeof showToast === 'function') showToast('已恢复当前弹窗的界面备注', 'top');
       }
 
+      function ensureArchiveLogicShell(card) {
+        if (!card) return;
+        const actions = card.querySelector('.archive-history-actions');
+        if (actions && !actions.querySelector('[data-toggle-archive-logic]')) {
+          actions.insertAdjacentHTML('afterbegin', '<button class="archive-logic-btn" data-toggle-archive-logic type="button">逻辑说明</button>');
+        }
+        if (!card.querySelector('.archive-logic-drawer')) {
+          card.insertAdjacentHTML('beforeend', `
+            <aside class="archive-logic-drawer" aria-hidden="true">
+              <div class="archive-logic-head"><strong>界面批注</strong><div class="archive-logic-tools"></div></div>
+              <div class="archive-logic-body"></div>
+            </aside>`);
+          setArchiveLogicEmptyState(card);
+        }
+        const tools = card.querySelector('.archive-logic-tools');
+        if (tools && !tools.dataset.manualOnly) {
+          tools.dataset.manualOnly = 'true';
+          tools.innerHTML = [
+            '<button class="archive-logic-tool" type="button" data-add-archive-logic>新增点</button>',
+            '<button class="archive-logic-tool" type="button" data-generate-archive-logic>按系统生成</button>',
+            '<button class="archive-logic-tool" type="button" data-rename-archive-logic-point>改编号</button>',
+            '<button class="archive-logic-tool danger" type="button" data-delete-archive-logic-point>删除点</button>',
+            '<button class="archive-logic-tool" type="button" data-edit-archive-logic>编辑</button>',
+            '<button class="archive-logic-tool primary" type="button" data-save-archive-logic>保存</button>',
+            '<button type="button" data-close-archive-logic aria-label="关闭">×</button>'
+          ].join('');
+        }
+      }
+
       function ensureArchiveLogicMode() {
         const card = getArchiveLogicCard();
         if (!card) return;
+        ensureArchiveLogicShell(card);
+        applyArchiveLogicConfig(card);
+        return;
         const actions = card.querySelector('.archive-history-actions');
         if (actions && !actions.querySelector('[data-toggle-archive-logic]')) {
           actions.insertAdjacentHTML('afterbegin', '<button class="archive-logic-btn" data-toggle-archive-logic type="button">逻辑说明</button>');
@@ -10550,7 +10793,10 @@
         historyList.querySelector('.history-empty-result')?.classList.toggle('show', visibleCount === 0);
       }
 
-      setTimeout(normalizeArchiveHistoryPanel, 0);
+      setTimeout(() => {
+        normalizeArchiveHistoryPanel();
+        syncArchiveLogicGlobalContext();
+      }, 0);
 
       const archiveUploadState = { files: [] };
       function getArchiveUploadModal() {
@@ -10608,6 +10854,7 @@
         setTimeout(() => {
           rebuildArchiveLogicForCurrentContext(false);
           showArchiveLogicIfCurrentScopeHasData();
+          syncArchiveLogicGlobalContext();
         }, 0);
       }
       const archiveUploadModalNode = getArchiveUploadModal();
@@ -10710,6 +10957,7 @@
         backdrop?.setAttribute('aria-hidden', 'false');
         drawer?.classList.add('open');
         drawer?.setAttribute('aria-hidden', 'false');
+        setTimeout(syncArchiveLogicGlobalContext, 0);
       }
       function closeArchiveParseDrawer() {
         const drawer = document.getElementById('archiveParseDrawer');
@@ -10718,6 +10966,7 @@
         drawer?.setAttribute('aria-hidden', 'true');
         backdrop?.classList.remove('open');
         backdrop?.setAttribute('aria-hidden', 'true');
+        setTimeout(syncArchiveLogicGlobalContext, 0);
       }
       setTimeout(updateArchiveParseBadge, 0);
 
@@ -10762,10 +11011,12 @@
       }, true);
       document.addEventListener('mousemove', function (event) {
         if (!archiveLogicDrag) return;
-        const maxLeft = Math.max(0, archiveLogicDrag.card.clientWidth - archiveLogicDrag.point.offsetWidth);
-        const maxTop = Math.max(0, archiveLogicDrag.card.clientHeight - archiveLogicDrag.point.offsetHeight);
-        const left = Math.min(maxLeft, Math.max(0, event.clientX - archiveLogicDrag.cardLeft - archiveLogicDrag.offsetX));
-        const top = Math.min(maxTop, Math.max(0, event.clientY - archiveLogicDrag.cardTop - archiveLogicDrag.offsetY));
+        const contentWidth = Math.max(archiveLogicDrag.card.scrollWidth || 0, archiveLogicDrag.card.clientWidth || 0);
+        const contentHeight = Math.max(archiveLogicDrag.card.scrollHeight || 0, archiveLogicDrag.card.clientHeight || 0);
+        const maxLeft = Math.max(0, contentWidth - archiveLogicDrag.point.offsetWidth);
+        const maxTop = Math.max(0, contentHeight - archiveLogicDrag.point.offsetHeight);
+        const left = Math.min(maxLeft, Math.max(0, event.clientX - archiveLogicDrag.cardLeft - archiveLogicDrag.offsetX + (archiveLogicDrag.card.scrollLeft || 0)));
+        const top = Math.min(maxTop, Math.max(0, event.clientY - archiveLogicDrag.cardTop - archiveLogicDrag.offsetY + (archiveLogicDrag.card.scrollTop || 0)));
         archiveLogicDrag.point.style.left = `${Math.round(left)}px`;
         archiveLogicDrag.point.style.top = `${Math.round(top)}px`;
         archiveLogicDrag.point.style.right = 'auto';
@@ -10790,7 +11041,47 @@
         archiveLogicResizeTimer = setTimeout(() => refreshArchiveLogicPointPositions(), 120);
       });
 
+      document.addEventListener('pointerdown', function (event) {
+        if (event.button !== undefined && event.button !== 0) return;
+        if (handleArchiveLogicPlacementClick(event)) {
+          archiveLogicPlacementClickSuppressed = true;
+          setTimeout(() => {
+            archiveLogicPlacementClickSuppressed = false;
+          }, 350);
+        }
+      }, true);
+
       document.addEventListener('click', function (event) {
+        if (archiveLogicPlacementClickSuppressed) {
+          archiveLogicPlacementClickSuppressed = false;
+          event.preventDefault();
+          event.stopImmediatePropagation();
+          return;
+        }
+        handleArchiveLogicPlacementClick(event);
+      }, true);
+
+      document.addEventListener('click', function (event) {
+        const globalArchiveLogicAdd = event.target.closest('[data-global-archive-logic-add]');
+        if (globalArchiveLogicAdd) {
+          const card = syncArchiveLogicGlobalContext();
+          if (archiveLogicGlobalPlacing) {
+            stopArchiveLogicPlacing(card);
+          } else {
+            startArchiveLogicPlacing(card);
+          }
+          event.preventDefault();
+          event.stopImmediatePropagation();
+          return;
+        }
+        const globalArchiveLogicToggle = event.target.closest('[data-global-archive-logic-toggle]');
+        if (globalArchiveLogicToggle) {
+          setArchiveLogicGlobalVisible(!archiveLogicGlobalVisible);
+          syncArchiveLogicGlobalContext();
+          event.preventDefault();
+          event.stopImmediatePropagation();
+          return;
+        }
         if (handleArchiveLogicPlacementClick(event)) return;
         const archiveLogicPoint = event.target.closest('.archive-logic-scope.logic-mode .archive-logic-point');
         if (archiveLogicPoint) {
@@ -10952,9 +11243,10 @@
           modal?.classList.add('open');
           modal?.setAttribute('aria-hidden', 'false');
           setTimeout(() => {
-            rebuildArchiveLogicForCurrentContext(false);
-            showArchiveLogicIfCurrentScopeHasData();
-          }, 0);
+          rebuildArchiveLogicForCurrentContext(false);
+          showArchiveLogicIfCurrentScopeHasData();
+          syncArchiveLogicGlobalContext();
+        }, 0);
           event.preventDefault();
           event.stopImmediatePropagation();
           return;
@@ -10982,6 +11274,7 @@
           modal?.setAttribute('aria-hidden', 'true');
           resetArchiveUploadFiles();
           if (typeof showToast === 'function') showToast('资料上传成功，AI正在进行解析，请稍后。', 'top');
+          setTimeout(syncArchiveLogicGlobalContext, 0);
           event.preventDefault();
           event.stopImmediatePropagation();
           return;
@@ -10991,6 +11284,7 @@
           const modal = document.getElementById('archiveUploadModal');
           modal?.classList.remove('open');
           modal?.setAttribute('aria-hidden', 'true');
+          setTimeout(syncArchiveLogicGlobalContext, 0);
           event.preventDefault();
           event.stopImmediatePropagation();
           return;
@@ -11048,6 +11342,7 @@
           closeArchiveParseDrawer();
           renderArchiveHistoryDetail(viewParsedArchive.dataset.archiveViewParsed || 'patientUploadDiet');
           document.querySelectorAll('#patientArchivePage [data-history-file]').forEach(file => file.classList.toggle('active', file.dataset.historyFile === viewParsedArchive.dataset.archiveViewParsed));
+          setTimeout(syncArchiveLogicGlobalContext, 0);
           event.preventDefault();
           event.stopImmediatePropagation();
           return;
@@ -11088,6 +11383,7 @@
           });
           renderArchiveHistoryDetail(historyFile.dataset.historyFile);
           rebuildArchiveLogicForCurrentContext(true);
+          syncArchiveLogicGlobalContext();
           event.preventDefault();
           event.stopImmediatePropagation();
           return;
@@ -11137,6 +11433,9 @@
         targetPanel.classList.add('is-visible');
         archivePage.classList.toggle('history-document-mode', archiveTab.dataset.archiveTab === 'history');
         if (archiveTab.dataset.archiveTab === 'history') normalizeArchiveHistoryPanel();
+        rebuildArchiveLogicForCurrentContext(false);
+        showArchiveLogicIfCurrentScopeHasData();
+        syncArchiveLogicGlobalContext();
         archivePage.scrollTop = 0;
         archivePage.scrollLeft = 0;
       }, true);
