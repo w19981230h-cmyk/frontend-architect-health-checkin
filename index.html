@@ -117,6 +117,69 @@
     .list-view.active { display: flex; }
     .submenu-item[data-list-view] { cursor: pointer; }
     .menu-item[data-list-view] { cursor: pointer; }
+    .list-main.order-main { padding: 22px 32px 28px 28px; background: radial-gradient(circle at 64% 0%, #f7f9ff 0, #f2f6ff 38%, #eef4ff 100%); }
+    .list-main.order-main .page-title { height: 48px; align-items: center; gap: 16px; color: #1e2c45; font-size: 20px; font-weight: 700; }
+    .list-main.order-main .page-title::before { content: ""; width: 28px; height: 28px; flex: 0 0 28px; border-radius: 50%; background: #f7faff; box-shadow: 0 8px 22px rgba(41,61,104,.08); background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg' fill='none' stroke='%2337475f' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m15 18-6-6 6-6'/%3E%3C/svg%3E"); background-size: 16px 16px; background-position: center; background-repeat: no-repeat; }
+    .order-management-panel { padding: 22px 24px 18px; border-radius: 14px; background: #fff; box-shadow: 0 10px 28px rgba(55,75,120,.06); }
+    .order-shell { width: 100%; min-height: calc(100vh - 126px); display: flex; flex-direction: column; }
+    .order-filter { min-height: 72px; padding: 0 16px; display: flex; align-items: center; gap: 32px; border-radius: 8px; background: #f7f9fc; }
+    .order-field { display: flex; align-items: center; gap: 10px; color: #1f2d46; font-size: 14px; font-weight: 700; white-space: nowrap; }
+    .order-field input { width: 242px; height: 36px; padding: 0 14px; border: 1px solid #d8e0ef; border-radius: 5px; color: #1f2d46; font-size: 14px; font-weight: 400; outline: none; background: #fff; }
+    .order-field input::placeholder { color: #aeb8c8; }
+    .order-date-range { width: 286px; height: 36px; padding: 0 12px 0 14px; display: inline-flex; align-items: center; justify-content: space-between; border: 1px solid #d8e0ef; border-radius: 5px; color: #b2bdcc; font-size: 14px; font-weight: 400; background: #fff; }
+    .order-date-range svg { width: 16px; height: 16px; color: #9aa7ba; stroke-width: 2; }
+    .order-summary { height: 62px; display: flex; align-items: center; gap: 28px; }
+    .order-summary-left { flex: 0 0 auto; display: flex; align-items: center; gap: 28px; color: #1f2d46; font-size: 14px; }
+    .order-column-button { width: 42px; height: 42px; display: inline-flex; align-items: center; justify-content: center; border: 1px solid #d8e0ef; border-radius: 8px; background: #fff; color: #253450; }
+    .order-column-button svg { width: 20px; height: 20px; stroke-width: 2; }
+    .order-table-wrap { flex: 1; overflow: hidden; border-radius: 0; }
+    .order-table { width: 100%; border-collapse: collapse; table-layout: fixed; color: #253450; font-size: 14px; }
+    .order-table thead tr { height: 52px; background: #f4f6f9; }
+    .order-table th { padding: 0 8px; color: #1f2d46; font-weight: 700; text-align: left; border-right: 1px solid #edf1f6; }
+    .order-table th:last-child { border-right: 0; }
+    .order-table tbody tr { height: 54px; border-bottom: 1px solid #edf1f6; }
+    .order-table td { padding: 0 8px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .order-status-tabs { flex: 1; min-width: 0; height: 62px; display: flex; align-items: center; gap: 8px; border-bottom: 1px solid #e8edf5; }
+    .order-status-tab { height: 38px; padding: 0 18px; border: 0; border-bottom: 2px solid transparent; background: transparent; color: #728098; font-size: 14px; cursor: pointer; }
+    .order-status-tab.active { color: #174dff; border-bottom-color: #174dff; font-weight: 700; }
+    .order-tab-count { margin-left: 4px; color: inherit; font-weight: 700; }
+    .order-status-badge { display: inline-flex; align-items: center; height: 22px; padding: 0 8px; border-radius: 999px; font-size: 12px; font-weight: 700; }
+    .order-status-badge.waiting { color: #c17800; background: #fff3d6; }
+    .order-status-badge.active { color: #10a36f; background: #e8fbf2; }
+    .order-status-badge.done { color: #627086; background: #edf2f8; }
+    .order-status-badge.refunding { color: #e07b00; background: #fff1df; }
+    .order-status-badge.refunded { color: #59687f; background: #eef3fb; }
+    .order-table .order-action-col { width: 110px; text-align: center; box-shadow: -12px 0 20px rgba(30,42,70,.08); }
+    .order-table .order-detail-link { border: 0; background: transparent; color: #0f50ff; font-size: 14px; cursor: pointer; }
+    .order-pager { height: 70px; display: flex; align-items: center; justify-content: center; gap: 14px; color: #253450; font-size: 14px; }
+    .order-pager button, .order-pager .order-page-input, .order-pager .order-page-size { height: 32px; min-width: 32px; padding: 0 10px; display: inline-flex; align-items: center; justify-content: center; border: 1px solid #d8e0ef; border-radius: 5px; background: #fff; color: #253450; font-size: 14px; }
+    .order-pager .active { border-color: #1f49ff; background: #1f49ff; color: #fff; }
+    .order-pager .disabled { color: #c6cfdd; background: #f3f6fb; }
+    .order-pager .ellipsis { color: #8d9ab0; }
+    .order-page-size { width: 110px; gap: 8px; }
+    .order-page-input { width: 52px; }
+    .order-detail-mask { position: fixed; inset: 0; z-index: 1000; background: rgba(20,32,54,.42); }
+    .order-detail-mask[hidden] { display: none; }
+    .order-detail-drawer { position: fixed; top: 0; right: 0; z-index: 1001; width: 560px; height: 100vh; display: flex; flex-direction: column; background: #fff; box-shadow: -18px 0 42px rgba(25,40,78,.18); transform: translateX(100%); transition: transform .18s ease; }
+    .order-detail-drawer.active { transform: translateX(0); }
+    .order-detail-head { height: 64px; padding: 0 22px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid #e8edf5; color: #1f2d46; }
+    .order-detail-head strong { display: block; font-size: 18px; }
+    .order-detail-head span { display: block; margin-top: 4px; color: #7b879a; font-size: 12px; }
+    .order-detail-close { width: 32px; height: 32px; border-radius: 50%; color: #53627a; background: #f3f6fb; font-size: 20px; line-height: 1; }
+    .order-detail-content { flex: 1; overflow: auto; padding: 18px 22px 28px; background: #f7faff; }
+    .order-detail-section { margin-bottom: 14px; border: 1px solid #dde6f3; border-radius: 10px; background: #fff; overflow: hidden; }
+    .order-detail-section-title { padding: 12px 14px; color: #1d3150; font-size: 15px; font-weight: 800; border-bottom: 1px solid #edf1f6; background: #f8fbff; }
+    .order-detail-grid { padding: 14px; display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .order-detail-item { min-height: 68px; padding: 12px; border: 1px solid #e5ebf5; border-radius: 8px; background: #fbfdff; }
+    .order-detail-label { margin-bottom: 7px; color: #7a8799; font-size: 12px; }
+    .order-detail-value { color: #172846; font-size: 14px; font-weight: 700; line-height: 1.45; }
+    .order-detail-list { padding: 12px 16px 14px; margin: 0; color: #2c3d58; line-height: 1.8; }
+    .order-detail-list li { margin-left: 18px; }
+    .order-detail-timeline { padding: 12px 16px 14px; display: grid; gap: 10px; }
+    .order-detail-step { position: relative; padding-left: 18px; color: #2c3d58; font-size: 14px; }
+    .order-detail-step::before { content: ""; position: absolute; left: 0; top: 7px; width: 7px; height: 7px; border-radius: 50%; background: #2452ff; box-shadow: 0 0 0 4px #edf3ff; }
+    .order-detail-actions { padding: 12px 14px; display: flex; gap: 10px; border-top: 1px solid #edf1f6; background: #fbfdff; }
+    .order-detail-actions button { height: 32px; padding: 0 14px; border: 1px solid #c8d6ff; border-radius: 6px; color: #174dff; background: #fff; font-weight: 700; }
     .list-main.workbench-main { padding: 22px 32px 0 28px; background: radial-gradient(circle at 62% 6%, #f7f9ff 0, #f2f6ff 36%, #eef4ff 100%); }
     .list-main.workbench-main .page-title { height: 56px; align-items: center; gap: 16px; color: #1e2c45; font-size: 22px; font-weight: 700; }
     .list-main.workbench-main .page-title::before { content: ""; width: 28px; height: 28px; border-radius: 50%; background: #f7faff; box-shadow: 0 8px 22px rgba(41,61,104,.08); background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg' fill='none' stroke='%2337475f' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m15 18-6-6 6-6'/%3E%3C/svg%3E"); background-size: 16px 16px; background-position: center; background-repeat: no-repeat; }
@@ -2446,6 +2509,10 @@
     .checkin-range-meal-meta { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; }
     .checkin-range-meal-meta span { padding: 8px 10px; border-radius: 7px; color: #52617a; background: #f3f7fc; font-size: 12px; font-weight: 700; }
   </style>
+  <link rel="stylesheet" href="transaction-record-page-v14.css">
+  <link rel="stylesheet" href="transaction-record-page-v16.css">
+  <link rel="stylesheet" href="transaction-record-page-v17.css">
+  <link rel="stylesheet" href="transaction-record-page-v18.css">
 </head>
 <body>
   <section id="listPage" class="page active">
@@ -2462,6 +2529,7 @@
           </div>
           <div class="menu-section"><div class="menu-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M4 19V8a3 3 0 0 1 3-3h10a3 3 0 0 1 3 3v11"/><path d="M8 19v-5h8v5"/></svg><span>运营管理</span><svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="m18 15-6-6-6 6"/></svg></div><div class="submenu"><div class="submenu-item">统计报表</div></div></div>
           <div class="menu-section"><div class="menu-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M12 3 7 21M12 3l5 18M5 9h14M5 15h14"/></svg><span>AI医助</span><svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="m8 10 4 4 4-4"/></svg></div></div>
+          <div class="menu-section"><div class="menu-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M4 7h16v12H4z"/><path d="M7 7V5h10v2M8 11h8M8 15h5"/></svg><span>服务管理</span><svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="m18 15-6-6-6 6"/></svg></div><div class="submenu"><div class="submenu-item">服务包管理</div><div class="submenu-item" data-list-view="orders">订单管理</div><div class="submenu-item">交易记录</div></div></div>
           <div class="menu-section"><div class="menu-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M12 8a4 4 0 1 0 0 8 4 4 0 0 0 0-8Z"/><path d="M4 12h2m12 0h2M12 4v2m0 12v2"/></svg><span>系统管理</span><svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="m18 15-6-6-6 6"/></svg></div><div class="submenu"><div class="submenu-item" data-list-view="indicator">指标模板</div></div></div>
         </nav>
         <div class="sidebar-bottom"><div class="bottom-line"></div><div class="notice"><div class="notice-left"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M18 8a6 6 0 1 0-12 0c0 7-3 6-3 9h18c0-3-3-2-3-9"/><path d="M10 21h4"/></svg><span>消息通知</span></div><span class="badge">99+</span></div><div class="user-card"><div class="avatar"></div><strong>平台技术人员</strong><svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="m9 18 6-6-6-6"/></svg></div><div class="collapse"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M4 7h14M4 12h10M4 17h14"/></svg></div></div>
@@ -2829,6 +2897,72 @@
           </div>
           <div class="pager"><span>共 94 条</span><button class="page-btn disabled">‹</button><button class="page-btn active">1</button><button class="page-btn">2</button><button class="page-btn">3</button><button class="page-btn">4</button><button class="page-btn">5</button><span class="ellipsis">...</span><button class="page-btn">10</button><button class="page-btn">›</button><button class="page-select">10 条/页⌄</button><span>跳至</span><span class="jump-input"></span><span>页</span></div>
         </section>
+        <section class="list-panel list-view order-management-panel" id="orderManagementView">
+          <div class="order-shell">
+            <div class="order-filter">
+              <label class="order-field"><span>搜索：</span><input id="orderSearchInput" type="text" placeholder="订单编号 / 服务包 / 购买人 / 就诊人"></label>
+              <div class="order-field"><span>下单时间：</span><button class="order-date-range" type="button"><span>开始日期</span><span>—</span><span>结束日期</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="4" y="5" width="16" height="15" rx="2"/><path d="M8 3v4M16 3v4M4 10h16"/></svg></button></div>
+            </div>
+            <div class="order-summary">
+              <div class="order-summary-left">
+                <span id="orderTotalText">共9个订单</span>
+                <span id="orderPayTotalText">实付款合计:1,994.00元</span>
+              </div>
+              <div class="order-status-tabs" role="tablist" aria-label="订单状态">
+                <button class="order-status-tab active" type="button" data-order-status-tab="all" data-label="全部">全部<span class="order-tab-count">（9）</span></button>
+                <button class="order-status-tab" type="button" data-order-status-tab="待使用" data-label="待使用">待使用<span class="order-tab-count">（2）</span></button>
+                <button class="order-status-tab" type="button" data-order-status-tab="生效中" data-label="生效中">生效中<span class="order-tab-count">（3）</span></button>
+                <button class="order-status-tab" type="button" data-order-status-tab="已完成" data-label="已完成">已完成<span class="order-tab-count">（2）</span></button>
+                <button class="order-status-tab" type="button" data-order-status-tab="退款中" data-label="退款中">退款中<span class="order-tab-count">（1）</span></button>
+                <button class="order-status-tab" type="button" data-order-status-tab="已退款" data-label="已退款">已退款<span class="order-tab-count">（1）</span></button>
+              </div>
+              <button class="order-column-button" type="button" aria-label="字段设置"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M6 4h4v16H6zM14 4h4v16h-4z"/><path d="M4 8h8M12 16h8"/></svg></button>
+            </div>
+            <div class="order-table-wrap">
+              <table class="order-table">
+                <thead>
+                  <tr>
+                    <th style="width: 148px;">订单编号</th>
+                    <th>服务包</th>
+                    <th style="width: 120px;">购买人</th>
+                    <th style="width: 120px;">就诊人</th>
+                    <th style="width: 100px;">服务周期</th>
+                    <th style="width: 190px;">服务期限</th>
+                    <th style="width: 120px;">实付金额</th>
+                    <th style="width: 150px;">下单时间</th>
+                    <th style="width: 100px;">订单状态</th>
+                    <th class="order-action-col">操作</th>
+                  </tr>
+                </thead>
+                <tbody id="orderRows">
+                  <tr data-order-row data-status="待使用" data-pay="188" data-order-search="SO202407030001 糖尿病随访管理服务包 王购买 张患者"><td>SO202407030001</td><td title="糖尿病随访管理服务包">糖尿病随访管理...</td><td>王购买</td><td>张患者</td><td>30天</td><td>绑定后计算</td><td>188.00</td><td>2024/07/03 09:20</td><td><span class="order-status-badge waiting">待使用</span></td><td class="order-action-col"><button class="order-detail-link" type="button" title="查看购买和待绑定信息">订单详情</button></td></tr>
+                  <tr data-order-row data-status="生效中" data-pay="268" data-order-search="SO202407020018 心脑血管健康服务包 李购买 李患者"><td>SO202407020018</td><td title="心脑血管健康服务包">心脑血管健康...</td><td>李购买</td><td>李患者</td><td>90天</td><td>2024/07/02-2024/09/30</td><td>268.00</td><td>2024/07/02 15:34</td><td><span class="order-status-badge active">生效中</span></td><td class="order-action-col"><button class="order-detail-link" type="button" title="查看就诊人、方案、任务和服务周期">服务详情</button></td></tr>
+                  <tr data-order-row data-status="待使用" data-pay="98" data-order-search="SO202407020006 术后康复随访服务包 陈购买 未绑定"><td>SO202407020006</td><td title="术后康复随访服务包">术后康复随访...</td><td>陈购买</td><td>未绑定</td><td>30天</td><td>绑定后计算</td><td>98.00</td><td>2024/07/02 11:05</td><td><span class="order-status-badge waiting">待使用</span></td><td class="order-action-col"><button class="order-detail-link" type="button" title="查看购买和待绑定信息">订单详情</button></td></tr>
+                  <tr data-order-row data-status="已完成" data-pay="560" data-order-search="SO202406280023 孕产全周期管理服务包 赵购买 赵患者"><td>SO202406280023</td><td title="孕产全周期管理服务包">孕产全周期管理...</td><td>赵购买</td><td>赵患者</td><td>180天</td><td>2024/01/01-2024/06/28</td><td>560.00</td><td>2024/01/01 08:30</td><td><span class="order-status-badge done">已完成</span></td><td class="order-action-col"><button class="order-detail-link" type="button" title="查看历史履约记录">查看详情</button></td></tr>
+                  <tr data-order-row data-status="退款中" data-pay="128" data-order-search="SO202406250015 高血压强化管理服务包 孙购买 孙患者"><td>SO202406250015</td><td title="高血压强化管理服务包">高血压强化管理...</td><td>孙购买</td><td>孙患者</td><td>30天</td><td>2024/06/25-2024/07/24</td><td>128.00</td><td>2024/06/25 18:12</td><td><span class="order-status-badge refunding">退款中</span></td><td class="order-action-col"><button class="order-detail-link" type="button" title="查看渠道结果；异常时查询或重试">退款进度</button></td></tr>
+                  <tr data-order-row data-status="已退款" data-pay="88" data-order-search="SO202406220009 用药提醒服务包 周购买 周患者"><td>SO202406220009</td><td title="用药提醒服务包">用药提醒服务包</td><td>周购买</td><td>周患者</td><td>30天</td><td>2024/06/22-2024/07/21</td><td>88.00</td><td>2024/06/22 10:46</td><td><span class="order-status-badge refunded">已退款</span></td><td class="order-action-col"><button class="order-detail-link" type="button" title="查看退款金额和退款流水">退款详情</button></td></tr>
+                  <tr data-order-row data-status="生效中" data-pay="198" data-order-search="SO202406200031 饮食营养干预服务包 钱购买 钱患者"><td>SO202406200031</td><td title="饮食营养干预服务包">饮食营养干预...</td><td>钱购买</td><td>钱患者</td><td>90天</td><td>2024/06/20-2024/09/17</td><td>198.00</td><td>2024/06/20 13:22</td><td><span class="order-status-badge active">生效中</span></td><td class="order-action-col"><button class="order-detail-link" type="button" title="查看就诊人、方案、任务和服务周期">服务详情</button></td></tr>
+                  <tr data-order-row data-status="已完成" data-pay="298" data-order-search="SO202406180027 儿童保健随访服务包 吴购买 吴患者"><td>SO202406180027</td><td title="儿童保健随访服务包">儿童保健随访...</td><td>吴购买</td><td>吴患者</td><td>90天</td><td>2024/03/20-2024/06/18</td><td>298.00</td><td>2024/03/20 16:40</td><td><span class="order-status-badge done">已完成</span></td><td class="order-action-col"><button class="order-detail-link" type="button" title="查看历史履约记录">查看详情</button></td></tr>
+                  <tr data-order-row data-status="生效中" data-pay="168" data-order-search="SO202406150012 慢病复诊随访服务包 郑购买 郑患者"><td>SO202406150012</td><td title="慢病复诊随访服务包">慢病复诊随访...</td><td>郑购买</td><td>郑患者</td><td>60天</td><td>2024/06/15-2024/08/13</td><td>168.00</td><td>2024/06/15 09:15</td><td><span class="order-status-badge active">生效中</span></td><td class="order-action-col"><button class="order-detail-link" type="button" title="查看就诊人、方案、任务和服务周期">服务详情</button></td></tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="order-pager">
+              <button type="button">‹</button><button type="button">1</button><span class="ellipsis">...</span><button class="active" type="button">2</button><button type="button">3</button><button type="button">4</button><button type="button">5</button><span class="ellipsis">...</span><button type="button">50</button><button type="button">›</button><button class="order-page-size" type="button">20 / page <span>⌄</span></button><span>Go to</span><span class="order-page-input"></span>
+            </div>
+          </div>
+        </section>
+        <div class="order-detail-mask" id="orderDetailMask" hidden></div>
+        <aside class="order-detail-drawer" id="orderDetailDrawer" aria-hidden="true">
+          <div class="order-detail-head">
+            <div>
+              <strong id="orderDetailTitle">订单详情</strong>
+              <span id="orderDetailSub">服务订单详情</span>
+            </div>
+            <button class="order-detail-close" type="button" data-close-order-detail aria-label="关闭">×</button>
+          </div>
+          <div class="order-detail-content" id="orderDetailContent"></div>
+        </aside>
         <section class="list-panel list-view" id="indicatorTemplateView">
           <div class="toolbar indicator-toolbar">
             <label class="search"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="11" cy="11" r="7"/><path d="m16.5 16.5 4 4"/></svg><input id="indicatorSearch" placeholder="搜索指标看板名称"></label>
@@ -4061,6 +4195,7 @@
       const isPatients = view === 'patients';
       const isHealthTasks = view === 'healthTasks';
       const isCheckinEvaluation = view === 'checkinEvaluation';
+      const isOrders = view === 'orders';
       document.getElementById('workbenchView')?.classList.toggle('active', isWorkbench);
       document.getElementById('planManagementView')?.classList.toggle('active', isPlans);
       document.getElementById('scaleManagementView')?.classList.toggle('active', isScale);
@@ -4068,10 +4203,12 @@
       document.getElementById('patientListView')?.classList.toggle('active', isPatients);
       document.getElementById('healthTaskView')?.classList.toggle('active', isHealthTasks);
       document.getElementById('checkinEvaluationView')?.classList.toggle('active', isCheckinEvaluation);
+      document.getElementById('orderManagementView')?.classList.toggle('active', isOrders);
       if (document.getElementById('listPageTitle')) document.getElementById('listPageTitle').textContent = isHealthTasks ? '健康任务' : isCheckinEvaluation ? '评价任务' : isPatients ? '全部患者' : isIndicator ? '指标模板' : isScale ? '量表管理' : '方案管理';
-      const listTitleMap = { workbench: '工作台', healthTasks: '健康任务', checkinEvaluation: '评价任务', patients: '全部患者', indicator: '指标模板', scale: '量表管理', plans: '方案管理' };
+      const listTitleMap = { workbench: '工作台', healthTasks: '健康任务', checkinEvaluation: '评价任务', patients: '全部患者', indicator: '指标模板', scale: '量表管理', orders: '订单管理', plans: '方案管理' };
       if (document.getElementById('listPageTitle')) document.getElementById('listPageTitle').textContent = listTitleMap[view] || '方案管理';
       document.querySelector('.list-main')?.classList.toggle('workbench-main', isWorkbench);
+      document.querySelector('.list-main')?.classList.toggle('order-main', isOrders);
       document.querySelectorAll('[data-list-view]').forEach(item => {
         const section = item.closest('.menu-section');
         const childView = section?.querySelector(`.submenu-item[data-list-view="${view}"]`);
@@ -4091,7 +4228,195 @@
         filterHealthTaskRows(activeTab);
       }
       if (isCheckinEvaluation) applyCheckinEvalFilters();
+      if (isOrders) applyOrderFilter();
     }
+
+    function applyOrderFilter() {
+      const input = document.getElementById('orderSearchInput');
+      const rows = Array.from(document.querySelectorAll('[data-order-row]'));
+      const keyword = (input?.value || '').trim().toLowerCase();
+      const activeStatus = document.querySelector('.order-status-tab.active')?.dataset.orderStatusTab || 'all';
+      const totalText = document.getElementById('orderTotalText');
+      const payText = document.getElementById('orderPayTotalText');
+      const statusCounts = { all: 0, 待使用: 0, 生效中: 0, 已完成: 0, 退款中: 0, 已退款: 0 };
+      let visible = 0;
+      let payTotal = 0;
+      rows.forEach(row => {
+        const text = (row.dataset.orderSearch || row.textContent || '').toLowerCase();
+        const matchesKeyword = !keyword || text.includes(keyword);
+        if (matchesKeyword) {
+          statusCounts.all += 1;
+          statusCounts[row.dataset.status] = (statusCounts[row.dataset.status] || 0) + 1;
+        }
+        const matchesStatus = activeStatus === 'all' || row.dataset.status === activeStatus;
+        const hit = matchesKeyword && matchesStatus;
+        row.hidden = !hit;
+        if (hit) {
+          visible += 1;
+          payTotal += Number(row.dataset.pay || 0);
+        }
+      });
+      document.querySelectorAll('[data-order-status-tab]').forEach(tab => {
+        const status = tab.dataset.orderStatusTab || 'all';
+        const label = tab.dataset.label || status;
+        tab.innerHTML = `${label}<span class="order-tab-count">（${statusCounts[status] || 0}）</span>`;
+      });
+      if (totalText) totalText.textContent = `共${visible}个订单`;
+      if (payText) payText.textContent = `实付款合计:${payTotal.toLocaleString('zh-CN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}元`;
+    }
+
+    function orderField(label, value) {
+      return `<div class="order-detail-item"><div class="order-detail-label">${label}</div><div class="order-detail-value">${value}</div></div>`;
+    }
+
+    function orderSection(title, inner) {
+      return `<section class="order-detail-section"><div class="order-detail-section-title">${title}</div>${inner}</section>`;
+    }
+
+    function orderList(items) {
+      return `<ul class="order-detail-list">${items.map(item => `<li>${item}</li>`).join('')}</ul>`;
+    }
+
+    function orderTimeline(items) {
+      return `<div class="order-detail-timeline">${items.map(item => `<div class="order-detail-step">${item}</div>`).join('')}</div>`;
+    }
+
+    function buildOrderDetailContent(data) {
+      const common = orderSection('订单基础信息', `<div class="order-detail-grid">
+        ${orderField('订单编号', data.orderNo)}
+        ${orderField('服务包', data.packageName)}
+        ${orderField('购买人', data.buyer)}
+        ${orderField('就诊人', data.patient)}
+        ${orderField('服务周期', data.period)}
+        ${orderField('实付金额', `${data.pay} 元`)}
+        ${orderField('下单时间', data.orderTime)}
+        ${orderField('当前状态', data.status)}
+      </div>`);
+      const contentMap = {
+        待使用: `${common}
+          ${orderSection('待使用规则', `<div class="order-detail-grid">
+            ${orderField('起算规则', '绑定就诊人后立即生效，服务期限按自然日计算。')}
+            ${orderField('待绑定期限', '支付成功后 7 天内完成绑定，超期进入运营提醒。')}
+            ${orderField('适用限制', '适用 18-75 岁，男女通用；一单一人，不支持多人共享。')}
+            ${orderField('退款规则', '未绑定、未生成患者服务实例前支持待使用全额原路退款。')}
+          </div>`)}
+          ${orderSection('服务权益快照', orderList(['健康评估 1 次，随访 2 次，咨询 3 次。', '绑定后生成对应服务实例；当前不展示健康方案、任务、医护团队和服务起止时间。']))}
+          ${orderSection('支付流水', orderTimeline([`2024/07/03 09:20 支付成功，流水号 PAY${data.orderNo.slice(-8)}，实付 ${data.pay} 元。`, '2024/07/03 09:21 订单进入待绑定状态，等待选择就诊人。']))}
+          ${orderSection('订单操作记录', orderTimeline(['系统创建订单并完成支付确认。', '发送待绑定提醒给购买人。']))}`,
+        生效中: `${common}
+          ${orderSection('服务实例', `<div class="order-detail-grid">
+            ${orderField('就诊人与购买人关系', `${data.patient}，购买人本人或家属绑定。`)}
+            ${orderField('绑定时间', '2024/07/02 16:02')}
+            ${orderField('服务时间', `${data.term}，剩余 58 天。`)}
+            ${orderField('所属团队', '随访管理团队，责任医护：张医生。')}
+          </div>`)}
+          ${orderSection('权益与执行', orderList(['约定随访 6 次，已完成 2 次；咨询 12 次，已使用 3 次。', '健康评估 1 次已完成，阶段性报告待生成。']))}
+          ${orderSection('健康方案与任务', `<div class="order-detail-grid">
+            ${orderField('方案名称', '慢病综合管理方案 V2.1，状态：执行中。')}
+            ${orderField('任务统计', '任务总数 18，进行中 6，已完成 9，未完成 3。')}
+            ${orderField('初始化结果', '方案、任务、提醒计划均初始化成功。')}
+            ${orderField('服务记录', '咨询 3 条，随访 2 条，评估 1 条。')}
+          </div>`)}
+          ${orderSection('服务相关操作记录', orderTimeline(['绑定就诊人并生成服务实例。', '系统下发健康任务和随访计划。', '责任医护完成首次随访。']))}`,
+        已完成: `${common}
+          ${orderSection('完成信息', `<div class="order-detail-grid">
+            ${orderField('服务完成时间', '2024/06/28 18:00')}
+            ${orderField('完成方式', '服务周期到期后自动完成。')}
+            ${orderField('健康数据保留', '健康记录继续保留在患者档案，可用于后续复诊参考。')}
+            ${orderField('限制说明', '本期只允许查看，不允许恢复服务或自动退款。')}
+          </div>`)}
+          ${orderSection('履约汇总', orderList(['约定权益已执行完成：随访 6/6、咨询 10/10、评估 2/2。', '方案任务完成 42 项，未完成 0 项，完成率 100%。']))}
+          ${orderSection('完整服务时间线', orderTimeline(['2024/01/01 支付并绑定就诊人。', '2024/01/02 生成健康方案与任务。', '2024/06/28 服务到期并归档。']))}`,
+        退款中: `${common}
+          ${orderSection('退款进度', `<div class="order-detail-grid">
+            ${orderField('退款单号', `RF${data.orderNo.slice(-10)}`)}
+            ${orderField('申请时间', '2024/06/26 10:12')}
+            ${orderField('退款原因', '购买人申请取消服务。')}
+            ${orderField('退款金额', `${data.pay} 元，原路退回微信支付账户。`)}
+            ${orderField('支付渠道', '微信支付，渠道退款号 WXRF202406260012。')}
+            ${orderField('最近查询时间', '2024/06/26 11:30，已查询 2 次。')}
+            ${orderField('失败原因', '渠道处理中，暂无明确失败原因。')}
+            ${orderField('权益锁定状态', '退款期间权益已锁定，不再生成新任务。')}
+          </div>`)}
+          ${orderSection('退款时间线', orderTimeline(['提交退款申请。', '系统锁定服务权益。', '已向支付渠道发起退款请求。']))}
+          ${orderSection('可执行操作', `<div class="order-detail-actions"><button type="button">查询退款结果</button><button type="button">重新处理</button><button type="button">填写备注</button></div>${orderList(['有权限的人员可查询、重试和补充备注，但不能直接把订单修改为“已退款”。'])}`)}`,
+        已退款: `${common}
+          ${orderSection('退款结果', `<div class="order-detail-grid">
+            ${orderField('退款状态', '退款成功')}
+            ${orderField('退款单号', `RF${data.orderNo.slice(-10)}`)}
+            ${orderField('退款原因', '待使用订单取消购买。')}
+            ${orderField('退款金额', `${data.pay} 元`)}
+            ${orderField('申请时间', '2024/06/22 11:00')}
+            ${orderField('完成时间', '2024/06/22 11:18')}
+            ${orderField('原支付流水', `PAY${data.orderNo.slice(-8)}`)}
+            ${orderField('退款流水', `REFUND${data.orderNo.slice(-8)}`)}
+            ${orderField('退款渠道', '微信支付原路退回')}
+            ${orderField('权益处理', '待使用权益已作废，未生成患者服务实例、方案和任务。')}
+          </div>`)}
+          ${orderSection('完整操作记录', orderTimeline(['支付成功。', '提交退款申请。', '支付渠道返回退款成功。', '系统作废待使用权益并关闭订单。']))}`
+      };
+      return contentMap[data.status] || common;
+    }
+
+    function openOrderDetail(row) {
+      const cells = Array.from(row.children).map(cell => cell.textContent.trim());
+      const data = {
+        orderNo: cells[0],
+        packageName: row.children[1]?.getAttribute('title') || cells[1],
+        buyer: cells[2],
+        patient: cells[3],
+        period: cells[4],
+        term: cells[5],
+        pay: cells[6],
+        orderTime: cells[7],
+        status: row.dataset.status || cells[8]
+      };
+      const drawer = document.getElementById('orderDetailDrawer');
+      const mask = document.getElementById('orderDetailMask');
+      const title = document.getElementById('orderDetailTitle');
+      const sub = document.getElementById('orderDetailSub');
+      const content = document.getElementById('orderDetailContent');
+      const action = row.querySelector('.order-detail-link')?.textContent.trim() || '订单详情';
+      if (title) title.textContent = action;
+      if (sub) sub.textContent = `${data.orderNo} · ${data.status}`;
+      if (content) content.innerHTML = buildOrderDetailContent(data);
+      mask.hidden = false;
+      drawer.classList.add('active');
+      drawer.setAttribute('aria-hidden', 'false');
+    }
+
+    function closeOrderDetail() {
+      const drawer = document.getElementById('orderDetailDrawer');
+      const mask = document.getElementById('orderDetailMask');
+      drawer?.classList.remove('active');
+      drawer?.setAttribute('aria-hidden', 'true');
+      if (mask) mask.hidden = true;
+    }
+
+    document.addEventListener('input', event => {
+      if (event.target?.id === 'orderSearchInput') applyOrderFilter();
+    });
+
+    document.addEventListener('click', event => {
+      const tab = event.target.closest('[data-order-status-tab]');
+      if (!tab) return;
+      document.querySelectorAll('[data-order-status-tab]').forEach(item => item.classList.toggle('active', item === tab));
+      applyOrderFilter();
+    });
+
+    document.addEventListener('click', event => {
+      const detailButton = event.target.closest('.order-detail-link');
+      if (detailButton) {
+        const row = detailButton.closest('[data-order-row]');
+        if (row) openOrderDetail(row);
+        return;
+      }
+      if (event.target.closest('[data-close-order-detail]') || event.target?.id === 'orderDetailMask') closeOrderDetail();
+    });
+
+    document.addEventListener('keydown', event => {
+      if (event.key === 'Escape') closeOrderDetail();
+    });
 
     document.addEventListener('click', event => {
       const filterToggle = event.target.closest('[data-health-filter-toggle]');
@@ -11605,5 +11930,742 @@
   setInterval(applyUploadGrid, 800);
 })();
 </script>
+<style>
+  .archive-annotation-fab,
+  .archive-logic-point,
+  .archive-logic-drawer,
+  .archive-logic-click-layer,
+  .archive-logic-point-modal {
+    display: none !important;
+  }
+
+  body.manual-remark-placing,
+  body.manual-remark-placing * {
+    cursor: crosshair !important;
+  }
+
+  .manual-remark-toolbar {
+    position: fixed;
+    right: 18px;
+    bottom: 18px;
+    z-index: 2147483000;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px;
+    border: 1px solid #dbe4f0;
+    border-radius: 8px;
+    background: rgba(255, 255, 255, .98);
+    box-shadow: 0 12px 32px rgba(21, 38, 72, .18);
+  }
+
+  .manual-remark-toolbar button {
+    height: 36px;
+    padding: 0 14px;
+    border: 1px solid #d8e2f0;
+    border-radius: 6px;
+    color: #274264;
+    background: #fff;
+    font-size: 14px;
+    font-weight: 700;
+  }
+
+  .manual-remark-toolbar .primary {
+    color: #fff;
+    border-color: #3154ff;
+    background: #3154ff;
+    box-shadow: 0 6px 16px rgba(49, 84, 255, .22);
+  }
+
+  .manual-remark-toolbar .placing {
+    color: #fff;
+    border-color: #ff8a00;
+    background: #ff8a00;
+    box-shadow: 0 6px 16px rgba(255, 138, 0, .24);
+  }
+
+  .manual-remark-count {
+    min-width: 24px;
+    height: 24px;
+    padding: 0 7px;
+    display: grid;
+    place-items: center;
+    border-radius: 999px;
+    color: #3154ff;
+    background: #eef3ff;
+    font-size: 12px;
+    font-weight: 800;
+  }
+
+  .manual-remark-point {
+    position: absolute;
+    z-index: 2147482990;
+    width: 22px;
+    height: 22px;
+    display: grid;
+    place-items: center;
+    border: 2px solid #fff;
+    border-radius: 50%;
+    color: #fff;
+    background: #3154ff;
+    font-size: 12px;
+    font-weight: 800;
+    line-height: 1;
+    box-shadow: 0 8px 20px rgba(49, 84, 255, .34);
+    cursor: move;
+    user-select: none;
+  }
+
+  .manual-remark-point:hover,
+  .manual-remark-point.active {
+    background: #ff8a00;
+    box-shadow: 0 10px 22px rgba(255, 138, 0, .34);
+  }
+
+  .manual-remark-editor {
+    position: fixed;
+    right: 18px;
+    top: 92px;
+    z-index: 2147483001;
+    width: 360px;
+    max-width: calc(100vw - 36px);
+    border: 1px solid #dbe4f0;
+    border-radius: 10px;
+    background: #fff;
+    box-shadow: 0 18px 48px rgba(21, 38, 72, .22);
+    overflow: hidden;
+  }
+
+  .manual-remark-editor[hidden] {
+    display: none;
+  }
+
+  .manual-remark-editor-head,
+  .manual-remark-editor-foot {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    padding: 14px 16px;
+    border-bottom: 1px solid #edf1f7;
+  }
+
+  .manual-remark-editor-head strong {
+    color: #1f2f4a;
+    font-size: 16px;
+    font-weight: 800;
+  }
+
+  .manual-remark-editor-close {
+    width: 28px;
+    height: 28px;
+    border: 0;
+    border-radius: 6px;
+    color: #64748b;
+    background: #f3f6fb;
+    font-size: 18px;
+  }
+
+  .manual-remark-editor-body {
+    padding: 16px;
+    display: grid;
+    gap: 12px;
+  }
+
+  .manual-remark-field {
+    display: grid;
+    gap: 6px;
+    color: #52617a;
+    font-size: 13px;
+    font-weight: 700;
+  }
+
+  .manual-remark-field input,
+  .manual-remark-field textarea {
+    width: 100%;
+    border: 1px solid #dce6f2;
+    border-radius: 6px;
+    color: #22314c;
+    background: #fff;
+    font-size: 14px;
+    outline: none;
+  }
+
+  .manual-remark-field input {
+    height: 36px;
+    padding: 0 10px;
+  }
+
+  .manual-remark-field textarea {
+    min-height: 120px;
+    padding: 9px 10px;
+    resize: vertical;
+    line-height: 1.6;
+  }
+
+  .manual-remark-field input:focus,
+  .manual-remark-field textarea:focus {
+    border-color: #3154ff;
+    box-shadow: 0 0 0 2px rgba(49, 84, 255, .10);
+  }
+
+  .manual-remark-editor-foot {
+    justify-content: flex-end;
+    border-top: 1px solid #edf1f7;
+    border-bottom: 0;
+  }
+
+  .manual-remark-editor-foot button {
+    height: 34px;
+    padding: 0 16px;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 700;
+  }
+
+  .manual-remark-editor-foot .danger {
+    margin-right: auto;
+    color: #ff4d5f;
+    border: 0;
+    background: #fff1f3;
+  }
+
+  .manual-remark-editor-foot .ghost {
+    border: 0;
+    color: #334158;
+    background: #f5f7fb;
+  }
+
+  .manual-remark-editor-foot .primary {
+    border: 0;
+    color: #fff;
+    background: #3154ff;
+  }
+</style>
+<script>
+(function () {
+  const PROJECT_ID = 'frontend-architect-health-checkin';
+  const STORAGE_KEY = 'manualUiRemarksV1';
+  const VISIBLE_KEY = 'manualUiRemarksVisibleV1';
+  const API_URL = window.UI_REMARK_API_URL || window.ARCHIVE_ANNOTATION_API_URL || '';
+  let store = { remarks: [] };
+  let remarksVisible = localStorage.getItem(VISIBLE_KEY) !== '0';
+  let addMode = false;
+  let editingId = null;
+  let draft = null;
+  let dragState = null;
+  let renderTimer = null;
+  let isManualRemarkRendering = false;
+
+  function isVisible(node) {
+    if (!node || !node.isConnected) return false;
+    const style = window.getComputedStyle(node);
+    if (style.display === 'none' || style.visibility === 'hidden' || Number(style.opacity) === 0) return false;
+    const rect = node.getBoundingClientRect();
+    return rect.width > 0 && rect.height > 0 && rect.bottom > 0 && rect.right > 0 && rect.top < window.innerHeight && rect.left < window.innerWidth;
+  }
+
+  function readStore() {
+    try {
+      const parsed = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{"remarks":[]}');
+      store = { remarks: Array.isArray(parsed.remarks) ? parsed.remarks : [] };
+    } catch (error) {
+      store = { remarks: [] };
+    }
+  }
+
+  function writeStore(action, remark) {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(store));
+    if (!API_URL) return;
+    fetch(API_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        projectId: PROJECT_ID,
+        action: action || 'save',
+        remark: remark || null,
+        remarks: store.remarks,
+        updatedAt: new Date().toISOString()
+      }),
+      keepalive: true
+    }).catch(function () {});
+  }
+
+  function loadRemoteStore() {
+    if (!API_URL) return Promise.resolve(false);
+    return fetch(API_URL + (API_URL.includes('?') ? '&' : '?') + 'projectId=' + encodeURIComponent(PROJECT_ID), {
+      method: 'GET',
+      headers: { 'Accept': 'application/json' }
+    }).then(function (response) {
+      if (!response.ok) return false;
+      return response.json();
+    }).then(function (data) {
+      const remoteRemarks = Array.isArray(data) ? data : data?.remarks;
+      if (!Array.isArray(remoteRemarks)) return false;
+      store.remarks = remoteRemarks;
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(store));
+      return true;
+    }).catch(function () {
+      return false;
+    });
+  }
+
+  function ensureToolbar() {
+    let toolbar = document.getElementById('manualRemarkToolbar');
+    if (toolbar) {
+      document.body.appendChild(toolbar);
+      return toolbar;
+    }
+    toolbar = document.createElement('div');
+    toolbar.id = 'manualRemarkToolbar';
+    toolbar.className = 'manual-remark-toolbar';
+    toolbar.innerHTML = [
+      '<button class="primary" type="button" data-manual-remark-add>添加备注</button>',
+      '<button type="button" data-manual-remark-toggle>隐藏备注</button>',
+      '<span class="manual-remark-count" data-manual-remark-count>0</span>'
+    ].join('');
+    document.body.appendChild(toolbar);
+    toolbar.querySelector('[data-manual-remark-add]').addEventListener('click', function () {
+      setAddMode(!addMode);
+    });
+    toolbar.querySelector('[data-manual-remark-toggle]').addEventListener('click', function () {
+      remarksVisible = !remarksVisible;
+      localStorage.setItem(VISIBLE_KEY, remarksVisible ? '1' : '0');
+      renderRemarks();
+      syncToolbar();
+    });
+    return toolbar;
+  }
+
+  function syncToolbar() {
+    const toolbar = ensureToolbar();
+    const addBtn = toolbar.querySelector('[data-manual-remark-add]');
+    const toggleBtn = toolbar.querySelector('[data-manual-remark-toggle]');
+    const count = toolbar.querySelector('[data-manual-remark-count]');
+    addBtn.textContent = addMode ? '正在添加' : '添加备注';
+    addBtn.className = addMode ? 'placing' : 'primary';
+    toggleBtn.textContent = remarksVisible ? '隐藏备注' : '显示备注';
+    count.textContent = String(countCurrentRemarks());
+    document.body.classList.toggle('manual-remark-placing', addMode);
+  }
+
+  function setAddMode(value) {
+    addMode = !!value;
+    syncToolbar();
+  }
+
+  function cleanText(text) {
+    return String(text || '').replace(/\s+/g, ' ').trim();
+  }
+
+  function activePageId() {
+    const active = document.querySelector('.page.active');
+    if (active?.id) return active.id;
+    if (isVisible(document.getElementById('patientArchivePage'))) return 'patientArchivePage';
+    if (isVisible(document.getElementById('patientPage'))) return 'patientPage';
+    return location.pathname || 'defaultPage';
+  }
+
+  function activeArchiveState() {
+    const archive = document.getElementById('patientArchivePage');
+    if (!isVisible(archive)) return '';
+    const tab = cleanText(archive.querySelector('.archive-tabs .active, .archive-filter.active, .archive-history-tab.active, [data-archive-filter].active')?.textContent);
+    const selected = cleanText(archive.querySelector('.archive-tree-file.active, .archive-tree-leaf.active, .archive-history-node.active, .archive-history-list .active, .archive-doc-tree .active')?.textContent);
+    const title = cleanText(archive.querySelector('.archive-document-title, .archive-history-viewer h1, .archive-history-viewer h2, .archive-doc-title, .medical-document-title')?.textContent);
+    return [tab, selected || title].filter(Boolean).join('|');
+  }
+
+  function scopeSignature(scope) {
+    if (!scope) return 'document';
+    if (scope.matches('#archiveUploadModal .archive-upload-dialog')) return 'modal:upload';
+    if (scope.matches('.archive-parse-drawer')) return 'drawer:parse';
+    if (scope.matches('.archive-history-list')) return 'archive:list';
+    if (scope.matches('.archive-history-viewer')) return 'archive:viewer';
+    if (scope.matches('.archive-history-card')) return 'archive:card';
+    if (scope.matches('.archive-panel')) return 'archive:panel';
+    if (scope.matches('.archive-main')) return 'archive:main';
+    if (scope.matches('.patient-content')) return 'patient:content';
+    if (scope.matches('.patient-page')) return 'patient:page';
+    if (scope.matches('.page.active')) return 'page:' + (scope.id || 'active');
+    return scope.id ? ('id:' + scope.id) : ('class:' + Array.from(scope.classList || []).slice(0, 3).join('.'));
+  }
+
+  function pageKeyForScope(scope) {
+    return [PROJECT_ID, activePageId(), activeArchiveState(), scopeSignature(scope)].filter(Boolean).join('::');
+  }
+
+  function ensureScope(scope) {
+    if (!scope || scope === document.documentElement) scope = document.body;
+    const style = window.getComputedStyle(scope);
+    if (style.position === 'static') {
+      scope.dataset.manualRemarkPositionWasStatic = '1';
+      scope.style.position = 'relative';
+    }
+    scope.dataset.manualRemarkScope = pageKeyForScope(scope);
+    return scope;
+  }
+
+  function visibleContainers() {
+    const upload = document.querySelector('#archiveUploadModal.open .archive-upload-dialog, #archiveUploadModal[style*="display: block"] .archive-upload-dialog');
+    if (isVisible(upload)) return [ensureScope(upload)];
+    const parse = document.querySelector('.archive-parse-drawer.open');
+    if (isVisible(parse)) return [ensureScope(parse)];
+    const selectors = [
+      '.modal:not([hidden])',
+      '.drawer:not([hidden])',
+      '[role="dialog"]:not([hidden])',
+      '#patientArchivePage .archive-history-list',
+      '#patientArchivePage .archive-history-viewer',
+      '#patientArchivePage .archive-history-card',
+      '#patientArchivePage .archive-panel',
+      '#patientArchivePage .archive-main',
+      '#patientArchivePage',
+      '#patientPage .patient-content',
+      '#patientPage .patient-page',
+      '#patientPage',
+      '.page.active'
+    ];
+    const nodes = [];
+    selectors.forEach(function (selector) {
+      document.querySelectorAll(selector).forEach(function (node) {
+        if (isVisible(node) && !nodes.includes(node)) nodes.push(ensureScope(node));
+      });
+    });
+    if (!nodes.length) nodes.push(ensureScope(document.body));
+    return nodes;
+  }
+
+  function containerAtPoint(event) {
+    const modal = document.querySelector('#archiveUploadModal.open .archive-upload-dialog, #archiveUploadModal[style*="display: block"] .archive-upload-dialog');
+    if (isVisible(modal) && modal.contains(event.target)) return ensureScope(modal);
+    const drawer = document.querySelector('.archive-parse-drawer.open');
+    if (isVisible(drawer) && drawer.contains(event.target)) return ensureScope(drawer);
+    const selectors = [
+      '.modal:not([hidden])',
+      '.drawer:not([hidden])',
+      '[role="dialog"]:not([hidden])',
+      '.archive-history-viewer',
+      '.archive-history-list',
+      '.archive-history-card',
+      '.archive-panel',
+      '.archive-main',
+      '#patientArchivePage',
+      '.patient-content',
+      '.patient-page',
+      '#patientPage',
+      '.page.active',
+      'main',
+      '.content'
+    ];
+    const candidates = selectors.flatMap(function (selector) {
+      return Array.from(document.querySelectorAll(selector));
+    }).filter(function (node, index, array) {
+      if (!isVisible(node) || array.indexOf(node) !== index) return false;
+      const rect = node.getBoundingClientRect();
+      return event.clientX >= rect.left && event.clientX <= rect.right && event.clientY >= rect.top && event.clientY <= rect.bottom;
+    }).sort(function (a, b) {
+      const ar = a.getBoundingClientRect();
+      const br = b.getBoundingClientRect();
+      return (ar.width * ar.height) - (br.width * br.height);
+    });
+    return ensureScope(candidates[0] || document.body);
+  }
+
+  function pointPosition(scope, event) {
+    const rect = scope.getBoundingClientRect();
+    const maxX = Math.max(scope.scrollWidth || rect.width, rect.width) - 22;
+    const maxY = Math.max(scope.scrollHeight || rect.height, rect.height) - 22;
+    const x = Math.min(Math.max(0, event.clientX - rect.left + (scope.scrollLeft || 0) - 11), Math.max(0, maxX));
+    const y = Math.min(Math.max(0, event.clientY - rect.top + (scope.scrollTop || 0) - 11), Math.max(0, maxY));
+    return { x: Math.round(x), y: Math.round(y), scopeWidth: Math.round(scope.scrollWidth || rect.width), scopeHeight: Math.round(scope.scrollHeight || rect.height) };
+  }
+
+  function remarksForScope(scope) {
+    const key = pageKeyForScope(scope);
+    return store.remarks.filter(function (remark) {
+      return remark.status !== 'deleted' && remark.pageKey === key;
+    });
+  }
+
+  function countCurrentRemarks() {
+    const keys = visibleContainers().map(pageKeyForScope);
+    return store.remarks.filter(function (remark) {
+      return remark.status !== 'deleted' && keys.includes(remark.pageKey);
+    }).length;
+  }
+
+  function nextNumber(pageKey) {
+    const nums = store.remarks
+      .filter(function (remark) { return remark.status !== 'deleted' && remark.pageKey === pageKey; })
+      .map(function (remark) { return Number(remark.number); })
+      .filter(Number.isFinite);
+    return String(nums.length ? Math.max.apply(null, nums) + 1 : 1);
+  }
+
+  function renderRemarks() {
+    isManualRemarkRendering = true;
+    document.querySelectorAll('.manual-remark-point').forEach(function (node) { node.remove(); });
+    if (!remarksVisible) {
+      closeEditor();
+      syncToolbar();
+      setTimeout(function () { isManualRemarkRendering = false; }, 0);
+      return;
+    }
+    visibleContainers().forEach(function (scope) {
+      remarksForScope(scope).forEach(function (remark) {
+        const point = document.createElement('button');
+        point.type = 'button';
+        point.className = 'manual-remark-point';
+        point.dataset.remarkId = remark.id;
+        point.textContent = remark.number;
+        point.title = remark.title || ('备注 ' + remark.number);
+        point.style.left = Math.round(remark.x || 0) + 'px';
+        point.style.top = Math.round(remark.y || 0) + 'px';
+        point.addEventListener('click', function (event) {
+          event.preventDefault();
+          event.stopPropagation();
+          if (point.dataset.suppressClick === '1') {
+            point.dataset.suppressClick = '';
+            return;
+          }
+          openEditor(remark, scope);
+        });
+        point.addEventListener('mousedown', function (event) {
+          if (event.button !== 0) return;
+          event.preventDefault();
+          event.stopPropagation();
+          dragState = {
+            id: remark.id,
+            scope: scope,
+            startX: event.clientX,
+            startY: event.clientY,
+            baseX: Number(remark.x) || 0,
+            baseY: Number(remark.y) || 0,
+            point: point
+          };
+          point.classList.add('active');
+        });
+        scope.appendChild(point);
+      });
+    });
+    syncToolbar();
+    setTimeout(function () { isManualRemarkRendering = false; }, 0);
+  }
+
+  function closeEditor() {
+    const editor = document.getElementById('manualRemarkEditor');
+    if (editor) editor.hidden = true;
+    editingId = null;
+    draft = null;
+    document.querySelectorAll('.manual-remark-point.active').forEach(function (point) { point.classList.remove('active'); });
+  }
+
+  function ensureEditor() {
+    let editor = document.getElementById('manualRemarkEditor');
+    if (editor) return editor;
+    editor = document.createElement('div');
+    editor.id = 'manualRemarkEditor';
+    editor.className = 'manual-remark-editor';
+    editor.hidden = true;
+    editor.innerHTML = [
+      '<div class="manual-remark-editor-head"><strong data-manual-remark-editor-title>备注</strong><button class="manual-remark-editor-close" type="button" data-manual-remark-close>×</button></div>',
+      '<div class="manual-remark-editor-body">',
+      '<label class="manual-remark-field">备注编号<input data-manual-remark-number type="number" min="1" step="1"></label>',
+      '<label class="manual-remark-field">备注标题<input data-manual-remark-title type="text" placeholder="请输入备注标题"></label>',
+      '<label class="manual-remark-field">备注内容<textarea data-manual-remark-content placeholder="请输入这个位置的备注说明"></textarea></label>',
+      '</div>',
+      '<div class="manual-remark-editor-foot"><button class="danger" type="button" data-manual-remark-delete>删除</button><button class="ghost" type="button" data-manual-remark-close>关闭</button><button class="primary" type="button" data-manual-remark-save>保存</button></div>'
+    ].join('');
+    document.body.appendChild(editor);
+    editor.querySelectorAll('[data-manual-remark-close]').forEach(function (btn) {
+      btn.addEventListener('click', closeEditor);
+    });
+    editor.querySelector('[data-manual-remark-save]').addEventListener('click', saveEditor);
+    editor.querySelector('[data-manual-remark-delete]').addEventListener('click', deleteEditingRemark);
+    return editor;
+  }
+
+  function openEditor(remark, scope, position) {
+    const editor = ensureEditor();
+    editingId = remark?.id || null;
+    draft = remark ? null : { scope: scope, pageKey: pageKeyForScope(scope), position: position };
+    editor.hidden = false;
+    editor.querySelector('[data-manual-remark-editor-title]').textContent = remark ? ('备注点 ' + remark.number) : '新增备注点';
+    editor.querySelector('[data-manual-remark-number]').value = remark?.number || nextNumber(draft.pageKey);
+    editor.querySelector('[data-manual-remark-title]').value = remark?.title || '';
+    editor.querySelector('[data-manual-remark-content]').value = remark?.content || '';
+    editor.querySelector('[data-manual-remark-delete]').style.display = remark ? '' : 'none';
+    setTimeout(function () {
+      editor.querySelector('[data-manual-remark-title]')?.focus();
+    }, 0);
+  }
+
+  function saveEditor() {
+    const editor = ensureEditor();
+    const number = String(Number(editor.querySelector('[data-manual-remark-number]').value || '0'));
+    const title = cleanText(editor.querySelector('[data-manual-remark-title]').value);
+    const content = editor.querySelector('[data-manual-remark-content]').value.trim();
+    const now = new Date().toISOString();
+    if (!number || number === '0') {
+      alert('请输入有效的备注编号。');
+      return;
+    }
+    const existing = editingId ? store.remarks.find(function (remark) { return remark.id === editingId; }) : null;
+    const pageKey = existing?.pageKey || draft?.pageKey;
+    if (!pageKey) return;
+    const duplicated = store.remarks.some(function (remark) {
+      return remark.status !== 'deleted' && remark.pageKey === pageKey && remark.id !== editingId && String(remark.number) === number;
+    });
+    if (duplicated) {
+      alert('当前页面已存在相同备注编号，请修改编号后再保存。');
+      return;
+    }
+    if (existing) {
+      existing.number = number;
+      existing.title = title || ('备注 ' + number);
+      existing.content = content;
+      existing.updatedAt = now;
+      existing.updatedBy = '当前用户';
+      writeStore('update', existing);
+    } else {
+      const remark = {
+        projectId: PROJECT_ID,
+        pageKey: pageKey,
+        id: 'remark-' + Date.now() + '-' + Math.random().toString(16).slice(2),
+        number: number,
+        title: title || ('备注 ' + number),
+        content: content,
+        x: draft.position.x,
+        y: draft.position.y,
+        scopeWidth: draft.position.scopeWidth,
+        scopeHeight: draft.position.scopeHeight,
+        createdBy: '当前用户',
+        createdAt: now,
+        updatedBy: '当前用户',
+        updatedAt: now,
+        status: 'active'
+      };
+      store.remarks.push(remark);
+      writeStore('create', remark);
+    }
+    closeEditor();
+    renderRemarks();
+  }
+
+  function deleteEditingRemark() {
+    if (!editingId) return;
+    const remark = store.remarks.find(function (item) { return item.id === editingId; });
+    if (remark) {
+      remark.status = 'deleted';
+      remark.updatedAt = new Date().toISOString();
+      remark.updatedBy = '当前用户';
+      writeStore('delete', remark);
+    }
+    closeEditor();
+    renderRemarks();
+  }
+
+  function isControlTarget(target) {
+    return !!target.closest('.manual-remark-toolbar, .manual-remark-editor, .manual-remark-point');
+  }
+
+  function handleAddClick(event) {
+    if (!addMode) return;
+    if (event.button !== 0 || isControlTarget(event.target)) return;
+    event.preventDefault();
+    event.stopPropagation();
+    event.stopImmediatePropagation();
+    const scope = containerAtPoint(event);
+    const position = pointPosition(scope, event);
+    setAddMode(false);
+    openEditor(null, scope, position);
+  }
+
+  function onMouseMove(event) {
+    if (!dragState) return;
+    event.preventDefault();
+    const rect = dragState.scope.getBoundingClientRect();
+    const maxX = Math.max(dragState.scope.scrollWidth || rect.width, rect.width) - 22;
+    const maxY = Math.max(dragState.scope.scrollHeight || rect.height, rect.height) - 22;
+    const nextX = Math.min(Math.max(0, dragState.baseX + event.clientX - dragState.startX), Math.max(0, maxX));
+    const nextY = Math.min(Math.max(0, dragState.baseY + event.clientY - dragState.startY), Math.max(0, maxY));
+    dragState.point.style.left = Math.round(nextX) + 'px';
+    dragState.point.style.top = Math.round(nextY) + 'px';
+  }
+
+  function onMouseUp() {
+    if (!dragState) return;
+    const remark = store.remarks.find(function (item) { return item.id === dragState.id; });
+    if (remark) {
+      remark.x = parseInt(dragState.point.style.left, 10) || 0;
+      remark.y = parseInt(dragState.point.style.top, 10) || 0;
+      remark.scopeWidth = Math.round(dragState.scope.scrollWidth || dragState.scope.getBoundingClientRect().width);
+      remark.scopeHeight = Math.round(dragState.scope.scrollHeight || dragState.scope.getBoundingClientRect().height);
+      remark.updatedAt = new Date().toISOString();
+      remark.updatedBy = '当前用户';
+      writeStore('move', remark);
+    }
+    dragState.point.dataset.suppressClick = '1';
+    dragState.point.classList.remove('active');
+    dragState = null;
+  }
+
+  function scheduleRender() {
+    if (isManualRemarkRendering) return;
+    clearTimeout(renderTimer);
+    renderTimer = setTimeout(renderRemarks, 80);
+  }
+
+  function init() {
+    readStore();
+    ensureToolbar();
+    syncToolbar();
+    loadRemoteStore().then(renderRemarks);
+    renderRemarks();
+    document.addEventListener('pointerdown', handleAddClick, true);
+    document.addEventListener('click', handleAddClick, true);
+    document.addEventListener('mousemove', onMouseMove, true);
+    document.addEventListener('mouseup', onMouseUp, true);
+    document.addEventListener('scroll', function () {
+      if (dragState) onMouseUp();
+    }, true);
+    window.addEventListener('resize', scheduleRender);
+    document.addEventListener('click', function (event) {
+      if (!event.target.closest('.manual-remark-toolbar, .manual-remark-editor, .manual-remark-point')) {
+        scheduleRender();
+      }
+    }, true);
+    new MutationObserver(scheduleRender).observe(document.body, { childList: true, subtree: true, attributes: true, attributeFilter: ['class', 'style', 'hidden'] });
+    setInterval(function () {
+      ensureToolbar();
+      syncToolbar();
+      const shouldRender = remarksVisible && !document.querySelector('.manual-remark-point');
+      if (shouldRender) renderRemarks();
+    }, 1200);
+    window.manualUiRemarks = {
+      getAll: function () { return JSON.parse(JSON.stringify(store.remarks)); },
+      importAll: function (remarks) {
+        store.remarks = Array.isArray(remarks) ? remarks : [];
+        writeStore('import');
+        renderRemarks();
+      },
+      show: function () { remarksVisible = true; localStorage.setItem(VISIBLE_KEY, '1'); renderRemarks(); syncToolbar(); },
+      hide: function () { remarksVisible = false; localStorage.setItem(VISIBLE_KEY, '0'); renderRemarks(); syncToolbar(); }
+    };
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+  } else {
+    init();
+  }
+})();
+</script>
+  <script src="./transaction-record-page-v3.js"></script>
+  <script src="./transaction-record-page-v8.js"></script>
+  <script src="transaction-record-page-v14.js"></script>
+  <script src="transaction-record-page-v16.js"></script>
+  <script src="transaction-record-page-v17.js"></script>
+  <script src="transaction-record-page-v18.js"></script>
 </body>
 </html>
