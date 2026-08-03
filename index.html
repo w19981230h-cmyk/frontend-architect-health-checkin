@@ -10167,17 +10167,25 @@
         modal.classList.remove('open');
         modal.setAttribute('aria-hidden', 'true');
       }
+      function isArchiveLogicPlacingActive(card) {
+        if (card?.classList.contains('logic-mode') && card.classList.contains('logic-placing')) return true;
+        return Array.from(document.querySelectorAll('[data-add-archive-logic]')).some(btn => {
+          const text = (btn.textContent || '').trim();
+          return btn.classList.contains('is-placing') || text.includes('正在标注');
+        });
+      }
       function handleArchiveLogicPlacementClick(event) {
         const activeCard = getArchiveLogicCard();
         const scopedCard = event.target.closest?.('.archive-logic-scope.logic-mode.logic-placing');
         const card = scopedCard || (
-          activeCard?.classList.contains('logic-mode')
-          && activeCard.classList.contains('logic-placing')
+          activeCard
           && activeCard.contains(event.target)
+          && isArchiveLogicPlacingActive(activeCard)
             ? activeCard
             : null
         );
         if (!card || isArchiveLogicPlacementBlocked(event.target)) return false;
+        card.classList.add('logic-mode', 'logic-placing');
         const rect = card.getBoundingClientRect();
         openArchiveLogicPointModal(card, {
           left: event.clientX - rect.left - 11,
