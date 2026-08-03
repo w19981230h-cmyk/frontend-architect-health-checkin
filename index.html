@@ -966,6 +966,7 @@
     .archive-history-card.logic-editing .archive-logic-body [contenteditable="true"] { border-radius: 4px; outline: 1px dashed #9bb3ff; background: #f7f9ff; }
     .archive-history-card.logic-editing .archive-logic-section { box-shadow: inset 3px 0 0 #3154ff; }
     .archive-logic-edit-tip { margin: 0 0 12px; padding: 9px 10px; border: 1px solid #dbe6ff; border-radius: 6px; color: #52617a; background: #eef4ff; font-size: 12px; line-height: 1.6; }
+    .archive-logic-empty { margin: 0; padding: 18px 14px; border: 1px dashed #c9d8ff; border-radius: 8px; color: #6d7d96; background: #f8fbff; font-size: 13px; line-height: 1.6; }
     .archive-upload-btn, .archive-parse-btn { height: 32px; padding: 0 14px; display: inline-flex; align-items: center; gap: 7px; border: 1px solid #e0e6ef; border-radius: 4px !important; color: #334158; background: #fff; font-size: 13px; font-weight: 700; }
     .archive-parse-btn { position: relative; }
     .archive-parse-badge { min-width: 18px; height: 18px; padding: 0 5px; display: none; align-items: center; justify-content: center; border-radius: 999px; color: #fff; background: #ff4d5f; font-size: 11px; font-weight: 800; line-height: 18px; box-shadow: 0 3px 8px rgba(255,77,95,.28); }
@@ -9378,8 +9379,77 @@
       };
 
       const ARCHIVE_LOGIC_STORAGE_KEY = 'archiveHistoryLogicConfigV2';
+      const ARCHIVE_LOGIC_BACKUP_KEY = 'archiveHistoryLogicConfigBackupV2';
+      const ARCHIVE_LOGIC_SCOPED_STORAGE_KEY = 'archiveHistoryLogicScopedConfigV1';
+      const ARCHIVE_LOGIC_SCOPED_BACKUP_KEY = 'archiveHistoryLogicScopedBackupV1';
       function getArchiveLogicCard() {
         return document.querySelector('#patientArchivePage .archive-history-card');
+      }
+      function readArchiveLogicStore(key = ARCHIVE_LOGIC_SCOPED_STORAGE_KEY) {
+        try {
+          const value = JSON.parse(localStorage.getItem(key) || '{}');
+          return value && typeof value === 'object' ? value : {};
+        } catch (error) {
+          return {};
+        }
+      }
+      function writeArchiveLogicStore(key, store) {
+        localStorage.setItem(key, JSON.stringify(store || {}));
+      }
+      function getArchiveLogicContextKey(card = getArchiveLogicCard()) {
+        const activeFile = document.querySelector('#patientArchivePage [data-history-file].active')?.dataset.historyFile;
+        const modal = card?.closest?.('.archive-upload-modal.open, .archive-parse-drawer.open');
+        if (modal?.id) return `modal:${modal.id}`;
+        return `archive-file:${activeFile || 'default'}`;
+      }
+      function getArchiveLogicScopedConfig(card = getArchiveLogicCard()) {
+        const contextKey = getArchiveLogicContextKey(card);
+        const store = readArchiveLogicStore();
+        if (store[contextKey]) return { exists: true, config: store[contextKey] };
+        try {
+          const legacy = JSON.parse(localStorage.getItem(ARCHIVE_LOGIC_STORAGE_KEY) || '{}');
+          if (legacy?.bodyHtml || Object.keys(legacy?.points || {}).length) {
+            store[contextKey] = legacy;
+            writeArchiveLogicStore(ARCHIVE_LOGIC_SCOPED_STORAGE_KEY, store);
+            localStorage.removeItem(ARCHIVE_LOGIC_STORAGE_KEY);
+            return { exists: true, config: legacy };
+          }
+        } catch (error) {}
+        return { exists: false, config: null };
+      }
+      function setArchiveLogicScopedConfig(card, config) {
+        const store = readArchiveLogicStore();
+        store[getArchiveLogicContextKey(card)] = config || { bodyHtml: '', points: {} };
+        writeArchiveLogicStore(ARCHIVE_LOGIC_SCOPED_STORAGE_KEY, store);
+      }
+      function removeArchiveLogicScopedConfig(card) {
+        const store = readArchiveLogicStore();
+        delete store[getArchiveLogicContextKey(card)];
+        writeArchiveLogicStore(ARCHIVE_LOGIC_SCOPED_STORAGE_KEY, store);
+      }
+      function setArchiveLogicEmptyState(card) {
+        if (!card) return;
+        card.querySelectorAll('.archive-logic-point').forEach(point => point.remove());
+        const body = card.querySelector('.archive-logic-body');
+        if (body) body.innerHTML = '<p class="archive-logic-empty">当前页面还没有说明点，点击“逻辑说明”后可通过“新增点”开始标注；保存后只会在当前病历节点下展示。</p>';
+        normalizeArchiveLogicSections(card);
+      }
+      function rebuildArchiveLogicForCurrentContext(keepMode = true) {
+        const oldCard = getArchiveLogicCard();
+        const wasMode = keepMode && oldCard?.classList.contains('logic-mode');
+        oldCard?.querySelector('.archive-logic-drawer')?.remove();
+        oldCard?.querySelectorAll('.archive-logic-point').forEach(point => point.remove());
+        ensureArchiveLogicMode();
+        const newCard = getArchiveLogicCard();
+        if (wasMode && newCard) {
+          newCard.classList.add('logic-mode');
+          newCard.querySelector('[data-toggle-archive-logic]')?.classList.add('active');
+          if (!newCard.querySelector('.archive-logic-point')) {
+            const drawer = newCard.querySelector('.archive-logic-drawer');
+            drawer?.classList.add('open');
+            drawer?.setAttribute('aria-hidden', 'false');
+          }
+        }
       }
       function setArchiveLogicEditing(card, editing) {
         if (!card) return;
@@ -9445,7 +9515,7 @@
       function refreshArchiveLogicPointPositions(card = getArchiveLogicCard()) {
         if (!card) return;
         try {
-          const saved = JSON.parse(localStorage.getItem(ARCHIVE_LOGIC_STORAGE_KEY) || '{}');
+          const saved = getArchiveLogicScopedConfig(card).config || {};
           Object.entries(saved.points || {}).forEach(([key, pos]) => {
             const point = ensureArchiveLogicPoint(card, key);
             applyArchiveLogicPointPosition(card, point, pos);
@@ -9457,7 +9527,13 @@
       function applyArchiveLogicConfig(card) {
         if (!card) return;
         try {
-          const saved = JSON.parse(localStorage.getItem(ARCHIVE_LOGIC_STORAGE_KEY) || '{}');
+          const scoped = getArchiveLogicScopedConfig(card);
+          if (!scoped.exists) {
+            setArchiveLogicEmptyState(card);
+            setArchiveLogicEditing(card, false);
+            return;
+          }
+          const saved = scoped.config || {};
           if (saved.bodyHtml) {
             const body = card.querySelector('.archive-logic-body');
             if (body) body.innerHTML = saved.bodyHtml;
@@ -9474,8 +9550,8 @@
         normalizeArchiveLogicSections(card);
         setArchiveLogicEditing(card, false);
       }
-      function saveArchiveLogicConfig(card) {
-        if (!card) return;
+      function collectArchiveLogicConfig(card) {
+        if (!card) return { bodyHtml: '', points: {} };
         const body = card.querySelector('.archive-logic-body');
         const cleanBody = body?.cloneNode(true);
         cleanBody?.querySelector('.archive-logic-edit-tip')?.remove();
@@ -9486,39 +9562,39 @@
           if (!key) return;
           points[key] = getArchiveLogicPointPosition(card, point);
         });
-        localStorage.setItem(ARCHIVE_LOGIC_STORAGE_KEY, JSON.stringify({ bodyHtml: cleanBody?.innerHTML || '', points }));
+        return { bodyHtml: cleanBody?.innerHTML || '', points };
+      }
+      function backupArchiveLogicConfig(card) {
+        if (!card) return;
+        const current = collectArchiveLogicConfig(card);
+        if (current.bodyHtml || Object.keys(current.points || {}).length) {
+          const store = readArchiveLogicStore(ARCHIVE_LOGIC_SCOPED_BACKUP_KEY);
+          store[getArchiveLogicContextKey(card)] = { ...current, backupAt: Date.now() };
+          writeArchiveLogicStore(ARCHIVE_LOGIC_SCOPED_BACKUP_KEY, store);
+          localStorage.setItem(ARCHIVE_LOGIC_BACKUP_KEY, JSON.stringify({ ...current, backupAt: Date.now() }));
+        }
+      }
+      function saveArchiveLogicConfig(card) {
+        if (!card) return;
+        backupArchiveLogicConfig(card);
+        setArchiveLogicScopedConfig(card, collectArchiveLogicConfig(card));
         setArchiveLogicEditing(card, false);
         if (typeof showToast === 'function') showToast('逻辑说明已保存', 'top');
       }
       function storeArchiveLogicConfig(card) {
         if (!card) return;
-        const body = card.querySelector('.archive-logic-body');
-        const cleanBody = body?.cloneNode(true);
-        cleanBody?.querySelector('.archive-logic-edit-tip')?.remove();
-        cleanBody?.querySelectorAll('[contenteditable]').forEach(node => node.removeAttribute('contenteditable'));
-        const points = {};
-        card.querySelectorAll('.archive-logic-point').forEach(point => {
-          const key = getArchiveLogicPointKey(point);
-          if (!key) return;
-          points[key] = getArchiveLogicPointPosition(card, point);
-        });
-        localStorage.setItem(ARCHIVE_LOGIC_STORAGE_KEY, JSON.stringify({ bodyHtml: cleanBody?.innerHTML || '', points }));
+        setArchiveLogicScopedConfig(card, collectArchiveLogicConfig(card));
       }
       function persistArchiveLogicPointPositions(card) {
         if (!card) return;
-        let saved = {};
-        try {
-          saved = JSON.parse(localStorage.getItem(ARCHIVE_LOGIC_STORAGE_KEY) || '{}');
-        } catch (error) {
-          saved = {};
-        }
+        const saved = getArchiveLogicScopedConfig(card).config || {};
         const points = {};
         card.querySelectorAll('.archive-logic-point').forEach(point => {
           const key = getArchiveLogicPointKey(point);
           if (!key) return;
           points[key] = getArchiveLogicPointPosition(card, point);
         });
-        localStorage.setItem(ARCHIVE_LOGIC_STORAGE_KEY, JSON.stringify({ ...saved, points }));
+        setArchiveLogicScopedConfig(card, { ...saved, points });
       }
       function escapeArchiveLogicHtml(value) {
         return String(value || '').replace(/[&<>"']/g, char => ({
@@ -9555,6 +9631,7 @@
 
         const body = card.querySelector('.archive-logic-body');
         if (body) {
+          body.querySelector('.archive-logic-empty')?.remove();
           body.insertAdjacentHTML('beforeend', `
             <section class="archive-logic-section" data-logic-section="${next}">
               <h3><span>${next}</span>${title}</h3>
@@ -9694,8 +9771,9 @@
           showArchiveLogicSection(card, nextKey);
         } else {
           const drawer = card.querySelector('.archive-logic-drawer');
-          drawer?.classList.remove('open');
-          drawer?.setAttribute('aria-hidden', 'true');
+          setArchiveLogicEmptyState(card);
+          drawer?.classList.add('open');
+          drawer?.setAttribute('aria-hidden', 'false');
         }
         setArchiveLogicEditing(card, true);
         storeArchiveLogicConfig(card);
@@ -9729,6 +9807,8 @@
         setArchiveLogicEditing(card, card.classList.contains('logic-editing'));
       }
       function resetArchiveLogicConfig(card) {
+        backupArchiveLogicConfig(card);
+        removeArchiveLogicScopedConfig(card);
         localStorage.removeItem(ARCHIVE_LOGIC_STORAGE_KEY);
         if (card) {
           card.querySelector('.archive-logic-drawer')?.remove();
@@ -9737,10 +9817,34 @@
           const newCard = getArchiveLogicCard();
           newCard?.classList.add('logic-mode');
           newCard?.querySelector('[data-toggle-archive-logic]')?.classList.add('active');
-          newCard?.querySelector('.archive-logic-drawer')?.classList.remove('open');
-          newCard?.querySelector('.archive-logic-drawer')?.setAttribute('aria-hidden', 'true');
+          newCard?.querySelector('.archive-logic-drawer')?.classList.add('open');
+          newCard?.querySelector('.archive-logic-drawer')?.setAttribute('aria-hidden', 'false');
         }
         if (typeof showToast === 'function') showToast('已恢复默认逻辑说明', 'top');
+      }
+      function restoreArchiveLogicConfig(card) {
+        if (!card) return;
+        let backup = null;
+        try {
+          const store = readArchiveLogicStore(ARCHIVE_LOGIC_SCOPED_BACKUP_KEY);
+          backup = store[getArchiveLogicContextKey(card)] || JSON.parse(localStorage.getItem(ARCHIVE_LOGIC_BACKUP_KEY) || 'null');
+        } catch (error) {
+          backup = null;
+        }
+        if (!backup?.bodyHtml) {
+          if (typeof showToast === 'function') showToast('暂无可恢复的数据', 'top');
+          return;
+        }
+        card.querySelector('.archive-logic-drawer')?.remove();
+        card.querySelectorAll('.archive-logic-point').forEach(point => point.remove());
+        setArchiveLogicScopedConfig(card, { bodyHtml: backup.bodyHtml, points: backup.points || {} });
+        ensureArchiveLogicMode();
+        const newCard = getArchiveLogicCard();
+        newCard?.classList.add('logic-mode');
+        newCard?.querySelector('[data-toggle-archive-logic]')?.classList.add('active');
+        const firstKey = Object.keys(backup.points || {})[0] || newCard?.querySelector('.archive-logic-section')?.dataset.logicSection || '';
+        if (firstKey) showArchiveLogicSection(newCard, firstKey.replace(/^p/, ''));
+        if (typeof showToast === 'function') showToast('已恢复上次说明数据', 'top');
       }
 
       function ensureArchiveLogicMode() {
@@ -9821,6 +9925,11 @@
                 </section>
               </div>
             </aside>`);
+        }
+        const tools = card.querySelector('.archive-logic-tools');
+        if (tools && !tools.querySelector('[data-restore-archive-logic]')) {
+          const resetBtn = tools.querySelector('[data-reset-archive-logic]');
+          resetBtn?.insertAdjacentHTML('beforebegin', '<button class="archive-logic-tool" type="button" data-restore-archive-logic>恢复数据</button>');
         }
         applyArchiveLogicConfig(card);
       }
@@ -10156,6 +10265,14 @@
           event.stopImmediatePropagation();
           return;
         }
+        const archiveLogicRestore = event.target.closest('[data-restore-archive-logic]');
+        if (archiveLogicRestore) {
+          const card = archiveLogicRestore.closest('.archive-history-card');
+          restoreArchiveLogicConfig(card);
+          event.preventDefault();
+          event.stopImmediatePropagation();
+          return;
+        }
         const archiveLogicToggle = event.target.closest('[data-toggle-archive-logic]');
         if (archiveLogicToggle) {
           const card = archiveLogicToggle.closest('.archive-history-card');
@@ -10165,6 +10282,10 @@
           const drawer = card?.querySelector('.archive-logic-drawer');
           drawer?.classList.remove('open');
           drawer?.setAttribute('aria-hidden', 'true');
+          if (open && card && !card.querySelector('.archive-logic-point')) {
+            drawer?.classList.add('open');
+            drawer?.setAttribute('aria-hidden', 'false');
+          }
           if (!open) setArchiveLogicEditing(card, false);
           event.preventDefault();
           event.stopImmediatePropagation();
@@ -10315,6 +10436,7 @@
             item.classList.toggle('active', item === historyFile);
           });
           renderArchiveHistoryDetail(historyFile.dataset.historyFile);
+          rebuildArchiveLogicForCurrentContext(true);
           event.preventDefault();
           event.stopImmediatePropagation();
           return;
