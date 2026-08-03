@@ -10080,8 +10080,8 @@
           '.archive-history-actions',
           '.archive-patient-card',
           '.archive-history-filter',
-          'button',
-          'a',
+          '[data-toggle-archive-logic]',
+          '[data-add-archive-logic]',
           'input',
           'textarea',
           'select',
@@ -10103,7 +10103,7 @@
         event.stopImmediatePropagation();
         return true;
       }
-      function openArchiveLogicPointModal(card) {
+      function openArchiveLogicPointModal(card, pendingPosition = null) {
         if (!card) return;
         let modal = document.getElementById('archiveLogicPointModal');
         const numbers = Array.from(card.querySelectorAll('.archive-logic-point'))
@@ -10132,6 +10132,7 @@
           modal = document.getElementById('archiveLogicPointModal');
         }
         modal.__archiveLogicCard = card;
+        modal.__archiveLogicPendingPosition = pendingPosition;
         modal.querySelector('[data-archive-logic-point-number]').value = next;
         modal.querySelector('[data-archive-logic-point-title]').value = '';
         modal.querySelector('[data-archive-logic-point-lines]').value = '';
@@ -10154,9 +10155,37 @@
           if (typeof showToast === 'function') showToast('请填写说明标题。', 'top');
           return;
         }
-        addArchiveLogicSection(card, { number, title, lines });
+        const pendingPosition = modal.__archiveLogicPendingPosition || {};
+        addArchiveLogicSection(card, {
+          number,
+          title,
+          lines,
+          left: pendingPosition.left,
+          top: pendingPosition.top
+        });
+        modal.__archiveLogicPendingPosition = null;
         modal.classList.remove('open');
         modal.setAttribute('aria-hidden', 'true');
+      }
+      function handleArchiveLogicPlacementClick(event) {
+        const activeCard = getArchiveLogicCard();
+        const scopedCard = event.target.closest?.('.archive-logic-scope.logic-mode.logic-placing');
+        const card = scopedCard || (
+          activeCard?.classList.contains('logic-mode')
+          && activeCard.classList.contains('logic-placing')
+          && activeCard.contains(event.target)
+            ? activeCard
+            : null
+        );
+        if (!card || isArchiveLogicPlacementBlocked(event.target)) return false;
+        const rect = card.getBoundingClientRect();
+        openArchiveLogicPointModal(card, {
+          left: event.clientX - rect.left - 11,
+          top: event.clientY - rect.top - 11
+        });
+        event.preventDefault();
+        event.stopImmediatePropagation();
+        return true;
       }
       function addArchiveLogicLine(card) {
         if (!card) return;
