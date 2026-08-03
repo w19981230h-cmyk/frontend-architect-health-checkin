@@ -944,6 +944,13 @@
     .archive-logic-tool { width: auto !important; min-width: 34px; height: 26px !important; padding: 0 8px !important; display: inline-flex !important; align-items: center; justify-content: center; border: 1px solid #d8e2f0; border-radius: 4px; color: #3154ff; background: #fff; font-size: 12px !important; font-weight: 800; line-height: 1; white-space: nowrap; }
     .archive-logic-tool.primary { color: #fff; border-color: #3154ff; background: #3154ff; }
     .archive-logic-tool.danger { color: #ff4d5f; border-color: #ffd5dc; background: #fff7f9; }
+    .archive-logic-tool.is-placing { color: #fff; border-color: #ff8a00; background: #ff8a00; box-shadow: 0 6px 14px rgba(255,138,0,.22); }
+    .archive-logic-scope.logic-mode.logic-placing { cursor: crosshair; }
+    .archive-logic-scope.logic-mode.logic-placing::after { content: "点击页面任意位置添加批注点"; position: absolute; z-index: 13; left: 50%; top: 12px; transform: translateX(-50%); padding: 7px 12px; border-radius: 999px; color: #fff; background: rgba(255,138,0,.92); font-size: 12px; font-weight: 700; box-shadow: 0 8px 20px rgba(255,138,0,.22); pointer-events: none; }
+    .archive-logic-scope.logic-mode.logic-placing .archive-history-list,
+    .archive-logic-scope.logic-mode.logic-placing .archive-history-viewer { outline: 1px dashed rgba(49,84,255,.28); outline-offset: -6px; }
+    .archive-logic-scope.logic-mode.logic-placing .archive-logic-drawer,
+    .archive-logic-scope.logic-mode.logic-placing .archive-logic-point { cursor: default; }
     .archive-logic-point-modal { position: fixed; inset: 0; z-index: 80; display: none; align-items: center; justify-content: center; background: rgba(21,31,52,.28); }
     .archive-logic-point-modal.open { display: flex; }
     .archive-logic-point-dialog { width: 420px; border-radius: 10px; overflow: hidden; background: #fff; box-shadow: 0 24px 72px rgba(21,38,72,.22); }
@@ -968,6 +975,7 @@
     .archive-logic-scope.logic-editing .archive-logic-section { box-shadow: inset 3px 0 0 #3154ff; }
     .archive-logic-edit-tip { margin: 0 0 12px; padding: 9px 10px; border: 1px solid #dbe6ff; border-radius: 6px; color: #52617a; background: #eef4ff; font-size: 12px; line-height: 1.6; }
     .archive-logic-empty { margin: 0; padding: 18px 14px; border: 1px dashed #c9d8ff; border-radius: 8px; color: #6d7d96; background: #f8fbff; font-size: 13px; line-height: 1.6; }
+    .archive-logic-rules { white-space: pre-line; }
     .archive-upload-btn, .archive-parse-btn { height: 32px; padding: 0 14px; display: inline-flex; align-items: center; gap: 7px; border: 1px solid #e0e6ef; border-radius: 4px !important; color: #334158; background: #fff; font-size: 13px; font-weight: 700; }
     .archive-parse-btn { position: relative; }
     .archive-parse-badge { min-width: 18px; height: 18px; padding: 0 5px; display: none; align-items: center; justify-content: center; border-radius: 999px; color: #fff; background: #ff4d5f; font-size: 11px; font-weight: 800; line-height: 18px; box-shadow: 0 3px 8px rgba(255,77,95,.28); }
@@ -984,6 +992,7 @@
     .archive-upload-head-actions { display: flex; align-items: center; gap: 10px; }
     .archive-upload-logic-recover { height: 30px; padding: 0 10px; border: 1px solid #d8e2f0; border-radius: 4px; color: #3154ff; background: #f7f9ff; font-size: 13px; font-weight: 700; }
     .archive-upload-logic-recover:hover { border-color: #3154ff; background: #eef3ff; }
+    .archive-upload-logic-recover, [data-restore-archive-logic] { display: none !important; }
     .archive-upload-close { width: 32px; height: 32px; display: grid; place-items: center; border-radius: 50%; color: #263752; background: #f4f6fa; font-size: 22px; line-height: 1; }
     .archive-upload-body { position: relative; padding: 24px 28px; }
     .archive-upload-tip { position: absolute; left: 28px; bottom: -50px; z-index: 1; margin: 0; color: #9aa5b5; font-size: 13px; }
@@ -3357,7 +3366,7 @@
   </div>
   <div class="archive-upload-modal" id="archiveUploadModal" aria-hidden="true">
     <div class="archive-upload-dialog" role="dialog" aria-modal="true" aria-labelledby="archiveUploadTitle">
-      <header class="archive-upload-head"><h2 id="archiveUploadTitle">上传病历资料</h2><div class="archive-upload-head-actions"><button class="archive-upload-logic-recover" type="button" data-recover-archive-logic>恢复界面说明</button><button class="archive-upload-close" data-close-archive-upload aria-label="关闭">×</button></div></header>
+      <header class="archive-upload-head"><h2 id="archiveUploadTitle">上传病历资料</h2><div class="archive-upload-head-actions"><button class="archive-upload-close" data-close-archive-upload aria-label="关闭">×</button></div></header>
       <section class="archive-upload-body">
         <input class="archive-upload-file-input" id="archiveUploadInput" type="file" accept=".pdf,image/png,image/jpeg" multiple>
         <label class="archive-upload-merge" for="archiveUploadMergeTop">
@@ -9386,6 +9395,129 @@
       const ARCHIVE_LOGIC_BACKUP_KEY = 'archiveHistoryLogicConfigBackupV2';
       const ARCHIVE_LOGIC_SCOPED_STORAGE_KEY = 'archiveHistoryLogicScopedConfigV1';
       const ARCHIVE_LOGIC_SCOPED_BACKUP_KEY = 'archiveHistoryLogicScopedBackupV1';
+      const ARCHIVE_LOGIC_EXPORT_KEYS = [
+        ARCHIVE_LOGIC_SCOPED_STORAGE_KEY,
+        ARCHIVE_LOGIC_SCOPED_BACKUP_KEY,
+        ARCHIVE_LOGIC_STORAGE_KEY,
+        ARCHIVE_LOGIC_BACKUP_KEY
+      ];
+      function createArchiveLogicCodeConfig(sections, points) {
+        const bodyHtml = sections.map(section => `
+          <section class="archive-logic-section" data-logic-section="${section.number}">
+            <h3><span>${section.number}</span>${section.title}</h3>
+            <p class="archive-logic-rules">${section.rules}</p>
+          </section>`).join('');
+        return { bodyHtml, points };
+      }
+      const archiveLogicDefaultPageSections = [
+        {
+          number: 1,
+          title: '目录与筛选',
+          rules: '左侧目录按资料类型分为全部、就诊记录、处方记录、报告单。切换筛选只影响目录列表，不改变患者档案左侧功能菜单。来自住院、门诊、急诊、体检的资料为院内或机构同步数据，不展示上传方式标签。非上述来源的资料按“时间 + 名称 + 上传方式”展示，例如患者上传、医护上传。'
+        },
+        {
+          number: 2,
+          title: '住院目录结构',
+          rules: '住院病历支持一级、二级目录混合展示。病案首页、出院记录、护理记录、检查记录、检验记录是二级分类，二级下面展示一份份末级病历；部分资料也可以直接作为一级末级记录展示。点击箭头只控制当前节点展开或折叠。'
+        },
+        {
+          number: 3,
+          title: '右侧详情切换',
+          rules: '点击目录末级后，右侧只替换病历详情内容，患者档案外层页面和左侧功能菜单保持不变。不同末级展示不同模板：住院病案首页、门急诊病历、出院记录、检验报告按各自样式还原。'
+        },
+        {
+          number: 4,
+          title: '权限与操作',
+          rules: '院内同步资料只支持查看，不展示顶部补充信息区，也不展示患者上传、医护上传标签。患者上传资料不允许修改删除；医护上传资料支持查看、编辑、删除和报告解析。'
+        },
+        {
+          number: 5,
+          title: '上传与解析入口',
+          rules: '页面右上角保留两个操作：解析报告、上传资料。上传资料按钮为蓝底按钮，点击后打开上传病历资料弹窗；解析报告打开右侧报告解析抽屉，并使用动态蒙层弱化底层页面。'
+        },
+        {
+          number: 6,
+          title: '归档与查看',
+          rules: '解析完成或补充完成后，资料按类型归档到对应目录。已完成资料只展示名称、时间和查看入口；点击查看后关闭抽屉，并在右侧病历详情区域展示对应报告。'
+        },
+        {
+          number: 7,
+          title: '界面批注',
+          rules: '逻辑说明支持手动新增批注点，也支持按系统生成基础说明。批注点支持拖动，保存后点位固定在当前页面或弹窗上下文中；在弹窗里新增的批注只在该弹窗打开时显示，切换病历节点后只显示该节点自己的批注。'
+        }
+      ];
+      const ARCHIVE_LOGIC_CODE_STORE = {
+        'archive-file:inpatientHome': createArchiveLogicCodeConfig(archiveLogicDefaultPageSections, {
+          p1: { left: '42px', top: '104px' },
+          p2: { left: '178px', top: '218px' },
+          p3: { left: '660px', top: '140px' },
+          p4: { left: '1110px', top: '68px' },
+          p5: { left: '1040px', top: '28px' },
+          p6: { left: '760px', top: '690px' },
+          p7: { left: '210px', top: '82px' }
+        }),
+        'archive-file:outpatientRecord': createArchiveLogicCodeConfig([
+          { number: 1, title: '门诊病历展示', rules: '选择门诊病历记录时，右侧展示门（急）诊病历模板，保留姓名、性别、年龄、门诊号、就诊科室、就诊时间以及主诉、现病史、过敏史、诊断、处理、医嘱等字段。' },
+          { number: 2, title: '同步资料权限', rules: '门诊同步资料属于院内来源，只支持查看，不展示上传方式标签，也不展示顶部资料补充区。' }
+        ], {
+          p1: { left: '104px', top: '138px' },
+          p2: { left: '820px', top: '64px' }
+        }),
+        'archive-file:dischargeSummary': createArchiveLogicCodeConfig([
+          { number: 1, title: '出院记录展示', rules: '选择出院小结时，右侧展示出院记录模板，重点展示入院情况、入院诊断、治疗经过、出院诊断、出院情况、出院医嘱和医生签名日期。' },
+          { number: 2, title: '查看规则', rules: '出院记录来自住院同步数据，只作为病历档案查看，不支持修改、删除或重新上传。' }
+        ], {
+          p1: { left: '118px', top: '150px' },
+          p2: { left: '800px', top: '64px' }
+        }),
+        'archive-file:bloodRoutine': createArchiveLogicCodeConfig([
+          { number: 1, title: '检验报告展示', rules: '选择血常规检查检验报告时，右侧展示检验报告模板，包含样本类型、采样时间、送检时间、临床诊断、检验明细表、检验时间、报告时间、检验医师和采样医生。' },
+          { number: 2, title: '异常标识', rules: '检验明细中异常结果通过红色上下箭头标识，方便研发明确哪些字段需要支持异常状态展示。' }
+        ], {
+          p1: { left: '120px', top: '150px' },
+          p2: { left: '560px', top: '340px' }
+        }),
+        'archive-file:patientUploadDiet': createArchiveLogicCodeConfig([
+          { number: 1, title: '患者上传资料', rules: '患者自己上传的资料需要在详情区显示“内容由患者自己上传，不允许修改删除。”这行备注；此类资料不允许编辑和删除。' },
+          { number: 2, title: '上传资料展示', rules: '右侧展示病历基本信息、上传资料缩略图和 AI 智能分析。上传方式展示在目录末级右侧，详情区域不再额外重复。' },
+          { number: 3, title: 'AI智能分析', rules: '报告解读信息统一改为“AI智能分析”，右上角展示“内容由AI生成，请仔细辨别”。分析内容分为异常、智能分析、智能建议。' }
+        ], {
+          p1: { left: '82px', top: '190px' },
+          p2: { left: '96px', top: '430px' },
+          p3: { left: '96px', top: '610px' }
+        }),
+        'archive-file:patientUploadImage': createArchiveLogicCodeConfig([
+          { number: 1, title: '院外资料', rules: '没有来自住院、门诊、急诊、体检分类的病历报告，目录样式为时间 + 名称 + 上传方式，例如患者上传或医护上传。' },
+          { number: 2, title: '图片资料', rules: '图片资料在上传资料区展示缩略图，点击末级后右侧展示对应病历信息和 AI 智能分析，不伪造成院内同步报告。' }
+        ], {
+          p1: { left: '86px', top: '176px' },
+          p2: { left: '112px', top: '430px' }
+        }),
+        'modal:archiveUploadModal:archive-file:inpatientHome': createArchiveLogicCodeConfig([
+          { number: 1, title: '合并解读', rules: '复选框用于说明本次上传的多个文件是否属于同一份报告。选中后，AI 按同一份报告合并解析；未选中时，每个文件独立解析。' },
+          { number: 2, title: '上传文件', rules: '点击加号打开本地文件选择，也支持拖拽上传。最多上传 20 个文件，支持 PDF、PNG、JPG 格式；达到 20 个后加号隐藏。' },
+          { number: 3, title: '删除图片', rules: '已上传的缩略图右上角展示删除入口，用户可在确定前删除误传文件。' },
+          { number: 4, title: '确认反馈', rules: '点击确定后提示“资料上传成功，AI正在进行解析，请稍后。”，并关闭当前弹窗。' }
+        ], {
+          p1: { left: '184px', top: '134px' },
+          p2: { left: '94px', top: '218px' },
+          p3: { left: '198px', top: '206px' },
+          p4: { left: '640px', top: '472px' }
+        }),
+        'modal:archiveParseDrawer:archive-file:inpatientHome': createArchiveLogicCodeConfig([
+          { number: 1, title: '状态筛选', rules: '报告解析抽屉支持全部、待补充、已完成、已失败四类筛选；切换时只更新抽屉列表，不影响当前病历详情。' },
+          { number: 2, title: '解析中', rules: '解析中状态展示进度和说明文案，表示 AI 正在识别报告名称、报告时间、就诊人、资料类型和就诊医院。' },
+          { number: 3, title: '待补充', rules: '待补充状态需要填写必填信息后才能保存并归档。必填字段包括报告名称、报告时间、归属患者、资料类型；就诊医院非必填。' },
+          { number: 4, title: '保存归档', rules: '保存并归档后资料进入已完成状态，并按资料类型归档到就诊记录、处方记录或报告单目录。' },
+          { number: 5, title: '失败重试', rules: '已失败状态展示失败原因，并支持重新解读。' }
+        ], {
+          p1: { left: '34px', top: '58px' },
+          p2: { left: '62px', top: '150px' },
+          p3: { left: '62px', top: '360px' },
+          p4: { left: '330px', top: '540px' },
+          p5: { left: '64px', top: '760px' }
+        })
+      };
       function prepareArchiveLogicScope(scope) {
         if (!scope) return null;
         scope.classList.add('archive-logic-scope');
@@ -9412,15 +9544,138 @@
       function writeArchiveLogicStore(key, store) {
         localStorage.setItem(key, JSON.stringify(store || {}));
       }
+      function backupArchiveLogicStoresBeforeImport() {
+        try {
+          const current = readArchiveLogicStore(ARCHIVE_LOGIC_SCOPED_STORAGE_KEY);
+          const backup = readArchiveLogicStore(ARCHIVE_LOGIC_SCOPED_BACKUP_KEY);
+          Object.entries(current || {}).forEach(([contextKey, config]) => {
+            if (!archiveLogicConfigHasContent(config)) return;
+            if (!archiveLogicConfigHasContent(backup[contextKey])) {
+              backup[contextKey] = { ...config, backupAt: Date.now() };
+            }
+          });
+          writeArchiveLogicStore(ARCHIVE_LOGIC_SCOPED_BACKUP_KEY, backup);
+        } catch (error) {}
+      }
+      function getArchiveLogicExportPayload() {
+        const currentCard = getArchiveLogicCard();
+        if (currentCard) storeArchiveLogicConfig(currentCard);
+        const data = {};
+        ARCHIVE_LOGIC_EXPORT_KEYS.forEach(key => {
+          try {
+            data[key] = JSON.parse(localStorage.getItem(key) || '{}');
+          } catch (error) {
+            data[key] = {};
+          }
+        });
+        return {
+          version: 1,
+          exportedAt: new Date().toISOString(),
+          origin: location.origin,
+          pathname: location.pathname,
+          data
+        };
+      }
+      function mergeArchiveLogicImportedData(payload) {
+        const incomingData = payload?.data && typeof payload.data === 'object' ? payload.data : payload;
+        if (!incomingData || typeof incomingData !== 'object') return false;
+        backupArchiveLogicStoresBeforeImport();
+        let imported = false;
+        [ARCHIVE_LOGIC_SCOPED_STORAGE_KEY, ARCHIVE_LOGIC_SCOPED_BACKUP_KEY].forEach(key => {
+          const incomingStore = incomingData[key];
+          if (!incomingStore || typeof incomingStore !== 'object') return;
+          const currentStore = readArchiveLogicStore(key);
+          Object.entries(incomingStore).forEach(([contextKey, config]) => {
+            const normalized = normalizeArchiveLogicCandidate(config);
+            if (!normalized) return;
+            currentStore[contextKey] = { ...normalized, importedAt: Date.now() };
+            imported = true;
+          });
+          writeArchiveLogicStore(key, currentStore);
+        });
+        [ARCHIVE_LOGIC_STORAGE_KEY, ARCHIVE_LOGIC_BACKUP_KEY].forEach(key => {
+          const normalized = normalizeArchiveLogicCandidate(incomingData[key]);
+          if (!normalized) return;
+          localStorage.setItem(key, JSON.stringify({ ...normalized, importedAt: Date.now() }));
+          imported = true;
+        });
+        return imported;
+      }
+      function exportArchiveLogicData() {
+        const payload = getArchiveLogicExportPayload();
+        const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json;charset=utf-8' });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        const date = new Date().toISOString().slice(0, 10);
+        link.href = url;
+        link.download = `界面标注数据-${date}.json`;
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
+        URL.revokeObjectURL(url);
+        if (typeof showToast === 'function') showToast('界面标注数据已导出', 'top');
+      }
+      function importArchiveLogicFile(file) {
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = () => {
+          try {
+            const imported = mergeArchiveLogicImportedData(JSON.parse(String(reader.result || '{}')));
+            if (!imported) {
+              if (typeof showToast === 'function') showToast('未识别到可用的界面标注数据', 'top');
+              return;
+            }
+            rebuildArchiveLogicForCurrentContext(false);
+            showArchiveLogicIfCurrentScopeHasData();
+            if (typeof showToast === 'function') showToast('界面标注数据已导入，当前页面已刷新显示', 'top');
+          } catch (error) {
+            if (typeof showToast === 'function') showToast('导入失败，请选择正确的标注数据文件', 'top');
+          }
+        };
+        reader.readAsText(file, 'utf-8');
+      }
+      function openArchiveLogicImportFile() {
+        const input = document.createElement('input');
+        input.type = 'file';
+        input.accept = 'application/json,.json';
+        input.addEventListener('change', () => importArchiveLogicFile(input.files?.[0]), { once: true });
+        input.click();
+      }
       function archiveLogicConfigHasContent(config) {
         return !!(config && (config.bodyHtml || Object.keys(config.points || {}).length));
       }
+      function cleanArchiveLogicSystemTemplate(config) {
+        return {
+          bodyHtml: config?.bodyHtml || '',
+          points: { ...(config?.points || {}) }
+        };
+        const normalized = {
+          bodyHtml: config?.bodyHtml || '',
+          points: { ...(config?.points || {}) }
+        };
+        const html = String(normalized.bodyHtml || '');
+        const looksLikeSystemTemplate = /病历来源|目录与筛选|右侧详情展示|权限与操作|报告解析抽屉|归档与查看|鐥呭巻鏉ユ簮|鐩綍|鍙充晶|鏉冮檺|鎶ュ憡瑙ｆ瀽|褰掓。/.test(html);
+        if (!looksLikeSystemTemplate) return normalized;
+        try {
+          const wrap = document.createElement('div');
+          wrap.innerHTML = html;
+          const systemTitles = ['病历来源', '目录与筛选', '右侧详情展示', '权限与操作', '报告解析抽屉', '归档与查看'];
+          const mojibakeTitles = ['鐥呭巻鏉ユ簮', '鐩綍', '鍙充晶', '鏉冮檺', '鎶ュ憡瑙ｆ瀽', '褰掓。'];
+          wrap.querySelectorAll('.archive-logic-section').forEach(section => {
+            if (section.dataset.userGenerated === 'true') return;
+            const title = section.querySelector('h3')?.textContent || '';
+            const isSystem = systemTitles.some(item => title.includes(item)) || mojibakeTitles.some(item => title.includes(item));
+            if (isSystem) section.remove();
+          });
+          normalized.bodyHtml = wrap.innerHTML;
+          ['p1', 'p2', 'p3', 'p4', 'p5', 'p6'].forEach(key => delete normalized.points[key]);
+        } catch (error) {}
+        return normalized;
+      }
       function normalizeArchiveLogicCandidate(config) {
         if (!archiveLogicConfigHasContent(config)) return null;
-        return {
-          bodyHtml: config.bodyHtml || '',
-          points: config.points || {}
-        };
+        const cleaned = cleanArchiveLogicSystemTemplate(config);
+        return archiveLogicConfigHasContent(cleaned) ? cleaned : null;
       }
       function countArchiveLogicSections(config) {
         const matched = String(config?.bodyHtml || '').match(/archive-logic-section/g);
@@ -9491,7 +9746,7 @@
       function getArchiveLogicContextKey(card = getArchiveLogicCard()) {
         const activeFile = document.querySelector('#patientArchivePage [data-history-file].active')?.dataset.historyFile;
         const modal = card?.closest?.('.archive-upload-modal.open, .archive-parse-drawer.open');
-        if (modal?.id) return `modal:${modal.id}`;
+        if (modal?.id) return `modal:${modal.id}:archive-file:${activeFile || 'default'}`;
         return `archive-file:${activeFile || 'default'}`;
       }
       function findArchiveLogicRecoveredConfig(contextKey) {
@@ -9510,10 +9765,23 @@
       function getArchiveLogicScopedConfig(card = getArchiveLogicCard()) {
         const contextKey = getArchiveLogicContextKey(card);
         const store = readArchiveLogicStore();
-        if (store[contextKey]) return { exists: true, config: store[contextKey] };
+        if (store[contextKey]) {
+          const cleaned = normalizeArchiveLogicCandidate(store[contextKey]);
+          if (cleaned) {
+            store[contextKey] = cleaned;
+            writeArchiveLogicStore(ARCHIVE_LOGIC_SCOPED_STORAGE_KEY, store);
+            return { exists: true, config: cleaned };
+          }
+          delete store[contextKey];
+          writeArchiveLogicStore(ARCHIVE_LOGIC_SCOPED_STORAGE_KEY, store);
+        }
         if (contextKey.startsWith('modal:')) {
+          const codeConfig = normalizeArchiveLogicCandidate(ARCHIVE_LOGIC_CODE_STORE[contextKey]);
+          if (codeConfig) return { exists: true, config: codeConfig };
           return { exists: false, config: null };
         }
+        const codeConfig = normalizeArchiveLogicCandidate(ARCHIVE_LOGIC_CODE_STORE[contextKey]);
+        if (codeConfig) return { exists: true, config: codeConfig };
         try {
           const legacy = JSON.parse(localStorage.getItem(ARCHIVE_LOGIC_STORAGE_KEY) || '{}');
           if (legacy?.bodyHtml || Object.keys(legacy?.points || {}).length) {
@@ -9581,6 +9849,7 @@
       function setArchiveLogicEditing(card, editing) {
         if (!card) return;
         card.classList.toggle('logic-editing', editing);
+        if (!editing) setArchiveLogicPlacing(card, false);
         card.querySelectorAll('.archive-logic-section h3, .archive-logic-section p, .archive-logic-section li').forEach(node => {
           node.removeAttribute('contenteditable');
         });
@@ -9630,8 +9899,8 @@
         const cardWidth = Math.max(1, card.clientWidth - point.offsetWidth);
         const cardHeight = Math.max(1, card.clientHeight - point.offsetHeight);
         const hasPct = Number.isFinite(Number(pos.leftPct)) && Number.isFinite(Number(pos.topPct));
-        const left = hasPct ? `${Math.round(cardWidth * Number(pos.leftPct) / 100)}px` : pos.left;
-        const top = hasPct ? `${Math.round(cardHeight * Number(pos.topPct) / 100)}px` : pos.top;
+        const left = pos.left || (hasPct ? `${Math.round(cardWidth * Number(pos.leftPct) / 100)}px` : '');
+        const top = pos.top || (hasPct ? `${Math.round(cardHeight * Number(pos.topPct) / 100)}px` : '');
         if (left && top) {
           point.style.left = left;
           point.style.top = top;
@@ -9661,6 +9930,7 @@
             return;
           }
           const saved = scoped.config || {};
+          card.querySelectorAll('.archive-logic-point').forEach(point => point.remove());
           if (saved.bodyHtml) {
             const body = card.querySelector('.archive-logic-body');
             if (body) body.innerHTML = saved.bodyHtml;
@@ -9704,16 +9974,44 @@
       function saveArchiveLogicConfig(card) {
         if (!card) return;
         backupArchiveLogicConfig(card);
-        setArchiveLogicScopedConfig(card, collectArchiveLogicConfig(card));
+        setArchiveLogicScopedConfig(card, cleanArchiveLogicSystemTemplate(collectArchiveLogicConfig(card)));
         setArchiveLogicEditing(card, false);
         if (typeof showToast === 'function') showToast('逻辑说明已保存', 'top');
       }
       function storeArchiveLogicConfig(card) {
         if (!card) return;
-        const current = collectArchiveLogicConfig(card);
+        const current = cleanArchiveLogicSystemTemplate(collectArchiveLogicConfig(card));
         const saved = getArchiveLogicScopedConfig(card).config;
         if (!archiveLogicConfigHasContent(current) && archiveLogicConfigHasContent(saved)) return;
         setArchiveLogicScopedConfig(card, current);
+      }
+      function setArchiveLogicPlacing(card, placing) {
+        if (!card) return;
+        card.classList.toggle('logic-placing', !!placing);
+        card.querySelectorAll('[data-add-archive-logic]').forEach(btn => {
+          btn.classList.toggle('is-placing', !!placing);
+          btn.textContent = placing ? '正在标注' : '新增点';
+        });
+      }
+      function startArchiveLogicPlacing(card) {
+        if (!card) return;
+        card.classList.add('logic-mode');
+        document.querySelectorAll('[data-toggle-archive-logic]').forEach(btn => btn.classList.add('active'));
+        setArchiveLogicEditing(card, true);
+        setArchiveLogicPlacing(card, true);
+        if (typeof showToast === 'function') showToast('已进入点选批注模式，点击页面位置添加批注点。', 'top');
+      }
+      function stopArchiveLogicPlacing(card) {
+        if (!card) return;
+        setArchiveLogicPlacing(card, false);
+      }
+      let archiveLogicAutoSaveTimer = null;
+      function scheduleArchiveLogicAutoSave(card) {
+        if (!card) return;
+        clearTimeout(archiveLogicAutoSaveTimer);
+        archiveLogicAutoSaveTimer = setTimeout(() => {
+          storeArchiveLogicConfig(card);
+        }, 300);
       }
       function persistArchiveLogicPointPositions(card) {
         if (!card) return;
@@ -9745,33 +10043,65 @@
           if (typeof showToast === 'function') showToast('该编号已存在，请换一个编号。', 'top');
           return;
         }
-        const title = escapeArchiveLogicHtml(String(payload.title || '新增说明').trim());
-        const description = escapeArchiveLogicHtml(String(payload.description || '点击这里编辑这条说明的内容。可拖动页面上的数字点，把说明标记到对应界面位置。').trim());
-        const lines = String(payload.lines || '这里填写第一个规则点。\n这里填写第二个规则点。')
-          .split(/\n+/)
-          .map(line => escapeArchiveLogicHtml(line.trim()))
-          .filter(Boolean);
+        const title = escapeArchiveLogicHtml(String(payload.title || '新增批注').trim());
+        const rules = escapeArchiveLogicHtml(String(payload.lines || payload.description || '请填写规则说明。').trim());
         const point = document.createElement('span');
         point.className = `archive-logic-point p${next}`;
         point.dataset.logicPoint = String(next);
         point.textContent = String(next);
-        point.style.left = `${Math.min(card.clientWidth - 54, 72 + (next - 1) * 34)}px`;
-        point.style.top = `${Math.min(card.clientHeight - 54, 92 + (next - 1) * 26)}px`;
+        const left = Number(payload.left);
+        const top = Number(payload.top);
+        if (Number.isFinite(left) && Number.isFinite(top)) {
+          point.style.left = `${Math.max(8, Math.min(card.clientWidth - 30, left))}px`;
+          point.style.top = `${Math.max(8, Math.min(card.clientHeight - 30, top))}px`;
+        } else {
+          point.style.left = `${Math.min(card.clientWidth - 54, 72 + (next - 1) * 34)}px`;
+          point.style.top = `${Math.min(card.clientHeight - 54, 92 + (next - 1) * 26)}px`;
+        }
         card.insertBefore(point, card.querySelector('.archive-logic-drawer'));
 
         const body = card.querySelector('.archive-logic-body');
         if (body) {
           body.querySelector('.archive-logic-empty')?.remove();
           body.insertAdjacentHTML('beforeend', `
-            <section class="archive-logic-section" data-logic-section="${next}">
+            <section class="archive-logic-section" data-logic-section="${next}"${payload.systemGenerated ? ' data-user-generated="true"' : ''}>
               <h3><span>${next}</span>${title}</h3>
-              <p>${description}</p>
-              ${lines.length ? `<ul>${lines.map(line => `<li>${line}</li>`).join('')}</ul>` : ''}
+              <p class="archive-logic-rules">${rules}</p>
             </section>`);
         }
         showArchiveLogicSection(card, String(next));
         setArchiveLogicEditing(card, true);
         storeArchiveLogicConfig(card);
+      }
+      function isArchiveLogicPlacementBlocked(target) {
+        return !!target.closest([
+          '.archive-logic-drawer',
+          '.archive-logic-point',
+          '.archive-history-actions',
+          '.archive-patient-card',
+          '.archive-history-filter',
+          'button',
+          'a',
+          'input',
+          'textarea',
+          'select',
+          'label',
+          '[contenteditable="true"]'
+        ].join(','));
+      }
+      function handleArchiveLogicPlacementClick(event) {
+        const card = event.target.closest?.('.archive-logic-scope.logic-mode.logic-placing');
+        if (!card || isArchiveLogicPlacementBlocked(event.target)) return false;
+        const rect = card.getBoundingClientRect();
+        addArchiveLogicSection(card, {
+          left: event.clientX - rect.left - 11,
+          top: event.clientY - rect.top - 11,
+          title: '新增批注',
+          lines: '请填写批注说明。'
+        });
+        event.preventDefault();
+        event.stopImmediatePropagation();
+        return true;
       }
       function openArchiveLogicPointModal(card) {
         if (!card) return;
@@ -9785,14 +10115,13 @@
             <div class="archive-logic-point-modal" id="archiveLogicPointModal" aria-hidden="true">
               <div class="archive-logic-point-dialog">
                 <div class="archive-logic-point-head">
-                  <strong>新增说明点</strong>
+                  <strong>新增批注</strong>
                   <button class="archive-logic-point-close" type="button" data-close-archive-logic-point-modal aria-label="关闭">×</button>
                 </div>
                 <div class="archive-logic-point-form">
-                  <label class="archive-logic-point-field">编号<input data-archive-logic-point-number type="number" min="1"></label>
-                  <label class="archive-logic-point-field">说明标题<input data-archive-logic-point-title type="text" placeholder="请输入说明标题"></label>
-                  <label class="archive-logic-point-field">说明内容<textarea data-archive-logic-point-description placeholder="请输入该点对应的说明内容"></textarea></label>
-                  <label class="archive-logic-point-field">规则明细<textarea data-archive-logic-point-lines placeholder="一行一条，可不填"></textarea></label>
+                  <input data-archive-logic-point-number type="hidden">
+                  <label class="archive-logic-point-field">标题<input data-archive-logic-point-title type="text" placeholder="请输入批注标题"></label>
+                  <label class="archive-logic-point-field">规则说明<textarea data-archive-logic-point-lines placeholder="请输入该点对应的规则说明"></textarea></label>
                 </div>
                 <div class="archive-logic-point-foot">
                   <button class="ghost" type="button" data-close-archive-logic-point-modal>取消</button>
@@ -9805,7 +10134,6 @@
         modal.__archiveLogicCard = card;
         modal.querySelector('[data-archive-logic-point-number]').value = next;
         modal.querySelector('[data-archive-logic-point-title]').value = '';
-        modal.querySelector('[data-archive-logic-point-description]').value = '';
         modal.querySelector('[data-archive-logic-point-lines]').value = '';
         modal.classList.add('open');
         modal.setAttribute('aria-hidden', 'false');
@@ -9817,7 +10145,6 @@
         if (!modal || !card) return;
         const number = modal.querySelector('[data-archive-logic-point-number]')?.value;
         const title = modal.querySelector('[data-archive-logic-point-title]')?.value;
-        const description = modal.querySelector('[data-archive-logic-point-description]')?.value;
         const lines = modal.querySelector('[data-archive-logic-point-lines]')?.value;
         if (!/^[1-9]\d{0,2}$/.test(String(number || '').trim())) {
           if (typeof showToast === 'function') showToast('编号只能填写正整数。', 'top');
@@ -9827,7 +10154,7 @@
           if (typeof showToast === 'function') showToast('请填写说明标题。', 'top');
           return;
         }
-        addArchiveLogicSection(card, { number, title, description, lines });
+        addArchiveLogicSection(card, { number, title, lines });
         modal.classList.remove('open');
         modal.setAttribute('aria-hidden', 'true');
       }
@@ -9847,6 +10174,25 @@
         row.setAttribute('contenteditable', 'true');
         row.focus();
         storeArchiveLogicConfig(card);
+      }
+      function generateArchiveLogicSystemTemplate(card) {
+        if (!card) return;
+        const templates = [
+          {
+            title: '目录与筛选',
+            lines: '左侧目录按资料类型切换，只影响病历目录列表，不改变患者档案左侧功能菜单。\n同步来源资料按原始病历结构展示；手动上传资料按时间、名称和上传方式展示。'
+          },
+          {
+            title: '病历详情',
+            lines: '点击目录末级资料后，右侧展示对应病历详情。\n门诊、住院、急诊、体检同步资料不展示上传方式；患者上传和医护上传资料展示补充资料区域。'
+          },
+          {
+            title: '上传与解析',
+            lines: '上传资料支持图片和 PDF，最多 20 个文件。\n解析报告用于进入 AI 分析流程；待补充资料补全必填信息后才可保存归档。'
+          }
+        ];
+        templates.forEach(item => addArchiveLogicSection(card, { ...item, systemGenerated: true }));
+        if (typeof showToast === 'function') showToast('已按系统生成基础说明，可继续手动修改。', 'top');
       }
       function getActiveArchiveLogicKey(card) {
         return card?.querySelector('.archive-logic-point.active')?.dataset.logicPoint
@@ -10098,9 +10444,17 @@
             </aside>`);
         }
         const tools = card.querySelector('.archive-logic-tools');
-        if (tools && !tools.querySelector('[data-restore-archive-logic]')) {
-          const resetBtn = tools.querySelector('[data-reset-archive-logic]');
-          resetBtn?.insertAdjacentHTML('beforebegin', '<button class="archive-logic-tool" type="button" data-restore-archive-logic>恢复数据</button>');
+        if (tools && !tools.dataset.manualOnly) {
+          tools.dataset.manualOnly = 'true';
+          tools.innerHTML = [
+            '<button class="archive-logic-tool" type="button" data-add-archive-logic>新增点</button>',
+            '<button class="archive-logic-tool" type="button" data-generate-archive-logic>按系统生成</button>',
+            '<button class="archive-logic-tool" type="button" data-rename-archive-logic-point>改编号</button>',
+            '<button class="archive-logic-tool danger" type="button" data-delete-archive-logic-point>删除点</button>',
+            '<button class="archive-logic-tool" type="button" data-edit-archive-logic>编辑</button>',
+            '<button class="archive-logic-tool primary" type="button" data-save-archive-logic>保存</button>',
+            '<button type="button" data-close-archive-logic aria-label="关闭">×</button>'
+          ].join('');
         }
         applyArchiveLogicConfig(card);
       }
@@ -10322,6 +10676,16 @@
           event.stopImmediatePropagation();
         }
       }, true);
+      document.addEventListener('input', function (event) {
+        const editable = event.target.closest?.('.archive-logic-scope.logic-editing [contenteditable="true"]');
+        if (!editable) return;
+        scheduleArchiveLogicAutoSave(getArchiveLogicScopeFromNode(editable));
+      }, true);
+      document.addEventListener('blur', function (event) {
+        const editable = event.target.closest?.('.archive-logic-scope.logic-editing [contenteditable="true"]');
+        if (!editable) return;
+        storeArchiveLogicConfig(getArchiveLogicScopeFromNode(editable));
+      }, true);
 
       let archiveLogicDrag = null;
       let archiveLogicMoved = false;
@@ -10374,6 +10738,7 @@
       });
 
       document.addEventListener('click', function (event) {
+        if (handleArchiveLogicPlacementClick(event)) return;
         const archiveLogicPoint = event.target.closest('.archive-logic-scope.logic-mode .archive-logic-point');
         if (archiveLogicPoint) {
           if (archiveLogicMoved) {
@@ -10389,7 +10754,19 @@
         }
         const archiveLogicAdd = event.target.closest('[data-add-archive-logic]');
         if (archiveLogicAdd) {
-          openArchiveLogicPointModal(getArchiveLogicScopeFromNode(archiveLogicAdd));
+          const card = getArchiveLogicScopeFromNode(archiveLogicAdd);
+          if (card?.classList.contains('logic-placing')) {
+            stopArchiveLogicPlacing(card);
+          } else {
+            startArchiveLogicPlacing(card);
+          }
+          event.preventDefault();
+          event.stopImmediatePropagation();
+          return;
+        }
+        const archiveLogicGenerate = event.target.closest('[data-generate-archive-logic]');
+        if (archiveLogicGenerate) {
+          generateArchiveLogicSystemTemplate(getArchiveLogicScopeFromNode(archiveLogicGenerate));
           event.preventDefault();
           event.stopImmediatePropagation();
           return;
@@ -10440,7 +10817,9 @@
         }
         const archiveLogicSave = event.target.closest('[data-save-archive-logic]');
         if (archiveLogicSave) {
-          saveArchiveLogicConfig(getArchiveLogicScopeFromNode(archiveLogicSave));
+          const card = getArchiveLogicScopeFromNode(archiveLogicSave);
+          stopArchiveLogicPlacing(card);
+          saveArchiveLogicConfig(card);
           event.preventDefault();
           event.stopImmediatePropagation();
           return;
@@ -10457,6 +10836,20 @@
         if (archiveLogicRestore) {
           const card = getArchiveLogicScopeFromNode(archiveLogicRestore);
           restoreArchiveLogicConfig(card);
+          event.preventDefault();
+          event.stopImmediatePropagation();
+          return;
+        }
+        const archiveLogicExport = event.target.closest('[data-export-archive-logic]');
+        if (archiveLogicExport) {
+          exportArchiveLogicData();
+          event.preventDefault();
+          event.stopImmediatePropagation();
+          return;
+        }
+        const archiveLogicImport = event.target.closest('[data-import-archive-logic]');
+        if (archiveLogicImport) {
+          openArchiveLogicImportFile();
           event.preventDefault();
           event.stopImmediatePropagation();
           return;
@@ -10478,9 +10871,11 @@
           const drawer = card?.querySelector('.archive-logic-drawer');
           drawer?.classList.remove('open');
           drawer?.setAttribute('aria-hidden', 'true');
+          setArchiveLogicPlacing(card, false);
           if (open && card && !card.querySelector('.archive-logic-point')) {
             drawer?.classList.add('open');
             drawer?.setAttribute('aria-hidden', 'false');
+            startArchiveLogicPlacing(card);
           }
           if (!open) setArchiveLogicEditing(card, false);
           event.preventDefault();
@@ -10490,6 +10885,7 @@
         const archiveLogicClose = event.target.closest('[data-close-archive-logic]');
         if (archiveLogicClose) {
           const card = getArchiveLogicScopeFromNode(archiveLogicClose);
+          stopArchiveLogicPlacing(card);
           setArchiveLogicEditing(card, false);
           card?.querySelector('.archive-logic-drawer')?.classList.remove('open');
           card?.querySelector('.archive-logic-drawer')?.setAttribute('aria-hidden', 'true');
