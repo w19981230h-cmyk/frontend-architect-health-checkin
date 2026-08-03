@@ -917,9 +917,10 @@
     .archive-history-actions { display: flex; align-items: center; gap: 10px; }
     .archive-logic-btn { height: 32px; padding: 0 14px; display: inline-flex; align-items: center; gap: 7px; border: 1px solid #d8e2f0; border-radius: 4px; color: #334158; background: #fff; font-size: 13px; font-weight: 700; }
     .archive-logic-btn.active { color: #fff; border-color: #3154ff; background: #3154ff; }
+    .archive-logic-scope { position: relative; }
     .archive-logic-point { position: absolute; z-index: 12; width: 22px; height: 22px; display: none; place-items: center; border: 2px solid #fff; border-radius: 50%; color: #fff; background: #3154ff; font-size: 12px; font-weight: 800; box-shadow: 0 6px 16px rgba(49,84,255,.32); cursor: move; user-select: none; }
     .archive-logic-point.active { background: #ff8a00; box-shadow: 0 6px 18px rgba(255,138,0,.36); }
-    .archive-history-card.logic-mode .archive-logic-point { display: grid; }
+    .archive-logic-scope.logic-mode .archive-logic-point { display: grid; }
     .archive-logic-point.p1 { left: 18px; top: 84px; }
     .archive-logic-point.p2 { left: clamp(236px, 30vw, 262px); top: 96px; }
     .archive-logic-point.p3 { right: 132px; top: 14px; }
@@ -927,7 +928,7 @@
     .archive-logic-point.p5 { right: 214px; top: 14px; }
     .archive-logic-point.p6 { left: clamp(360px, 42vw, 440px); bottom: 118px; }
     .archive-logic-drawer { position: absolute; z-index: 11; left: 56px; top: 116px; width: min(332px, 38vw); display: none; flex-direction: column; border: 1px solid #dce6f2; border-radius: 8px; background: #fff; box-shadow: 0 18px 44px rgba(21,38,72,.16); }
-    .archive-history-card.logic-mode .archive-logic-drawer.open { display: flex; }
+    .archive-logic-scope.logic-mode .archive-logic-drawer.open { display: flex; }
     .archive-logic-head { min-height: 48px; padding: 0 12px 0 14px; display: flex; align-items: center; justify-content: space-between; gap: 10px; border-bottom: 1px solid #edf1f7; }
     .archive-logic-head strong { min-width: 0; flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: #1f2f4a; font-size: 15px; font-weight: 800; }
     .archive-logic-head button:not(.archive-logic-tool) { flex: 0 0 auto; width: 26px; height: 26px; display: grid; place-items: center; border-radius: 4px; color: #64748b; background: #f3f6fb; font-size: 17px; }
@@ -961,10 +962,10 @@
     .archive-logic-point-foot button { height: 34px; padding: 0 16px; border-radius: 6px; font-size: 14px; font-weight: 700; }
     .archive-logic-point-foot .ghost { border: 1px solid #d8e2f0; color: #334158; background: #fff; }
     .archive-logic-point-foot .primary { color: #fff; background: #3154ff; }
-    .archive-history-card.logic-mode .archive-logic-point:hover { transform: translateY(-1px); box-shadow: 0 8px 20px rgba(49,84,255,.38); }
-    .archive-history-card.logic-editing .archive-logic-point { pointer-events: auto; outline: 2px dashed rgba(49,84,255,.28); outline-offset: 3px; }
-    .archive-history-card.logic-editing .archive-logic-body [contenteditable="true"] { border-radius: 4px; outline: 1px dashed #9bb3ff; background: #f7f9ff; }
-    .archive-history-card.logic-editing .archive-logic-section { box-shadow: inset 3px 0 0 #3154ff; }
+    .archive-logic-scope.logic-mode .archive-logic-point:hover { transform: translateY(-1px); box-shadow: 0 8px 20px rgba(49,84,255,.38); }
+    .archive-logic-scope.logic-editing .archive-logic-point { pointer-events: auto; outline: 2px dashed rgba(49,84,255,.28); outline-offset: 3px; }
+    .archive-logic-scope.logic-editing .archive-logic-body [contenteditable="true"] { border-radius: 4px; outline: 1px dashed #9bb3ff; background: #f7f9ff; }
+    .archive-logic-scope.logic-editing .archive-logic-section { box-shadow: inset 3px 0 0 #3154ff; }
     .archive-logic-edit-tip { margin: 0 0 12px; padding: 9px 10px; border: 1px solid #dbe6ff; border-radius: 6px; color: #52617a; background: #eef4ff; font-size: 12px; line-height: 1.6; }
     .archive-logic-empty { margin: 0; padding: 18px 14px; border: 1px dashed #c9d8ff; border-radius: 8px; color: #6d7d96; background: #f8fbff; font-size: 13px; line-height: 1.6; }
     .archive-upload-btn, .archive-parse-btn { height: 32px; padding: 0 14px; display: inline-flex; align-items: center; gap: 7px; border: 1px solid #e0e6ef; border-radius: 4px !important; color: #334158; background: #fff; font-size: 13px; font-weight: 700; }
@@ -980,6 +981,9 @@
     .archive-upload-dialog { width: min(780px, 86vw); height: min(520px, 72vh); display: grid; grid-template-rows: 72px 1fr 72px; border-radius: 6px; overflow: hidden; background: #fff; box-shadow: 0 18px 54px rgba(18,32,60,.22); }
     .archive-upload-head { padding: 0 24px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid #edf0f5; }
     .archive-upload-head h2 { margin: 0; color: #263752; font-size: 18px; font-weight: 800; }
+    .archive-upload-head-actions { display: flex; align-items: center; gap: 10px; }
+    .archive-upload-logic-recover { height: 30px; padding: 0 10px; border: 1px solid #d8e2f0; border-radius: 4px; color: #3154ff; background: #f7f9ff; font-size: 13px; font-weight: 700; }
+    .archive-upload-logic-recover:hover { border-color: #3154ff; background: #eef3ff; }
     .archive-upload-close { width: 32px; height: 32px; display: grid; place-items: center; border-radius: 50%; color: #263752; background: #f4f6fa; font-size: 22px; line-height: 1; }
     .archive-upload-body { position: relative; padding: 24px 28px; }
     .archive-upload-tip { position: absolute; left: 28px; bottom: -50px; z-index: 1; margin: 0; color: #9aa5b5; font-size: 13px; }
@@ -3353,7 +3357,7 @@
   </div>
   <div class="archive-upload-modal" id="archiveUploadModal" aria-hidden="true">
     <div class="archive-upload-dialog" role="dialog" aria-modal="true" aria-labelledby="archiveUploadTitle">
-      <header class="archive-upload-head"><h2 id="archiveUploadTitle">上传病历资料</h2><button class="archive-upload-close" data-close-archive-upload aria-label="关闭">×</button></header>
+      <header class="archive-upload-head"><h2 id="archiveUploadTitle">上传病历资料</h2><div class="archive-upload-head-actions"><button class="archive-upload-logic-recover" type="button" data-recover-archive-logic>恢复界面说明</button><button class="archive-upload-close" data-close-archive-upload aria-label="关闭">×</button></div></header>
       <section class="archive-upload-body">
         <input class="archive-upload-file-input" id="archiveUploadInput" type="file" accept=".pdf,image/png,image/jpeg" multiple>
         <label class="archive-upload-merge" for="archiveUploadMergeTop">
@@ -9382,8 +9386,20 @@
       const ARCHIVE_LOGIC_BACKUP_KEY = 'archiveHistoryLogicConfigBackupV2';
       const ARCHIVE_LOGIC_SCOPED_STORAGE_KEY = 'archiveHistoryLogicScopedConfigV1';
       const ARCHIVE_LOGIC_SCOPED_BACKUP_KEY = 'archiveHistoryLogicScopedBackupV1';
+      function prepareArchiveLogicScope(scope) {
+        if (!scope) return null;
+        scope.classList.add('archive-logic-scope');
+        return scope;
+      }
       function getArchiveLogicCard() {
-        return document.querySelector('#patientArchivePage .archive-history-card');
+        const uploadDialog = document.querySelector('#archiveUploadModal.open .archive-upload-dialog');
+        if (uploadDialog) return prepareArchiveLogicScope(uploadDialog);
+        const parseDrawer = document.querySelector('.archive-parse-drawer.open');
+        if (parseDrawer) return prepareArchiveLogicScope(parseDrawer);
+        return prepareArchiveLogicScope(document.querySelector('#patientArchivePage .archive-history-card'));
+      }
+      function getArchiveLogicScopeFromNode(node) {
+        return node?.closest?.('.archive-logic-scope, .archive-history-card, .archive-upload-dialog, .archive-parse-drawer') || getArchiveLogicCard();
       }
       function readArchiveLogicStore(key = ARCHIVE_LOGIC_SCOPED_STORAGE_KEY) {
         try {
@@ -9396,16 +9412,108 @@
       function writeArchiveLogicStore(key, store) {
         localStorage.setItem(key, JSON.stringify(store || {}));
       }
+      function archiveLogicConfigHasContent(config) {
+        return !!(config && (config.bodyHtml || Object.keys(config.points || {}).length));
+      }
+      function normalizeArchiveLogicCandidate(config) {
+        if (!archiveLogicConfigHasContent(config)) return null;
+        return {
+          bodyHtml: config.bodyHtml || '',
+          points: config.points || {}
+        };
+      }
+      function countArchiveLogicSections(config) {
+        const matched = String(config?.bodyHtml || '').match(/archive-logic-section/g);
+        return matched ? matched.length : 0;
+      }
+      function getArchiveLogicRecoveryCandidates(contextKey = getArchiveLogicContextKey()) {
+        const candidates = [];
+        const seen = new Set();
+        const pushCandidate = (label, config) => {
+          const normalized = normalizeArchiveLogicCandidate(config);
+          if (!normalized) return;
+          let signature = '';
+          try {
+            signature = JSON.stringify(normalized);
+          } catch (error) {
+            signature = `${label}:${Date.now()}:${candidates.length}`;
+          }
+          if (seen.has(signature)) return;
+          seen.add(signature);
+          candidates.push({
+            label,
+            config: normalized,
+            pointsCount: Object.keys(normalized.points || {}).length,
+            sectionCount: countArchiveLogicSections(normalized)
+          });
+        };
+        const activeFile = document.querySelector('#patientArchivePage [data-history-file].active')?.dataset.historyFile;
+        const preferredKeys = [
+          contextKey,
+          'modal:archiveUploadModal',
+          `archive-file:${activeFile || 'default'}`,
+          'archive-file:default'
+        ];
+        const scanStore = (store, sourceLabel) => {
+          preferredKeys.forEach(key => pushCandidate(`${sourceLabel} / ${key}`, store[key]));
+          Object.entries(store || {}).forEach(([key, config]) => pushCandidate(`${sourceLabel} / ${key}`, config));
+        };
+        scanStore(readArchiveLogicStore(ARCHIVE_LOGIC_SCOPED_STORAGE_KEY), '当前说明数据');
+        scanStore(readArchiveLogicStore(ARCHIVE_LOGIC_SCOPED_BACKUP_KEY), '备份说明数据');
+        [ARCHIVE_LOGIC_STORAGE_KEY, ARCHIVE_LOGIC_BACKUP_KEY].forEach(key => {
+          try {
+            pushCandidate(`旧版说明数据 / ${key}`, JSON.parse(localStorage.getItem(key) || 'null'));
+          } catch (error) {}
+        });
+        const walkValue = (value, label, depth = 0) => {
+          if (!value || typeof value !== 'object' || depth > 4) return;
+          pushCandidate(label, value);
+          Object.entries(value).forEach(([childKey, childValue]) => {
+            if (!childValue || typeof childValue !== 'object') return;
+            if (archiveLogicConfigHasContent(childValue)) {
+              pushCandidate(`${label} / ${childKey}`, childValue);
+            } else {
+              walkValue(childValue, `${label} / ${childKey}`, depth + 1);
+            }
+          });
+        };
+        try {
+          for (let index = 0; index < localStorage.length; index += 1) {
+            const key = localStorage.key(index);
+            if (!key) continue;
+            try {
+              walkValue(JSON.parse(localStorage.getItem(key) || 'null'), `浏览器历史数据 / ${key}`);
+            } catch (error) {}
+          }
+        } catch (error) {}
+        return candidates;
+      }
       function getArchiveLogicContextKey(card = getArchiveLogicCard()) {
         const activeFile = document.querySelector('#patientArchivePage [data-history-file].active')?.dataset.historyFile;
         const modal = card?.closest?.('.archive-upload-modal.open, .archive-parse-drawer.open');
         if (modal?.id) return `modal:${modal.id}`;
         return `archive-file:${activeFile || 'default'}`;
       }
+      function findArchiveLogicRecoveredConfig(contextKey) {
+        return getArchiveLogicRecoveryCandidates(contextKey)[0]?.config || null;
+      }
+      function findExactArchiveLogicConfig(contextKey) {
+        const stores = [
+          readArchiveLogicStore(ARCHIVE_LOGIC_SCOPED_BACKUP_KEY),
+          readArchiveLogicStore(ARCHIVE_LOGIC_SCOPED_STORAGE_KEY)
+        ];
+        for (const store of stores) {
+          if (archiveLogicConfigHasContent(store[contextKey])) return normalizeArchiveLogicCandidate(store[contextKey]);
+        }
+        return null;
+      }
       function getArchiveLogicScopedConfig(card = getArchiveLogicCard()) {
         const contextKey = getArchiveLogicContextKey(card);
         const store = readArchiveLogicStore();
         if (store[contextKey]) return { exists: true, config: store[contextKey] };
+        if (contextKey.startsWith('modal:')) {
+          return { exists: false, config: null };
+        }
         try {
           const legacy = JSON.parse(localStorage.getItem(ARCHIVE_LOGIC_STORAGE_KEY) || '{}');
           if (legacy?.bodyHtml || Object.keys(legacy?.points || {}).length) {
@@ -9449,6 +9557,25 @@
             drawer?.classList.add('open');
             drawer?.setAttribute('aria-hidden', 'false');
           }
+        }
+      }
+      function showArchiveLogicIfCurrentScopeHasData() {
+        const card = getArchiveLogicCard();
+        if (!card) return;
+        ensureArchiveLogicMode();
+        const config = getArchiveLogicScopedConfig(card).config;
+        if (!archiveLogicConfigHasContent(config)) return;
+        card.classList.add('logic-mode');
+        document.querySelectorAll('[data-toggle-archive-logic]').forEach(btn => btn.classList.add('active'));
+        const firstKey = Object.keys(config.points || {})[0]?.replace(/^p/, '')
+          || card.querySelector('.archive-logic-section')?.dataset.logicSection
+          || '';
+        if (firstKey) {
+          showArchiveLogicSection(card, firstKey);
+        } else {
+          const drawer = card.querySelector('.archive-logic-drawer');
+          drawer?.classList.add('open');
+          drawer?.setAttribute('aria-hidden', 'false');
         }
       }
       function setArchiveLogicEditing(card, editing) {
@@ -9583,7 +9710,10 @@
       }
       function storeArchiveLogicConfig(card) {
         if (!card) return;
-        setArchiveLogicScopedConfig(card, collectArchiveLogicConfig(card));
+        const current = collectArchiveLogicConfig(card);
+        const saved = getArchiveLogicScopedConfig(card).config;
+        if (!archiveLogicConfigHasContent(current) && archiveLogicConfigHasContent(saved)) return;
+        setArchiveLogicScopedConfig(card, current);
       }
       function persistArchiveLogicPointPositions(card) {
         if (!card) return;
@@ -9824,31 +9954,72 @@
       }
       function restoreArchiveLogicConfig(card) {
         if (!card) return;
-        let backup = null;
-        try {
-          const store = readArchiveLogicStore(ARCHIVE_LOGIC_SCOPED_BACKUP_KEY);
-          backup = store[getArchiveLogicContextKey(card)] || JSON.parse(localStorage.getItem(ARCHIVE_LOGIC_BACKUP_KEY) || 'null');
-        } catch (error) {
-          backup = null;
-        }
-        if (!backup?.bodyHtml) {
+        const contextKey = getArchiveLogicContextKey(card);
+        const candidates = getArchiveLogicRecoveryCandidates(contextKey);
+        const backup = candidates.find(item => item.label.includes(contextKey))
+          || candidates.find(item => item.label.includes('archiveUploadModal'))
+          || candidates[0];
+        if (!archiveLogicConfigHasContent(backup?.config)) {
           if (typeof showToast === 'function') showToast('暂无可恢复的数据', 'top');
           return;
         }
         card.querySelector('.archive-logic-drawer')?.remove();
         card.querySelectorAll('.archive-logic-point').forEach(point => point.remove());
-        setArchiveLogicScopedConfig(card, { bodyHtml: backup.bodyHtml, points: backup.points || {} });
+        setArchiveLogicScopedConfig(card, backup.config);
         ensureArchiveLogicMode();
         const newCard = getArchiveLogicCard();
         newCard?.classList.add('logic-mode');
         newCard?.querySelector('[data-toggle-archive-logic]')?.classList.add('active');
-        const firstKey = Object.keys(backup.points || {})[0] || newCard?.querySelector('.archive-logic-section')?.dataset.logicSection || '';
+        const firstKey = Object.keys(backup.config.points || {})[0] || newCard?.querySelector('.archive-logic-section')?.dataset.logicSection || '';
         if (firstKey) showArchiveLogicSection(newCard, firstKey.replace(/^p/, ''));
         if (typeof showToast === 'function') showToast('已恢复上次说明数据', 'top');
       }
 
+      function restoreArchiveLogicConfig(card) {
+        if (!card) return;
+        const contextKey = getArchiveLogicContextKey(card);
+        const candidates = getArchiveLogicRecoveryCandidates(contextKey);
+        const backup = candidates.find(item => item.label.includes(contextKey))
+          || candidates.find(item => item.label.includes('archiveUploadModal'))
+          || candidates[0];
+        if (!archiveLogicConfigHasContent(backup?.config)) {
+          if (typeof showToast === 'function') showToast('未找到可恢复的界面说明，请确认是否在同一个浏览器和同一个访问地址下打开。', 'top');
+          return;
+        }
+        card.querySelector('.archive-logic-drawer')?.remove();
+        card.querySelectorAll('.archive-logic-point').forEach(point => point.remove());
+        setArchiveLogicScopedConfig(card, backup.config);
+        ensureArchiveLogicMode();
+        const newCard = getArchiveLogicCard();
+        newCard?.classList.add('logic-mode');
+        newCard?.querySelector('[data-toggle-archive-logic]')?.classList.add('active');
+        const firstKey = Object.keys(backup.config.points || {})[0] || newCard?.querySelector('.archive-logic-section')?.dataset.logicSection || '';
+        if (firstKey) showArchiveLogicSection(newCard, firstKey.replace(/^p/, ''));
+        if (typeof showToast === 'function') showToast(`已恢复界面说明（${backup.pointsCount} 个点）`, 'top');
+      }
+
+      function restoreArchiveLogicConfig(card) {
+        if (!card) return;
+        const contextKey = getArchiveLogicContextKey(card);
+        const config = findExactArchiveLogicConfig(contextKey);
+        if (!archiveLogicConfigHasContent(config)) {
+          if (typeof showToast === 'function') showToast('当前弹窗没有已保存的界面备注，不会加载其他页面的备注。', 'top');
+          return;
+        }
+        card.querySelector('.archive-logic-drawer')?.remove();
+        card.querySelectorAll('.archive-logic-point').forEach(point => point.remove());
+        setArchiveLogicScopedConfig(card, config);
+        ensureArchiveLogicMode();
+        const newCard = getArchiveLogicCard();
+        newCard?.classList.add('logic-mode');
+        newCard?.querySelector('[data-toggle-archive-logic]')?.classList.add('active');
+        const firstKey = Object.keys(config.points || {})[0] || newCard?.querySelector('.archive-logic-section')?.dataset.logicSection || '';
+        if (firstKey) showArchiveLogicSection(newCard, firstKey.replace(/^p/, ''));
+        if (typeof showToast === 'function') showToast('已恢复当前弹窗的界面备注', 'top');
+      }
+
       function ensureArchiveLogicMode() {
-        const card = document.querySelector('#patientArchivePage .archive-history-card');
+        const card = getArchiveLogicCard();
         if (!card) return;
         const actions = card.querySelector('.archive-history-actions');
         if (actions && !actions.querySelector('[data-toggle-archive-logic]')) {
@@ -10024,6 +10195,23 @@
         if (input) input.value = '';
         refreshArchiveUploadList();
       }
+      function syncArchiveLogicWhenUploadModalOpens() {
+        const modal = getArchiveUploadModal();
+        if (!modal?.classList.contains('open')) return;
+        setTimeout(() => {
+          rebuildArchiveLogicForCurrentContext(false);
+          showArchiveLogicIfCurrentScopeHasData();
+        }, 0);
+      }
+      const archiveUploadModalNode = getArchiveUploadModal();
+      if (archiveUploadModalNode) {
+        let archiveUploadLogicSyncTimer = null;
+        new MutationObserver(() => {
+          if (!archiveUploadModalNode.classList.contains('open')) return;
+          clearTimeout(archiveUploadLogicSyncTimer);
+          archiveUploadLogicSyncTimer = setTimeout(syncArchiveLogicWhenUploadModalOpens, 40);
+        }).observe(archiveUploadModalNode, { attributes: true, attributeFilter: ['class'] });
+      }
 
       const archiveParseItems = [
         { status: 'running', title: 'image1', time: '', text: 'AI正在识别报告名称、报告时间、就诊人、资料类型和就诊医院。' },
@@ -10138,9 +10326,9 @@
       let archiveLogicDrag = null;
       let archiveLogicMoved = false;
       document.addEventListener('mousedown', function (event) {
-        const point = event.target.closest('.archive-history-card.logic-mode .archive-logic-point');
+        const point = event.target.closest('.archive-logic-scope.logic-mode .archive-logic-point');
         if (!point) return;
-        const card = point.closest('.archive-history-card');
+        const card = getArchiveLogicScopeFromNode(point);
         const cardRect = card.getBoundingClientRect();
         const pointRect = point.getBoundingClientRect();
         archiveLogicDrag = {
@@ -10186,7 +10374,7 @@
       });
 
       document.addEventListener('click', function (event) {
-        const archiveLogicPoint = event.target.closest('.archive-history-card.logic-mode .archive-logic-point');
+        const archiveLogicPoint = event.target.closest('.archive-logic-scope.logic-mode .archive-logic-point');
         if (archiveLogicPoint) {
           if (archiveLogicMoved) {
             archiveLogicMoved = false;
@@ -10194,14 +10382,14 @@
             event.stopImmediatePropagation();
             return;
           }
-          showArchiveLogicSection(archiveLogicPoint.closest('.archive-history-card'), archiveLogicPoint.dataset.logicPoint);
+          showArchiveLogicSection(getArchiveLogicScopeFromNode(archiveLogicPoint), archiveLogicPoint.dataset.logicPoint);
           event.preventDefault();
           event.stopImmediatePropagation();
           return;
         }
         const archiveLogicAdd = event.target.closest('[data-add-archive-logic]');
         if (archiveLogicAdd) {
-          openArchiveLogicPointModal(archiveLogicAdd.closest('.archive-history-card'));
+          openArchiveLogicPointModal(getArchiveLogicScopeFromNode(archiveLogicAdd));
           event.preventDefault();
           event.stopImmediatePropagation();
           return;
@@ -10223,28 +10411,28 @@
         }
         const archiveLogicLineAdd = event.target.closest('[data-add-archive-logic-line]');
         if (archiveLogicLineAdd) {
-          addArchiveLogicLine(archiveLogicLineAdd.closest('.archive-history-card'));
+          addArchiveLogicLine(getArchiveLogicScopeFromNode(archiveLogicLineAdd));
           event.preventDefault();
           event.stopImmediatePropagation();
           return;
         }
         const archiveLogicRename = event.target.closest('[data-rename-archive-logic-point]');
         if (archiveLogicRename) {
-          renameArchiveLogicPoint(archiveLogicRename.closest('.archive-history-card'));
+          renameArchiveLogicPoint(getArchiveLogicScopeFromNode(archiveLogicRename));
           event.preventDefault();
           event.stopImmediatePropagation();
           return;
         }
         const archiveLogicDelete = event.target.closest('[data-delete-archive-logic-point]');
         if (archiveLogicDelete) {
-          deleteArchiveLogicPoint(archiveLogicDelete.closest('.archive-history-card'));
+          deleteArchiveLogicPoint(getArchiveLogicScopeFromNode(archiveLogicDelete));
           event.preventDefault();
           event.stopImmediatePropagation();
           return;
         }
         const archiveLogicEdit = event.target.closest('[data-edit-archive-logic]');
         if (archiveLogicEdit) {
-          const card = archiveLogicEdit.closest('.archive-history-card');
+          const card = getArchiveLogicScopeFromNode(archiveLogicEdit);
           setArchiveLogicEditing(card, !card?.classList.contains('logic-editing'));
           event.preventDefault();
           event.stopImmediatePropagation();
@@ -10252,14 +10440,14 @@
         }
         const archiveLogicSave = event.target.closest('[data-save-archive-logic]');
         if (archiveLogicSave) {
-          saveArchiveLogicConfig(archiveLogicSave.closest('.archive-history-card'));
+          saveArchiveLogicConfig(getArchiveLogicScopeFromNode(archiveLogicSave));
           event.preventDefault();
           event.stopImmediatePropagation();
           return;
         }
         const archiveLogicReset = event.target.closest('[data-reset-archive-logic]');
         if (archiveLogicReset) {
-          const card = archiveLogicReset.closest('.archive-history-card');
+          const card = getArchiveLogicScopeFromNode(archiveLogicReset);
           resetArchiveLogicConfig(card);
           event.preventDefault();
           event.stopImmediatePropagation();
@@ -10267,15 +10455,23 @@
         }
         const archiveLogicRestore = event.target.closest('[data-restore-archive-logic]');
         if (archiveLogicRestore) {
-          const card = archiveLogicRestore.closest('.archive-history-card');
+          const card = getArchiveLogicScopeFromNode(archiveLogicRestore);
           restoreArchiveLogicConfig(card);
+          event.preventDefault();
+          event.stopImmediatePropagation();
+          return;
+        }
+        const archiveLogicRecover = event.target.closest('[data-recover-archive-logic]');
+        if (archiveLogicRecover) {
+          restoreArchiveLogicConfig(getArchiveLogicCard());
           event.preventDefault();
           event.stopImmediatePropagation();
           return;
         }
         const archiveLogicToggle = event.target.closest('[data-toggle-archive-logic]');
         if (archiveLogicToggle) {
-          const card = archiveLogicToggle.closest('.archive-history-card');
+          const card = getArchiveLogicCard();
+          ensureArchiveLogicMode();
           card?.classList.toggle('logic-mode');
           const open = !!card?.classList.contains('logic-mode');
           archiveLogicToggle.classList.toggle('active', open);
@@ -10293,7 +10489,7 @@
         }
         const archiveLogicClose = event.target.closest('[data-close-archive-logic]');
         if (archiveLogicClose) {
-          const card = archiveLogicClose.closest('.archive-history-card');
+          const card = getArchiveLogicScopeFromNode(archiveLogicClose);
           setArchiveLogicEditing(card, false);
           card?.querySelector('.archive-logic-drawer')?.classList.remove('open');
           card?.querySelector('.archive-logic-drawer')?.setAttribute('aria-hidden', 'true');
@@ -10306,6 +10502,10 @@
           const modal = document.getElementById('archiveUploadModal');
           modal?.classList.add('open');
           modal?.setAttribute('aria-hidden', 'false');
+          setTimeout(() => {
+            rebuildArchiveLogicForCurrentContext(false);
+            showArchiveLogicIfCurrentScopeHasData();
+          }, 0);
           event.preventDefault();
           event.stopImmediatePropagation();
           return;
@@ -10327,6 +10527,7 @@
         }
         const confirmArchiveUpload = event.target.closest('[data-confirm-archive-upload]');
         if (confirmArchiveUpload) {
+          storeArchiveLogicConfig(getArchiveLogicCard());
           const modal = document.getElementById('archiveUploadModal');
           modal?.classList.remove('open');
           modal?.setAttribute('aria-hidden', 'true');
@@ -10337,6 +10538,7 @@
           return;
         }
         if (event.target.closest('[data-close-archive-upload]') || event.target.id === 'archiveUploadModal') {
+          storeArchiveLogicConfig(getArchiveLogicCard());
           const modal = document.getElementById('archiveUploadModal');
           modal?.classList.remove('open');
           modal?.setAttribute('aria-hidden', 'true');
