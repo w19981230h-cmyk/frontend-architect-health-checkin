@@ -10169,21 +10169,23 @@
       }
       function isArchiveLogicPlacingActive(card) {
         if (card?.classList.contains('logic-mode') && card.classList.contains('logic-placing')) return true;
-        return Array.from(document.querySelectorAll('[data-add-archive-logic]')).some(btn => {
+        const scopedActive = Array.from(document.querySelectorAll('[data-add-archive-logic]')).some(btn => {
           const text = (btn.textContent || '').trim();
           return btn.classList.contains('is-placing') || text.includes('正在标注');
+        });
+        if (scopedActive) return true;
+        return Array.from(document.querySelectorAll('button, [role="button"]')).some(btn => {
+          const text = (btn.textContent || '').trim();
+          return btn.classList.contains('is-placing') || text.includes('正在标注') || text.includes('标注中');
         });
       }
       function handleArchiveLogicPlacementClick(event) {
         const activeCard = getArchiveLogicCard();
         const scopedCard = event.target.closest?.('.archive-logic-scope.logic-mode.logic-placing');
-        const card = scopedCard || (
-          activeCard
-          && activeCard.contains(event.target)
-          && isArchiveLogicPlacingActive(activeCard)
-            ? activeCard
-            : null
-        );
+        const archivePage = document.getElementById('patientArchivePage');
+        const placingActive = isArchiveLogicPlacingActive(activeCard);
+        const isArchiveAreaClick = archivePage?.contains(event.target) || scopedCard;
+        const card = scopedCard || (activeCard && placingActive && isArchiveAreaClick ? activeCard : null);
         if (!card || isArchiveLogicPlacementBlocked(event.target)) return false;
         card.classList.add('logic-mode', 'logic-placing');
         const rect = card.getBoundingClientRect();
