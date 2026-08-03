@@ -918,6 +918,8 @@
     .archive-logic-btn { height: 32px; padding: 0 14px; display: inline-flex; align-items: center; gap: 7px; border: 1px solid #d8e2f0; border-radius: 4px; color: #334158; background: #fff; font-size: 13px; font-weight: 700; }
     .archive-logic-btn.active { color: #fff; border-color: #3154ff; background: #3154ff; }
     .archive-logic-scope { position: relative; }
+    .archive-logic-click-layer { position: absolute; inset: 56px 0 0 0; z-index: 10; display: none; cursor: crosshair; background: rgba(255,255,255,.01); }
+    .archive-logic-scope.logic-mode.logic-placing > .archive-logic-click-layer { display: block; }
     .archive-logic-point { position: absolute; z-index: 12; width: 22px; height: 22px; display: none; place-items: center; border: 2px solid #fff; border-radius: 50%; color: #fff; background: #3154ff; font-size: 12px; font-weight: 800; box-shadow: 0 6px 16px rgba(49,84,255,.32); cursor: move; user-select: none; }
     .archive-logic-point.active { background: #ff8a00; box-shadow: 0 6px 18px rgba(255,138,0,.36); }
     .archive-logic-scope.logic-mode .archive-logic-point { display: grid; }
@@ -987,6 +989,7 @@
     .archive-upload-modal { position: fixed; inset: 0; z-index: 90; display: none; align-items: center; justify-content: center; background: rgba(17,25,42,.28); }
     .archive-upload-modal.open { display: flex; }
     .archive-upload-dialog { width: min(780px, 86vw); height: min(520px, 72vh); display: grid; grid-template-rows: 72px 1fr 72px; border-radius: 6px; overflow: hidden; background: #fff; box-shadow: 0 18px 54px rgba(18,32,60,.22); }
+    .archive-upload-dialog .archive-logic-click-layer { inset: 72px 0 72px 0; z-index: 2; }
     .archive-upload-head { padding: 0 24px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid #edf0f5; }
     .archive-upload-head h2 { margin: 0; color: #263752; font-size: 18px; font-weight: 800; }
     .archive-upload-head-actions { display: flex; align-items: center; gap: 10px; }
@@ -9985,8 +9988,17 @@
         if (!archiveLogicConfigHasContent(current) && archiveLogicConfigHasContent(saved)) return;
         setArchiveLogicScopedConfig(card, current);
       }
+      function ensureArchiveLogicClickLayer(card) {
+        if (!card || card.querySelector('[data-archive-logic-click-layer]')) return;
+        const drawer = card.querySelector('.archive-logic-drawer');
+        const layer = document.createElement('div');
+        layer.className = 'archive-logic-click-layer';
+        layer.dataset.archiveLogicClickLayer = 'true';
+        card.insertBefore(layer, drawer || card.firstChild);
+      }
       function setArchiveLogicPlacing(card, placing) {
         if (!card) return;
+        ensureArchiveLogicClickLayer(card);
         card.classList.toggle('logic-placing', !!placing);
         card.querySelectorAll('[data-add-archive-logic]').forEach(btn => {
           btn.classList.toggle('is-placing', !!placing);
@@ -10184,9 +10196,11 @@
         const scopedCard = event.target.closest?.('.archive-logic-scope.logic-mode.logic-placing');
         const archivePage = document.getElementById('patientArchivePage');
         const placingActive = isArchiveLogicPlacingActive(activeCard);
-        const isArchiveAreaClick = archivePage?.contains(event.target) || scopedCard;
+        const isClickLayer = !!event.target.closest?.('[data-archive-logic-click-layer]');
+        const isArchiveAreaClick = archivePage?.contains(event.target) || scopedCard || isClickLayer;
         const card = scopedCard || (activeCard && placingActive && isArchiveAreaClick ? activeCard : null);
         if (!card || isArchiveLogicPlacementBlocked(event.target)) return false;
+        ensureArchiveLogicClickLayer(card);
         card.classList.add('logic-mode', 'logic-placing');
         const rect = card.getBoundingClientRect();
         openArchiveLogicPointModal(card, {
