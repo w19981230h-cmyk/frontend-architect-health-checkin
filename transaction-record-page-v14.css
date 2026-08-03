@@ -1,0 +1,356 @@
+body.tr14-mode {
+  margin: 0;
+  overflow: hidden;
+  background: #f4f6ff;
+}
+
+body.tr14-mode > :not(#transaction-record-root-v14):not(#manualRemarkToolbar):not(#manualRemarkEditor):not(.manual-remark-point):not(script):not(style) {
+  display: none !important;
+}
+
+#transaction-record-root-v14 {
+  position: fixed;
+  inset: 0;
+  z-index: 2147483000;
+  color: #172b4d;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Microsoft YaHei", sans-serif;
+  background: #f4f6ff;
+}
+
+.tr14-page {
+  display: flex;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  background: #f4f6ff;
+}
+
+.tr14-sidebar {
+  width: 230px;
+  flex: 0 0 230px;
+  display: flex;
+  flex-direction: column;
+  background: #fff;
+  border-right: 1px solid #eef1f7;
+}
+
+.tr14-logo {
+  height: 72px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 0 22px;
+  border-bottom: 1px solid #eef1f7;
+  font-size: 18px;
+  font-weight: 700;
+  color: #0f2d61;
+}
+
+.tr14-logo-mark {
+  width: 34px;
+  height: 34px;
+  border-radius: 12px;
+  background: conic-gradient(from 155deg, #7757f7, #1c6df2, #ff4f80, #7757f7);
+  position: relative;
+}
+
+.tr14-logo-mark::after {
+  content: "";
+  position: absolute;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: #fff;
+  left: 8px;
+  top: 9px;
+  box-shadow: 13px 8px 0 -4px #fff;
+}
+
+.tr14-nav {
+  flex: 1;
+  padding: 18px 12px;
+  overflow: auto;
+}
+
+.tr14-nav-item,
+.tr14-nav-sub {
+  height: 44px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 0 18px;
+  border-radius: 8px;
+  color: #172b4d;
+  font-size: 15px;
+  font-weight: 600;
+  line-height: 1;
+}
+
+.tr14-nav-item svg {
+  color: #24436f;
+}
+
+.tr14-nav-item .tr14-caret {
+  margin-left: auto;
+  color: #98a6bd;
+}
+
+.tr14-nav-sub {
+  margin-left: 34px;
+  padding: 0 14px;
+  color: #526278;
+  font-weight: 500;
+}
+
+.tr14-nav-sub.tr14-active {
+  color: #1f5eff;
+  background: #eef4ff;
+  font-weight: 600;
+}
+
+.tr14-sidebar-footer {
+  border-top: 1px solid #eef1f7;
+  padding: 14px 12px 16px;
+}
+
+.tr14-message {
+  height: 38px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0 14px;
+  color: #243b63;
+  font-weight: 600;
+}
+
+.tr14-badge {
+  margin-left: auto;
+  min-width: 28px;
+  height: 18px;
+  padding: 0 7px;
+  border-radius: 9px;
+  background: #ff5a6e;
+  color: #fff;
+  font-size: 11px;
+  line-height: 18px;
+  text-align: center;
+}
+
+.tr14-user {
+  margin-top: 12px;
+  height: 56px;
+  border-radius: 10px;
+  background: #f4f7fc;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 0 14px;
+  font-weight: 600;
+}
+
+.tr14-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background:
+    radial-gradient(circle at 50% 34%, #ffd8bf 0 32%, transparent 33%),
+    radial-gradient(circle at 50% 25%, #182b54 0 26%, transparent 27%),
+    linear-gradient(#eaf1ff 0 54%, #4d77ff 55%);
+  border: 1px solid #d9e4ff;
+}
+
+.tr14-collapse {
+  height: 42px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0 18px;
+  color: #526278;
+  font-weight: 600;
+}
+
+.tr14-main {
+  flex: 1;
+  min-width: 0;
+  padding: 22px 24px;
+  overflow: auto;
+}
+
+.tr14-title {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 24px;
+  color: #172b4d;
+  font-size: 22px;
+  font-weight: 700;
+}
+
+.tr14-back {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  border: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: #fff;
+  color: #526278;
+  box-shadow: 0 3px 10px rgba(34, 56, 100, .06);
+}
+
+.tr14-card {
+  max-width: 1160px;
+  min-height: calc(100vh - 110px);
+  border-radius: 14px;
+  background: #fff;
+  box-shadow: 0 18px 42px rgba(41, 73, 132, .06);
+  padding: 24px;
+}
+
+.tr14-filter {
+  height: 72px;
+  border-radius: 8px;
+  background: #f7f8fb;
+  display: flex;
+  align-items: center;
+  gap: 32px;
+  padding: 0 16px;
+}
+
+.tr14-combo {
+  height: 40px;
+  display: flex;
+  border: 1px solid #d8deea;
+  border-radius: 7px;
+  overflow: hidden;
+  background: #fff;
+}
+
+.tr14-combo-label {
+  width: 132px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 14px;
+  border-right: 1px solid #edf0f6;
+  color: #172b4d;
+  font-size: 15px;
+}
+
+.tr14-combo input {
+  width: 220px;
+  border: 0;
+  outline: 0;
+  padding: 0 14px;
+  color: #172b4d;
+  font-size: 14px;
+}
+
+.tr14-combo input::placeholder,
+.tr14-date-box span {
+  color: #b5bfce;
+}
+
+.tr14-date {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: #172b4d;
+  font-weight: 600;
+}
+
+.tr14-date-box {
+  width: 286px;
+  height: 40px;
+  border: 1px solid #e0e5ef;
+  border-radius: 7px;
+  background: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 12px;
+  font-weight: 400;
+}
+
+.tr14-summary {
+  display: flex;
+  gap: 24px;
+  margin: 34px 0 28px;
+  color: #6c7a90;
+  font-size: 14px;
+}
+
+.tr14-table {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
+}
+
+.tr14-table th {
+  height: 52px;
+  padding: 0 16px;
+  background: #fafafa;
+  color: #172b4d;
+  font-size: 14px;
+  font-weight: 700;
+  text-align: left;
+  border-right: 1px solid #f0f1f4;
+}
+
+.tr14-table th:last-child {
+  border-right: 0;
+}
+
+.tr14-table td {
+  height: 54px;
+  padding: 0 16px;
+  border-bottom: 1px solid #eceff5;
+  color: #172b4d;
+  font-size: 14px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.tr14-pagination {
+  margin-top: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  color: #172b4d;
+  font-size: 14px;
+}
+
+.tr14-page-no,
+.tr14-arrow {
+  min-width: 28px;
+  height: 28px;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: #172b4d;
+  font-size: 14px;
+}
+
+.tr14-page-no.tr14-current {
+  border: 1px solid #1f5eff;
+  color: #1f5eff;
+  background: #fff;
+}
+
+.tr14-page-size,
+.tr14-jump {
+  height: 32px;
+  border: 1px solid #dfe5ef;
+  border-radius: 7px;
+  background: #fff;
+  color: #172b4d;
+  padding: 0 12px;
+}
+
+.tr14-jump {
+  width: 48px;
+  padding: 0 8px;
+}

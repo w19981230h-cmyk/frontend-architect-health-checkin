@@ -2513,6 +2513,7 @@
   <link rel="stylesheet" href="transaction-record-page-v16.css">
   <link rel="stylesheet" href="transaction-record-page-v17.css">
   <link rel="stylesheet" href="transaction-record-page-v18.css">
+  <link rel="stylesheet" href="transaction-record-page-v19.css">
 </head>
 <body>
   <section id="listPage" class="page active">
@@ -11959,6 +11960,13 @@
     box-shadow: 0 12px 32px rgba(21, 38, 72, .18);
   }
 
+  body > #manualRemarkToolbar.manual-remark-toolbar {
+    display: flex !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    pointer-events: auto !important;
+  }
+
   .manual-remark-toolbar button {
     height: 36px;
     padding: 0 14px;
@@ -12014,6 +12022,9 @@
     box-shadow: 0 8px 20px rgba(49, 84, 255, .34);
     cursor: move;
     user-select: none;
+    visibility: visible !important;
+    opacity: 1 !important;
+    pointer-events: auto !important;
   }
 
   .manual-remark-point:hover,
@@ -12036,8 +12047,15 @@
     overflow: hidden;
   }
 
+  body > #manualRemarkEditor.manual-remark-editor:not([hidden]) {
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    pointer-events: auto !important;
+  }
+
   .manual-remark-editor[hidden] {
-    display: none;
+    display: none !important;
   }
 
   .manual-remark-editor-head,
@@ -12667,5 +12685,6 @@
   <script src="transaction-record-page-v16.js"></script>
   <script src="transaction-record-page-v17.js"></script>
   <script src="transaction-record-page-v18.js"></script>
+  <script src="transaction-record-page-v19.js"></script>
 </body>
 </html>
