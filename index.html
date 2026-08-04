@@ -10012,9 +10012,10 @@
     style.textContent = `
       .interface-note-toolbar {
         position: fixed;
-        right: 24px;
-        bottom: 24px;
+        right: 16px;
+        bottom: 16px;
         z-index: 2147482000;
+        max-width: calc(100vw - 32px);
         display: flex;
         align-items: center;
         gap: 8px;
@@ -10496,6 +10497,16 @@
     const context = getPageContext();
     if (note.pageId === context.pageId) return true;
 
+    const archivePage = document.getElementById("patientArchivePage");
+    const historyTab = archivePage?.querySelector('[data-archive-tab="history"].active');
+    const isPatientHistoryScene = Boolean(isVisibleNode(archivePage) && isVisibleNode(historyTab));
+    const noteBelongsToPatientHistory = normalizeNoteText(
+      `${note.activeText || ""} ${note.pageId || ""} ${note.pageTitle || ""}`
+    ).includes("病历");
+    const noteIsBaseContext = (!note.contextType || note.contextType === "page")
+      && (!note.contextId || note.contextId === "base");
+    if (isPatientHistoryScene && noteBelongsToPatientHistory && noteIsBaseContext) return true;
+
     // Published pages rebuild parts of the view after navigation. Patient data,
     // counters and visible panels can therefore change viewKey/pageId even when
     // the user is still in the same product scene. Match published notes by the
@@ -10648,7 +10659,7 @@
     const activeNotes = state.notes.filter((note) => note.status !== "deleted");
 
     count.textContent = activeNotes.length > 99 ? "99+" : String(activeNotes.length);
-    toggle.textContent = state.visible ? "隐藏备注" : "显示备注";
+    toggle.textContent = `${state.visible ? "隐藏备注" : "显示备注"}（${activeNotes.length}）`;
     add.textContent = state.adding ? "点击页面打点" : "添加备注";
     add.classList.toggle("warn", state.adding);
     add.hidden = isPublishedReadOnly();
