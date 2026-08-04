@@ -1,11 +1,13 @@
-import { createReadStream, existsSync, mkdirSync, readFileSync, statSync, writeFileSync } from "node:fs";
-import { dirname, extname, join, normalize } from "node:path";
+import { createReadStream, existsSync, readFileSync, renameSync, statSync, writeFileSync } from "node:fs";
+import { dirname, extname, join, normalize, resolve } from "node:path";
+import { fileURLToPath } from "node:url";
 import { createServer } from "node:http";
 
-const root = "D:\\projectnew\\Frontend Architect";
-const port = 5173;
-const archiveLogicStoreFile = join(root, "data", "archive-logic-store.json");
-const manualRemarkStoreFile = join(root, "data", "manual-remarks-store.json");
+const root = dirname(fileURLToPath(import.meta.url));
+const port = Number(process.env.PREVIEW_PORT || 5173);
+const annotationFile = join(root, ".ui-annotations.json");
+const annotationTempFile = join(root, ".ui-annotations.tmp.json");
+const annotationEndpoint = "/__ui_annotations";
 
 const contentTypes = {
   ".html": "text/html; charset=utf-8",
@@ -21,144 +23,122 @@ const contentTypes = {
 
 function fileFor(url) {
   const pathname = decodeURIComponent(new URL(url, "http://localhost").pathname);
-  const requested = normalize(join(root, pathname));
+  const requested = resolve(root, `.${pathname}`);
   if (requested.startsWith(root) && existsSync(requested) && statSync(requested).isFile()) {
     return requested;
   }
   return join(root, "index.html");
 }
 
-function sendJson(res, status, payload) {
-  res.statusCode = status;
-  res.setHeader("Content-Type", "application/json; charset=utf-8");
-  res.end(JSON.stringify(payload));
-}
-
-function readRequestBody(req) {
-  return new Promise((resolve, reject) => {
-    let body = "";
-    req.on("data", chunk => {
-      body += chunk;
-      if (body.length > 1024 * 1024) {
-        reject(new Error("request body too large"));
-        req.destroy();
-      }
-    });
-    req.on("end", () => resolve(body));
-    req.on("error", reject);
-  });
-}
-
-function readJsonStore(file) {
+function readAnnotations() {
   try {
-    if (!existsSync(file)) return {};
-    const value = JSON.parse(readFileSync(file, "utf8") || "{}");
-    return value && typeof value === "object" ? value : {};
+    const parsed = JSON.parse(readFileSync(annotationFile, "utf8"));
+    return parsed && typeof parsed === "object" ? parsed : {};
   } catch {
     return {};
   }
 }
 
-function writeJsonStore(file, store) {
-  mkdirSync(dirname(file), { recursive: true });
-  writeFileSync(file, JSON.stringify(store || {}, null, 2), "utf8");
+function writeAnnotations(data) {
+  writeFileSync(annotationTempFile, JSON.stringify(data), "utf8");
+  renameSync(annotationTempFile, annotationFile);
 }
 
-function readArchiveLogicStore() {
-  return readJsonStore(archiveLogicStoreFile);
-}
-
-function writeArchiveLogicStore(store) {
-  writeJsonStore(archiveLogicStoreFile, store);
-}
-
-async function handleArchiveLogicApi(req, res) {
-  res.setHeader("Access-Control-Allow-Origin", "*");
-  res.setHeader("Access-Control-Allow-Methods", "GET,PUT,DELETE,OPTIONS");
-  res.setHeader("Access-Control-Allow-Headers", "Content-Type");
-  if (req.method === "OPTIONS") {
-    res.statusCode = 204;
-    res.end();
-    return true;
-  }
-  const url = new URL(req.url || "/", "http://localhost");
-  if (url.pathname !== "/api/archive-logic") return false;
-  if (req.method === "GET") {
-    sendJson(res, 200, { ok: true, data: readArchiveLogicStore() });
-    return true;
-  }
-  if (req.method === "PUT") {
-    const payload = JSON.parse(await readRequestBody(req) || "{}");
-    const contextKey = String(payload.contextKey || "").trim();
-    if (!contextKey) {
-      sendJson(res, 400, { ok: false, message: "contextKey is required" });
-      return true;
+function mergeAnnotations(current, incoming) {
+  const currentMeta = current?.__annotationMetaV1 && typeof current.__annotationMetaV1 === "object"
+    ? current.__annotationMetaV1
+    : {};
+  const incomingMeta = incoming?.__annotationMetaV1 && typeof incoming.__annotationMetaV1 === "object"
+    ? incoming.__annotationMetaV1
+    : {};
+  const deletedPoints = {
+    ...(currentMeta.deletedPoints || {}),
+    ...(incomingMeta.deletedPoints || {})
+  };
+  const merged = {
+    ...(current || {}),
+    ...(incoming || {}),
+    __annotationMetaV1: {
+      ...currentMeta,
+      ...incomingMeta,
+      migratedContexts: {
+        ...(currentMeta.migratedContexts || {}),
+        ...(incomingMeta.migratedContexts || {})
+      },
+      deletedPoints
     }
-    const store = readArchiveLogicStore();
-    store[contextKey] = {
-      ...(payload.config || { bodyHtml: "", points: {} }),
-      updatedAt: new Date().toISOString()
-    };
-    writeArchiveLogicStore(store);
-    sendJson(res, 200, { ok: true, data: store[contextKey] });
-    return true;
+  };
+
+  const contextKeys = new Set([...Object.keys(current || {}), ...Object.keys(incoming || {})]);
+  contextKeys.delete("__annotationMetaV1");
+  for (const contextKey of contextKeys) {
+    const currentValue = current?.[contextKey];
+    const incomingValue = incoming?.[contextKey];
+    if (!Array.isArray(currentValue) && !Array.isArray(incomingValue)) continue;
+    const pointMap = new Map();
+    for (const point of [...(Array.isArray(currentValue) ? currentValue : []), ...(Array.isArray(incomingValue) ? incomingValue : [])]) {
+      if (!point?.id || deletedPoints[point.id]) continue;
+      const previous = pointMap.get(point.id);
+      if (!previous) {
+        pointMap.set(point.id, point);
+        continue;
+      }
+      const previousAnchorVersion = Number(previous.anchorVersion || 0);
+      const nextAnchorVersion = Number(point.anchorVersion || 0);
+      const previousTime = Date.parse(previous.updatedAt || previous.createdAt || 0) || 0;
+      const nextTime = Date.parse(point.updatedAt || point.createdAt || 0) || 0;
+      if (nextAnchorVersion > previousAnchorVersion || (nextAnchorVersion === previousAnchorVersion && nextTime >= previousTime)) {
+        pointMap.set(point.id, point);
+      }
+    }
+    merged[contextKey] = [...pointMap.values()];
   }
-  if (req.method === "DELETE") {
-    const contextKey = String(url.searchParams.get("contextKey") || "").trim();
-    const store = readArchiveLogicStore();
-    if (contextKey) delete store[contextKey];
-    writeArchiveLogicStore(store);
-    sendJson(res, 200, { ok: true });
-    return true;
-  }
-  sendJson(res, 405, { ok: false, message: "method not allowed" });
-  return true;
+  return merged;
 }
 
-async function handleManualRemarksApi(req, res) {
-  res.setHeader("Access-Control-Allow-Origin", "*");
-  res.setHeader("Access-Control-Allow-Methods", "GET,POST,OPTIONS");
-  res.setHeader("Access-Control-Allow-Headers", "Content-Type,Accept");
-  if (req.method === "OPTIONS") {
-    res.statusCode = 204;
-    res.end();
-    return true;
-  }
+function sendJson(res, status, data) {
+  res.statusCode = status;
+  res.setHeader("Content-Type", "application/json; charset=utf-8");
+  res.setHeader("Cache-Control", "no-store");
+  res.end(JSON.stringify(data));
+}
+
+createServer((req, res) => {
   const url = new URL(req.url || "/", "http://localhost");
-  if (url.pathname !== "/api/manual-remarks") return false;
-  const store = readJsonStore(manualRemarkStoreFile);
-  const projectId = url.searchParams.get("projectId") || "frontend-architect-health-checkin";
-  if (req.method === "GET") {
-    sendJson(res, 200, store[projectId] || { remarks: [] });
-    return true;
-  }
-  if (req.method === "POST") {
-    const payload = JSON.parse(await readRequestBody(req) || "{}");
-    const targetProjectId = String(payload.projectId || projectId);
-    store[targetProjectId] = {
-      remarks: Array.isArray(payload.remarks) ? payload.remarks : [],
-      updatedAt: new Date().toISOString()
-    };
-    writeJsonStore(manualRemarkStoreFile, store);
-    sendJson(res, 200, { ok: true, ...store[targetProjectId] });
-    return true;
-  }
-  sendJson(res, 405, { ok: false, message: "method not allowed" });
-  return true;
-}
-
-createServer(async (req, res) => {
-  try {
-    if (await handleArchiveLogicApi(req, res)) return;
-    if (await handleManualRemarksApi(req, res)) return;
-  } catch (error) {
-    sendJson(res, 500, { ok: false, message: error?.message || "server error" });
+  if (url.pathname === annotationEndpoint && req.method === "GET") {
+    sendJson(res, 200, readAnnotations());
     return;
   }
+  if (url.pathname === annotationEndpoint && req.method === "PUT") {
+    let body = "";
+    req.setEncoding("utf8");
+    req.on("data", chunk => {
+      body += chunk;
+      if (body.length > 2_000_000) req.destroy();
+    });
+    req.on("end", () => {
+      try {
+        const data = JSON.parse(body || "{}");
+        if (!data || typeof data !== "object" || Array.isArray(data)) throw new Error("invalid payload");
+        writeAnnotations(mergeAnnotations(readAnnotations(), data));
+        sendJson(res, 200, { ok: true });
+      } catch {
+        sendJson(res, 400, { ok: false, message: "Invalid annotation data" });
+      }
+    });
+    return;
+  }
+  if (url.pathname === annotationEndpoint) {
+    sendJson(res, 405, { ok: false });
+    return;
+  }
+
   const file = fileFor(req.url || "/");
   res.setHeader("Content-Type", contentTypes[extname(file)] || "application/octet-stream");
   res.setHeader("Cache-Control", "no-store, no-cache, must-revalidate, proxy-revalidate");
   res.setHeader("Pragma", "no-cache");
   res.setHeader("Expires", "0");
   createReadStream(file).pipe(res);
-}).listen(port, "127.0.0.1");
+}).listen(port, "127.0.0.1", () => {
+  console.log(`Preview server listening on http://127.0.0.1:${port}`);
+});
