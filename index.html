@@ -9774,6 +9774,8 @@
       const ARCHIVE_LOGIC_SCOPED_STORAGE_KEY = 'archiveHistoryLogicScopedConfigV1';
       const ARCHIVE_LOGIC_SCOPED_BACKUP_KEY = 'archiveHistoryLogicScopedBackupV1';
       const ARCHIVE_LOGIC_VISIBLE_KEY = 'archiveHistoryLogicVisibleV1';
+      const ARCHIVE_LOGIC_API_BASE = window.ARCHIVE_LOGIC_API_BASE || (location.protocol === 'file:' ? 'http://127.0.0.1:5173' : '');
+      const ARCHIVE_LOGIC_API_URL = `${ARCHIVE_LOGIC_API_BASE}/api/archive-logic`;
       const ARCHIVE_LOGIC_EXPORT_KEYS = [
         ARCHIVE_LOGIC_SCOPED_STORAGE_KEY,
         ARCHIVE_LOGIC_SCOPED_BACKUP_KEY,
@@ -9988,6 +9990,43 @@
       }
       function writeArchiveLogicStore(key, store) {
         localStorage.setItem(key, JSON.stringify(store || {}));
+      }
+      function syncArchiveLogicConfigToServer(contextKey, config) {
+        if (!contextKey || !window.fetch) return;
+        fetch(ARCHIVE_LOGIC_API_URL, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ contextKey, config })
+        }).catch(() => {});
+      }
+      function deleteArchiveLogicConfigFromServer(contextKey) {
+        if (!contextKey || !window.fetch) return;
+        fetch(`${ARCHIVE_LOGIC_API_URL}?contextKey=${encodeURIComponent(contextKey)}`, {
+          method: 'DELETE'
+        }).catch(() => {});
+      }
+      function loadArchiveLogicConfigFromServer() {
+        if (!window.fetch) return;
+        fetch(ARCHIVE_LOGIC_API_URL)
+          .then(response => response.ok ? response.json() : null)
+          .then(payload => {
+            const incoming = payload?.data;
+            if (!incoming || typeof incoming !== 'object') return;
+            const current = readArchiveLogicStore(ARCHIVE_LOGIC_SCOPED_STORAGE_KEY);
+            let changed = false;
+            Object.entries(incoming).forEach(([contextKey, config]) => {
+              const normalized = normalizeArchiveLogicCandidate(config);
+              if (!normalized) return;
+              current[contextKey] = normalized;
+              changed = true;
+            });
+            if (!changed) return;
+            writeArchiveLogicStore(ARCHIVE_LOGIC_SCOPED_STORAGE_KEY, current);
+            rebuildArchiveLogicForCurrentContext(false);
+            showArchiveLogicIfCurrentScopeHasData();
+            syncArchiveLogicGlobalContext();
+          })
+          .catch(() => {});
       }
       function backupArchiveLogicStoresBeforeImport() {
         try {
@@ -10253,13 +10292,17 @@
       }
       function setArchiveLogicScopedConfig(card, config) {
         const store = readArchiveLogicStore();
-        store[getArchiveLogicContextKey(card)] = config || { bodyHtml: '', points: {} };
+        const contextKey = getArchiveLogicContextKey(card);
+        store[contextKey] = config || { bodyHtml: '', points: {} };
         writeArchiveLogicStore(ARCHIVE_LOGIC_SCOPED_STORAGE_KEY, store);
+        syncArchiveLogicConfigToServer(contextKey, store[contextKey]);
       }
       function removeArchiveLogicScopedConfig(card) {
         const store = readArchiveLogicStore();
-        delete store[getArchiveLogicContextKey(card)];
+        const contextKey = getArchiveLogicContextKey(card);
+        delete store[contextKey];
         writeArchiveLogicStore(ARCHIVE_LOGIC_SCOPED_STORAGE_KEY, store);
+        deleteArchiveLogicConfigFromServer(contextKey);
       }
       function setArchiveLogicEmptyState(card) {
         if (!card) return;
@@ -10658,7 +10701,7 @@
           '[contenteditable="true"]'
         ].join(','));
       }
-      function openArchiveLogicPointModal(card, pendingPosition = null) {
+      function openArchiveLogicPointModal(card, pendingPosition = null, editingKey = '') {
         if (!card) return;
         let modal = document.getElementById('archiveLogicPointModal');
         const numbers = Array.from(card.querySelectorAll('.archive-logic-point'))
@@ -10686,11 +10729,25 @@
             </div>`);
           modal = document.getElementById('archiveLogicPointModal');
         }
+        const normalizedEditingKey = String(editingKey || '').replace(/^p/, '');
+        const editingSection = normalizedEditingKey
+          ? card.querySelector(`.archive-logic-section[data-logic-section="${normalizedEditingKey}"]`)
+          : null;
+        const editingTitle = editingSection
+          ? Array.from(editingSection.querySelector('h3')?.childNodes || [])
+            .filter(node => !(node.nodeType === 1 && node.tagName === 'SPAN'))
+            .map(node => node.textContent || '')
+            .join('')
+            .trim()
+          : '';
+        const editingRules = editingSection?.querySelector('.archive-logic-rules')?.textContent?.trim() || '';
         modal.__archiveLogicCard = card;
         modal.__archiveLogicPendingPosition = pendingPosition;
-        modal.querySelector('[data-archive-logic-point-number]').value = next;
-        modal.querySelector('[data-archive-logic-point-title]').value = '';
-        modal.querySelector('[data-archive-logic-point-lines]').value = '';
+        modal.dataset.archiveLogicMode = editingSection ? 'edit' : 'create';
+        modal.querySelector('.archive-logic-point-head strong').textContent = editingSection ? '编辑批注' : '新增批注';
+        modal.querySelector('[data-archive-logic-point-number]').value = editingSection ? normalizedEditingKey : next;
+        modal.querySelector('[data-archive-logic-point-title]').value = editingTitle;
+        modal.querySelector('[data-archive-logic-point-lines]').value = editingRules;
         modal.classList.add('open');
         modal.setAttribute('aria-hidden', 'false');
         setTimeout(() => modal.querySelector('[data-archive-logic-point-title]')?.focus(), 0);
@@ -10708,6 +10765,25 @@
         }
         if (!String(title || '').trim()) {
           if (typeof showToast === 'function') showToast('请填写说明标题。', 'top');
+          return;
+        }
+        if (modal.dataset.archiveLogicMode === 'edit') {
+          const section = card.querySelector(`.archive-logic-section[data-logic-section="${number}"]`);
+          if (section) {
+            const safeTitle = escapeArchiveLogicHtml(String(title).trim());
+            const safeLines = escapeArchiveLogicHtml(String(lines || '请填写规则说明。').trim());
+            const head = section.querySelector('h3');
+            const rules = section.querySelector('.archive-logic-rules');
+            if (head) head.innerHTML = `<span>${number}</span>${safeTitle}`;
+            if (rules) rules.innerHTML = safeLines;
+            showArchiveLogicSection(card, String(number));
+            storeArchiveLogicConfig(card);
+            if (typeof showToast === 'function') showToast('批注已更新', 'top');
+          }
+          modal.__archiveLogicPendingPosition = null;
+          modal.classList.remove('open');
+          modal.setAttribute('aria-hidden', 'true');
+          syncArchiveLogicGlobalContext();
           return;
         }
         const pendingPosition = modal.__archiveLogicPendingPosition || {};
@@ -11429,7 +11505,9 @@
             event.stopImmediatePropagation();
             return;
           }
-          showArchiveLogicSection(getArchiveLogicScopeFromNode(archiveLogicPoint), archiveLogicPoint.dataset.logicPoint);
+          const card = getArchiveLogicScopeFromNode(archiveLogicPoint);
+          showArchiveLogicSection(card, archiveLogicPoint.dataset.logicPoint);
+          openArchiveLogicPointModal(card, null, archiveLogicPoint.dataset.logicPoint);
           event.preventDefault();
           event.stopImmediatePropagation();
           return;
@@ -11777,6 +11855,7 @@
         archivePage.scrollTop = 0;
         archivePage.scrollLeft = 0;
       }, true);
+      loadArchiveLogicConfigFromServer();
     })();
   </script>
   <!-- Upload modal patch scripts are intentionally disabled on initial page load.
@@ -12165,7 +12244,7 @@
   const PROJECT_ID = 'frontend-architect-health-checkin';
   const STORAGE_KEY = 'manualUiRemarksV1';
   const VISIBLE_KEY = 'manualUiRemarksVisibleV1';
-  const API_URL = window.UI_REMARK_API_URL || window.ARCHIVE_ANNOTATION_API_URL || '';
+  const API_URL = window.UI_REMARK_API_URL || window.ARCHIVE_ANNOTATION_API_URL || (location.protocol === 'file:' ? 'http://127.0.0.1:5173/api/manual-remarks' : '/api/manual-remarks');
   let store = { remarks: [] };
   let remarksVisible = localStorage.getItem(VISIBLE_KEY) !== '0';
   let addMode = false;
