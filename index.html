@@ -2042,6 +2042,7 @@
     .ui-annotation-toggle::before { content: '+'; width: 18px; height: 18px; display: grid; place-items: center; border: 1.5px solid currentColor; border-radius: 50%; font-size: 16px; line-height: 1; }
     .ui-annotation-toggle.active { color: #fff; background: #ff8a00; box-shadow: 0 5px 14px rgba(255,138,0,.24); }
     .ui-annotation-count { min-width: 28px; height: 28px; padding: 0 7px; display: grid; place-items: center; border-radius: 999px; color: #3154ff; background: #eef3ff; font-size: 12px; font-weight: 800; }
+    .ui-annotation-sync-status { max-width: 112px; overflow: hidden; color: #7d899c; font-size: 12px; font-weight: 700; white-space: nowrap; text-overflow: ellipsis; }
     body.ui-annotation-mode .page.active,
     body.ui-annotation-mode [role="dialog"][aria-modal="true"],
     body.ui-annotation-mode .ui-annotation-root { cursor: crosshair !important; }
@@ -10650,6 +10651,7 @@
   let editingId = '';
   let annotationSyncTimer = 0;
   let annotationSyncBusy = false;
+  let annotationSyncStatusTimer = 0;
   let annotationStaticLoaded = false;
   let annotationDrag = null;
   let suppressAnnotationClick = false;
@@ -10665,7 +10667,8 @@
 
   function writeAnnotationStore(store) {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(store));
-    scheduleAnnotationSync();
+    setAnnotationSyncStatus('待同步');
+    scheduleAnnotationSync(0);
   }
 
   function mergeAnnotationStores(localStore, remoteStore) {
@@ -10731,6 +10734,18 @@
     annotationSyncTimer = setTimeout(syncAnnotationStore, delay);
   }
 
+  function setAnnotationSyncStatus(text, autoClear = false) {
+    const status = document.getElementById('uiAnnotationSyncStatus');
+    if (!status) return;
+    clearTimeout(annotationSyncStatusTimer);
+    status.textContent = text || '';
+    status.title = text || '';
+    if (autoClear) annotationSyncStatusTimer = setTimeout(() => {
+      status.textContent = '';
+      status.title = '';
+    }, 2200);
+  }
+
   function applySyncedArchiveLogic(store) {
     const syncedArchiveLogic = store?.[ARCHIVE_LOGIC_SYNC_KEY];
     if (!syncedArchiveLogic || typeof syncedArchiveLogic !== 'object') return false;
@@ -10757,9 +10772,11 @@
       if (mergedJson !== localJson) {
         localStorage.setItem(STORAGE_KEY, mergedJson);
         renderScopedAnnotations();
+        setAnnotationSyncStatus('已读取项目备注', true);
         return true;
       }
       if (archiveChanged) renderScopedAnnotations();
+      if (archiveChanged) setAnnotationSyncStatus('已读取项目备注', true);
       return archiveChanged;
     } catch (error) {
       return false;
@@ -10787,9 +10804,11 @@
         headers: { 'Content-Type': 'application/json' },
         body: mergedJson
       });
+      setAnnotationSyncStatus('已保存到项目', true);
       if (mergedJson !== localJson || archiveChanged) renderScopedAnnotations();
     } catch (error) {
-      await loadStaticAnnotationStore();
+      const loadedStatic = await loadStaticAnnotationStore();
+      if (!loadedStatic) setAnnotationSyncStatus('仅本机保存');
     } finally {
       annotationSyncBusy = false;
     }
@@ -10965,6 +10984,7 @@
         <div class="ui-annotation-toolbar" id="uiAnnotationToolbar">
           <button class="ui-annotation-toggle" id="uiAnnotationToggle" type="button" title="开启后点击界面空白位置添加备注；按住 Alt 可在控件上打点">界面标注</button>
           <span class="ui-annotation-count" id="uiAnnotationCount" title="当前页面的备注数量">0</span>
+          <span class="ui-annotation-sync-status" id="uiAnnotationSyncStatus" title=""></span>
         </div>
         <section class="ui-annotation-editor" id="uiAnnotationEditor" aria-hidden="true">
           <div class="ui-annotation-editor-head"><strong id="uiAnnotationEditorTitle">备注点</strong><button class="ui-annotation-editor-close" type="button" data-close-ui-annotation aria-label="关闭">×</button></div>
