@@ -7,6 +7,8 @@ const root = dirname(fileURLToPath(import.meta.url));
 const port = Number(process.env.PREVIEW_PORT || 5173);
 const annotationFile = join(root, ".ui-annotations.json");
 const annotationTempFile = join(root, ".ui-annotations.tmp.json");
+const publicAnnotationFile = join(root, "ui-annotations.json");
+const publicAnnotationTempFile = join(root, "ui-annotations.tmp.json");
 const annotationEndpoint = "/__ui_annotations";
 
 const contentTypes = {
@@ -35,13 +37,21 @@ function readAnnotations() {
     const parsed = JSON.parse(readFileSync(annotationFile, "utf8"));
     return parsed && typeof parsed === "object" ? parsed : {};
   } catch {
-    return {};
+    try {
+      const parsed = JSON.parse(readFileSync(publicAnnotationFile, "utf8"));
+      return parsed && typeof parsed === "object" ? parsed : {};
+    } catch {
+      return {};
+    }
   }
 }
 
 function writeAnnotations(data) {
-  writeFileSync(annotationTempFile, JSON.stringify(data), "utf8");
+  const payload = JSON.stringify(data);
+  writeFileSync(annotationTempFile, payload, "utf8");
   renameSync(annotationTempFile, annotationFile);
+  writeFileSync(publicAnnotationTempFile, payload, "utf8");
+  renameSync(publicAnnotationTempFile, publicAnnotationFile);
 }
 
 function mergeAnnotations(current, incoming) {

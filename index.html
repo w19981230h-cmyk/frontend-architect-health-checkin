@@ -10641,6 +10641,7 @@
 
   const STORAGE_KEY = 'uiScopedAnnotationsV1';
   const ANNOTATION_SYNC_URL = '/__ui_annotations';
+  const ANNOTATION_STATIC_URL = 'ui-annotations.json';
   const ARCHIVE_LOGIC_SYNC_KEY = '__archiveLogicConfigV2';
   let annotationMode = false;
   let currentContext = '';
@@ -10649,6 +10650,7 @@
   let editingId = '';
   let annotationSyncTimer = 0;
   let annotationSyncBusy = false;
+  let annotationStaticLoaded = false;
   let annotationDrag = null;
   let suppressAnnotationClick = false;
 
@@ -10729,34 +10731,65 @@
     annotationSyncTimer = setTimeout(syncAnnotationStore, delay);
   }
 
+  function applySyncedArchiveLogic(store) {
+    const syncedArchiveLogic = store?.[ARCHIVE_LOGIC_SYNC_KEY];
+    if (!syncedArchiveLogic || typeof syncedArchiveLogic !== 'object') return false;
+    const archiveLogicJson = JSON.stringify(syncedArchiveLogic);
+    if (localStorage.getItem('archiveHistoryLogicConfigV2') === archiveLogicJson) return false;
+    localStorage.setItem('archiveHistoryLogicConfigV2', archiveLogicJson);
+    window.__refreshArchiveLogicPointPositions?.();
+    return true;
+  }
+
+  async function loadStaticAnnotationStore() {
+    if (annotationStaticLoaded || !window.fetch) return false;
+    annotationStaticLoaded = true;
+    try {
+      const response = await fetch(ANNOTATION_STATIC_URL, { cache: 'no-store' });
+      if (!response.ok) return false;
+      const staticStore = await response.json();
+      if (!staticStore || typeof staticStore !== 'object' || Array.isArray(staticStore)) return false;
+      const localStore = readAnnotationStore();
+      const mergedStore = mergeAnnotationStores(localStore, staticStore);
+      const localJson = JSON.stringify(localStore);
+      const mergedJson = JSON.stringify(mergedStore);
+      const archiveChanged = applySyncedArchiveLogic(mergedStore);
+      if (mergedJson !== localJson) {
+        localStorage.setItem(STORAGE_KEY, mergedJson);
+        renderScopedAnnotations();
+        return true;
+      }
+      if (archiveChanged) renderScopedAnnotations();
+      return archiveChanged;
+    } catch (error) {
+      return false;
+    }
+  }
+
   async function syncAnnotationStore() {
     if (annotationSyncBusy) return;
     annotationSyncBusy = true;
     try {
       const response = await fetch(ANNOTATION_SYNC_URL, { cache: 'no-store' });
-      if (!response.ok) return;
+      if (!response.ok) {
+        await loadStaticAnnotationStore();
+        return;
+      }
       const remoteStore = await response.json();
       const localStore = readAnnotationStore();
       const mergedStore = mergeAnnotationStores(localStore, remoteStore);
       const localJson = JSON.stringify(localStore);
       const mergedJson = JSON.stringify(mergedStore);
       if (mergedJson !== localJson) localStorage.setItem(STORAGE_KEY, mergedJson);
-      const syncedArchiveLogic = mergedStore[ARCHIVE_LOGIC_SYNC_KEY];
-      if (syncedArchiveLogic && typeof syncedArchiveLogic === 'object') {
-        const archiveLogicJson = JSON.stringify(syncedArchiveLogic);
-        if (localStorage.getItem('archiveHistoryLogicConfigV2') !== archiveLogicJson) {
-          localStorage.setItem('archiveHistoryLogicConfigV2', archiveLogicJson);
-          window.__refreshArchiveLogicPointPositions?.();
-        }
-      }
+      const archiveChanged = applySyncedArchiveLogic(mergedStore);
       await fetch(ANNOTATION_SYNC_URL, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: mergedJson
       });
-      if (mergedJson !== localJson) renderScopedAnnotations();
+      if (mergedJson !== localJson || archiveChanged) renderScopedAnnotations();
     } catch (error) {
-      // Static hosting without the preview sync endpoint keeps using localStorage.
+      await loadStaticAnnotationStore();
     } finally {
       annotationSyncBusy = false;
     }
