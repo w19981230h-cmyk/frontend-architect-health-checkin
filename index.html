@@ -10368,6 +10368,20 @@
     return document.title || "页面";
   }
 
+  function isOpenOverlayNode(node) {
+    if (!isVisibleNode(node)) return false;
+    if (node.closest('[aria-hidden="true"],[hidden]')) return false;
+    const rect = node.getBoundingClientRect();
+    const intersectsViewport = rect.right > 0
+      && rect.bottom > 0
+      && rect.left < window.innerWidth
+      && rect.top < window.innerHeight;
+    if (!intersectsViewport) return false;
+    if (node.matches(".archive-parse-drawer") && !node.classList.contains("open")) return false;
+    if (node.matches(".order-detail-drawer") && !node.classList.contains("active")) return false;
+    return true;
+  }
+
   function getOverlayContext() {
     const explicitSelectors = [
       "#archiveParseDrawer.open",
@@ -10381,7 +10395,7 @@
     ];
     const explicitTarget = Array.from(document.querySelectorAll(explicitSelectors.join(",")))
       .filter((node) => !node.closest("#interfaceNoteEditor"))
-      .find(isVisibleNode);
+      .find(isOpenOverlayNode);
     const selectors = [
       "[role='dialog']",
       ".ant-modal",
@@ -10400,7 +10414,7 @@
     const candidates = (explicitTarget ? [explicitTarget] : Array.from(document.querySelectorAll(selectors.join(","))))
       .filter((node) => !node.closest("#interfaceNoteEditor"))
       .filter((node) => !node.classList.contains("interface-note-modal-mask"))
-      .filter(isVisibleNode);
+      .filter(isOpenOverlayNode);
     if (!candidates.length) return null;
     const target = candidates
       .map((node, index) => ({
@@ -10712,7 +10726,7 @@
 
     let apiLoaded = false;
     try {
-      const url = `${API_URL}?projectId=${encodeURIComponent(state.projectId)}&pageId=${encodeURIComponent(state.pageId)}`;
+      const url = `${API_URL}?projectId=${encodeURIComponent(state.projectId)}`;
       const response = await fetch(url, { cache: "no-store" });
       const payload = await response.json();
       if (payload?.ok && Array.isArray(payload.data)) {
@@ -11217,6 +11231,14 @@
     attributes: true,
     attributeFilter: ["class", "aria-current", "aria-selected", "aria-hidden", "hidden", "style"]
   });
+  setInterval(() => {
+    if (state.loading) return;
+    const nextContext = getPageContext();
+    if (nextContext.pageId === state.pageId) return;
+    closePopover();
+    state.pageContext = nextContext;
+    loadNotes();
+  }, 300);
   loadNotes();
 })();
 </script>
