@@ -9751,5 +9751,714 @@
 })();
 </script>
 
+<script>
+(function initInterfaceNotes() {
+  const PROJECT_ID = "frontend-architect-health-checkin";
+  const API_URL = "/api/interface-notes";
+  const STATIC_DATA_URL = "data/interface-notes.json";
+  const state = {
+    notes: [],
+    visible: true,
+    adding: false,
+    editing: null,
+    pageId: "",
+    projectId: PROJECT_ID,
+    loading: false
+  };
+
+  const esc = (value) => String(value ?? "").replace(/[&<>"']/g, (char) => ({
+    "&": "&amp;",
+    "<": "&lt;",
+    ">": "&gt;",
+    '"': "&quot;",
+    "'": "&#39;"
+  }[char]));
+
+  function assertAnnotationService() {
+    if (location.protocol === "file:") {
+      throw new Error("请通过 http://127.0.0.1:5173/index.html 打开页面后保存备注，file:// 模式无法连接备注服务");
+    }
+  }
+
+  function injectStyle() {
+    if (document.getElementById("interface-note-style")) return;
+    const style = document.createElement("style");
+    style.id = "interface-note-style";
+    style.textContent = `
+      .interface-note-toolbar {
+        position: fixed;
+        right: 24px;
+        bottom: 24px;
+        z-index: 2147482000;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 8px;
+        border: 1px solid #dbe6ff;
+        border-radius: 12px;
+        background: rgba(255, 255, 255, .96);
+        box-shadow: 0 10px 28px rgba(28, 56, 120, .18);
+        backdrop-filter: blur(8px);
+      }
+      .interface-note-btn {
+        border: 1px solid #2f55ff;
+        border-radius: 8px;
+        background: #fff;
+        color: #2451ff;
+        height: 36px;
+        padding: 0 14px;
+        font-size: 14px;
+        font-weight: 600;
+        cursor: pointer;
+      }
+      .interface-note-btn.primary {
+        background: #2451ff;
+        color: #fff;
+        box-shadow: 0 8px 16px rgba(36, 81, 255, .18);
+      }
+      .interface-note-btn.warn {
+        border-color: #ff8a00;
+        background: #ff8a00;
+        color: #fff;
+      }
+      .interface-note-count {
+        min-width: 26px;
+        height: 26px;
+        border-radius: 999px;
+        background: #edf3ff;
+        color: #2451ff;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 13px;
+        font-weight: 700;
+      }
+      .interface-note-layer {
+        position: absolute;
+        left: 0;
+        top: 0;
+        z-index: 2147481500;
+        pointer-events: none;
+      }
+      .interface-note-point {
+        position: absolute;
+        width: 24px;
+        height: 24px;
+        border-radius: 999px;
+        border: 2px solid #fff;
+        background: #2451ff;
+        color: #fff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 13px;
+        font-weight: 700;
+        line-height: 1;
+        cursor: grab;
+        pointer-events: auto;
+        box-shadow: 0 8px 18px rgba(36, 81, 255, .35);
+        user-select: none;
+      }
+      .interface-note-point.dragging {
+        cursor: grabbing;
+        transform: scale(1.08);
+      }
+      .interface-note-popover {
+        position: absolute;
+        width: 260px;
+        border: 1px solid #dbe6ff;
+        border-radius: 10px;
+        background: #fff;
+        color: #172b4d;
+        pointer-events: auto;
+        box-shadow: 0 12px 28px rgba(28, 56, 120, .18);
+        overflow: hidden;
+      }
+      .interface-note-popover-head {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+        padding: 10px 12px;
+        border-bottom: 1px solid #eef3ff;
+        font-size: 14px;
+        font-weight: 700;
+      }
+      .interface-note-popover-body {
+        padding: 10px 12px;
+        font-size: 13px;
+        line-height: 1.7;
+        color: #42526e;
+        white-space: pre-wrap;
+      }
+      .interface-note-popover-actions {
+        display: flex;
+        justify-content: flex-end;
+        gap: 8px;
+        padding: 10px 12px;
+        border-top: 1px solid #eef3ff;
+      }
+      .interface-note-modal-mask {
+        position: fixed;
+        inset: 0;
+        z-index: 2147482500;
+        background: rgba(15, 23, 42, .34);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .interface-note-modal {
+        width: 440px;
+        max-width: calc(100vw - 32px);
+        border-radius: 12px;
+        background: #fff;
+        box-shadow: 0 24px 56px rgba(15, 23, 42, .22);
+        overflow: hidden;
+      }
+      .interface-note-modal-head {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 18px 20px;
+        border-bottom: 1px solid #eef3ff;
+        font-size: 16px;
+        font-weight: 700;
+        color: #172b4d;
+      }
+      .interface-note-close {
+        border: 0;
+        background: #f3f6fc;
+        color: #60708f;
+        border-radius: 999px;
+        width: 30px;
+        height: 30px;
+        font-size: 18px;
+        cursor: pointer;
+      }
+      .interface-note-form {
+        display: grid;
+        gap: 12px;
+        padding: 18px 20px;
+      }
+      .interface-note-field label {
+        display: block;
+        margin-bottom: 6px;
+        color: #52627a;
+        font-size: 13px;
+      }
+      .interface-note-field input,
+      .interface-note-field textarea {
+        width: 100%;
+        box-sizing: border-box;
+        border: 1px solid #d9e2f2;
+        border-radius: 8px;
+        padding: 10px 12px;
+        color: #172b4d;
+        font-size: 14px;
+        outline: none;
+        background: #fff;
+      }
+      .interface-note-field textarea {
+        min-height: 110px;
+        resize: vertical;
+        line-height: 1.6;
+      }
+      .interface-note-field input:focus,
+      .interface-note-field textarea:focus {
+        border-color: #2451ff;
+        box-shadow: 0 0 0 3px rgba(36, 81, 255, .1);
+      }
+      .interface-note-modal-actions {
+        display: flex;
+        justify-content: flex-end;
+        gap: 10px;
+        padding: 14px 20px 18px;
+      }
+      .interface-note-toast {
+        position: fixed;
+        left: 50%;
+        top: 24px;
+        z-index: 2147483000;
+        transform: translateX(-50%);
+        padding: 10px 16px;
+        border-radius: 999px;
+        background: rgba(15, 23, 42, .9);
+        color: #fff;
+        font-size: 14px;
+        box-shadow: 0 10px 28px rgba(15, 23, 42, .2);
+      }
+      .interface-note-crosshair {
+        cursor: crosshair !important;
+      }
+    `;
+    document.head.appendChild(style);
+  }
+
+  function getActiveText() {
+    const candidates = Array.from(document.querySelectorAll(".active,.is-active,[aria-current='page'],.selected"));
+    return candidates
+      .map((item) => item.textContent.trim().replace(/\s+/g, " "))
+      .filter(Boolean)
+      .slice(0, 6)
+      .join("/");
+  }
+
+  function getPageTitle() {
+    const selectors = [
+      ".page-title",
+      ".content-title",
+      ".main-title",
+      "main h1",
+      "main h2",
+      ".workspace-title",
+      "h1",
+      "h2"
+    ];
+    for (const selector of selectors) {
+      const node = document.querySelector(selector);
+      const text = node?.textContent?.trim();
+      if (text) return text.replace(/\s+/g, " ");
+    }
+    return document.title || "页面";
+  }
+
+  function getPageId() {
+    const stablePath = (location.pathname || "/")
+      .split("/")
+      .filter(Boolean)
+      .pop() || "index.html";
+    return [
+      stablePath,
+      location.hash || "#",
+      getPageTitle(),
+      getActiveText()
+    ].join("|").slice(0, 420);
+  }
+
+  function isCurrentPageNote(note) {
+    if (note.projectId !== state.projectId || note.status === "deleted") return false;
+    if (note.pageId === state.pageId) return true;
+    if (note.pageTitle && note.pageTitle === getPageTitle() && (!note.activeText || note.activeText === getActiveText())) return true;
+    return false;
+  }
+
+  function getNextNumber() {
+    const used = state.notes
+      .filter((note) => note.status !== "deleted")
+      .map((note) => Number(note.number))
+      .filter((number) => Number.isFinite(number));
+    let number = 1;
+    while (used.includes(number)) number += 1;
+    return number;
+  }
+
+  function clampPosition(x, y) {
+    const width = Math.max(document.documentElement.scrollWidth, document.body.scrollWidth, window.innerWidth);
+    const height = Math.max(document.documentElement.scrollHeight, document.body.scrollHeight, window.innerHeight);
+    return {
+      x: Math.max(8, Math.min(width - 8, x)),
+      y: Math.max(8, Math.min(height - 8, y)),
+      pageWidth: width,
+      pageHeight: height
+    };
+  }
+
+  function ensureShell() {
+    injectStyle();
+    let layer = document.getElementById("interfaceNoteLayer");
+    if (!layer) {
+      layer = document.createElement("div");
+      layer.id = "interfaceNoteLayer";
+      layer.className = "interface-note-layer";
+      document.body.appendChild(layer);
+    }
+
+    let toolbar = document.getElementById("interfaceNoteToolbar");
+    if (!toolbar) {
+      toolbar = document.createElement("div");
+      toolbar.id = "interfaceNoteToolbar";
+      toolbar.className = "interface-note-toolbar";
+      toolbar.innerHTML = `
+        <button type="button" class="interface-note-btn primary" data-note-action="add">添加备注</button>
+        <button type="button" class="interface-note-btn" data-note-action="toggle">隐藏备注</button>
+        <span class="interface-note-count" data-note-count>0</span>
+      `;
+      document.body.appendChild(toolbar);
+      toolbar.addEventListener("click", (event) => {
+        const action = event.target.closest("[data-note-action]")?.dataset.noteAction;
+        if (!action) return;
+        event.preventDefault();
+        event.stopPropagation();
+        if (action === "add") startAdding();
+        if (action === "toggle") toggleNotes();
+      });
+    }
+  }
+
+  function render() {
+    ensureShell();
+    const layer = document.getElementById("interfaceNoteLayer");
+    const count = document.querySelector("[data-note-count]");
+    const toggle = document.querySelector("[data-note-action='toggle']");
+    const add = document.querySelector("[data-note-action='add']");
+    const activeNotes = state.notes.filter((note) => note.status !== "deleted");
+
+    count.textContent = activeNotes.length > 99 ? "99+" : String(activeNotes.length);
+    toggle.textContent = state.visible ? "隐藏备注" : "显示备注";
+    add.textContent = state.adding ? "点击页面打点" : "添加备注";
+    add.classList.toggle("warn", state.adding);
+    layer.style.display = state.visible ? "block" : "none";
+    document.documentElement.classList.toggle("interface-note-crosshair", state.adding);
+    layer.innerHTML = "";
+
+    if (!state.visible) return;
+    activeNotes
+      .sort((a, b) => Number(a.number) - Number(b.number))
+      .forEach((note) => {
+        const point = document.createElement("button");
+        point.type = "button";
+        point.className = "interface-note-point";
+        point.dataset.noteId = note.id;
+        point.textContent = note.number;
+        point.title = note.title || `备注 ${note.number}`;
+        point.style.left = `${Number(note.x || 0) - 12}px`;
+        point.style.top = `${Number(note.y || 0) - 12}px`;
+        layer.appendChild(point);
+      });
+  }
+
+  function toast(message) {
+    const old = document.querySelector(".interface-note-toast");
+    old?.remove();
+    const node = document.createElement("div");
+    node.className = "interface-note-toast";
+    node.textContent = message;
+    document.body.appendChild(node);
+    setTimeout(() => node.remove(), 2200);
+  }
+
+  async function loadNotes() {
+    state.pageId = getPageId();
+    state.loading = true;
+    let apiLoaded = false;
+    try {
+      const url = `${API_URL}?projectId=${encodeURIComponent(state.projectId)}&pageId=${encodeURIComponent(state.pageId)}`;
+      const response = await fetch(url, { cache: "no-store" });
+      const payload = await response.json();
+      if (payload?.ok && Array.isArray(payload.data)) {
+        state.notes = payload.data.filter(isCurrentPageNote);
+        apiLoaded = state.notes.length > 0;
+      }
+    } catch {}
+
+    if (!apiLoaded) {
+      try {
+        const response = await fetch(`${STATIC_DATA_URL}?v=${Date.now()}`, { cache: "no-store" });
+        const payload = await response.json();
+        state.notes = Array.isArray(payload)
+          ? payload.filter(isCurrentPageNote)
+          : [];
+      } catch {
+        state.notes = [];
+      }
+    }
+
+    state.loading = false;
+    render();
+  }
+
+  async function persistNote(note) {
+    assertAnnotationService();
+    const response = await fetch(API_URL, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(note)
+    });
+    let payload = null;
+    try {
+      payload = await response.json();
+    } catch {}
+    if (!response.ok || payload?.ok === false) {
+      throw new Error(payload?.message || "备注保存失败");
+    }
+    return payload.data || note;
+  }
+
+  async function deleteNote(note) {
+    assertAnnotationService();
+    const response = await fetch(`${API_URL}/${encodeURIComponent(note.id)}`, { method: "DELETE" });
+    if (!response.ok) throw new Error("备注删除失败");
+  }
+
+  function ensureUniqueNumber(number, id) {
+    const duplicate = state.notes.some((note) => (
+      note.status !== "deleted" &&
+      note.id !== id &&
+      String(note.number) === String(number)
+    ));
+    if (!duplicate) return true;
+    toast("当前页面已存在相同备注编号，请修改后保存");
+    return false;
+  }
+
+  function startAdding() {
+    state.visible = true;
+    state.adding = true;
+    closePopover();
+    render();
+    toast("请在页面内容上点击需要备注的位置");
+  }
+
+  function toggleNotes() {
+    state.visible = !state.visible;
+    state.adding = false;
+    closePopover();
+    render();
+  }
+
+  function createDraft(event) {
+    const position = clampPosition(event.pageX, event.pageY);
+    return {
+      id: "",
+      projectId: state.projectId,
+      pageId: state.pageId,
+      number: getNextNumber(),
+      title: "",
+      content: "",
+      x: position.x,
+      y: position.y,
+      pageWidth: position.pageWidth,
+      pageHeight: position.pageHeight,
+      status: "active"
+    };
+  }
+
+  function openEditor(note) {
+    closePopover();
+    const editing = { ...note };
+    state.editing = editing;
+    const mask = document.createElement("div");
+    mask.className = "interface-note-modal-mask";
+    mask.id = "interfaceNoteEditor";
+    mask.innerHTML = `
+      <div class="interface-note-modal" role="dialog" aria-modal="true">
+        <div class="interface-note-modal-head">
+          <span>${editing.id ? "编辑备注" : "添加备注"}</span>
+          <button type="button" class="interface-note-close" data-editor-action="close">×</button>
+        </div>
+        <div class="interface-note-form">
+          <div class="interface-note-field">
+            <label>备注编号</label>
+            <input type="number" min="1" step="1" data-note-field="number" value="${esc(editing.number)}">
+          </div>
+          <div class="interface-note-field">
+            <label>备注标题</label>
+            <input type="text" data-note-field="title" value="${esc(editing.title)}" placeholder="请输入需要调整的标题">
+          </div>
+          <div class="interface-note-field">
+            <label>备注内容</label>
+            <textarea data-note-field="content" placeholder="请输入需要修改的数字、文案、展示内容或交互说明">${esc(editing.content)}</textarea>
+          </div>
+        </div>
+        <div class="interface-note-modal-actions">
+          ${editing.id ? '<button type="button" class="interface-note-btn" data-editor-action="delete">删除</button>' : ""}
+          <button type="button" class="interface-note-btn" data-editor-action="close">取消</button>
+          <button type="button" class="interface-note-btn primary" data-editor-action="save">保存</button>
+        </div>
+      </div>
+    `;
+    document.body.appendChild(mask);
+    mask.addEventListener("click", handleEditorClick);
+  }
+
+  async function handleEditorClick(event) {
+    const action = event.target.closest("[data-editor-action]")?.dataset.editorAction;
+    if (!action) {
+      if (event.target.id === "interfaceNoteEditor") closeEditor();
+      return;
+    }
+    event.preventDefault();
+    event.stopPropagation();
+
+    if (action === "close") {
+      closeEditor();
+      return;
+    }
+
+    if (action === "delete") {
+      if (!state.editing?.id || !window.confirm("确认删除当前备注？")) return;
+      try {
+        await deleteNote(state.editing);
+        state.notes = state.notes.filter((note) => note.id !== state.editing.id);
+        closeEditor();
+        render();
+        toast("备注已删除");
+      } catch (error) {
+        toast(error.message || "备注删除失败");
+      }
+      return;
+    }
+
+    if (action === "save") {
+      const modal = document.getElementById("interfaceNoteEditor");
+      const number = Number(modal.querySelector("[data-note-field='number']").value);
+      const title = modal.querySelector("[data-note-field='title']").value.trim();
+      const content = modal.querySelector("[data-note-field='content']").value.trim();
+      if (!Number.isFinite(number) || number <= 0) {
+        toast("备注编号请输入大于 0 的数字");
+        return;
+      }
+      if (!ensureUniqueNumber(number, state.editing.id)) return;
+      const note = {
+        ...state.editing,
+        number,
+        title: title || `备注 ${number}`,
+        content,
+        projectId: state.projectId,
+        pageId: state.pageId,
+        status: "active"
+      };
+      try {
+        const saved = await persistNote(note);
+        const index = state.notes.findIndex((item) => item.id === saved.id);
+        if (index >= 0) state.notes[index] = saved;
+        else state.notes.push(saved);
+        closeEditor();
+        render();
+        toast("备注已保存");
+      } catch (error) {
+        toast(error.message || "备注保存失败");
+      }
+    }
+  }
+
+  function closeEditor() {
+    document.getElementById("interfaceNoteEditor")?.remove();
+    state.editing = null;
+  }
+
+  function closePopover() {
+    document.querySelector(".interface-note-popover")?.remove();
+  }
+
+  function openPopover(note) {
+    closePopover();
+    const popover = document.createElement("div");
+    popover.className = "interface-note-popover";
+    popover.style.left = `${Math.min(note.x + 18, window.scrollX + window.innerWidth - 280)}px`;
+    popover.style.top = `${Math.max(8, note.y + 18)}px`;
+    popover.innerHTML = `
+      <div class="interface-note-popover-head">
+        <span>${esc(note.number)}. ${esc(note.title || "备注")}</span>
+        <button type="button" class="interface-note-close" data-popover-action="close">×</button>
+      </div>
+      <div class="interface-note-popover-body">${esc(note.content || "暂无备注内容")}</div>
+      <div class="interface-note-popover-actions">
+        <button type="button" class="interface-note-btn" data-popover-action="edit">编辑</button>
+      </div>
+    `;
+    document.body.appendChild(popover);
+    popover.addEventListener("click", (event) => {
+      const action = event.target.closest("[data-popover-action]")?.dataset.popoverAction;
+      if (action === "close") closePopover();
+      if (action === "edit") openEditor(note);
+    });
+  }
+
+  function findNote(id) {
+    return state.notes.find((note) => note.id === id);
+  }
+
+  function handleDocumentClick(event) {
+    const inTool = event.target.closest(".interface-note-toolbar,.interface-note-modal-mask,.interface-note-popover,.interface-note-point");
+    if (state.adding && !inTool) {
+      event.preventDefault();
+      event.stopPropagation();
+      state.adding = false;
+      openEditor(createDraft(event));
+      render();
+      return;
+    }
+
+    const point = event.target.closest(".interface-note-point");
+    if (point) {
+      event.preventDefault();
+      event.stopPropagation();
+      const note = findNote(point.dataset.noteId);
+      if (note) openPopover(note);
+    }
+  }
+
+  function handlePointerDown(event) {
+    const point = event.target.closest(".interface-note-point");
+    if (!point || !state.visible) return;
+    const note = findNote(point.dataset.noteId);
+    if (!note) return;
+    event.preventDefault();
+    event.stopPropagation();
+    closePopover();
+    point.classList.add("dragging");
+    const startX = event.pageX;
+    const startY = event.pageY;
+    const originX = Number(note.x || 0);
+    const originY = Number(note.y || 0);
+    let moved = false;
+
+    const onMove = (moveEvent) => {
+      moved = true;
+      const position = clampPosition(originX + moveEvent.pageX - startX, originY + moveEvent.pageY - startY);
+      note.x = position.x;
+      note.y = position.y;
+      note.pageWidth = position.pageWidth;
+      note.pageHeight = position.pageHeight;
+      point.style.left = `${note.x - 12}px`;
+      point.style.top = `${note.y - 12}px`;
+    };
+
+    const onUp = async () => {
+      point.classList.remove("dragging");
+      window.removeEventListener("pointermove", onMove, true);
+      window.removeEventListener("pointerup", onUp, true);
+      if (!moved) return;
+      try {
+        const saved = await persistNote(note);
+        Object.assign(note, saved);
+        toast("备注位置已保存");
+      } catch (error) {
+        toast(error.message || "备注位置保存失败");
+        loadNotes();
+      }
+    };
+
+    window.addEventListener("pointermove", onMove, true);
+    window.addEventListener("pointerup", onUp, true);
+  }
+
+  let refreshTimer = null;
+  function schedulePageRefresh() {
+    clearTimeout(refreshTimer);
+    refreshTimer = setTimeout(() => {
+      const nextPageId = getPageId();
+      if (nextPageId !== state.pageId) loadNotes();
+      else render();
+    }, 180);
+  }
+
+  ensureShell();
+  document.addEventListener("click", handleDocumentClick, true);
+  document.addEventListener("pointerdown", handlePointerDown, true);
+  window.addEventListener("popstate", loadNotes);
+  window.addEventListener("hashchange", loadNotes);
+  window.addEventListener("resize", render);
+  new MutationObserver(schedulePageRefresh).observe(document.body, {
+    childList: true,
+    subtree: true,
+    attributes: true,
+    attributeFilter: ["class", "aria-current"]
+  });
+  loadNotes();
+})();
+</script>
+
 </body>
 </html>
