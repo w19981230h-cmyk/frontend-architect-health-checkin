@@ -1103,6 +1103,7 @@
     .history-ai-summary { margin: 16px 16px 0; padding: 14px 16px; border: 1px solid #dbe8ff; border-radius: 8px; background: linear-gradient(135deg, #f8fbff, #f4f7ff); color: #34435f; font-size: 14px; line-height: 1.8; }
     .history-ai-summary strong { display: inline-flex; align-items: center; margin-right: 8px; color: #1d4dff; font-weight: 900; }
     .history-info-card, .history-interpret-card, .history-sync-card { margin-bottom: 16px; border: 1px solid #dfe7f2; border-radius: 8px; background: #fff; overflow: hidden; }
+    .history-interpret-card { container-type: inline-size; }
     .history-card-title { min-height: 42px; padding: 0 16px; display: flex; align-items: center; justify-content: space-between; gap: 12px; border-bottom: 1px solid #e8eef6; color: #22314c; font-size: 15px; font-weight: 800; }
     .history-card-title-note { color: #98a4b4; font-size: 12px; font-weight: 500; }
     .history-info-grid { padding: 16px; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px 20px; }
@@ -1116,6 +1117,53 @@
     .history-interpret-row.abnormal strong { color: #d68a00; }
     .history-interpret-row.analysis { background: #f8fbff; }
     .history-interpret-row.suggestion { background: #fbfff9; border-color: #e0efd9; }
+    .history-report-body { padding: 18px 16px 16px; display: grid; gap: 18px; background: #fbfcff; }
+    .history-report-section { border: 1px solid #e1e8f2; border-radius: 10px; background: #fff; overflow: hidden; box-shadow: 0 3px 10px rgba(42, 67, 104, .035); }
+    .history-report-section-head { min-height: 48px; padding: 0 16px; display: flex; align-items: center; gap: 10px; border-bottom: 1px solid #edf1f6; }
+    .history-report-section-index { width: 24px; height: 24px; display: inline-flex; align-items: center; justify-content: center; border-radius: 7px; color: #fff; background: #3154ff; font-size: 12px; font-weight: 800; }
+    .history-report-section-title { color: #22314c; font-size: 14px; font-weight: 800; }
+    .history-report-section-desc { margin-left: auto; color: #8b98aa; font-size: 12px; }
+    .history-report-result { padding: 16px; color: #42516a; font-size: 14px; line-height: 1.8; }
+    .history-report-status { height: 24px; padding: 0 9px; display: inline-flex; align-items: center; border-radius: 999px; font-size: 12px; font-weight: 800; white-space: nowrap; }
+    .history-report-status.normal { color: #12845b; background: #eaf8f2; }
+    .history-report-status.attention { color: #b86b0a; background: #fff3d8; }
+    .history-key-data-wrap { overflow-x: auto; }
+    .history-key-data-table { width: 100%; min-width: 760px; }
+    .history-key-data-head, .history-key-data-row { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); align-items: center; justify-items: center; }
+    .history-key-data-head { min-height: 40px; color: #738198; background: #f6f8fc; border-bottom: 1px solid #e8edf4; font-size: 12px; font-weight: 700; }
+    .history-key-data-head > span, .history-key-data-cell { width: 100%; padding: 0 10px; text-align: center; }
+    .history-key-data-row { min-height: 54px; color: #40506a; border-bottom: 1px solid #eef2f7; font-size: 13px; line-height: 1.5; }
+    .history-key-data-row:last-child { border-bottom: 0; }
+    .history-key-data-row:hover { background: #fafcff; }
+    .history-key-data-name, .history-key-data-result { color: #22314c; font-weight: 800; }
+    .history-key-data-row.is-extra { display: none; }
+    .history-key-data.is-expanded .history-key-data-row.is-extra { display: grid; }
+    .history-key-data-footer { padding: 10px 16px; display: flex; justify-content: center; border-top: 1px solid #edf1f6; background: #fbfcff; }
+    .history-key-data-toggle { min-height: 32px; padding: 0 12px; display: inline-flex; align-items: center; gap: 6px; border: 0; border-radius: 6px; color: #3154ff; background: transparent; font-size: 13px; font-weight: 700; cursor: pointer; }
+    .history-key-data-toggle:hover { background: #eef3ff; }
+    .history-key-data-toggle:focus-visible { outline: 2px solid #3154ff; outline-offset: 2px; }
+    .history-key-data-toggle svg { width: 14px; height: 14px; fill: none; stroke: currentColor; stroke-width: 2; transition: transform .16s cubic-bezier(.16, 1, .3, 1); }
+    .history-key-data.is-expanded .history-key-data-toggle svg { transform: rotate(180deg); }
+    .history-report-copy { padding: 16px; color: #42516a; font-size: 14px; line-height: 1.85; }
+    .history-report-section.analysis .history-report-section-index { background: #4870e8; }
+    .history-report-section.suggestion .history-report-section-index { background: #25a477; }
+    .history-report-section.suggestion { border-color: #dcece5; }
+    @container (max-width: 700px) {
+      .history-report-body { padding: 12px; gap: 12px; }
+      .history-report-section-head { min-height: 44px; padding: 0 12px; }
+      .history-report-section-desc { display: none; }
+      .history-report-result { padding: 14px 12px; }
+      .history-key-data-wrap { overflow: visible; }
+      .history-key-data-table { min-width: 0; padding: 10px; display: grid; gap: 10px; }
+      .history-key-data-head { display: none; }
+      .history-key-data-row { min-height: 0; padding: 8px; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 2px 8px; border: 1px solid #e7ecf4; border-radius: 8px; background: #fff; }
+      .history-key-data-row.is-extra { display: none; }
+      .history-key-data.is-expanded .history-key-data-row.is-extra { display: grid; }
+      .history-key-data-cell { min-height: 44px; padding: 6px 8px; text-align: left; overflow-wrap: anywhere; }
+      .history-key-data-cell::before { content: attr(data-label); display: block; margin-bottom: 3px; color: #8a97aa; font-size: 11px; font-weight: 600; }
+      .history-report-copy { padding: 14px 12px; }
+    }
+    @media (prefers-reduced-motion: reduce) { .history-key-data-toggle svg { transition: none; } }
     .history-sync-summary { padding: 16px; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
     .history-sync-item { min-height: 80px; padding: 14px 16px; border: 1px solid #e2e9f3; border-radius: 8px; background: linear-gradient(180deg, #fbfdff, #f7faff); }
     .history-sync-item span { display: block; margin-bottom: 10px; color: #7b8799; font-size: 12px; }
@@ -2313,6 +2361,7 @@
   </style>
 </head>
 <body>
+  <script src="./save-persistence-final.js"></script>
   <section id="listPage" class="page active">
     <div class="list-app">
       <aside class="sidebar">
@@ -2328,6 +2377,7 @@
           <div class="menu-section"><div class="menu-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M4 19V8a3 3 0 0 1 3-3h10a3 3 0 0 1 3 3v11"/><path d="M8 19v-5h8v5"/></svg><span>运营管理</span><svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="m18 15-6-6-6 6"/></svg></div><div class="submenu"><div class="submenu-item">统计报表</div></div></div>
           <div class="menu-section"><div class="menu-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M12 3 7 21M12 3l5 18M5 9h14M5 15h14"/></svg><span>AI医助</span><svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="m8 10 4 4 4-4"/></svg></div></div>
           <div class="menu-section"><div class="menu-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M12 8a4 4 0 1 0 0 8 4 4 0 0 0 0-8Z"/><path d="M4 12h2m12 0h2M12 4v2m0 12v2"/></svg><span>系统管理</span><svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="m18 15-6-6-6 6"/></svg></div><div class="submenu"><div class="submenu-item" data-list-view="indicator">指标模板</div></div></div>
+          <div class="menu-section"><div class="menu-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="4" y="5" width="16" height="14" rx="2"/><path d="M8 9h8M8 13h8M8 17h5"/></svg><span>服务管理</span><svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="m18 15-6-6-6 6"/></svg></div><div class="submenu"><div class="submenu-item" data-service-view="packages">服务包管理</div><div class="submenu-item" data-service-view="orders">订单管理</div><div class="submenu-item" data-service-view="transactions">交易记录</div></div></div>
         </nav>
         <div class="sidebar-bottom"><div class="bottom-line"></div><div class="notice"><div class="notice-left"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M18 8a6 6 0 1 0-12 0c0 7-3 6-3 9h18c0-3-3-2-3-9"/><path d="M10 21h4"/></svg><span>消息通知</span></div><span class="badge">99+</span></div><div class="user-card"><div class="avatar"></div><strong>平台技术人员</strong><svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="m9 18 6-6-6-6"/></svg></div><div class="collapse"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M4 7h14M4 12h10M4 17h14"/></svg></div></div>
       </aside>
@@ -2702,13 +2752,13 @@
           <div class="dashboard-grid" id="indicatorCards"></div>
         </section>
         <section class="list-panel list-view patient-list-panel" id="patientListView">
-          <div class="patient-list-toolbar">
-            <label class="search patient-list-search"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="11" cy="11" r="7"/><path d="m16.5 16.5 4 4"/></svg><input id="patientListSearch" placeholder="患者姓名/就诊卡号/手机号码"></label>
+          <div class="patient-list-toolbar" data-persistence-ignore>
+            <label class="search patient-list-search"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="11" cy="11" r="7"/><path d="m16.5 16.5 4 4"/></svg><input id="patientListSearch" placeholder="患者姓名/就诊卡号/手机号码" autocomplete="off"></label>
             <select class="patient-team-filter" id="patientTeamFilter"><option value="">请选择患者已加入团队</option><option>呼吸内科随访团队</option><option>小儿科随访团队</option><option>妇科随访团队</option><option>泌尿外科随访团队</option><option>肿瘤科随访团队</option></select>
             <button class="patient-filter-btn" data-toggle-patient-filter><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M4 5h16l-6 7v6l-4 2v-8Z"/></svg>更多筛选</button>
             <button class="icon-button" data-patient-column-setting title="字段设置"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M6 4h4v16H6zM14 4h4v16h-4z"/><path d="M4 8h8M12 16h8"/></svg></button>
           </div>
-          <div class="patient-advanced-panel" id="patientAdvancedPanel"><div class="patient-advanced-grid"><label>性别<select><option>全部</option><option>男</option><option>女</option></select></label><label>年龄<select><option>全部</option><option>0-18岁</option><option>19-60岁</option><option>60岁以上</option></select></label><label>最近科室<select><option>全部科室</option><option>肿瘤科</option><option>妇科</option><option>泌尿外科</option></select></label><label>最近日期<select><option>全部时间</option><option>近7天</option><option>近30天</option></select></label></div><div class="patient-advanced-actions"><button class="reset" data-reset-patient-filter>重置</button><button class="apply" data-apply-patient-filter>确定</button></div></div>
+          <div class="patient-advanced-panel" id="patientAdvancedPanel" data-persistence-ignore><div class="patient-advanced-grid"><label>性别<select><option>全部</option><option>男</option><option>女</option></select></label><label>年龄<select><option>全部</option><option>0-18岁</option><option>19-60岁</option><option>60岁以上</option></select></label><label>最近科室<select><option>全部科室</option><option>肿瘤科</option><option>妇科</option><option>泌尿外科</option></select></label><label>最近日期<select><option>全部时间</option><option>近7天</option><option>近30天</option></select></label></div><div class="patient-advanced-actions"><button class="reset" data-reset-patient-filter>重置</button><button class="apply" data-apply-patient-filter>确定</button></div></div>
           <div class="patient-list-table-wrap"><table class="patient-list-table"><thead><tr><th class="patient-name-col">姓名</th><th class="visit-col">就诊卡号</th><th class="age-col">年龄</th><th class="gender-col">性别</th><th class="phone-col">手机号码</th><th class="dept-col">最近就诊科室</th><th class="diagnosis-col">最近诊断</th><th class="date-col">最近就诊日期</th><th class="team-col">已加入团队</th><th class="patient-action-col">操作</th></tr></thead><tbody id="patientListRows"></tbody></table></div>
           <div class="pager patient-list-pager"><span class="total">共 78593 条</span><button class="page-btn disabled">‹</button><button class="page-btn active" data-patient-page="1">1</button><button class="page-btn" data-patient-page="2">2</button><button class="page-btn" data-patient-page="3">3</button><button class="page-btn" data-patient-page="4">4</button><button class="page-btn" data-patient-page="5">5</button><span class="ellipsis">...</span><button class="page-btn" data-patient-page="7860">7860</button><button class="page-btn" data-patient-page="next">›</button><button class="page-select">10 条/页⌄</button><span>跳至</span><span class="jump-input" contenteditable="true"></span><span>页</span></div>
         </section>
@@ -3166,7 +3216,7 @@
               <h2 class="archive-history-title">病历档案</h2>
               <div class="archive-history-actions">
                 <button class="archive-parse-btn" data-archive-parse-report><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M4 5h16v14H4z"/><path d="M8 9h8M8 13h5"/></svg>解析报告<span class="archive-parse-badge" data-archive-parse-count></span></button>
-                <button class="archive-upload-btn" data-open-archive-upload><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M12 5v14M5 12h14"/></svg>上传资料</button>
+                <button class="archive-upload-btn" data-open-archive-upload><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M12 5v14M5 12h14"/></svg>报告上传</button>
               </div>
             </header>
             <aside class="archive-history-list">
@@ -3454,6 +3504,19 @@
       { name: '黄灿芳', visitNo: '441282198102054523', age: '45', gender: '女', phone: '152****1012', department: '妇科', diagnosis: '未获取', visitDate: '2026/06/12', team: '妇科随访团队、行风办满意... (2)' }
     ];
     const patientListState = { keyword: '', team: '', page: 1 };
+
+    function clearPatientQueryConditions() {
+      patientListState.keyword = '';
+      patientListState.team = '';
+      patientListState.page = 1;
+      const search = document.getElementById('patientListSearch');
+      const team = document.getElementById('patientTeamFilter');
+      const advancedPanel = document.getElementById('patientAdvancedPanel');
+      if (search) search.value = '';
+      if (team) team.selectedIndex = 0;
+      advancedPanel?.querySelectorAll('select').forEach(select => select.selectedIndex = 0);
+      advancedPanel?.classList.remove('open');
+    }
     const patientEditState = { dirty: false, draft: null };
     const patientPageState = { dirty: false, saving: false, publishing: false, editingId: null, creating: false, returnView: 'indicator' };
     const patientIndicatorState = { items: [] };
@@ -7089,6 +7152,7 @@
       }
       const listView = e.target.closest('[data-list-view]');
       if (listView) {
+        if (listView.dataset.listView === 'patients') clearPatientQueryConditions();
         showListView(listView.dataset.listView);
         return;
       }
@@ -7658,6 +7722,7 @@
 
     renderList();
     renderIndicatorList();
+    clearPatientQueryConditions();
     renderPatientList();
     renderPatientDetail();
     renderCheckinPanel();
@@ -8730,7 +8795,7 @@
                 <h2 class="archive-history-title">病历档案</h2>
                 <div class="archive-history-actions">
                   <button class="archive-parse-btn" data-archive-parse-report><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M4 5h16v14H4z"/><path d="M8 9h8M8 13h5"/></svg>解析报告<span class="archive-parse-badge" data-archive-parse-count></span></button>
-                  <button class="archive-upload-btn" data-open-archive-upload><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M12 5v14M5 12h14"/></svg>上传资料</button>
+                  <button class="archive-upload-btn" data-open-archive-upload><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M12 5v14M5 12h14"/></svg>报告上传</button>
                 </div>
               </header>
               <aside class="archive-history-list">
@@ -8825,7 +8890,7 @@
 
       function archiveHistoryExternalFile(id, time, title, uploadText) {
         return `<div class="history-external-file" data-history-file="${id}" data-history-group="report">
-          <span class="history-file-meta"><span class="history-file-time">${time}</span><span class="history-file-name">${title}</span><span class="history-upload-tag ${uploadText === '患者上传' ? 'patient' : 'nurse'}">${uploadText}</span></span>
+          <span class="history-file-meta"><span class="history-file-time">${archiveReportDateOnly(time)}</span><span class="history-file-name">${title}</span><span class="history-upload-tag ${uploadText === '患者上传' ? 'patient' : 'nurse'}">${uploadText}</span></span>
         </div>`;
       }
 
@@ -8859,6 +8924,45 @@
         return ['就诊记录', '处方记录', '报告单'].includes(value) ? value : '报告单';
       }
 
+      function archiveHistoryKeyData(record) {
+        return record.keyData || [
+          { category: '报告单', type: '检验报告', name: '空腹血糖', result: '7.2 mmol/L', status: '需关注', referenceRange: '3.9–6.1 mmol/L', extra: '参考范围：3.9–6.1 mmol/L', date: '2026-08-04' },
+          { category: '报告单', type: 'CT报告', name: '肺结节', result: '约6mm', status: '需关注', referenceRange: '--', extra: '检查部位：右肺上叶', date: '2026-08-04' },
+          { category: '就诊记录', type: '出院记录', name: '出院诊断', result: '急性胆囊炎', status: '需关注', referenceRange: '--', extra: '建议按出院医嘱复诊', date: '2026-08-04' },
+          { category: '处方记录', type: '处方记录', name: '阿托伐他汀', result: '20mg', status: '正常', referenceRange: '--', extra: '剂量用法：每晚一次', date: '2026-08-04' },
+          { category: '报告单', type: '检验报告', name: '血红蛋白', result: '132 g/L', status: '正常', referenceRange: '115–150 g/L', extra: '参考范围：115–150 g/L', date: '2026-08-04' }
+        ];
+      }
+
+      function renderArchiveKeyData(record) {
+        const rows = archiveHistoryKeyData(record);
+        const abnormalCount = rows.filter(item => item.status !== '正常').length;
+        return `<section class="history-report-section history-key-data" data-history-key-data>
+          <div class="history-report-section-head">
+            <span class="history-report-section-index">2</span>
+            <span class="history-report-section-title">关键数据</span>
+            <span class="history-report-section-desc">共 ${rows.length} 条：异常 ${abnormalCount} 条</span>
+          </div>
+          <div class="history-key-data-wrap">
+            <div class="history-key-data-table" role="table" aria-label="AI解读关键数据">
+              <div class="history-key-data-head" role="row"><span role="columnheader">分类</span><span role="columnheader">名称</span><span role="columnheader">结果</span><span role="columnheader">状态</span><span role="columnheader">参考范围</span><span role="columnheader">报告时间</span></div>
+              ${rows.map((item, index) => {
+                const status = item.status === '正常' ? '正常' : '需关注';
+                const statusClass = status === '正常' ? 'normal' : 'attention';
+                return `<article class="history-key-data-row${index >= 3 ? ' is-extra' : ''}" role="row">
+                  <div class="history-key-data-cell" role="cell" data-label="分类">${item.category}</div><div class="history-key-data-cell" role="cell" data-label="名称"><span class="history-key-data-name">${item.name}</span></div>
+                  <div class="history-key-data-cell" role="cell" data-label="结果"><span class="history-key-data-result">${item.result}</span></div>
+                  <div class="history-key-data-cell" role="cell" data-label="状态"><span class="history-report-status ${statusClass}">${status}</span></div>
+                  <div class="history-key-data-cell" role="cell" data-label="参考范围">${item.referenceRange || '--'}</div>
+                  <div class="history-key-data-cell" role="cell" data-label="报告时间">${item.date}</div>
+                </article>`;
+              }).join('')}
+            </div>
+          </div>
+          ${rows.length > 3 ? `<div class="history-key-data-footer"><button class="history-key-data-toggle" type="button" aria-expanded="false"><span>展开更多（${rows.length - 3}）</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></button></div>` : ''}
+        </section>`;
+      }
+
       function renderManualUploadHistory(record) {
         const interpretation = record.interpretation || {
           abnormal: '暂无明确异常项。',
@@ -8877,18 +8981,28 @@
                 <div class="history-manual-meta-item"><span>就诊医院</span><strong>${record.hospital || '未填写'}</strong></div>
               </div>
               ${canEdit ? '' : '<div class="history-manual-lock-note">内容由患者自己上传，不允许修改删除。</div>'}
-              <div class="history-upload-title">上传资料</div>
+              <div class="history-upload-title">原件资料</div>
               <div class="history-manual-thumbs" aria-label="报告图片缩略图">
                 <button class="history-manual-thumb image active" data-history-preview-thumb aria-label="查看上传图片"><i></i></button>
                 <button class="history-manual-thumb pdf" data-history-preview-thumb aria-label="查看PDF资料"><i></i></button>
               </div>
             </section>
             <section class="history-interpret-card">
-              <div class="history-card-title"><span>AI智能分析</span><span class="history-card-title-note">内容由AI生成，请仔细辨别</span></div>
-              <div class="history-interpret-list">
-                <div class="history-interpret-row abnormal"><strong>异常</strong><span>${interpretation.abnormal}</span></div>
-                <div class="history-interpret-row analysis"><strong>智能分析</strong><span>${interpretation.analysis}</span></div>
-                <div class="history-interpret-row suggestion"><strong>智能建议</strong><span>${interpretation.suggestion}</span></div>
+              <div class="history-card-title"><span>AI解读报告</span><span class="history-card-title-note">内容由AI生成，仅供参考，请结合原件判断</span></div>
+              <div class="history-report-body">
+                <section class="history-report-section result">
+                  <div class="history-report-section-head"><span class="history-report-section-index">1</span><span class="history-report-section-title">结果</span><span class="history-report-section-desc">综合结论</span></div>
+                  <div class="history-report-result">${interpretation.abnormal}</div>
+                </section>
+                ${renderArchiveKeyData(record)}
+                <section class="history-report-section analysis">
+                  <div class="history-report-section-head"><span class="history-report-section-index">3</span><span class="history-report-section-title">智能分析</span></div>
+                  <div class="history-report-copy">${interpretation.analysis}</div>
+                </section>
+                <section class="history-report-section suggestion">
+                  <div class="history-report-section-head"><span class="history-report-section-index">4</span><span class="history-report-section-title">健康建议</span></div>
+                  <div class="history-report-copy">${interpretation.suggestion}</div>
+                </section>
               </div>
             </section>
           </section>`;
@@ -9117,7 +9231,7 @@
                 <h2 class="archive-history-title">病历档案</h2>
                 <div class="archive-history-actions">
                   <button class="archive-parse-btn" data-archive-parse-report><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M4 5h16v14H4z"/><path d="M8 9h8M8 13h5"/></svg>解析报告<span class="archive-parse-badge" data-archive-parse-count></span></button>
-                  <button class="archive-upload-btn" data-open-archive-upload><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M12 5v14M5 12h14"/></svg>上传资料</button>
+                  <button class="archive-upload-btn" data-open-archive-upload><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M12 5v14M5 12h14"/></svg>报告上传</button>
                 </div>
               </header>
               <aside class="archive-history-list">
@@ -9290,13 +9404,17 @@
       ];
       const archiveParseStatusText = { running: '解析中', pending: '待补充', done: '已完成', failed: '已失败' };
       const archiveParseSelectOptions = {
-        patient: ['陈患者', '黄尚忠', '张患者', '李智明', '黄可睿', '冯金柳', '农业宝', '余玉梅', '梁再兴', '韦望林', '刘五妹', '陈惠者', '孙患者', '周患者', '李患者', '王患者', '赵患者', '钱患者', '吴患者', '郑患者', '冯患者', '刘患者', '何患者', '高患者'],
         type: ['就诊记录', '处方记录', '报告单']
       };
       let archiveParseActiveTab = 'all';
+      function archiveCurrentPatientName() {
+        return document.querySelector('#patientArchivePage [data-archive-text="name"]')?.textContent.trim() || '未识别';
+      }
       function archiveParseComboboxMarkup(kind, value, placeholder) {
-        const options = archiveParseSelectOptions[kind] || [];
-        return `<input type="text" value="${value || ''}" placeholder="${placeholder}" autocomplete="off" data-archive-combobox="${kind}"><div class="archive-combobox-menu">${options.map(option => `<div class="archive-combobox-option" data-archive-combobox-option="${option}">${option}</div>`).join('')}</div>`;
+        const options = kind === 'patient' ? [archiveCurrentPatientName()] : (archiveParseSelectOptions[kind] || []);
+        const displayValue = kind === 'patient' ? options[0] : (value || '');
+        const readOnly = kind === 'patient' ? ' readonly aria-readonly="true"' : '';
+        return `<input type="text" value="${displayValue}" placeholder="${placeholder}" autocomplete="off" data-archive-combobox="${kind}"${readOnly}><div class="archive-combobox-menu">${options.map(option => `<div class="archive-combobox-option" data-archive-combobox-option="${option}">${option}</div>`).join('')}</div>`;
       }
       function filterArchiveParseCombobox(input, showAll = false) {
         const field = input?.closest('.archive-parse-field.searchable');
@@ -9344,7 +9462,7 @@
         }
         return `<article class="archive-parse-card">
           <div class="archive-parse-card-head">
-            <div class="archive-parse-title"><strong>${displayTitle}</strong><span>报告时间：${displayTime}</span></div>
+            <div class="archive-parse-title"><strong>${displayTitle}</strong>${item.status === 'running' ? '' : `<span>报告时间：${displayTime}</span>`}</div>
             <span class="archive-parse-status ${item.status}">${statusText}</span>
           </div>
           <div class="archive-parse-card-body">${body}</div>
@@ -9408,6 +9526,18 @@
       }, true);
 
       document.addEventListener('click', function (event) {
+        const keyDataToggle = event.target.closest('.history-key-data-toggle');
+        if (keyDataToggle) {
+          const keyData = keyDataToggle.closest('[data-history-key-data]');
+          const expanded = keyData?.classList.toggle('is-expanded') || false;
+          keyDataToggle.setAttribute('aria-expanded', String(expanded));
+          const label = keyDataToggle.querySelector('span');
+          const hiddenCount = Math.max(0, keyData?.querySelectorAll('.history-key-data-row').length - 3);
+          if (label) label.textContent = expanded ? '收起' : `展开更多（${hiddenCount}）`;
+          event.preventDefault();
+          event.stopImmediatePropagation();
+          return;
+        }
         const openArchiveUpload = event.target.closest('[data-open-archive-upload]');
         if (openArchiveUpload) {
           const modal = document.getElementById('archiveUploadModal');
@@ -9755,16 +9885,26 @@
 (function initInterfaceNotes() {
   const PROJECT_ID = "frontend-architect-health-checkin";
   const API_URL = "/api/interface-notes";
+  const LOCAL_PROJECT_API_URL = "http://127.0.0.1:5173/api/interface-notes";
   const STATIC_DATA_URL = "data/interface-notes.json";
+  const LOCAL_NOTES_KEY = `${PROJECT_ID}:interface-notes:v1`;
+  const NOTE_SCOPE_VERSION = 5;
   const state = {
     notes: [],
     visible: true,
     adding: false,
     editing: null,
     pageId: "",
+    pageContext: null,
     projectId: PROJECT_ID,
     loading: false
   };
+  let localProjectSyncStarted = false;
+
+  function isPublishedReadOnly() {
+    return location.protocol !== "file:"
+      && !["localhost", "127.0.0.1"].includes(location.hostname);
+  }
 
   const esc = (value) => String(value ?? "").replace(/[&<>"']/g, (char) => ({
     "&": "&amp;",
@@ -9774,9 +9914,94 @@
     "'": "&#39;"
   }[char]));
 
+  function usesLocalNoteStorage() {
+    return location.protocol === "file:";
+  }
+
+  function readLocalNotes() {
+    try {
+      const value = JSON.parse(localStorage.getItem(LOCAL_NOTES_KEY) || "[]");
+      return Array.isArray(value) ? value : [];
+    } catch {
+      return [];
+    }
+  }
+
+  function writeLocalNotes(notes) {
+    try {
+      localStorage.setItem(LOCAL_NOTES_KEY, JSON.stringify(notes));
+    } catch {
+      throw new Error("浏览器未允许本地存储，备注保存失败");
+    }
+  }
+
+  function mergeNotes(baseNotes, localNotes) {
+    const merged = new Map();
+    [...baseNotes, ...localNotes].forEach((note) => {
+      if (note?.id) merged.set(note.id, note);
+    });
+    return Array.from(merged.values());
+  }
+
+  function canRecoverNoteToContext(note, context) {
+    if (!note || note.status === "deleted") return false;
+    if (Number(note.scopeVersion || 0) >= NOTE_SCOPE_VERSION) return false;
+    if (note.routePath && note.routePath !== context.routePath) return false;
+    const noteIsOverlay = note.contextType && note.contextType !== "page";
+    const contextIsOverlay = context.contextType !== "page";
+    const misplacedParseNote = noteIsOverlay
+      && /archiveParseDrawer|报告解析/.test(`${note.contextId || ""} ${note.contextTitle || ""}`)
+      && context.viewKey.includes("page:patientArchivePage");
+    if (misplacedParseNote) return true;
+    if (noteIsOverlay !== contextIsOverlay) return false;
+    if (noteIsOverlay) {
+      return !note.contextTitle || note.contextTitle === context.contextTitle;
+    }
+
+    // Previous versions did not capture stable subview information. When the
+    // patient archive is visible, recover all unversioned page notes from the
+    // same local file once, then persist them with the final scoped identity.
+    const archivePage = document.getElementById("patientArchivePage");
+    const archiveContext = context.viewKey.includes("page:patientArchivePage") || isVisibleNode(archivePage);
+    if (archiveContext) return true;
+
+    const noteTitle = normalizeNoteText(note.pageTitle || "");
+    const contextTitle = normalizeNoteText(context.pageTitle || "");
+    return Boolean(noteTitle && noteTitle === contextTitle);
+  }
+
+  function recoverLocalNoteScopes(notes, context) {
+    let changed = false;
+    let recoveredCount = 0;
+    const recovered = notes.map((note) => {
+      if (!canRecoverNoteToContext(note, context)) return note;
+      changed = true;
+      recoveredCount += 1;
+      return {
+        ...note,
+        pageId: context.pageId,
+        pageTitle: context.pageTitle,
+        activeText: context.activeText,
+        viewKey: context.viewKey,
+        contextType: context.contextType,
+        contextTitle: context.contextTitle,
+        contextId: context.contextId,
+        routePath: context.routePath,
+        routeHash: context.routeHash,
+        scopeVersion: NOTE_SCOPE_VERSION,
+        updatedAt: new Date().toISOString()
+      };
+    });
+    if (changed) {
+      writeLocalNotes(recovered);
+      setTimeout(() => toast(`已恢复 ${recoveredCount} 条旧备注`), 0);
+    }
+    return recovered;
+  }
+
   function assertAnnotationService() {
-    if (location.protocol === "file:") {
-      throw new Error("请通过 http://127.0.0.1:5173/index.html 打开页面后保存备注，file:// 模式无法连接备注服务");
+    if (isPublishedReadOnly()) {
+      throw new Error("当前是线上静态预览，只能查看已发布备注；新增或修改备注请在本地服务 http://127.0.0.1:5173/index.html 中保存后再发布");
     }
   }
 
@@ -9817,9 +10042,20 @@
         box-shadow: 0 8px 16px rgba(36, 81, 255, .18);
       }
       .interface-note-btn.warn {
-        border-color: #ff8a00;
-        background: #ff8a00;
+        border-color: #e5484d;
+        background: #fff;
+        color: #d9363e;
+      }
+      .interface-note-btn.warn:hover {
+        background: #fff1f0;
+      }
+      .interface-note-btn:disabled {
+        opacity: .55;
+        cursor: not-allowed;
+      }
+      .interface-note-btn.warn:disabled {
         color: #fff;
+        background: #e5484d;
       }
       .interface-note-count {
         min-width: 26px;
@@ -9839,6 +10075,22 @@
         top: 0;
         z-index: 2147481500;
         pointer-events: none;
+        isolation: isolate;
+        contain: layout style;
+      }
+      .interface-note-layer[data-context-type="drawer"],
+      .interface-note-layer[data-context-type="dialog"] {
+        z-index: 2147481900;
+      }
+      body:has(.archive-upload-modal.open) .interface-note-layer[data-context-type="page"],
+      body:has(.modal-mask.open) .interface-note-layer[data-context-type="page"],
+      body:has(.checkin-review-modal[aria-hidden="false"]) .interface-note-layer[data-context-type="page"],
+      body:has(.plan-checkin-modal[aria-hidden="false"]) .interface-note-layer[data-context-type="page"],
+      body:has(.health-checkin-detail-mask[aria-hidden="false"]) .interface-note-layer[data-context-type="page"] {
+        visibility: hidden !important;
+      }
+      .archive-parse-drawer.open {
+        z-index: 2147481800;
       }
       .interface-note-point {
         position: absolute;
@@ -9858,13 +10110,20 @@
         pointer-events: auto;
         box-shadow: 0 8px 18px rgba(36, 81, 255, .35);
         user-select: none;
+        touch-action: none;
       }
       .interface-note-point.dragging {
         cursor: grabbing;
         transform: scale(1.08);
       }
+      .interface-note-point.selected {
+        border-color: #fff;
+        box-shadow: 0 0 0 4px rgba(36, 81, 255, .2), 0 10px 22px rgba(36, 81, 255, .42);
+        transform: scale(1.1);
+      }
       .interface-note-popover {
         position: absolute;
+        z-index: 2147482500;
         width: 260px;
         border: 1px solid #dbe6ff;
         border-radius: 10px;
@@ -9994,13 +10253,99 @@
     document.head.appendChild(style);
   }
 
+  function normalizeNoteText(value) {
+    return String(value ?? "").trim().replace(/\s+/g, " ");
+  }
+
+  function isVisibleNode(node) {
+    if (!node || node === document.documentElement) return false;
+    const style = window.getComputedStyle(node);
+    if (style.display === "none" || style.visibility === "hidden" || Number(style.opacity) === 0) return false;
+    const rect = node.getBoundingClientRect();
+    return rect.width > 0 && rect.height > 0;
+  }
+
+  function getShortNodeText(node) {
+    const text = normalizeNoteText(node?.textContent || "");
+    if (!text || text.length > 60) return "";
+    return text;
+  }
+
   function getActiveText() {
-    const candidates = Array.from(document.querySelectorAll(".active,.is-active,[aria-current='page'],.selected"));
-    return candidates
-      .map((item) => item.textContent.trim().replace(/\s+/g, " "))
-      .filter(Boolean)
-      .slice(0, 6)
-      .join("/");
+    const selectors = [
+      ".sidebar .active",
+      ".sidebar .is-active",
+      ".sidebar .selected",
+      ".side-nav .active",
+      ".side-nav .is-active",
+      ".side-nav .selected",
+      ".nav .active",
+      ".menu .active",
+      ".archive-side-nav [data-archive-tab].active",
+      ".patient-nav-item.active",
+      ".plan-config-tab.active",
+      "[role='tab'][aria-selected='true']",
+      "[data-page].active",
+      "[data-nav].active",
+      "[aria-current='page']"
+    ];
+    const candidates = Array.from(document.querySelectorAll(selectors.join(",")));
+    const values = [];
+    candidates.forEach((item) => {
+      if (!isVisibleNode(item)) return;
+      const text = getShortNodeText(item);
+      if (text && !values.includes(text)) values.push(text);
+    });
+    if (!values.length) {
+      Array.from(document.querySelectorAll(".active,.is-active,.selected")).forEach((item) => {
+        if (!isVisibleNode(item)) return;
+        const text = getShortNodeText(item);
+        if (text && !values.includes(text)) values.push(text);
+      });
+    }
+    return values.slice(0, 8).join("/");
+  }
+
+  function getViewKey() {
+    const values = [];
+    const activePage = Array.from(document.querySelectorAll(".page.active")).find(isVisibleNode);
+    if (activePage?.id) values.push(`page:${activePage.id}`);
+
+    if (activePage?.id === "patientArchivePage") {
+      const patientName = normalizeNoteText(activePage.querySelector("[data-archive-text='name']")?.textContent || "");
+      const patientPhone = normalizeNoteText(activePage.querySelector("[data-archive-text='phone']")?.textContent || "");
+      if (patientName || patientPhone) values.push(`patient:${patientName}:${patientPhone}`);
+    } else if (activePage?.id === "patientPage") {
+      const patientName = normalizeNoteText(activePage.querySelector("[data-patient-text='name']")?.textContent || "");
+      const visitNo = normalizeNoteText(activePage.querySelector("[data-patient-text='visitNo']")?.textContent || "");
+      if (patientName || visitNo) values.push(`patient:${patientName}:${visitNo}`);
+    }
+
+    const selectors = [
+      ".archive-side-nav [data-archive-tab].active",
+      ".patient-nav-item.active",
+      ".plan-config-tab.active",
+      "[data-service-tab].active",
+      "[data-history-tab-filter].active",
+      "[data-checkin-range].active",
+      "[data-archive-panel]:not([hidden])",
+      "[role='tab'][aria-selected='true']"
+    ];
+    document.querySelectorAll(selectors.join(",")).forEach((node) => {
+      if (!isVisibleNode(node)) return;
+      const dataKey = node.dataset.archiveTab
+        || node.dataset.patientTab
+        || node.dataset.planTab
+        || node.dataset.serviceTab
+        || node.dataset.historyTabFilter
+        || node.dataset.checkinRange
+        || node.dataset.archivePanel
+        || "";
+      const text = getShortNodeText(node);
+      const value = [dataKey, text].filter(Boolean).join(":");
+      if (value && !values.includes(value)) values.push(value);
+    });
+    return values.join("/") || "base";
   }
 
   function getPageTitle() {
@@ -10016,29 +10361,136 @@
     ];
     for (const selector of selectors) {
       const node = document.querySelector(selector);
-      const text = node?.textContent?.trim();
-      if (text) return text.replace(/\s+/g, " ");
+      if (!isVisibleNode(node)) continue;
+      const text = normalizeNoteText(node?.textContent || "");
+      if (text) return text.slice(0, 80);
     }
     return document.title || "页面";
   }
 
-  function getPageId() {
+  function getOverlayContext() {
+    const explicitSelectors = [
+      "#archiveParseDrawer.open",
+      "#archiveUploadModal.open",
+      ".modal-mask.open [role='dialog']",
+      ".checkin-review-modal[aria-hidden='false'] [role='dialog']",
+      ".plan-checkin-modal[aria-hidden='false'] [role='dialog']",
+      ".health-checkin-detail-mask[aria-hidden='false'] [role='dialog']",
+      "[class*='drawer'][aria-hidden='false']",
+      "[class*='modal'][aria-hidden='false'] [role='dialog']"
+    ];
+    const explicitTarget = Array.from(document.querySelectorAll(explicitSelectors.join(",")))
+      .filter((node) => !node.closest("#interfaceNoteEditor"))
+      .find(isVisibleNode);
+    const selectors = [
+      "[role='dialog']",
+      ".ant-modal",
+      ".ant-drawer",
+      ".modal",
+      ".drawer",
+      ".medical-upload-modal",
+      ".archive-parse-drawer",
+      ".meal-detail-drawer",
+      ".checkin-review-modal",
+      ".task-detail-drawer",
+      "[class*='modal']",
+      "[class*='drawer']",
+      "[class*='dialog']"
+    ];
+    const candidates = (explicitTarget ? [explicitTarget] : Array.from(document.querySelectorAll(selectors.join(","))))
+      .filter((node) => !node.closest("#interfaceNoteEditor"))
+      .filter((node) => !node.classList.contains("interface-note-modal-mask"))
+      .filter(isVisibleNode);
+    if (!candidates.length) return null;
+    const target = candidates
+      .map((node, index) => ({
+        node,
+        index,
+        z: Number.parseInt(window.getComputedStyle(node).zIndex, 10) || 0
+      }))
+      .sort((a, b) => (a.z - b.z) || (a.index - b.index))
+      .pop().node;
+    const kind = /drawer/i.test(target.className || "") ? "drawer" : "dialog";
+    const contextRoot = target.closest("[id]") || target;
+    const contextId = normalizeNoteText(contextRoot.id || target.id || target.className || kind).slice(0, 100);
+    const titleSelectors = [
+      ".ant-modal-title",
+      ".ant-drawer-title",
+      ".modal-title",
+      ".drawer-title",
+      ".dialog-title",
+      ".panel-title",
+      ".title",
+      "h1",
+      "h2",
+      "h3"
+    ];
+    let title = "";
+    for (const selector of titleSelectors) {
+      const node = target.querySelector(selector);
+      const text = getShortNodeText(node);
+      if (text) {
+        title = text;
+        break;
+      }
+    }
+    title = title || normalizeNoteText(target.getAttribute("aria-label") || target.dataset.title || "");
+    if (!title) title = normalizeNoteText(target.textContent || "").slice(0, 60) || "overlay";
+    return { kind, title, contextId };
+  }
+
+  function getPageContext() {
     const stablePath = (location.pathname || "/")
       .split("/")
       .filter(Boolean)
       .pop() || "index.html";
-    return [
+    const pageTitle = getPageTitle();
+    const activeText = getActiveText();
+    const viewKey = getViewKey();
+    const overlay = getOverlayContext();
+    const effectiveOverlay = overlay;
+    const contextType = effectiveOverlay?.kind || "page";
+    const contextTitle = effectiveOverlay?.title || "";
+    const contextId = effectiveOverlay?.contextId || "base";
+    const pageId = [
       stablePath,
       location.hash || "#",
-      getPageTitle(),
-      getActiveText()
-    ].join("|").slice(0, 420);
+      pageTitle,
+      `view:${viewKey}`,
+      activeText,
+      `${contextType}:${contextId}:${contextTitle || "base"}`
+    ].join("|").slice(0, 600);
+    return {
+      pageId,
+      pageTitle,
+      activeText,
+      viewKey,
+      contextType,
+      contextTitle,
+      contextId,
+      routePath: stablePath,
+      routeHash: location.hash || "#"
+    };
+  }
+
+  function getPageId() {
+    return getPageContext().pageId;
   }
 
   function isCurrentPageNote(note) {
     if (note.projectId !== state.projectId || note.status === "deleted") return false;
-    if (note.pageId === state.pageId) return true;
-    if (note.pageTitle && note.pageTitle === getPageTitle() && (!note.activeText || note.activeText === getActiveText())) return true;
+    const context = getPageContext();
+    if (note.pageId === context.pageId) return true;
+    const isLegacyNote = !note.contextType && !note.contextTitle;
+    if (
+      isLegacyNote &&
+      context.contextType === "page" &&
+      note.pageTitle &&
+      note.pageTitle === context.pageTitle &&
+      (!note.activeText || note.activeText === context.activeText)
+    ) {
+      return true;
+    }
     return false;
   }
 
@@ -10061,6 +10513,64 @@
       pageWidth: width,
       pageHeight: height
     };
+  }
+
+  function stableAnchorSelector(element) {
+    if (!(element instanceof Element)) return "";
+    let node = element;
+    while (node && node !== document.body && node !== document.documentElement) {
+      if (node.id && !node.id.startsWith("interfaceNote")) {
+        return `#${CSS.escape(node.id)}`;
+      }
+      for (const attribute of Array.from(node.attributes || [])) {
+        if (!attribute.name.startsWith("data-") || !attribute.value || attribute.value.length > 100) continue;
+        if (attribute.name.startsWith("data-note")) continue;
+        const selector = `${node.tagName.toLowerCase()}[${attribute.name}="${CSS.escape(attribute.value)}"]`;
+        try {
+          if (document.querySelectorAll(selector).length === 1) return selector;
+        } catch {}
+      }
+      node = node.parentElement;
+    }
+
+    const path = [];
+    node = element;
+    while (node && node !== document.body && path.length < 7) {
+      let part = node.tagName.toLowerCase();
+      const stableClasses = Array.from(node.classList || [])
+        .filter((name) => !["active", "open", "selected", "hover", "focus"].includes(name))
+        .slice(0, 2);
+      if (stableClasses.length) part += stableClasses.map((name) => `.${CSS.escape(name)}`).join("");
+      const siblings = node.parentElement
+        ? Array.from(node.parentElement.children).filter((item) => item.tagName === node.tagName)
+        : [];
+      if (siblings.length > 1) part += `:nth-of-type(${siblings.indexOf(node) + 1})`;
+      path.unshift(part);
+      const selector = path.join(" > ");
+      try {
+        if (document.querySelectorAll(selector).length === 1) return selector;
+      } catch {}
+      node = node.parentElement;
+    }
+    return "";
+  }
+
+  function setNoteAnchor(note, clientX, clientY, target) {
+    let anchor = target instanceof Element ? target : document.elementFromPoint(clientX, clientY);
+    while (anchor && /^(svg|path|use)$/i.test(anchor.tagName)) anchor = anchor.parentElement;
+    if (!anchor || anchor.closest("#interfaceNoteLayer,#interfaceNoteToolbar,#interfaceNoteEditor,.interface-note-popover")) return;
+    const selector = stableAnchorSelector(anchor);
+    const rect = anchor.getBoundingClientRect();
+    if (!selector || rect.width <= 0 || rect.height <= 0) return;
+    note.anchorSelector = selector;
+    note.anchorXRatio = Math.max(0, Math.min(1, (clientX - rect.left) / rect.width));
+    note.anchorYRatio = Math.max(0, Math.min(1, (clientY - rect.top) / rect.height));
+  }
+
+  function noteDisplayPosition(note) {
+    // 点位只使用用户点击或拖动后保存的页面坐标。
+    // 不再绑定页面元素，避免布局重排、弹窗切换或内容刷新时自动漂移。
+    return { x: Number(note.x || 0), y: Number(note.y || 0) };
   }
 
   function ensureShell() {
@@ -10107,7 +10617,10 @@
     toggle.textContent = state.visible ? "隐藏备注" : "显示备注";
     add.textContent = state.adding ? "点击页面打点" : "添加备注";
     add.classList.toggle("warn", state.adding);
+    add.hidden = isPublishedReadOnly();
+    layer.dataset.contextType = state.pageContext?.contextType || "page";
     layer.style.display = state.visible ? "block" : "none";
+    layer.style.visibility = state.visible ? "visible" : "hidden";
     document.documentElement.classList.toggle("interface-note-crosshair", state.adding);
     layer.innerHTML = "";
 
@@ -10115,16 +10628,33 @@
     activeNotes
       .sort((a, b) => Number(a.number) - Number(b.number))
       .forEach((note) => {
+        const displayPosition = noteDisplayPosition(note);
         const point = document.createElement("button");
         point.type = "button";
         point.className = "interface-note-point";
         point.dataset.noteId = note.id;
         point.textContent = note.number;
         point.title = note.title || `备注 ${note.number}`;
-        point.style.left = `${Number(note.x || 0) - 12}px`;
-        point.style.top = `${Number(note.y || 0) - 12}px`;
+        point.style.left = `${displayPosition.x - 12}px`;
+        point.style.top = `${displayPosition.y - 12}px`;
         layer.appendChild(point);
       });
+  }
+
+  let notePositionFrame = 0;
+  function scheduleNotePositionRefresh() {
+    if (notePositionFrame) return;
+    notePositionFrame = requestAnimationFrame(() => {
+      notePositionFrame = 0;
+      state.notes.forEach((note) => {
+        if (note.status === "deleted") return;
+        const point = document.querySelector(`.interface-note-point[data-note-id="${CSS.escape(note.id)}"]`);
+        if (!point) return;
+        const position = noteDisplayPosition(note);
+        point.style.left = `${position.x - 12}px`;
+        point.style.top = `${position.y - 12}px`;
+      });
+    });
   }
 
   function toast(message) {
@@ -10138,8 +10668,28 @@
   }
 
   async function loadNotes() {
-    state.pageId = getPageId();
+    state.pageContext = getPageContext();
+    state.pageId = state.pageContext.pageId;
     state.loading = true;
+
+    if (usesLocalNoteStorage()) {
+      let bundledNotes = [];
+      try {
+        const response = await fetch(`${STATIC_DATA_URL}?v=${Date.now()}`, { cache: "no-store" });
+        const payload = await response.json();
+        bundledNotes = Array.isArray(payload) ? payload : [];
+      } catch {}
+      const localNotes = recoverLocalNoteScopes(readLocalNotes(), state.pageContext);
+      state.notes = mergeNotes(bundledNotes, localNotes).filter(isCurrentPageNote);
+      state.loading = false;
+      render();
+      if (!localProjectSyncStarted) {
+        localProjectSyncStarted = true;
+        setTimeout(syncLocalNotesToProject, 0);
+      }
+      return;
+    }
+
     let apiLoaded = false;
     try {
       const url = `${API_URL}?projectId=${encodeURIComponent(state.projectId)}&pageId=${encodeURIComponent(state.pageId)}`;
@@ -10147,7 +10697,9 @@
       const payload = await response.json();
       if (payload?.ok && Array.isArray(payload.data)) {
         state.notes = payload.data.filter(isCurrentPageNote);
-        apiLoaded = state.notes.length > 0;
+        // An empty API result is still authoritative. Falling back to the static
+        // seed here would make the last deleted note reappear after a refresh.
+        apiLoaded = true;
       }
     } catch {}
 
@@ -10167,7 +10719,65 @@
     render();
   }
 
+  async function syncNoteToProject(note) {
+    if (!usesLocalNoteStorage() || !note?.id) return note;
+    const deleted = note.status === "deleted";
+    const response = await fetch(
+      deleted ? `${LOCAL_PROJECT_API_URL}/${encodeURIComponent(note.id)}` : LOCAL_PROJECT_API_URL,
+      {
+        method: deleted ? "DELETE" : "POST",
+        headers: deleted ? undefined : { "Content-Type": "application/json" },
+        body: deleted ? undefined : JSON.stringify(note)
+      }
+    );
+    let payload = null;
+    try { payload = await response.json(); } catch {}
+    if (deleted && response.status === 404) return note;
+    if (!response.ok || payload?.ok === false) {
+      throw new Error(payload?.message || "备注未能写入项目");
+    }
+    return payload?.data || note;
+  }
+
+  async function syncLocalNotesToProject() {
+    if (!usesLocalNoteStorage()) return;
+    const notes = readLocalNotes();
+    if (!notes.length) return;
+    let synced = 0;
+    let failed = 0;
+    for (const note of notes) {
+      try {
+        await syncNoteToProject(note);
+        synced += 1;
+      } catch {
+        failed += 1;
+      }
+    }
+    if (synced) toast(`已将 ${synced} 条备注同步到项目`);
+    if (failed) toast(`${failed} 条备注未同步，请确认本地预览服务已启动`);
+  }
+
   async function persistNote(note) {
+    if (usesLocalNoteStorage()) {
+      const now = new Date().toISOString();
+      const saved = {
+        ...note,
+        id: note.id || `note_${Date.now()}_${Math.random().toString(16).slice(2)}`,
+        status: "active",
+        createdAt: note.createdAt || now,
+        updatedAt: now,
+        createdBy: note.createdBy || "current-user",
+        updatedBy: "current-user",
+        scopeVersion: NOTE_SCOPE_VERSION
+      };
+      const notes = readLocalNotes();
+      const index = notes.findIndex((item) => item.id === saved.id);
+      if (index >= 0) notes[index] = saved;
+      else notes.push(saved);
+      writeLocalNotes(notes);
+      await syncNoteToProject(saved);
+      return saved;
+    }
     assertAnnotationService();
     const response = await fetch(API_URL, {
       method: "POST",
@@ -10185,9 +10795,25 @@
   }
 
   async function deleteNote(note) {
+    if (usesLocalNoteStorage()) {
+      const deleted = { ...note, status: "deleted", updatedAt: new Date().toISOString(), updatedBy: "current-user" };
+      const notes = readLocalNotes();
+      const index = notes.findIndex((item) => item.id === deleted.id);
+      if (index >= 0) notes[index] = deleted;
+      else notes.push(deleted);
+      writeLocalNotes(notes);
+      await syncNoteToProject(deleted);
+      return deleted;
+    }
     assertAnnotationService();
     const response = await fetch(`${API_URL}/${encodeURIComponent(note.id)}`, { method: "DELETE" });
-    if (!response.ok) throw new Error("备注删除失败");
+    let payload = null;
+    try {
+      payload = await response.json();
+    } catch {}
+    if (!response.ok || payload?.ok === false) {
+      throw new Error(payload?.message || "备注删除失败");
+    }
   }
 
   function ensureUniqueNumber(number, id) {
@@ -10202,6 +10828,7 @@
   }
 
   function startAdding() {
+    if (isPublishedReadOnly()) return;
     state.visible = true;
     state.adding = true;
     closePopover();
@@ -10218,10 +10845,20 @@
 
   function createDraft(event) {
     const position = clampPosition(event.pageX, event.pageY);
-    return {
+    const context = getPageContext();
+    const draft = {
       id: "",
       projectId: state.projectId,
-      pageId: state.pageId,
+      pageId: context.pageId,
+      pageTitle: context.pageTitle,
+      activeText: context.activeText,
+      viewKey: context.viewKey,
+      contextType: context.contextType,
+      contextTitle: context.contextTitle,
+      contextId: context.contextId,
+      scopeVersion: NOTE_SCOPE_VERSION,
+      routePath: context.routePath,
+      routeHash: context.routeHash,
       number: getNextNumber(),
       title: "",
       content: "",
@@ -10231,6 +10868,7 @@
       pageHeight: position.pageHeight,
       status: "active"
     };
+    return draft;
   }
 
   function openEditor(note) {
@@ -10261,7 +10899,7 @@
           </div>
         </div>
         <div class="interface-note-modal-actions">
-          ${editing.id ? '<button type="button" class="interface-note-btn" data-editor-action="delete">删除</button>' : ""}
+          ${editing.id ? '<button type="button" class="interface-note-btn warn" data-editor-action="delete">删除</button>' : ""}
           <button type="button" class="interface-note-btn" data-editor-action="close">取消</button>
           <button type="button" class="interface-note-btn primary" data-editor-action="save">保存</button>
         </div>
@@ -10287,13 +10925,19 @@
 
     if (action === "delete") {
       if (!state.editing?.id || !window.confirm("确认删除当前备注？")) return;
+      const noteId = state.editing.id;
+      const deleteButton = event.target.closest("[data-editor-action='delete']");
+      deleteButton.disabled = true;
+      deleteButton.textContent = "删除中...";
       try {
         await deleteNote(state.editing);
-        state.notes = state.notes.filter((note) => note.id !== state.editing.id);
+        state.notes = state.notes.filter((note) => note.id !== noteId);
         closeEditor();
         render();
         toast("备注已删除");
       } catch (error) {
+        deleteButton.disabled = false;
+        deleteButton.textContent = "删除";
         toast(error.message || "备注删除失败");
       }
       return;
@@ -10309,13 +10953,23 @@
         return;
       }
       if (!ensureUniqueNumber(number, state.editing.id)) return;
+      const context = getPageContext();
       const note = {
         ...state.editing,
         number,
         title: title || `备注 ${number}`,
         content,
         projectId: state.projectId,
-        pageId: state.pageId,
+        pageId: context.pageId,
+        pageTitle: context.pageTitle,
+        activeText: context.activeText,
+        viewKey: context.viewKey,
+        contextType: context.contextType,
+        contextTitle: context.contextTitle,
+        contextId: context.contextId,
+        scopeVersion: NOTE_SCOPE_VERSION,
+        routePath: context.routePath,
+        routeHash: context.routeHash,
         status: "active"
       };
       try {
@@ -10339,30 +10993,54 @@
 
   function closePopover() {
     document.querySelector(".interface-note-popover")?.remove();
+    document.querySelectorAll(".interface-note-point.selected").forEach((point) => point.classList.remove("selected"));
   }
 
   function openPopover(note) {
     closePopover();
+    const readOnly = isPublishedReadOnly();
+    const selectedPoint = document.querySelector(`.interface-note-point[data-note-id="${CSS.escape(note.id)}"]`);
+    selectedPoint?.classList.add("selected");
     const popover = document.createElement("div");
     popover.className = "interface-note-popover";
-    popover.style.left = `${Math.min(note.x + 18, window.scrollX + window.innerWidth - 280)}px`;
-    popover.style.top = `${Math.max(8, note.y + 18)}px`;
+    const parseDrawer = document.getElementById("archiveParseDrawer");
+    const displayPosition = noteDisplayPosition(note);
+    const rightBoundary = parseDrawer?.classList.contains("open")
+      ? window.scrollX + parseDrawer.getBoundingClientRect().left
+      : window.scrollX + window.innerWidth;
+    popover.style.left = `${Math.max(8, Math.min(displayPosition.x + 18, rightBoundary - 280))}px`;
+    popover.style.top = `${Math.max(8, displayPosition.y + 18)}px`;
     popover.innerHTML = `
       <div class="interface-note-popover-head">
         <span>${esc(note.number)}. ${esc(note.title || "备注")}</span>
         <button type="button" class="interface-note-close" data-popover-action="close">×</button>
       </div>
       <div class="interface-note-popover-body">${esc(note.content || "暂无备注内容")}</div>
-      <div class="interface-note-popover-actions">
-        <button type="button" class="interface-note-btn" data-popover-action="edit">编辑</button>
-      </div>
+      ${readOnly ? "" : `<div class="interface-note-popover-actions">
+        <button type="button" class="interface-note-btn warn" data-popover-action="delete">删除</button>
+        <button type="button" class="interface-note-btn primary" data-popover-action="modify">修改</button>
+      </div>`}
     `;
     document.body.appendChild(popover);
     popover.addEventListener("click", (event) => {
       const action = event.target.closest("[data-popover-action]")?.dataset.popoverAction;
       if (action === "close") closePopover();
-      if (action === "edit") openEditor(note);
+      if (action === "modify") openEditor(note);
+      if (action === "delete") removeNoteFromPopover(note);
     });
+  }
+
+  async function removeNoteFromPopover(note) {
+    if (!note?.id || !window.confirm("确认删除当前备注？")) return;
+    try {
+      await deleteNote(note);
+      state.notes = state.notes.filter((item) => item.id !== note.id);
+      closePopover();
+      render();
+      toast("备注已删除");
+    } catch (error) {
+      toast(error.message || "备注删除失败");
+    }
   }
 
   function findNote(id) {
@@ -10384,6 +11062,7 @@
     if (point) {
       event.preventDefault();
       event.stopPropagation();
+      if (point.dataset.suppressClick === "true") return;
       const note = findNote(point.dataset.noteId);
       if (note) openPopover(note);
     }
@@ -10392,20 +11071,34 @@
   function handlePointerDown(event) {
     const point = event.target.closest(".interface-note-point");
     if (!point || !state.visible) return;
+    if (isPublishedReadOnly()) return;
+    if (event.button !== 0) return;
     const note = findNote(point.dataset.noteId);
     if (!note) return;
     event.preventDefault();
     event.stopPropagation();
     closePopover();
     point.classList.add("dragging");
+    try { point.setPointerCapture(event.pointerId); } catch {}
     const startX = event.pageX;
     const startY = event.pageY;
-    const originX = Number(note.x || 0);
-    const originY = Number(note.y || 0);
+    const originPosition = noteDisplayPosition(note);
+    const originX = originPosition.x;
+    const originY = originPosition.y;
     let moved = false;
 
     const onMove = (moveEvent) => {
+      const deltaX = moveEvent.pageX - startX;
+      const deltaY = moveEvent.pageY - startY;
+      if (!moved && Math.hypot(deltaX, deltaY) < 6) return;
+      if (!moved) {
+        delete note.anchorSelector;
+        delete note.anchorXRatio;
+        delete note.anchorYRatio;
+      }
       moved = true;
+      moveEvent.preventDefault();
+      moveEvent.stopPropagation();
       const position = clampPosition(originX + moveEvent.pageX - startX, originY + moveEvent.pageY - startY);
       note.x = position.x;
       note.y = position.y;
@@ -10415,12 +11108,33 @@
       point.style.top = `${note.y - 12}px`;
     };
 
-    const onUp = async () => {
+    const onUp = async (upEvent) => {
       point.classList.remove("dragging");
-      window.removeEventListener("pointermove", onMove, true);
-      window.removeEventListener("pointerup", onUp, true);
-      if (!moved) return;
+      point.removeEventListener("pointermove", onMove);
+      point.removeEventListener("pointerup", onUp);
+      point.removeEventListener("pointercancel", onUp);
+      try { point.releasePointerCapture(upEvent.pointerId); } catch {}
+      if (!moved) {
+        openPopover(note);
+        return;
+      }
+      point.dataset.suppressClick = "true";
+      setTimeout(() => delete point.dataset.suppressClick, 0);
       try {
+        delete note.anchorSelector;
+        delete note.anchorXRatio;
+        delete note.anchorYRatio;
+        const context = getPageContext();
+        note.pageId = context.pageId;
+        note.pageTitle = context.pageTitle;
+        note.activeText = context.activeText;
+        note.viewKey = context.viewKey;
+        note.contextType = context.contextType;
+        note.contextTitle = context.contextTitle;
+        note.contextId = context.contextId;
+        note.scopeVersion = NOTE_SCOPE_VERSION;
+        note.routePath = context.routePath;
+        note.routeHash = context.routeHash;
         const saved = await persistNote(note);
         Object.assign(note, saved);
         toast("备注位置已保存");
@@ -10430,18 +11144,44 @@
       }
     };
 
-    window.addEventListener("pointermove", onMove, true);
-    window.addEventListener("pointerup", onUp, true);
+    point.addEventListener("pointermove", onMove);
+    point.addEventListener("pointerup", onUp);
+    point.addEventListener("pointercancel", onUp);
   }
 
   let refreshTimer = null;
   function schedulePageRefresh() {
     clearTimeout(refreshTimer);
+    const layer = document.getElementById("interfaceNoteLayer");
+    if (layer) layer.style.visibility = "hidden";
     refreshTimer = setTimeout(() => {
-      const nextPageId = getPageId();
-      if (nextPageId !== state.pageId) loadNotes();
-      else render();
-    }, 180);
+      const nextContext = getPageContext();
+      if (nextContext.pageId !== state.pageId) {
+        closePopover();
+        state.pageContext = nextContext;
+        loadNotes();
+      } else {
+        state.pageContext = nextContext;
+        render();
+      }
+    }, 0);
+  }
+
+  function isAnnotationNode(node) {
+    const element = node instanceof Element ? node : node?.parentElement;
+    return Boolean(element?.closest(
+      "#interfaceNoteLayer,#interfaceNoteToolbar,#interfaceNoteEditor,.interface-note-popover,.interface-note-toast"
+    ));
+  }
+
+  function handlePageMutations(records) {
+    const hasPageChange = records.some((record) => {
+      if (isAnnotationNode(record.target)) return false;
+      if (record.type !== "childList") return true;
+      const changedNodes = [...record.addedNodes, ...record.removedNodes];
+      return !changedNodes.length || changedNodes.some((node) => !isAnnotationNode(node));
+    });
+    if (hasPageChange) schedulePageRefresh();
   }
 
   ensureShell();
@@ -10450,15 +11190,17 @@
   window.addEventListener("popstate", loadNotes);
   window.addEventListener("hashchange", loadNotes);
   window.addEventListener("resize", render);
-  new MutationObserver(schedulePageRefresh).observe(document.body, {
+  document.addEventListener("scroll", scheduleNotePositionRefresh, true);
+  new MutationObserver(handlePageMutations).observe(document.body, {
     childList: true,
     subtree: true,
     attributes: true,
-    attributeFilter: ["class", "aria-current"]
+    attributeFilter: ["class", "aria-current", "aria-selected", "aria-hidden", "hidden", "style"]
   });
   loadNotes();
 })();
 </script>
 
+<script src="./js/service-management.js"></script>
 </body>
 </html>

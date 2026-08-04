@@ -31,7 +31,11 @@ function fileFor(url) {
 function sendJson(res, status, payload) {
   res.writeHead(status, {
     "Content-Type": "application/json; charset=utf-8",
-    "Cache-Control": "no-store, no-cache, must-revalidate, proxy-revalidate"
+    "Cache-Control": "no-store, no-cache, must-revalidate, proxy-revalidate",
+    "Access-Control-Allow-Origin": "*",
+    "Access-Control-Allow-Methods": "GET, POST, DELETE, OPTIONS",
+    "Access-Control-Allow-Headers": "Content-Type",
+    "Access-Control-Allow-Private-Network": "true"
   });
   res.end(JSON.stringify(payload));
 }
@@ -121,13 +125,14 @@ async function handleNotesApi(req, res, url) {
   }
 
   if (req.method === "DELETE") {
-    const id = url.pathname.split("/").pop();
-    const index = notes.findIndex((note) => note.id === id);
-    if (index >= 0) {
-      notes[index] = { ...notes[index], status: "deleted", updatedAt: new Date().toISOString() };
-      saveNotes(notes);
+    const id = decodeURIComponent(url.pathname.split("/").pop() || "");
+    const index = notes.findIndex((note) => note.id === id && note.status !== "deleted");
+    if (index < 0) {
+      return sendJson(res, 404, { ok: false, message: "备注不存在或已删除" });
     }
-    return sendJson(res, 200, { ok: true });
+    notes[index] = { ...notes[index], status: "deleted", updatedAt: new Date().toISOString() };
+    saveNotes(notes);
+    return sendJson(res, 200, { ok: true, data: { id, status: "deleted" } });
   }
 
   return sendJson(res, 405, { ok: false, message: "method not allowed" });
@@ -136,6 +141,16 @@ async function handleNotesApi(req, res, url) {
 createServer(async (req, res) => {
   const requestUrl = new URL(req.url || "/", "http://localhost");
   if (requestUrl.pathname === "/api/interface-notes" || requestUrl.pathname.startsWith("/api/interface-notes/")) {
+    if (req.method === "OPTIONS") {
+      res.writeHead(204, {
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Methods": "GET, POST, DELETE, OPTIONS",
+        "Access-Control-Allow-Headers": "Content-Type",
+        "Access-Control-Allow-Private-Network": "true"
+      });
+      res.end();
+      return;
+    }
     try {
       await handleNotesApi(req, res, requestUrl);
     } catch (error) {
