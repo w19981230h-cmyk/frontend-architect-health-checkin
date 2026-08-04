@@ -10481,6 +10481,26 @@
     if (note.projectId !== state.projectId || note.status === "deleted") return false;
     const context = getPageContext();
     if (note.pageId === context.pageId) return true;
+
+    // Published pages rebuild parts of the view after navigation. Patient data,
+    // counters and visible panels can therefore change viewKey/pageId even when
+    // the user is still in the same product scene. Match published notes by the
+    // stable navigation and overlay identity, while keeping dialogs and drawers
+    // isolated from the base page and from each other.
+    const noteContextType = note.contextType || "page";
+    const noteContextId = note.contextId || "base";
+    const sameRoute = !note.routePath || note.routePath === context.routePath;
+    const sameContext = noteContextType === context.contextType
+      && noteContextId === context.contextId;
+    const noteActiveText = normalizeNoteText(note.activeText || "");
+    const contextActiveText = normalizeNoteText(context.activeText || "");
+    const sameProductScene = Boolean(
+      noteActiveText
+      && contextActiveText
+      && noteActiveText === contextActiveText
+    );
+    if (sameRoute && sameContext && sameProductScene) return true;
+
     const isLegacyNote = !note.contextType && !note.contextTitle;
     if (
       isLegacyNote &&
