@@ -9928,6 +9928,9 @@
   }
 
   function writeLocalNotes(notes) {
+    if (isPublishedReadOnly()) {
+      throw new Error("线上查看版禁止写入备注数据");
+    }
     try {
       localStorage.setItem(LOCAL_NOTES_KEY, JSON.stringify(notes));
     } catch {
@@ -9941,6 +9944,19 @@
       if (note?.id) merged.set(note.id, note);
     });
     return Array.from(merged.values());
+  }
+
+  function createPublishedNoteSnapshot(note) {
+    return Object.freeze({
+      ...note,
+      number: Number(note.number || 0),
+      title: String(note.title || ""),
+      content: String(note.content || ""),
+      x: Number(note.x || 0),
+      y: Number(note.y || 0),
+      pageWidth: Number(note.pageWidth || 0),
+      pageHeight: Number(note.pageHeight || 0)
+    });
   }
 
   function canRecoverNoteToContext(note, context) {
@@ -10664,6 +10680,7 @@
     add.classList.toggle("warn", state.adding);
     add.hidden = isPublishedReadOnly();
     layer.dataset.contextType = state.pageContext?.contextType || "page";
+    layer.dataset.noteMode = isPublishedReadOnly() ? "published-snapshot" : "editable";
     layer.style.display = state.visible ? "block" : "none";
     layer.style.visibility = state.visible ? "visible" : "hidden";
     document.documentElement.classList.toggle("interface-note-crosshair", state.adding);
@@ -10717,6 +10734,21 @@
     state.pageId = state.pageContext.pageId;
     state.loading = true;
 
+    if (isPublishedReadOnly()) {
+      try {
+        const response = await fetch(`${STATIC_DATA_URL}?v=${Date.now()}`, { cache: "no-store" });
+        const payload = await response.json();
+        state.notes = Array.isArray(payload)
+          ? payload.map(createPublishedNoteSnapshot).filter(isCurrentPageNote)
+          : [];
+      } catch {
+        state.notes = [];
+      }
+      state.loading = false;
+      render();
+      return;
+    }
+
     if (usesLocalNoteStorage()) {
       let bundledNotes = [];
       try {
@@ -10765,6 +10797,7 @@
   }
 
   async function syncNoteToProject(note) {
+    if (isPublishedReadOnly()) return note;
     if (!usesLocalNoteStorage() || !note?.id) return note;
     const deleted = note.status === "deleted";
     const response = await fetch(
@@ -10785,6 +10818,7 @@
   }
 
   async function syncLocalNotesToProject() {
+    if (isPublishedReadOnly()) return;
     if (!usesLocalNoteStorage()) return;
     const notes = readLocalNotes();
     if (!notes.length) return;
