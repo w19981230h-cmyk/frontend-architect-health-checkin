@@ -10906,18 +10906,8 @@
   function noteDisplayPosition(note) {
     const savedX = Number(note.x || 0);
     const savedY = Number(note.y || 0);
-    if (!isPublishedReadOnly()) return { x: savedX, y: savedY };
-
-    // 线上查看版使用备注创建时的画布尺寸做等比还原。
-    // 这样既保留编辑版的原始坐标，也避免查看窗口变窄后备注落到屏幕外。
-    const savedWidth = Number(note.pageWidth || 0);
-    const savedHeight = Number(note.pageHeight || 0);
-    const currentWidth = Math.max(1, window.innerWidth || document.documentElement.clientWidth);
-    const currentHeight = Math.max(1, window.innerHeight || document.documentElement.clientHeight);
-    return {
-      x: savedWidth > 0 ? savedX * currentWidth / savedWidth : savedX,
-      y: savedHeight > 0 ? savedY * currentHeight / savedHeight : savedY
-    };
+    // 标注点使用创建或拖动后保存的固定坐标，界面尺寸变化时不做缩放换算。
+    return { x: savedX, y: savedY };
   }
 
   function ensureShell() {
