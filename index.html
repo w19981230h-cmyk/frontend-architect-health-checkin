@@ -809,6 +809,69 @@
     .archive-nav-item.active::before { content: ''; width: 3px; height: 28px; margin-left: -13px; border-radius: 0 3px 3px 0; background: #3154ff; }
     .archive-nav-item svg { width: 19px; height: 19px; flex: 0 0 auto; }
     .archive-sidebar:has(.archive-nav-item[data-archive-tab="history"].active) .archive-nav-item[data-archive-tab="checkin"] { display: flex; }
+    .archive-report-panel { min-height: calc(100vh - 86px); overflow: visible; border: 1px solid #dce6f2; border-radius: 9px; background: #fff; box-shadow: 0 4px 16px rgba(31,51,82,.04); }
+    .archive-report-head { height: 58px; padding: 0 18px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid #e8edf4; }
+    .archive-report-title { margin: 0; padding-left: 10px; border-left: 3px solid #3154ff; color: #273852; font-size: 17px; font-weight: 800; }
+    .archive-report-actions { display: flex; align-items: center; gap: 12px; }
+    .archive-report-layout-btn, .archive-report-generate { height: 34px; display: inline-flex; align-items: center; justify-content: center; border-radius: 5px; transition: border-color .16s ease, color .16s ease, background-color .16s ease; }
+    .archive-report-layout-btn { width: 38px; border: 1px solid #e2e7ef; color: #68768b; background: #fff; }
+    .archive-report-layout-btn:hover { color: #3154ff; border-color: #9eb2ff; }
+    .archive-report-generate { gap: 6px; padding: 0 13px; border: 1px solid #3154ff; color: #3154ff; background: #fff; font-size: 13px; font-weight: 700; }
+    .archive-report-generate:hover { color: #163cff; border-color: #163cff; background: #f7f9ff; }
+    .archive-report-layout-btn:focus-visible, .archive-report-generate:focus-visible, .archive-report-more:focus-visible { outline: 2px solid rgba(49,84,255,.35); outline-offset: 2px; }
+    .archive-report-actions svg { width: 16px; height: 16px; }
+    .archive-report-grid { padding: 14px 18px 24px; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px 16px; }
+    .archive-report-card { position: relative; min-width: 0; height: 116px; padding: 15px 14px 13px; border: 1px solid #e2e7ef; border-radius: 8px; background: #fff; transition: border-color .16s ease, box-shadow .16s ease; }
+    .archive-report-card:hover { border-color: #c8d5ff; box-shadow: 0 5px 14px rgba(39,65,115,.07); }
+    .archive-report-file { position: relative; width: 38px; height: 42px; margin-bottom: 9px; border-radius: 4px; background: #d2fbfb; }
+    .archive-report-file::before { content: ''; position: absolute; left: 5px; top: 8px; width: 24px; height: 27px; border-radius: 4px; background: #16c5c6; box-shadow: 0 2px 5px rgba(22,197,198,.18); }
+    .archive-report-file::after { content: ''; position: absolute; right: 0; top: 0; border-style: solid; border-width: 0 0 11px 11px; border-color: transparent transparent #83eceb transparent; }
+    .archive-report-file-mark { position: absolute; left: 14px; top: 17px; z-index: 1; width: 7px; height: 9px; border: 1px solid rgba(255,255,255,.9); border-radius: 1px; }
+    .archive-report-file-mark::before, .archive-report-file-mark::after { content: ''; position: absolute; left: 1px; right: 1px; height: 1px; background: rgba(255,255,255,.9); }
+    .archive-report-file-mark::before { top: 2px; }
+    .archive-report-file-mark::after { top: 5px; }
+    .archive-report-status { position: absolute; right: 13px; top: 13px; display: inline-flex; align-items: center; gap: 5px; color: #98a3b2; font-size: 12px; }
+    .archive-report-status::before { content: ''; width: 5px; height: 5px; border-radius: 50%; background: currentColor; }
+    .archive-report-status.published { color: #27c86f; }
+    .archive-report-name { display: block; max-width: calc(100% - 28px); overflow: hidden; color: #33435d; font-size: 13px; font-weight: 700; line-height: 19px; text-overflow: ellipsis; white-space: nowrap; }
+    .archive-report-time { display: block; margin-top: 3px; color: #9ba6b5; font-size: 11px; }
+    .archive-report-more { position: absolute; right: 9px; bottom: 5px; width: 26px; height: 24px; color: #91a0b3; border-radius: 4px; background: transparent; font-size: 17px; line-height: 1; letter-spacing: 1px; }
+    .archive-report-more:hover { color: #3154ff; background: #f2f5fb; }
+    .archive-report-card.menu-open { z-index: 8; border-color: #3154ff; box-shadow: 0 0 0 1px rgba(49,84,255,.05); }
+    .archive-report-menu { position: absolute; right: 8px; top: calc(100% - 6px); z-index: 20; width: 112px; padding: 5px; border: 1px solid #e2e7ef; border-radius: 7px; background: #fff; box-shadow: 0 10px 28px rgba(31,51,82,.16); }
+    .archive-report-menu button { width: 100%; height: 32px; padding: 0 10px; border-radius: 4px; color: #42516a; background: #fff; font-size: 13px; text-align: left; }
+    .archive-report-menu button:hover, .archive-report-menu button:focus-visible { color: #3154ff; background: #f2f5ff; outline: 0; }
+    .archive-report-menu button.danger { color: #ff4d4f; }
+    .archive-report-menu button.danger:hover, .archive-report-menu button.danger:focus-visible { color: #d9363e; background: #fff2f0; }
+    .archive-report-dialog-mask { position: fixed; inset: 0; z-index: 260; display: none; align-items: center; justify-content: center; padding: 24px; background: rgba(19,32,55,.42); }
+    .archive-report-dialog-mask.open { display: flex; }
+    .archive-report-dialog { width: min(440px, calc(100vw - 48px)); overflow: hidden; border-radius: 10px; background: #fff; box-shadow: 0 20px 56px rgba(18,38,75,.2); }
+    .archive-report-dialog-head { height: 56px; padding: 0 20px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid #edf0f5; }
+    .archive-report-dialog-head h2 { margin: 0; color: #253751; font-size: 16px; font-weight: 800; }
+    .archive-report-dialog-close { width: 30px; height: 30px; border-radius: 5px; color: #7d899b; background: transparent; font-size: 22px; }
+    .archive-report-dialog-close:hover { color: #3154ff; background: #f2f5fb; }
+    .archive-report-dialog-body { padding: 22px 20px 24px; }
+    .archive-report-dialog-label { display: block; margin-bottom: 8px; color: #33435d; font-size: 13px; font-weight: 700; }
+    .archive-report-dialog-input { width: 100%; height: 38px; padding: 0 11px; border: 1px solid #d8e1ed; border-radius: 6px; color: #253751; background: #fff; font-size: 14px; }
+    .archive-report-dialog-input:hover { border-color: #9eb2ff; }
+    .archive-report-dialog-input:focus { border-color: #3154ff; outline: 0; box-shadow: 0 0 0 2px rgba(49,84,255,.1); }
+    .archive-report-dialog-error { min-height: 18px; margin-top: 6px; color: #ff4d4f; font-size: 12px; }
+    .archive-report-dialog-message { margin: 0; color: #52617a; font-size: 14px; line-height: 1.7; }
+    .archive-report-preview { padding: 20px; display: flex; align-items: center; gap: 14px; border: 1px solid #e5eaf2; border-radius: 8px; background: #fafcff; }
+    .archive-report-preview .archive-report-file { flex: 0 0 auto; margin: 0; }
+    .archive-report-preview strong { display: block; max-width: 300px; overflow: hidden; color: #2d3d56; font-size: 14px; text-overflow: ellipsis; white-space: nowrap; }
+    .archive-report-preview span { display: block; margin-top: 6px; color: #8c98aa; font-size: 12px; }
+    .archive-report-dialog-foot { min-height: 60px; padding: 12px 20px; display: flex; align-items: center; justify-content: flex-end; gap: 10px; border-top: 1px solid #edf0f5; background: #fafbfc; }
+    .archive-report-dialog-btn { min-width: 76px; height: 34px; padding: 0 14px; border: 1px solid #d8e1ed; border-radius: 6px; color: #42516a; background: #fff; font-size: 13px; }
+    .archive-report-dialog-btn:hover { color: #3154ff; border-color: #9eb2ff; }
+    .archive-report-dialog-btn.primary { color: #fff; border-color: #3154ff; background: #3154ff; }
+    .archive-report-dialog-btn.primary:hover { border-color: #163cff; background: #163cff; }
+    .archive-report-dialog-btn.danger { color: #fff; border-color: #ff4d4f; background: #ff4d4f; }
+    .archive-report-dialog-btn.danger:hover { border-color: #d9363e; background: #d9363e; }
+    .archive-report-dialog-btn:focus-visible, .archive-report-dialog-close:focus-visible { outline: 2px solid rgba(49,84,255,.35); outline-offset: 2px; }
+    @media (max-width: 1280px) { .archive-report-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+    @media (max-width: 900px) { .archive-report-grid { grid-template-columns: 1fr; } }
+    @media (prefers-reduced-motion: reduce) { .archive-report-layout-btn, .archive-report-generate, .archive-report-card { transition: none; } }
     .archive-page.history-document-mode { min-width: 0; overflow: auto; background: #eaf1fa; }
     .archive-page.history-document-mode .archive-shell { min-height: calc(100vh - 54px); padding: 0 14px 18px; display: grid; grid-template-columns: 276px minmax(0, 1fr); gap: 24px; }
     .archive-page.history-document-mode .archive-main { min-width: 0; display: flex; flex-direction: column; gap: 16px; }
@@ -3150,6 +3213,7 @@
           <button class="archive-nav-item" data-archive-tab="health"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M8 4v4a4 4 0 0 0 8 0V4M6 4h4M14 4h4M12 12v2a5 5 0 0 0 10 0v-2"/><circle cx="20" cy="10" r="2"/></svg>健康管理</button>
           <button class="archive-nav-item" data-archive-tab="checkin"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="4" y="5" width="16" height="15" rx="2"/><path d="M8 3v4M16 3v4M4 10h16M8 14h3M13 14h3M8 17h3"/></svg>健康打卡</button>
           <button class="archive-nav-item" data-archive-tab="history"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M5 4h12l2 2v14H5z"/><path d="M8 9h8M8 13h8M8 17h5M8 2v4M16 2v4"/></svg>病历文档</button>
+          <button class="archive-nav-item" data-archive-tab="reports"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M6 3h9l3 3v15H6z"/><path d="M15 3v4h4M9 11h6M9 15h6M9 18h4"/></svg>报告文档</button>
         </nav>
       </aside>
       <main class="archive-main">
@@ -3209,6 +3273,29 @@
               <div class="checkin-empty-note">暂无评价内容</div>
             </section>
           </section>
+        </section>
+        <section class="archive-panel archive-report-panel" data-archive-panel="reports" hidden>
+          <header class="archive-report-head">
+            <h2 class="archive-report-title">报告文档</h2>
+            <div class="archive-report-actions">
+              <button class="archive-report-layout-btn" aria-label="卡片视图" title="卡片视图"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="4" y="4" width="6" height="6"/><rect x="14" y="4" width="6" height="6"/><rect x="4" y="14" width="6" height="6"/><rect x="14" y="14" width="6" height="6"/></svg></button>
+              <button class="archive-report-generate" data-toast="已发起报告生成"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="m12 3 1.3 3.7L17 8l-3.7 1.3L12 13l-1.3-3.7L7 8l3.7-1.3L12 3Z"/><path d="m18 14 .8 2.2L21 17l-2.2.8L18 20l-.8-2.2L15 17l2.2-.8L18 14Z"/></svg>生成报告</button>
+            </div>
+          </header>
+          <div class="archive-report-grid">
+            <article class="archive-report-card"><div class="archive-report-file"><span class="archive-report-file-mark"></span></div><span class="archive-report-status">未发布</span><strong class="archive-report-name">阶段日报 2026-07-20</strong><time class="archive-report-time">2026/07/21 00:00:01</time><button class="archive-report-more" aria-label="阶段日报 2026-07-20 更多操作" data-toast="报告操作菜单已打开">···</button></article>
+            <article class="archive-report-card"><div class="archive-report-file"><span class="archive-report-file-mark"></span></div><span class="archive-report-status">未发布</span><strong class="archive-report-name">阶段日报 2026-07-19</strong><time class="archive-report-time">2026/07/20 00:00:01</time><button class="archive-report-more" aria-label="阶段日报 2026-07-19 更多操作" data-toast="报告操作菜单已打开">···</button></article>
+            <article class="archive-report-card"><div class="archive-report-file"><span class="archive-report-file-mark"></span></div><span class="archive-report-status published">已发布</span><strong class="archive-report-name">阶段日报 2026-07-18</strong><time class="archive-report-time">2026/07/19 00:00:01</time><button class="archive-report-more" aria-label="阶段日报 2026-07-18 更多操作" data-toast="报告操作菜单已打开">···</button></article>
+            <article class="archive-report-card"><div class="archive-report-file"><span class="archive-report-file-mark"></span></div><span class="archive-report-status published">已发布</span><strong class="archive-report-name">阶段日报 2026-07-17</strong><time class="archive-report-time">2026/07/18 00:00:02</time><button class="archive-report-more" aria-label="阶段日报 2026-07-17 更多操作" data-toast="报告操作菜单已打开">···</button></article>
+            <article class="archive-report-card"><div class="archive-report-file"><span class="archive-report-file-mark"></span></div><span class="archive-report-status published">已发布</span><strong class="archive-report-name">阶段日报 2026-07-16</strong><time class="archive-report-time">2026/07/17 00:00:02</time><button class="archive-report-more" aria-label="阶段日报 2026-07-16 更多操作" data-toast="报告操作菜单已打开">···</button></article>
+            <article class="archive-report-card"><div class="archive-report-file"><span class="archive-report-file-mark"></span></div><span class="archive-report-status published">已发布</span><strong class="archive-report-name">阶段日报 2026-07-15</strong><time class="archive-report-time">2026/07/16 00:00:02</time><button class="archive-report-more" aria-label="阶段日报 2026-07-15 更多操作" data-toast="报告操作菜单已打开">···</button></article>
+            <article class="archive-report-card"><div class="archive-report-file"><span class="archive-report-file-mark"></span></div><span class="archive-report-status published">已发布</span><strong class="archive-report-name">阶段日报 2026-07-14</strong><time class="archive-report-time">2026/07/15 00:00:02</time><button class="archive-report-more" aria-label="阶段日报 2026-07-14 更多操作" data-toast="报告操作菜单已打开">···</button></article>
+            <article class="archive-report-card"><div class="archive-report-file"><span class="archive-report-file-mark"></span></div><span class="archive-report-status published">已发布</span><strong class="archive-report-name">阶段日报 2026-07-13</strong><time class="archive-report-time">2026/07/15 17:17:27</time><button class="archive-report-more" aria-label="阶段日报 2026-07-13 更多操作" data-toast="报告操作菜单已打开">···</button></article>
+            <article class="archive-report-card"><div class="archive-report-file"><span class="archive-report-file-mark"></span></div><span class="archive-report-status published">已发布</span><strong class="archive-report-name">阶段日报测试模板（2026-07-08）</strong><time class="archive-report-time">2026/07/10 14:35:36</time><button class="archive-report-more" aria-label="阶段日报测试模板更多操作" data-toast="报告操作菜单已打开">···</button></article>
+            <article class="archive-report-card"><div class="archive-report-file"><span class="archive-report-file-mark"></span></div><span class="archive-report-status published">已发布</span><strong class="archive-report-name">阶段日报 2026-07-12</strong><time class="archive-report-time">2026/07/13 15:01:24</time><button class="archive-report-more" aria-label="阶段日报 2026-07-12 更多操作" data-toast="报告操作菜单已打开">···</button></article>
+            <article class="archive-report-card"><div class="archive-report-file"><span class="archive-report-file-mark"></span></div><span class="archive-report-status published">已发布</span><strong class="archive-report-name">阶段日报 2026-07-11</strong><time class="archive-report-time">2026/07/12 00:00:56</time><button class="archive-report-more" aria-label="阶段日报 2026-07-11 更多操作" data-toast="报告操作菜单已打开">···</button></article>
+            <article class="archive-report-card"><div class="archive-report-file"><span class="archive-report-file-mark"></span></div><span class="archive-report-status published">已发布</span><strong class="archive-report-name">阶段日报 2026-07-10</strong><time class="archive-report-time">2026/07/11 00:01:08</time><button class="archive-report-more" aria-label="阶段日报 2026-07-10 更多操作" data-toast="报告操作菜单已打开">···</button></article>
+          </div>
         </section>
         <section class="archive-panel archive-history-panel" data-archive-panel="history" hidden>
           <div class="archive-history-card">
@@ -3312,6 +3399,13 @@
   </section>
 
   <div class="toast" id="toast"></div>
+  <div class="archive-report-dialog-mask" id="archiveReportDialog" aria-hidden="true">
+    <section class="archive-report-dialog" role="dialog" aria-modal="true" aria-labelledby="archiveReportDialogTitle">
+      <header class="archive-report-dialog-head"><h2 id="archiveReportDialogTitle">重命名报告</h2><button class="archive-report-dialog-close" data-report-dialog-close aria-label="关闭">×</button></header>
+      <div class="archive-report-dialog-body" id="archiveReportDialogBody"></div>
+      <footer class="archive-report-dialog-foot" id="archiveReportDialogFoot"></footer>
+    </section>
+  </div>
   <div class="modal-mask" id="indicatorModal" aria-hidden="true">
     <div class="indicator-modal" role="dialog" aria-modal="true" aria-labelledby="indicatorModalTitle">
       <div class="modal-head"><h2 id="indicatorModalTitle">新建指标看板</h2><button class="modal-close" data-close-indicator-modal aria-label="关闭">×</button></div>
@@ -3871,6 +3965,19 @@
       }
       if (isCheckinEvaluation) applyCheckinEvalFilters();
     }
+
+    function exitPatientArchiveForGlobalNavigation() {
+      const archivePage = document.getElementById('patientArchivePage');
+      if (!archivePage?.classList.contains('active')) return;
+      archivePage.classList.remove('active', 'history-document-mode');
+      document.getElementById('listPage')?.classList.add('active');
+      document.getElementById('listPage')?.scrollTo?.(0, 0);
+    }
+
+    document.addEventListener('click', event => {
+      const globalMenuEntry = event.target.closest('#listPage .menu [data-list-view], #listPage .menu [data-service-view], #listPage .menu [data-patient-team-list]');
+      if (globalMenuEntry) exitPatientArchiveForGlobalNavigation();
+    }, true);
 
     document.addEventListener('click', event => {
       const filterToggle = event.target.closest('[data-health-filter-toggle]');
@@ -9706,6 +9813,10 @@
           document.querySelectorAll('#patientArchivePage .archive-history-panel').forEach(panel => panel.remove());
           archiveMain.insertAdjacentHTML('beforeend', buildArchiveHistoryMarkup());
         }
+        if (archiveTab.dataset.archiveTab === 'reports' && archiveMain) {
+          const reportPanel = document.querySelector('[data-archive-panel="reports"]');
+          if (reportPanel && reportPanel.parentElement !== archiveMain) archiveMain.append(reportPanel);
+        }
         const targetPanel = document.querySelector(`#patientArchivePage [data-archive-panel="${archiveTab.dataset.archiveTab}"]`);
         if (!archivePage || !targetPanel) return;
         event.preventDefault();
@@ -9726,6 +9837,150 @@
         archivePage.scrollTop = 0;
         archivePage.scrollLeft = 0;
       }, true);
+    })();
+
+    (() => {
+      const reportDialog = document.getElementById('archiveReportDialog');
+      const dialogTitle = document.getElementById('archiveReportDialogTitle');
+      const dialogBody = document.getElementById('archiveReportDialogBody');
+      const dialogFoot = document.getElementById('archiveReportDialogFoot');
+      let activeReportCard = null;
+      let reportDialogMode = '';
+      let reportToastTimer = null;
+
+      function showReportToast(message) {
+        const toastNode = document.getElementById('toast');
+        if (!toastNode) return;
+        toastNode.textContent = message;
+        toastNode.classList.add('show');
+        clearTimeout(reportToastTimer);
+        reportToastTimer = setTimeout(() => toastNode.classList.remove('show'), 1800);
+      }
+
+      function closeReportMenu() {
+        document.querySelectorAll('.archive-report-menu').forEach(menu => menu.remove());
+        document.querySelectorAll('.archive-report-card.menu-open').forEach(card => card.classList.remove('menu-open'));
+      }
+
+      function reportName(card) {
+        return card?.querySelector('.archive-report-name')?.textContent.trim() || '未命名报告';
+      }
+
+      function closeReportDialog() {
+        reportDialog.classList.remove('open');
+        reportDialog.setAttribute('aria-hidden', 'true');
+        activeReportCard = null;
+        reportDialogMode = '';
+      }
+
+      function confirmReportDialog() {
+        if (reportDialogMode === 'rename') {
+          const input = document.getElementById('archiveReportRenameInput');
+          const error = document.getElementById('archiveReportRenameError');
+          const name = input.value.trim();
+          if (!name) { error.textContent = '请输入报告名称'; input.focus(); return; }
+          activeReportCard.querySelector('.archive-report-name').textContent = name;
+          activeReportCard.querySelector('.archive-report-more').setAttribute('aria-label', `${name} 更多操作`);
+          closeReportDialog();
+          showReportToast('报告名称已更新');
+        } else if (reportDialogMode === 'delete') {
+          const name = reportName(activeReportCard);
+          activeReportCard.remove();
+          closeReportDialog();
+          showReportToast(`“${name}”已删除`);
+        }
+      }
+
+      function openReportDialog(mode, card) {
+        closeReportMenu();
+        activeReportCard = card;
+        reportDialogMode = mode;
+        const name = reportName(card);
+        if (mode === 'rename') {
+          dialogTitle.textContent = '重命名报告';
+          dialogBody.innerHTML = `<label class="archive-report-dialog-label" for="archiveReportRenameInput">报告名称</label><input class="archive-report-dialog-input" id="archiveReportRenameInput" maxlength="50" value="${name.replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;')}" autocomplete="off"><div class="archive-report-dialog-error" id="archiveReportRenameError"></div>`;
+          dialogFoot.innerHTML = '<button class="archive-report-dialog-btn" data-report-dialog-close>取消</button><button class="archive-report-dialog-btn primary" data-report-dialog-confirm>保存修改</button>';
+        } else if (mode === 'delete') {
+          dialogTitle.textContent = '删除报告';
+          dialogBody.innerHTML = `<p class="archive-report-dialog-message">删除后无法恢复，确定删除“${name.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')}”吗？</p>`;
+          dialogFoot.innerHTML = '<button class="archive-report-dialog-btn" data-report-dialog-close>取消</button><button class="archive-report-dialog-btn danger" data-report-dialog-confirm>删除报告</button>';
+        } else {
+          const status = card.querySelector('.archive-report-status')?.textContent.trim() || '--';
+          const time = card.querySelector('.archive-report-time')?.textContent.trim() || '--';
+          dialogTitle.textContent = '报告预览';
+          dialogBody.innerHTML = `<div class="archive-report-preview"><div class="archive-report-file"><span class="archive-report-file-mark"></span></div><div><strong>${name.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')}</strong><span>${status} · ${time}</span></div></div>`;
+          dialogFoot.innerHTML = '<button class="archive-report-dialog-btn primary" data-report-dialog-close>关闭预览</button>';
+        }
+        reportDialog.classList.add('open');
+        reportDialog.setAttribute('aria-hidden', 'false');
+        reportDialog.querySelectorAll('[data-report-dialog-close]').forEach(button => {
+          button.onclick = event => { event.preventDefault(); event.stopPropagation(); closeReportDialog(); };
+        });
+        const confirmButton = reportDialog.querySelector('[data-report-dialog-confirm]');
+        if (confirmButton) confirmButton.onclick = event => { event.preventDefault(); event.stopPropagation(); confirmReportDialog(); };
+        requestAnimationFrame(() => (mode === 'rename' ? document.getElementById('archiveReportRenameInput') : reportDialog.querySelector('[data-report-dialog-close]'))?.focus());
+      }
+
+      function toggleReportStatus(card) {
+        const status = card.querySelector('.archive-report-status');
+        const published = status.classList.toggle('published');
+        status.textContent = published ? '已发布' : '未发布';
+        showReportToast(published ? '报告已发布' : '报告已撤销发布');
+      }
+
+      function openReportMenu(button) {
+        const card = button.closest('.archive-report-card');
+        const wasOpen = card.classList.contains('menu-open');
+        closeReportMenu();
+        if (wasOpen) return;
+        card.classList.add('menu-open');
+        const published = card.querySelector('.archive-report-status')?.classList.contains('published');
+        const menu = document.createElement('div');
+        menu.className = 'archive-report-menu';
+        menu.setAttribute('role', 'menu');
+        menu.innerHTML = `<button role="menuitem" data-report-action="preview">预览</button><button role="menuitem" data-report-action="publish">${published ? '撤销发布' : '发布'}</button><button role="menuitem" data-report-action="edit">编辑</button><button role="menuitem" data-report-action="rename">重命名</button><button class="danger" role="menuitem" data-report-action="delete">删除</button>`;
+        card.append(menu);
+        menu.querySelector('button')?.focus();
+      }
+
+      document.addEventListener('click', event => {
+        if (event.target.closest('#archiveReportDialog')) return;
+        const more = event.target.closest('.archive-report-more');
+        if (more) {
+          event.preventDefault();
+          event.stopImmediatePropagation();
+          openReportMenu(more);
+          return;
+        }
+        const action = event.target.closest('[data-report-action]');
+        if (action) {
+          event.preventDefault();
+          event.stopImmediatePropagation();
+          const card = action.closest('.archive-report-card');
+          if (action.dataset.reportAction === 'preview') openReportDialog('preview', card);
+          if (action.dataset.reportAction === 'publish') { closeReportMenu(); toggleReportStatus(card); }
+          if (action.dataset.reportAction === 'edit') { closeReportMenu(); showReportToast(`已进入“${reportName(card)}”编辑`); }
+          if (action.dataset.reportAction === 'rename') openReportDialog('rename', card);
+          if (action.dataset.reportAction === 'delete') openReportDialog('delete', card);
+          return;
+        }
+        if (!event.target.closest('.archive-report-menu')) closeReportMenu();
+      }, true);
+
+      reportDialog.addEventListener('click', event => {
+        if (event.target === reportDialog) closeReportDialog();
+      });
+
+      document.addEventListener('keydown', event => {
+        if (event.key === 'Escape') {
+          if (reportDialog.classList.contains('open')) closeReportDialog();
+          else closeReportMenu();
+        }
+        if (event.key === 'Enter' && reportDialogMode === 'rename' && event.target.id === 'archiveReportRenameInput') {
+          event.preventDefault();
+          confirmReportDialog();
+        }
+      });
     })();
   </script>
   <!-- Upload modal patch scripts are intentionally disabled on initial page load.
@@ -10511,6 +10766,11 @@
   function isCurrentPageNote(note) {
     if (note.projectId !== state.projectId || note.status === "deleted") return false;
     const context = getPageContext();
+    const supersededBaseNoteIds = new Set([
+      "note_1785835734548_f06616fcf186b8",
+      "note_1785843222699_22ab37c21a1a68"
+    ]);
+    if (context.contextType === "page" && supersededBaseNoteIds.has(note.id)) return false;
     if (note.pageId === context.pageId) return true;
 
     const archivePage = document.getElementById("patientArchivePage");
@@ -10521,7 +10781,20 @@
     ).includes("病历");
     const noteIsBaseContext = (!note.contextType || note.contextType === "page")
       && (!note.contextId || note.contextId === "base");
-    if (isPatientHistoryScene && noteBelongsToPatientHistory && noteIsBaseContext) return true;
+    const wasMisclassifiedByHiddenOrderDrawer = note.contextId === "restoredOrderDrawer"
+      && normalizeNoteText(note.contextTitle || "").startsWith("订单详情");
+    if (
+      context.contextType === "page"
+      && isPatientHistoryScene
+      && noteBelongsToPatientHistory
+      && wasMisclassifiedByHiddenOrderDrawer
+    ) return true;
+    if (
+      context.contextType === "page"
+      && isPatientHistoryScene
+      && noteBelongsToPatientHistory
+      && noteIsBaseContext
+    ) return true;
 
     // Published pages rebuild parts of the view after navigation. Patient data,
     // counters and visible panels can therefore change viewKey/pageId even when
@@ -10566,8 +10839,10 @@
   }
 
   function clampPosition(x, y) {
-    const width = Math.max(document.documentElement.scrollWidth, document.body.scrollWidth, window.innerWidth);
-    const height = Math.max(document.documentElement.scrollHeight, document.body.scrollHeight, window.innerHeight);
+    // Use the browser viewport as the immutable annotation canvas. Page
+    // content can grow while data loads, but that must not change note ratios.
+    const width = Math.max(1, window.innerWidth || document.documentElement.clientWidth);
+    const height = Math.max(1, window.innerHeight || document.documentElement.clientHeight);
     return {
       x: Math.max(8, Math.min(width - 8, x)),
       y: Math.max(8, Math.min(height - 8, y)),
@@ -10637,8 +10912,8 @@
     // 这样既保留编辑版的原始坐标，也避免查看窗口变窄后备注落到屏幕外。
     const savedWidth = Number(note.pageWidth || 0);
     const savedHeight = Number(note.pageHeight || 0);
-    const currentWidth = Math.max(document.documentElement.scrollWidth, document.body.scrollWidth, window.innerWidth);
-    const currentHeight = Math.max(document.documentElement.scrollHeight, document.body.scrollHeight, window.innerHeight);
+    const currentWidth = Math.max(1, window.innerWidth || document.documentElement.clientWidth);
+    const currentHeight = Math.max(1, window.innerHeight || document.documentElement.clientHeight);
     return {
       x: savedWidth > 0 ? savedX * currentWidth / savedWidth : savedX,
       y: savedHeight > 0 ? savedY * currentHeight / savedHeight : savedY
@@ -10685,11 +10960,13 @@
     const add = document.querySelector("[data-note-action='add']");
     const activeNotes = state.notes.filter((note) => note.status !== "deleted");
 
-    count.textContent = activeNotes.length > 99 ? "99+" : String(activeNotes.length);
-    toggle.textContent = `${state.visible ? "隐藏备注" : "显示备注"}（${activeNotes.length}）`;
-    add.textContent = state.adding ? "点击页面打点" : "添加备注";
-    add.classList.toggle("warn", state.adding);
-    add.hidden = isPublishedReadOnly();
+    if (count) count.textContent = activeNotes.length > 99 ? "99+" : String(activeNotes.length);
+    if (toggle) toggle.textContent = `${state.visible ? "隐藏备注" : "显示备注"}（${activeNotes.length}）`;
+    if (add) {
+      add.textContent = state.adding ? "点击页面打点" : "添加备注";
+      add.classList.toggle("warn", state.adding);
+      add.hidden = isPublishedReadOnly();
+    }
     layer.dataset.contextType = state.pageContext?.contextType || "page";
     layer.dataset.noteMode = isPublishedReadOnly() ? "published-snapshot" : "editable";
     layer.style.display = state.visible ? "block" : "none";
@@ -10892,7 +11169,10 @@
       if (index >= 0) notes[index] = deleted;
       else notes.push(deleted);
       writeLocalNotes(notes);
-      await syncNoteToProject(deleted);
+      // The local delete is authoritative for the current interface. Project
+      // synchronization retries on the next page load and must never make the
+      // point reappear just because the local service is temporarily busy.
+      syncNoteToProject(deleted).catch(() => {});
       return deleted;
     }
     assertAnnotationService();
@@ -11014,21 +11294,22 @@
     }
 
     if (action === "delete") {
-      if (!state.editing?.id || !window.confirm("确认删除当前备注？")) return;
-      const noteId = state.editing.id;
+      if (!state.editing?.id) return;
+      const deletingNote = { ...state.editing };
+      const noteId = deletingNote.id;
       const deleteButton = event.target.closest("[data-editor-action='delete']");
       deleteButton.disabled = true;
       deleteButton.textContent = "删除中...";
       try {
-        await deleteNote(state.editing);
+        const deleteTask = deleteNote(deletingNote);
         state.notes = state.notes.filter((note) => note.id !== noteId);
         closeEditor();
         render();
         toast("备注已删除");
+        await deleteTask;
       } catch (error) {
-        deleteButton.disabled = false;
-        deleteButton.textContent = "删除";
         toast(error.message || "备注删除失败");
+        loadNotes();
       }
       return;
     }
@@ -11108,7 +11389,7 @@
       <div class="interface-note-popover-body">${esc(note.content || "暂无备注内容")}</div>
       ${readOnly ? "" : `<div class="interface-note-popover-actions">
         <button type="button" class="interface-note-btn warn" data-popover-action="delete">删除</button>
-        <button type="button" class="interface-note-btn primary" data-popover-action="modify">修改</button>
+        <button type="button" class="interface-note-btn primary" data-popover-action="modify">编辑</button>
       </div>`}
     `;
     document.body.appendChild(popover);
@@ -11121,15 +11402,17 @@
   }
 
   async function removeNoteFromPopover(note) {
-    if (!note?.id || !window.confirm("确认删除当前备注？")) return;
+    if (!note?.id) return;
     try {
-      await deleteNote(note);
+      const deleteTask = deleteNote(note);
       state.notes = state.notes.filter((item) => item.id !== note.id);
       closePopover();
       render();
       toast("备注已删除");
+      await deleteTask;
     } catch (error) {
       toast(error.message || "备注删除失败");
+      loadNotes();
     }
   }
 
