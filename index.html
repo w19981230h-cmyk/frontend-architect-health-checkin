@@ -10143,7 +10143,7 @@
   const LOCAL_PROJECT_API_URL = "http://127.0.0.1:5173/api/interface-notes";
   const STATIC_DATA_URL = "data/interface-notes.json";
   const LOCAL_NOTES_KEY = `${PROJECT_ID}:interface-notes:v1`;
-  const NOTE_SCOPE_VERSION = 5;
+  const NOTE_SCOPE_VERSION = 6;
   const state = {
     notes: [],
     visible: true,
@@ -10152,7 +10152,8 @@
     pageId: "",
     pageContext: null,
     projectId: PROJECT_ID,
-    loading: false
+    loading: false,
+    anchorMigrationIds: new Set()
   };
   let localProjectSyncStarted = false;
 
@@ -10216,7 +10217,9 @@
 
   function canRecoverNoteToContext(note, context) {
     if (!note || note.status === "deleted") return false;
-    if (Number(note.scopeVersion || 0) >= NOTE_SCOPE_VERSION) return false;
+    // Version 5 notes already carry an explicit page/dialog identity. Do not
+    // rewrite them into whichever interface happens to be open during startup.
+    if (Number(note.scopeVersion || 0) >= 5) return false;
     if (note.routePath && note.routePath !== context.routePath) return false;
     const noteIsOverlay = note.contextType && note.contextType !== "page";
     const contextIsOverlay = context.contextType !== "page";
@@ -10251,6 +10254,8 @@
       return {
         ...note,
         pageId: context.pageId,
+        scopeKey: context.scopeKey,
+        baseScope: context.baseScope,
         pageTitle: context.pageTitle,
         activeText: context.activeText,
         viewKey: context.viewKey,
@@ -10578,10 +10583,47 @@
     return values.slice(0, 8).join("/");
   }
 
+  function getActivePageElement() {
+    const pages = Array.from(document.querySelectorAll(".page.active")).filter(isVisibleNode);
+    if (!pages.length) return null;
+    // Detail pages are intentionally stacked above listPage. The last visible
+    // non-list page is the actual interface the user is annotating.
+    const foregroundPages = pages.filter((page) => page.id !== "listPage");
+    return foregroundPages.at(-1) || pages.at(-1);
+  }
+
+  function stableNodeToken(node) {
+    if (!node) return "";
+    const keys = [
+      "archiveTab", "patientTab", "planTab", "serviceTab", "serviceView",
+      "historyTabFilter", "historyFile", "checkinRange", "archivePanel",
+      "healthTaskTab", "checkinEvalTab", "listView"
+    ];
+    for (const key of keys) {
+      if (node.dataset?.[key]) return `${key}:${node.dataset[key]}`;
+    }
+    if (node.id) return `id:${node.id}`;
+    const controlledId = node.getAttribute?.("aria-controls")
+      || node.getAttribute?.("data-target")
+      || node.getAttribute?.("href")
+      || node.getAttribute?.("name")
+      || node.getAttribute?.("value")
+      || "";
+    if (controlledId) return `target:${controlledId}`;
+    const stableClasses = Array.from(node.classList || [])
+      .filter((name) => !["active", "selected", "is-active", "open"].includes(name))
+      .sort()
+      .join(".");
+    const siblingIndex = node.parentElement
+      ? Array.from(node.parentElement.children).indexOf(node)
+      : 0;
+    return stableClasses ? `${node.tagName.toLowerCase()}.${stableClasses}:${siblingIndex}` : "";
+  }
+
   function getViewKey() {
     const values = [];
-    const activePage = Array.from(document.querySelectorAll(".page.active")).find(isVisibleNode);
-    if (activePage?.id) values.push(`page:${activePage.id}`);
+    const activePage = getActivePageElement();
+    values.push(`page:${activePage?.id || "document"}`);
 
     if (activePage?.id === "patientArchivePage") {
       const patientName = normalizeNoteText(activePage.querySelector("[data-archive-text='name']")?.textContent || "");
@@ -10593,31 +10635,37 @@
       if (patientName || visitNo) values.push(`patient:${patientName}:${visitNo}`);
     }
 
+    if (activePage?.id === "listPage") {
+      const listView = Array.from(activePage.querySelectorAll(".list-view.active"))
+        .filter(isVisibleNode)
+        .at(-1);
+      if (listView?.id) values.push(`view:${listView.id}`);
+      const serviceView = activePage.querySelector("[data-service-view].active");
+      const serviceToken = stableNodeToken(serviceView);
+      if (serviceToken) values.push(serviceToken);
+    }
+
     const selectors = [
-      ".archive-side-nav [data-archive-tab].active",
+      "[data-archive-tab].active",
       ".patient-nav-item.active",
-      ".plan-config-tab.active",
+      "[data-patient-tab].active",
+      "[data-plan-tab].active",
       "[data-service-tab].active",
       "[data-history-tab-filter].active",
+      "[data-history-file].active",
       "[data-checkin-range].active",
+      "[data-health-task-tab].active",
+      "[data-checkin-eval-tab].active",
       "[data-archive-panel]:not([hidden])",
       "[role='tab'][aria-selected='true']"
     ];
-    document.querySelectorAll(selectors.join(",")).forEach((node) => {
+    const root = activePage || document;
+    root.querySelectorAll(selectors.join(",")).forEach((node) => {
       if (!isVisibleNode(node)) return;
-      const dataKey = node.dataset.archiveTab
-        || node.dataset.patientTab
-        || node.dataset.planTab
-        || node.dataset.serviceTab
-        || node.dataset.historyTabFilter
-        || node.dataset.checkinRange
-        || node.dataset.archivePanel
-        || "";
-      const text = getShortNodeText(node);
-      const value = [dataKey, text].filter(Boolean).join(":");
-      if (value && !values.includes(value)) values.push(value);
+      const token = stableNodeToken(node);
+      if (token && !values.includes(token)) values.push(token);
     });
-    return values.join("/") || "base";
+    return values.join("/") || "page:document";
   }
 
   function getPageTitle() {
@@ -10656,6 +10704,8 @@
 
   function getOverlayContext() {
     const explicitSelectors = [
+      "[data-note-scope]:not([hidden])",
+      "#packageEditorOverlay:not([hidden])",
       "#archiveParseDrawer.open",
       "#archiveUploadModal.open",
       ".modal-mask.open [role='dialog']",
@@ -10665,9 +10715,9 @@
       "[class*='drawer'][aria-hidden='false']",
       "[class*='modal'][aria-hidden='false'] [role='dialog']"
     ];
-    const explicitTarget = Array.from(document.querySelectorAll(explicitSelectors.join(",")))
+    const explicitTargets = Array.from(document.querySelectorAll(explicitSelectors.join(",")))
       .filter((node) => !node.closest("#interfaceNoteEditor"))
-      .find(isOpenOverlayNode);
+      .filter(isOpenOverlayNode);
     const selectors = [
       "[role='dialog']",
       ".ant-modal",
@@ -10679,11 +10729,15 @@
       ".meal-detail-drawer",
       ".checkin-review-modal",
       ".task-detail-drawer",
+      "[data-note-scope]",
       "[class*='modal']",
       "[class*='drawer']",
       "[class*='dialog']"
     ];
-    const candidates = (explicitTarget ? [explicitTarget] : Array.from(document.querySelectorAll(selectors.join(","))))
+    const candidates = Array.from(new Set([
+      ...explicitTargets,
+      ...Array.from(document.querySelectorAll(selectors.join(",")))
+    ]))
       .filter((node) => !node.closest("#interfaceNoteEditor"))
       .filter((node) => !node.classList.contains("interface-note-modal-mask"))
       .filter(isOpenOverlayNode);
@@ -10696,9 +10750,17 @@
       }))
       .sort((a, b) => (a.z - b.z) || (a.index - b.index))
       .pop().node;
-    const kind = /drawer/i.test(target.className || "") ? "drawer" : "dialog";
+    const declaredScope = normalizeNoteText(target.dataset.noteScope || "");
+    const declaredMode = normalizeNoteText(target.dataset.noteMode || "");
+    const declaredEntity = normalizeNoteText(target.dataset.noteEntity || "");
+    const kind = declaredScope
+      ? "screen"
+      : /drawer/i.test(target.className || "") ? "drawer" : "dialog";
     const contextRoot = target.closest("[id]") || target;
-    const contextId = normalizeNoteText(contextRoot.id || target.id || target.className || kind).slice(0, 100);
+    const contextId = (declaredScope
+      ? [declaredScope, declaredMode, declaredEntity].filter(Boolean).join(":")
+      : normalizeNoteText(contextRoot.id || target.id || target.className || kind)
+    ).slice(0, 100);
     const titleSelectors = [
       ".ant-modal-title",
       ".ant-drawer-title",
@@ -10734,20 +10796,18 @@
     const activeText = getActiveText();
     const viewKey = getViewKey();
     const overlay = getOverlayContext();
-    const effectiveOverlay = overlay;
-    const contextType = effectiveOverlay?.kind || "page";
-    const contextTitle = effectiveOverlay?.title || "";
-    const contextId = effectiveOverlay?.contextId || "base";
-    const pageId = [
-      stablePath,
-      location.hash || "#",
-      pageTitle,
-      `view:${viewKey}`,
-      activeText,
-      `${contextType}:${contextId}:${contextTitle || "base"}`
-    ].join("|").slice(0, 600);
+    const contextType = overlay?.kind || "page";
+    const contextTitle = overlay?.title || "";
+    const contextId = overlay?.contextId || "base";
+    const baseScope = [stablePath, location.hash || "#", viewKey].join("|").slice(0, 500);
+    // Only stable DOM identities participate in note ownership. Visible text,
+    // counts and titles remain metadata and can change without moving notes.
+    const scopeKey = `${baseScope}|${contextType}:${contextId}`.slice(0, 600);
+    const pageId = scopeKey;
     return {
       pageId,
+      scopeKey,
+      baseScope,
       pageTitle,
       activeText,
       viewKey,
@@ -10771,11 +10831,22 @@
       "note_1785843222699_22ab37c21a1a68"
     ]);
     if (context.contextType === "page" && supersededBaseNoteIds.has(note.id)) return false;
+    const legacyEntityScopes = {
+      "note_1786026615978_84618d008aa458": "order-detail:SO202407030001"
+    };
+    if (legacyEntityScopes[note.id]) {
+      return context.contextId === legacyEntityScopes[note.id];
+    }
+    if (note.scopeKey) return note.scopeKey === context.scopeKey;
     if (note.pageId === context.pageId) return true;
 
     const archivePage = document.getElementById("patientArchivePage");
     const historyTab = archivePage?.querySelector('[data-archive-tab="history"].active');
-    const isPatientHistoryScene = Boolean(isVisibleNode(archivePage) && isVisibleNode(historyTab));
+    const isPatientHistoryScene = Boolean(
+      context.contextType === "page"
+      && context.viewKey.includes("page:patientArchivePage")
+      && historyTab
+    );
     const noteBelongsToPatientHistory = normalizeNoteText(
       `${note.activeText || ""} ${note.pageId || ""} ${note.pageTitle || ""}`
     ).includes("病历");
@@ -10808,12 +10879,32 @@
       && noteContextId === context.contextId;
     const noteActiveText = normalizeNoteText(note.activeText || "");
     const contextActiveText = normalizeNoteText(context.activeText || "");
-    const sameProductScene = Boolean(
-      noteActiveText
-      && contextActiveText
-      && noteActiveText === contextActiveText
+    const legacyIdentityText = normalizeNoteText(
+      `${note.pageTitle || ""} ${note.activeText || ""} ${note.pageId || ""}`
     );
-    if (sameRoute && sameContext && sameProductScene) return true;
+    const legacyServiceView = [
+      ["服务包管理", "servicePackageView"],
+      ["订单管理", "orderManagementView"],
+      ["交易记录", "transactionRecordView"]
+    ].find(([label]) => legacyIdentityText.includes(label));
+    if (legacyServiceView) {
+      return context.contextType === "page"
+        && noteContextType === "page"
+        && sameRoute
+        && context.viewKey.includes(`view:${legacyServiceView[1]}`);
+    }
+    const legacyPatientHistory = normalizeNoteText(`${note.viewKey || ""} ${note.activeText || ""} ${note.pageTitle || ""}`)
+      .includes("病历");
+    if (
+      sameRoute
+      && sameContext
+      && legacyPatientHistory
+      && context.viewKey.includes("page:patientArchivePage")
+      && context.viewKey.includes("archiveTab:history")
+    ) return true;
+
+    const sameProductScene = Boolean(noteActiveText && contextActiveText && noteActiveText === contextActiveText);
+    if (sameRoute && sameContext && sameProductScene && Number(note.scopeVersion || 0) < NOTE_SCOPE_VERSION) return true;
 
     const isLegacyNote = !note.contextType && !note.contextTitle;
     if (
@@ -10839,10 +10930,8 @@
   }
 
   function clampPosition(x, y) {
-    // Use the browser viewport as the immutable annotation canvas. Page
-    // content can grow while data loads, but that must not change note ratios.
-    const width = Math.max(1, window.innerWidth || document.documentElement.clientWidth);
-    const height = Math.max(1, window.innerHeight || document.documentElement.clientHeight);
+    const width = Math.max(1, document.documentElement.scrollWidth, document.body?.scrollWidth || 0, window.innerWidth);
+    const height = Math.max(1, document.documentElement.scrollHeight, document.body?.scrollHeight || 0, window.innerHeight);
     return {
       x: Math.max(8, Math.min(width - 8, x)),
       y: Math.max(8, Math.min(height - 8, y)),
@@ -10891,23 +10980,107 @@
     return "";
   }
 
-  function setNoteAnchor(note, clientX, clientY, target) {
-    let anchor = target instanceof Element ? target : document.elementFromPoint(clientX, clientY);
-    while (anchor && /^(svg|path|use)$/i.test(anchor.tagName)) anchor = anchor.parentElement;
-    if (!anchor || anchor.closest("#interfaceNoteLayer,#interfaceNoteToolbar,#interfaceNoteEditor,.interface-note-popover")) return;
-    const selector = stableAnchorSelector(anchor);
-    const rect = anchor.getBoundingClientRect();
-    if (!selector || rect.width <= 0 || rect.height <= 0) return;
-    note.anchorSelector = selector;
-    note.anchorXRatio = Math.max(0, Math.min(1, (clientX - rect.left) / rect.width));
-    note.anchorYRatio = Math.max(0, Math.min(1, (clientY - rect.top) / rect.height));
+  function scrollContainerSelector(element) {
+    if (!(element instanceof Element)) return "";
+    if (element.id && !element.id.startsWith("interfaceNote")) return `#${CSS.escape(element.id)}`;
+    const classNames = Array.from(element.classList || [])
+      .filter((name) => !["active", "open", "selected", "hover", "focus"].includes(name))
+      .slice(0, 3);
+    if (classNames.length) {
+      const directSelector = `${element.tagName.toLowerCase()}${classNames.map((name) => `.${CSS.escape(name)}`).join("")}`;
+      try {
+        if (document.querySelectorAll(directSelector).length === 1) return directSelector;
+      } catch {}
+    }
+    const owner = element.closest("[id]:not([id^='interfaceNote'])");
+    if (owner && classNames.length) {
+      const nestedSelector = `#${CSS.escape(owner.id)} ${element.tagName.toLowerCase()}${classNames.map((name) => `.${CSS.escape(name)}`).join("")}`;
+      try {
+        if (document.querySelectorAll(nestedSelector).length === 1) return nestedSelector;
+      } catch {}
+    }
+    return "";
+  }
+
+  function findScrollContainer(target) {
+    let node = target instanceof Element ? target : document.elementFromPoint(0, 0);
+    while (node && node !== document.body && node !== document.documentElement) {
+      const style = getComputedStyle(node);
+      if (/(auto|scroll|overlay)/.test(`${style.overflow} ${style.overflowY} ${style.overflowX}`)
+        && (node.scrollHeight > node.clientHeight || node.scrollWidth > node.clientWidth)) return node;
+      node = node.parentElement;
+    }
+    return null;
+  }
+
+  function setNoteScrollPosition(note, clientX, clientY, target) {
+    const position = clampPosition(window.scrollX + clientX, window.scrollY + clientY);
+    note.x = position.x;
+    note.y = position.y;
+    note.pageWidth = position.pageWidth;
+    note.pageHeight = position.pageHeight;
+    delete note.anchorSelector;
+    delete note.anchorXRatio;
+    delete note.anchorYRatio;
+    delete note.scrollAnchorSelector;
+    delete note.scrollAnchorX;
+    delete note.scrollAnchorY;
+    note.positionMode = "document";
+
+    const scrollContainer = findScrollContainer(target);
+    const selector = scrollContainerSelector(scrollContainer);
+    const rect = scrollContainer?.getBoundingClientRect();
+    if (!selector || !rect || rect.width <= 0 || rect.height <= 0) return;
+    note.positionMode = "scroll";
+    note.scrollAnchorSelector = selector;
+    note.scrollAnchorX = clientX - rect.left + scrollContainer.scrollLeft;
+    note.scrollAnchorY = clientY - rect.top + scrollContainer.scrollTop;
   }
 
   function noteDisplayPosition(note) {
+    if (note.positionMode === "scroll" && note.scrollAnchorSelector) {
+      try {
+        const scrollContainer = document.querySelector(note.scrollAnchorSelector);
+        const rect = scrollContainer?.getBoundingClientRect();
+        if (rect && rect.width > 0 && rect.height > 0) {
+          return {
+            x: window.scrollX + rect.left + Number(note.scrollAnchorX || 0) - scrollContainer.scrollLeft,
+            y: window.scrollY + rect.top + Number(note.scrollAnchorY || 0) - scrollContainer.scrollTop
+          };
+        }
+      } catch {}
+    }
+    if (note.anchorSelector) {
+      try {
+        const anchor = document.querySelector(note.anchorSelector);
+        const rect = anchor?.getBoundingClientRect();
+        if (rect && rect.width > 0 && rect.height > 0) {
+          return {
+            x: window.scrollX + rect.left + rect.width * Number(note.anchorXRatio ?? .5),
+            y: window.scrollY + rect.top + rect.height * Number(note.anchorYRatio ?? .5)
+          };
+        }
+      } catch {}
+    }
     const savedX = Number(note.x || 0);
     const savedY = Number(note.y || 0);
-    // 标注点使用创建或拖动后保存的固定坐标，界面尺寸变化时不做缩放换算。
     return { x: savedX, y: savedY };
+  }
+
+  function migrateLegacyNoteAnchor(note) {
+    if (note.positionMode || !note.id || state.anchorMigrationIds.has(note.id)) return;
+    const currentPosition = noteDisplayPosition(note);
+    const clientX = currentPosition.x - window.scrollX;
+    const clientY = currentPosition.y - window.scrollY;
+    if (clientX < 0 || clientY < 0 || clientX > window.innerWidth || clientY > window.innerHeight) return;
+    const target = document.elementFromPoint(clientX, clientY);
+    setNoteScrollPosition(note, clientX, clientY, target);
+    state.anchorMigrationIds.add(note.id);
+    if (!isPublishedReadOnly()) {
+      persistNote(note).then((saved) => Object.assign(note, saved)).catch(() => {
+        state.anchorMigrationIds.delete(note.id);
+      });
+    }
   }
 
   function ensureShell() {
@@ -10968,6 +11141,7 @@
     activeNotes
       .sort((a, b) => Number(a.number) - Number(b.number))
       .forEach((note) => {
+        migrateLegacyNoteAnchor(note);
         const displayPosition = noteDisplayPosition(note);
         const point = document.createElement("button");
         point.type = "button";
@@ -11210,6 +11384,8 @@
       id: "",
       projectId: state.projectId,
       pageId: context.pageId,
+      scopeKey: context.scopeKey,
+      baseScope: context.baseScope,
       pageTitle: context.pageTitle,
       activeText: context.activeText,
       viewKey: context.viewKey,
@@ -11228,6 +11404,7 @@
       pageHeight: position.pageHeight,
       status: "active"
     };
+    setNoteScrollPosition(draft, event.clientX, event.clientY, event.target);
     return draft;
   }
 
@@ -11322,6 +11499,8 @@
         content,
         projectId: state.projectId,
         pageId: context.pageId,
+        scopeKey: context.scopeKey,
+        baseScope: context.baseScope,
         pageTitle: context.pageTitle,
         activeText: context.activeText,
         viewKey: context.viewKey,
@@ -11458,6 +11637,10 @@
         delete note.anchorSelector;
         delete note.anchorXRatio;
         delete note.anchorYRatio;
+        delete note.scrollAnchorSelector;
+        delete note.scrollAnchorX;
+        delete note.scrollAnchorY;
+        note.positionMode = "document";
       }
       moved = true;
       moveEvent.preventDefault();
@@ -11484,11 +11667,14 @@
       point.dataset.suppressClick = "true";
       setTimeout(() => delete point.dataset.suppressClick, 0);
       try {
-        delete note.anchorSelector;
-        delete note.anchorXRatio;
-        delete note.anchorYRatio;
+        point.style.pointerEvents = "none";
+        const anchorTarget = document.elementFromPoint(upEvent.clientX, upEvent.clientY);
+        point.style.pointerEvents = "";
+        setNoteScrollPosition(note, upEvent.clientX, upEvent.clientY, anchorTarget);
         const context = getPageContext();
         note.pageId = context.pageId;
+        note.scopeKey = context.scopeKey;
+        note.baseScope = context.baseScope;
         note.pageTitle = context.pageTitle;
         note.activeText = context.activeText;
         note.viewKey = context.viewKey;

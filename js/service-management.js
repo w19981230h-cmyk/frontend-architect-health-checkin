@@ -5,12 +5,12 @@
   const defaultPackageCover = './assets/service-package/weight-management-clean.png';
 
   const orderRows = [
-    ['SO202407030001', '糖尿病随访管理服务包', '王购买', '张患者', '30天', '绑定后计算', 188, '2024/07/03 09:20', '待使用'],
+    ['SO202407030001', '糖尿病随访管理服务包', '王购买', '--', '30天', '绑定后计算', 188, '2024/07/03 09:20', '待使用'],
     ['SO202407020018', '心脑血管健康服务包', '李购买', '李患者', '90天', '2024/07/02-2024/09/30', 268, '2024/07/02 15:34', '生效中'],
     ['SO202407020006', '术后康复随访服务包', '陈购买', '--', '30天', '绑定后计算', 98, '2024/07/02 11:05', '待使用'],
     ['SO202406280023', '孕产全周期管理服务包', '赵购买', '赵患者', '180天', '2024/01/01-2024/06/28', 560, '2024/01/01 08:30', '已完成'],
-    ['SO202406250015', '高血压强化管理服务包', '孙购买', '孙患者', '30天', '2024/06/25-2024/07/24', 128, '2024/06/25 18:12', '退款中'],
-    ['SO202406220009', '用药提醒服务包', '周购买', '周患者', '30天', '2024/06/22-2024/07/21', 88, '2024/06/22 10:46', '已退款'],
+    ['SO202406250015', '高血压强化管理服务包', '孙购买', '--', '30天', '2024/06/25-2024/07/24', 128, '2024/06/25 18:12', '退款中'],
+    ['SO202406220009', '用药提醒服务包', '周购买', '--', '30天', '2024/06/22-2024/07/21', 88, '2024/06/22 10:46', '已退款'],
     ['SO202406200031', '饮食营养干预服务包', '钱购买', '钱患者', '90天', '2024/06/20-2024/09/17', 198, '2024/06/20 13:22', '生效中'],
     ['SO202406180027', '儿童保健随访服务包', '吴购买', '吴患者', '90天', '2024/03/20-2024/06/18', 298, '2024/03/20 16:40', '已完成'],
     ['SO202406150012', '慢病复诊随访服务包', '郑购买', '郑患者', '60天', '2024/06/15-2024/08/13', 168, '2024/06/15 09:15', '生效中']
@@ -159,6 +159,9 @@
       .transaction-table th, .transaction-table td { padding: 0 8px; }
       .transaction-table th:nth-child(7), .transaction-table td:nth-child(7) { text-align: right; }
       .transaction-table th:nth-child(8), .transaction-table td:nth-child(8), .transaction-table th:last-child, .transaction-table td:last-child { text-align: center; }
+      .transaction-table tbody tr[data-transaction-row] { cursor: pointer; transition: background-color .2s; }
+      .transaction-table tbody tr[data-transaction-row]:hover { background: #fafafa; }
+      .transaction-table tbody tr[data-transaction-row]:focus-visible { outline: 2px solid #1677ff; outline-offset: -2px; background: #e6f4ff; }
       .transaction-type { height: 22px; padding: 0 8px; display: inline-flex; align-items: center; border-radius: 999px; font-size: 12px; font-weight: 500; }
       .transaction-type.payment { color: #0958d9; background: #e6f4ff; }
       .transaction-type.refund { color: #531dab; background: #f9f0ff; }
@@ -171,7 +174,9 @@
       .transaction-amount.payment { color: #1677ff; }
       .transaction-amount.refund { color: #cf1322; }
       .transaction-empty-cell { height: 180px; color: rgba(0,0,0,.45); text-align: center !important; }
-      .transaction-detail-alert { margin-bottom: 16px; padding: 12px 16px; border: 1px solid #ffe58f; border-radius: 8px; color: #ad6800; background: #fffbe6; line-height: 1.6; }
+      .transaction-detail-alert { margin-bottom: 16px; padding: 12px 16px; border: 1px solid #91caff; border-radius: 8px; color: #0958d9; background: #e6f4ff; font-size: 14px; line-height: 1.6; }
+      .transaction-detail-alert.success { border-color: #b7eb8f; color: #237804; background: #f6ffed; }
+      .transaction-detail-alert.processing { border-color: #91caff; color: #0958d9; background: #e6f4ff; }
       .transaction-detail-alert.failed { border-color: #ffa39e; color: #a8071a; background: #fff1f0; }
       .service-pager { min-height: 66px; display: flex; align-items: center; justify-content: center; gap: 12px; color: #253450; }
       .service-pager button, .service-pager span.box { height: 32px; min-width: 32px; padding: 0 10px; display: inline-flex; align-items: center; justify-content: center; border: 1px solid #d8e0ef; border-radius: 5px; background: #fff; }
@@ -199,7 +204,10 @@
       .order-detail-content { flex: 1; overflow: auto; padding: 20px 24px 32px; background: #f5f7fa; }
       .order-detail-intro { margin-bottom: 16px; padding: 12px 16px; border: 1px solid #91caff; border-radius: 8px; color: #0958d9; background: #e6f4ff; font-size: 14px; line-height: 1.6; }
       .order-detail-section { margin-bottom: 16px; overflow: hidden; border: 1px solid #f0f0f0; border-radius: 8px; background: #fff; }
-      .order-detail-section h3 { margin: 0; padding: 14px 16px; color: rgba(0,0,0,.88); font-size: 15px; border-bottom: 1px solid #f0f0f0; background: #fafafa; }
+      .order-detail-section h3 { margin: 0; padding: 10px 16px; min-height: 52px; box-sizing: border-box; display: flex; align-items: center; justify-content: space-between; gap: 12px; color: rgba(0,0,0,.88); font-size: 15px; border-bottom: 1px solid #f0f0f0; background: #fafafa; }
+      .order-detail-section h3 .ant-query-btn { flex: none; font-weight: 400; }
+      .order-detail-subsection + .order-detail-subsection { border-top: 1px solid #f0f0f0; }
+      .order-detail-subsection h4 { margin: 0; padding: 12px 16px; color: rgba(0,0,0,.65); background: #fff; font-size: 13px; font-weight: 600; }
       .order-detail-grid { display: grid; grid-template-columns: 1fr 1fr; }
       .order-detail-item { min-height: 58px; padding: 12px 16px; box-sizing: border-box; border-right: 1px solid #f0f0f0; border-bottom: 1px solid #f0f0f0; background: #fff; }
       .order-detail-item:nth-child(even) { border-right: 0; }
@@ -227,7 +235,7 @@
       .order-detail-timeline li:last-child { min-height: 0; padding-bottom: 0; border-left-color: transparent; }
       .order-detail-timeline li::before { content: ''; position: absolute; top: 4px; left: -5px; width: 8px; height: 8px; border: 1px solid #1677ff; border-radius: 50%; background: #fff; }
       .order-detail-timeline strong { display: block; color: rgba(0,0,0,.88); font-size: 14px; font-weight: 500; }
-      .order-detail-timeline time, .order-detail-timeline span { display: block; margin-top: 4px; color: rgba(0,0,0,.45); font-size: 12px; }
+      .order-detail-timeline time, .order-detail-timeline span { display: block; margin-top: 4px; color: rgba(0,0,0,.45); font-size: 12px; line-height: 1.7; }
       .order-refund-steps { padding: 24px 16px 22px; display: flex; align-items: flex-start; overflow-x: auto; }
       .order-refund-step { position: relative; min-width: 130px; flex: 1 1 0; padding: 42px 8px 0; text-align: center; }
       .order-refund-step::after { content: ''; position: absolute; top: 14px; left: calc(50% + 14px); width: calc(100% - 28px); height: 1px; background: #d9d9d9; }
@@ -245,11 +253,6 @@
       .order-record-row { min-height: 48px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid #f0f0f0; color: rgba(0,0,0,.88); }
       .order-record-row:last-child { border-bottom: 0; }
       .order-record-row span { color: rgba(0,0,0,.45); }
-      .order-detail-actions { padding: 4px 0 16px; display: flex; align-items: center; justify-content: flex-end; gap: 8px; }
-      .order-detail-action { height: 32px; padding: 0 15px; border: 1px solid #d9d9d9; border-radius: 6px; color: rgba(0,0,0,.88); background: #fff; cursor: pointer; }
-      .order-detail-action:hover { color: #1677ff; border-color: #4096ff; }
-      .order-detail-action.primary { color: #fff; border-color: #1677ff; background: #1677ff; }
-      .order-detail-action.primary:hover { color: #fff; border-color: #4096ff; background: #4096ff; }
       .order-refund-note { padding: 0 16px 16px; }
       .order-refund-note label { display: block; margin-bottom: 8px; color: rgba(0,0,0,.65); }
       .order-refund-note textarea { width: 100%; min-height: 72px; padding: 8px 11px; box-sizing: border-box; border: 1px solid #d9d9d9; border-radius: 6px; resize: vertical; outline: none; }
@@ -476,7 +479,9 @@
       .package-benefit-name { align-items: flex-start !important; color: #24344e !important; font-weight: 700; }
       .package-benefit-group { display: grid; grid-template-columns: 76px minmax(0,1fr) 58px; border-top: 1px solid #d9e5ff; }
       .package-benefit-group > span { min-height: 48px; padding: 9px 8px; display: flex; align-items: center; box-sizing: border-box; color: #516078; line-height: 1.5; }
-      .package-benefit-group .package-benefit-name { grid-column: 1; align-items: center !important; border-right: 1px solid #d9e5ff; }
+      .package-benefit-group .package-benefit-name { grid-column: 1; align-items: flex-start !important; justify-content: center; flex-direction: column; gap: 5px; border-right: 1px solid #d9e5ff; }
+      .package-benefit-name strong { color: #24344e; font-size: 12px; line-height: 1.45; }
+      .package-benefit-name small { color: #8290a6; font-size: 11px; font-weight: 400; line-height: 1.45; }
       .package-benefit-detail { grid-column: 2; border-right: 1px solid #d9e5ff; }
       .package-benefit-frequency { grid-column: 3; justify-content: center; color: #0aa64f !important; font-weight: 700; }
       .package-benefit-detail.divider, .package-benefit-frequency.divider { border-top: 1px solid #d9e5ff; }
@@ -643,10 +648,6 @@
         .transaction-summary { align-items: flex-start; flex-direction: column; justify-content: center; gap: 8px; padding: 12px 0; }
         .order-detail-drawer { width: 100vw; }
         .order-detail-content { padding: 16px; }
-        .order-detail-grid { grid-template-columns: 1fr; }
-        .order-detail-item { border-right: 0; }
-        .order-detail-item.wide { grid-column: auto; }
-        .order-detail-actions { align-items: stretch; flex-direction: column; }
         .package-editor-card { padding: 0; }
         .package-config-section { padding: 24px 20px 28px; }
         .package-field-grid, .package-benefit-meta { grid-template-columns: 1fr; }
@@ -685,7 +686,7 @@
   function renderTransactionRow(row) {
     const typeClass = row.type === '支付' ? 'payment' : 'refund';
     const amountSign = row.type === '支付' ? '+' : '-';
-    return `<tr data-transaction-row data-transaction-no="${row.no}" data-transaction-type="${row.type}" data-transaction-status="${row.status}" data-transaction-date="${row.time.slice(0, 10)}" data-transaction-search="${row.no} ${row.orderNo} ${row.refundNo || ''} ${row.buyer} ${row.packageName}">
+    return `<tr data-transaction-row data-transaction-no="${row.no}" data-transaction-type="${row.type}" data-transaction-status="${row.status}" data-transaction-date="${row.time.slice(0, 10)}" data-transaction-search="${row.no} ${row.orderNo} ${row.refundNo || ''} ${row.buyer} ${row.packageName}" tabindex="0" aria-label="查看${row.type}交易 ${row.no}">
       <td title="${row.no}">${row.no}</td>
       <td><span class="transaction-type ${typeClass}">${row.type}</span></td>
       <td title="${row.orderNo}">${row.orderNo}</td>
@@ -785,7 +786,7 @@
     `);
     document.body.insertAdjacentHTML('beforeend', `
       <div class="order-detail-mask" id="restoredOrderMask" hidden></div>
-      <aside class="order-detail-drawer" id="restoredOrderDrawer" role="dialog" aria-modal="true" aria-labelledby="restoredOrderTitle" aria-hidden="true">
+      <aside class="order-detail-drawer" id="restoredOrderDrawer" data-note-scope="order-detail" data-note-entity="" role="dialog" aria-modal="true" aria-labelledby="restoredOrderTitle" aria-hidden="true">
         <div class="order-detail-head"><strong id="restoredOrderTitle">订单详情</strong><button class="order-detail-close" data-close-restored-order type="button" aria-label="关闭详情">×</button></div>
         <div class="order-detail-content" id="restoredOrderContent"></div>
       </aside>
@@ -808,7 +809,7 @@
           <span class="package-share-label">分享二维码</span><div class="package-qr-card"><canvas id="packageShareQr" width="308" height="308" aria-label="服务包分享二维码"></canvas><div class="package-qr-actions"><button data-copy-package-qr type="button">▣ 复制</button><button data-download-package-qr type="button">⇩ 下载</button></div></div>
         </div>
       </section>
-      <section class="package-editor-overlay" id="packageEditorOverlay" hidden aria-label="新建服务包">
+      <section class="package-editor-overlay" id="packageEditorOverlay" data-note-scope="service-package-editor" data-note-mode="create" hidden aria-label="新建服务包">
         <header class="package-editor-top"><button class="package-editor-exit" data-close-package-editor type="button">× <span>退出</span></button><strong class="package-editor-title">新建服务包</strong><button class="package-editor-save" data-save-service-package type="button">保存</button></header>
         <div class="package-editor-scroll">
           <div class="package-editor-layout">
@@ -1079,69 +1080,205 @@
     return `<span class="order-sensitive-value"><span class="order-sensitive-text" data-sensitive-text>${masked}</span><button class="order-sensitive-toggle" data-sensitive-toggle data-masked="${masked}" data-full="${full}" data-sensitive-label="${label}" type="button" aria-label="查看${label}" aria-pressed="false" title="查看${label}">${sensitiveEyeIcon(true)}</button></span>`;
   }
 
-  function renderOrderDetailSection(title, fields = [], body = '') {
-    const fieldMarkup = fields.length ? `<div class="order-detail-grid">${fields.map(([label, value, wide = false]) => `<div class="order-detail-item${wide ? ' wide' : ''}"><span>${label}</span><strong>${value}</strong></div>`).join('')}</div>` : '';
-    return `<section class="order-detail-section"><h3>${title}</h3>${fieldMarkup}${body}</section>`;
+  function renderOrderDetailSection(title, fields = [], body = '', headerAction = '') {
+    const fieldMarkup = renderOrderDetailFields(fields);
+    return `<section class="order-detail-section"><h3><span>${title}</span>${headerAction}</h3>${fieldMarkup}${body}</section>`;
+  }
+
+  function renderOrderDetailFields(fields = []) {
+    return fields.length ? `<div class="order-detail-grid">${fields.map(([label, value, wide = false]) => `<div class="order-detail-item${wide ? ' wide' : ''}"><span>${label}</span><strong>${value}</strong></div>`).join('')}</div>` : '';
+  }
+
+  function renderOrderInformation(groups = []) {
+    const content = groups.filter(([, fields]) => fields?.length).map(([title, fields]) => `<div class="order-detail-subsection"><h4>${title}</h4>${renderOrderDetailFields(fields)}</div>`).join('');
+    return `<section class="order-detail-section"><h3>订单信息</h3>${content}</section>`;
   }
 
   function renderOrderTimeline(items) {
     return `<ol class="order-detail-timeline">${items.map(([time, title, note = '']) => `<li><strong>${title}</strong><time>${time}</time>${note ? `<span>${note}</span>` : ''}</li>`).join('')}</ol>`;
   }
 
+  function addOrderTimelineMinutes(value, minutes) {
+    const parsed = new Date(String(value).replaceAll('/', '-').replace(' ', 'T'));
+    if (Number.isNaN(parsed.getTime())) return value;
+    parsed.setMinutes(parsed.getMinutes() + minutes);
+    const pad = number => String(number).padStart(2, '0');
+    return `${parsed.getFullYear()}/${pad(parsed.getMonth() + 1)}/${pad(parsed.getDate())} ${pad(parsed.getHours())}:${pad(parsed.getMinutes())}`;
+  }
+
   function renderOrderRecords(items) {
     return `<div class="order-record-list">${items.map(([label, value]) => `<div class="order-record-row"><strong>${label}</strong><span>${value}</span></div>`).join('')}</div>`;
+  }
+
+  function normalizeTransactionDateTime(value) {
+    if (!value || value === '--' || value === '—') return '—';
+    return value.length === 16 ? `${value}:00` : value;
+  }
+
+  function addTransactionSeconds(value, seconds) {
+    const normalized = normalizeTransactionDateTime(value);
+    if (normalized === '—') return normalized;
+    const parsed = new Date(normalized.replace(' ', 'T'));
+    if (Number.isNaN(parsed.getTime())) return normalized;
+    parsed.setSeconds(parsed.getSeconds() + seconds);
+    const pad = number => String(number).padStart(2, '0');
+    return `${parsed.getFullYear()}-${pad(parsed.getMonth() + 1)}-${pad(parsed.getDate())} ${pad(parsed.getHours())}:${pad(parsed.getMinutes())}:${pad(parsed.getSeconds())}`;
+  }
+
+  function transactionTimeOnly(value) {
+    const normalized = normalizeTransactionDateTime(value);
+    return normalized === '—' ? normalized : normalized.slice(11);
+  }
+
+  function transactionMoney(value) {
+    return `¥${Number(value).toFixed(2)}`;
+  }
+
+  function transactionOrderStatus(transaction) {
+    if (transaction.type === '支付') return '待使用';
+    return transaction.status === '成功' ? '已退款' : '退款中';
+  }
+
+  function renderTransactionOrderSection(transaction) {
+    const status = transactionOrderStatus(transaction);
+    const fields = [
+      ['订单编号', transaction.orderNo], ['服务包名称', transaction.packageName], ['购买人', transaction.buyer],
+      ['订单金额', transactionMoney(transaction.amount)], ['实付金额', transactionMoney(transaction.amount)],
+      ['下单时间', normalizeTransactionDateTime(transaction.time)], ['当前订单状态', `<span class="order-badge ${badgeClass(status)}">${status}</span>`]
+    ];
+    if (transaction.type === '退款') fields.push(
+      ['原订单实付金额', transactionMoney(transaction.amount)], ['本次退款金额', transactionMoney(transaction.amount)]
+    );
+    const viewOrderButton = `<button class="ant-query-btn" type="button" data-transaction-locate-order="${transaction.no}">查看订单</button>`;
+    return renderOrderDetailSection('关联订单', fields, '', viewOrderButton);
+  }
+
+  function ensureTransactionOrderInList(transaction) {
+    const status = transactionOrderStatus(transaction);
+    const paymentTransaction = transactionRows.find(item => item.orderNo === transaction.orderNo && item.type === '支付') || transaction;
+    const orderRow = [
+      transaction.orderNo,
+      transaction.packageName,
+      transaction.buyer,
+      '--',
+      '30天',
+      '绑定后计算',
+      transaction.amount,
+      paymentTransaction.time.replaceAll('-', '/'),
+      status
+    ];
+    const orderIndex = orderRows.findIndex(item => item[0] === transaction.orderNo);
+    if (orderIndex >= 0) orderRows.splice(orderIndex, 1, orderRow);
+    else orderRows.unshift(orderRow);
+
+    const existingRow = document.querySelector(`[data-order-detail="${transaction.orderNo}"]`)?.closest('[data-order-row]');
+    if (existingRow) existingRow.outerHTML = renderOrderRow(orderRow);
+    else document.getElementById('orderEmptyRow')?.insertAdjacentHTML('beforebegin', renderOrderRow(orderRow));
+  }
+
+  function locateTransactionOrder(transactionNo) {
+    const transaction = transactionRows.find(item => item.no === transactionNo);
+    if (!transaction) return;
+    ensureTransactionOrderInList(transaction);
+    closeOrderDetail();
+    setServiceActive('orders');
+    const searchInput = document.getElementById('orderSearchInput');
+    if (searchInput) searchInput.value = transaction.orderNo;
+    document.querySelectorAll('.order-tab').forEach(tab => {
+      tab.classList.toggle('active', tab.dataset.orderTab === 'all');
+    });
+    orderCurrentPage = 1;
+    applyOrderFilter(false);
+    searchInput?.focus();
   }
 
   function openTransactionDetail(transactionNo) {
     const transaction = transactionRows.find(item => item.no === transactionNo);
     if (!transaction) return;
+    const noteDrawer = document.getElementById('restoredOrderDrawer');
+    noteDrawer.dataset.noteScope = 'transaction-detail';
+    noteDrawer.dataset.noteEntity = transaction.no;
     const statusMarkup = `<span class="transaction-status ${transactionStatusClass(transaction.status)}">${transaction.status}</span>`;
     const typeClass = transaction.type === '支付' ? 'payment' : 'refund';
-    const amountMarkup = `<span class="transaction-amount ${typeClass}">${transaction.type === '支付' ? '+' : '-'}¥${transaction.amount.toFixed(2)}</span>`;
-    const basicFields = [
-      ['交易类型', `<span class="transaction-type ${typeClass}">${transaction.type}</span>`], ['交易状态', statusMarkup],
-      ['交易流水号', transaction.no], ['订单编号', transaction.orderNo], ['服务包名称', transaction.packageName],
-      ['购买人', transaction.buyer], [transaction.type === '支付' ? '交易金额' : '退款金额', amountMarkup],
-      [transaction.type === '支付' ? '支付渠道' : '原支付渠道', transaction.channel], ['交易时间', transaction.time]
-    ];
+    const amountMarkup = `<span class="transaction-amount ${typeClass}">${transaction.type === '支付' ? '+' : '-'}${transactionMoney(transaction.amount)}</span>`;
     let detailContent = '';
 
     if (transaction.type === '支付') {
-      const timeline = transaction.status === '成功'
-        ? [[transaction.time, '创建支付请求'], [transaction.channelTime, '用户支付成功'], [transaction.channelTime, '收到渠道通知'], [transaction.channelTime, '生成正式订单']]
-        : [[transaction.time, '创建支付请求'], [transaction.time, '用户发起支付'], [transaction.time, '渠道返回支付失败', transaction.channelResult]];
+      const createdAt = normalizeTransactionDateTime(transaction.time);
+      const completedAt = normalizeTransactionDateTime(transaction.channelTime);
+      const timeline = [
+        [transactionTimeOnly(createdAt), '创建支付交易'],
+        [transactionTimeOnly(addTransactionSeconds(createdAt, 2)), '提交渠道支付'],
+        [transactionTimeOnly(completedAt), '渠道确认支付成功'],
+        [transactionTimeOnly(addTransactionSeconds(completedAt, 1)), '生成正式订单']
+      ];
       detailContent = [
-        renderOrderDetailSection('基础信息', basicFields),
-        renderOrderDetailSection('渠道信息', [
-          ['商户支付单号', transaction.merchantNo], ['渠道支付流水号', transaction.channelNo],
-          ['渠道支付成功时间', transaction.channelTime], ['渠道返回结果', transaction.channelResult]
+        '<div class="transaction-detail-alert success" role="status">支付成功，已生成正式订单。</div>',
+        renderOrderDetailSection('交易信息', [
+          ['交易类型', `<span class="transaction-type payment">支付</span>`], ['交易状态', statusMarkup],
+          ['交易流水号', transaction.no], ['交易金额', amountMarkup], ['支付渠道', transaction.channel],
+          ['支付时间', completedAt], ['渠道支付流水号', transaction.channelNo], ['渠道处理结果', '支付成功']
         ]),
+        renderTransactionOrderSection(transaction),
         renderOrderDetailSection('处理记录', [], renderOrderTimeline(timeline))
       ].join('');
     } else {
-      const refundTimeline = [[transaction.requestedAt, '用户申请退款'], [transaction.requestedAt, '生成退款单'], [transaction.requestedAt, '提交支付渠道']];
-      if (transaction.status === '处理中') refundTimeline.push([transaction.lastQueriedAt, '渠道处理中', transaction.progress]);
-      if (transaction.status === '成功') refundTimeline.push([transaction.completedAt, '渠道处理完成'], [transaction.completedAt, '退款成功', `¥${transaction.amount.toFixed(2)} 已原路退回`]);
-      if (transaction.status === '失败') refundTimeline.push([transaction.lastRetryAt, '退款失败', transaction.failureReason]);
-      const exceptionSection = ['处理中', '失败'].includes(transaction.status)
-        ? `<div class="transaction-detail-alert${transaction.status === '失败' ? ' failed' : ''}">${transaction.status === '失败' ? '退款处理出现异常，请根据失败原因核对后沿用原退款单重新处理。' : '退款正在渠道处理中，当前金额不计入退款成功合计。'}</div>${renderOrderDetailSection('异常信息', [
-          ['当前退款进度', transaction.progress, true], ['失败原因', transaction.failureReason, true],
-          ['重试次数', `${transaction.retryCount}次`], ['最近重试时间', transaction.lastRetryAt], ['处理备注', transaction.note, true]
-        ])}`
-        : '';
+      const requestedAt = normalizeTransactionDateTime(transaction.requestedAt);
+      const submittedAt = addTransactionSeconds(requestedAt, 3);
+      const originalPayment = transactionRows.find(item => item.type === '支付' && item.orderNo === transaction.orderNo);
+      const originalPaymentNo = originalPayment?.no || '—';
+      const channelRefundNo = !transaction.channelRefundNo || transaction.channelRefundNo === '--' ? '—' : transaction.channelRefundNo;
+      const alertText = transaction.status === '处理中'
+        ? '退款申请已提交支付渠道，正在等待处理结果。'
+        : transaction.status === '成功'
+          ? '退款成功，款项已按原支付路径退回。'
+          : '退款暂未成功，请查询支付渠道处理结果。';
+      const transactionFields = [
+        ['交易类型', '<span class="transaction-type refund">退款</span>'], ['交易状态', statusMarkup],
+        ['退款交易流水号', transaction.no], ['退款单号', transaction.refundNo], ['退款金额', amountMarkup]
+      ];
+      if (transaction.status === '处理中') transactionFields.push(
+        ['退款原因', transaction.reason, true], ['申请时间', requestedAt], ['退款方式', '原支付路径退回'],
+        ['原支付流水号', originalPaymentNo], ['原渠道支付流水号', transaction.originalPaymentNo],
+        ['渠道退款流水号', channelRefundNo], ['最近查询时间', normalizeTransactionDateTime(transaction.lastQueriedAt)],
+        ['渠道处理结果', '处理中']
+      );
+      if (transaction.status === '成功') transactionFields.push(
+        ['退款原因', transaction.reason, true], ['申请时间', requestedAt], ['退款完成时间', normalizeTransactionDateTime(transaction.completedAt)],
+        ['退款方式', '原支付路径退回'], ['退款去向', `${transaction.channel}账户`],
+        ['原支付流水号', originalPaymentNo], ['渠道退款流水号', channelRefundNo], ['渠道处理结果', '退款成功']
+      );
+      if (transaction.status === '失败') transactionFields.push(
+        ['申请时间', requestedAt], ['失败时间', addTransactionSeconds(requestedAt, 5)], ['原支付流水号', originalPaymentNo],
+        ['渠道退款流水号', channelRefundNo], ['失败原因', transaction.failureReason.replace(/^渠道返回：/, ''), true],
+        ['渠道错误信息', transaction.failureReason, true], ['最近查询时间', normalizeTransactionDateTime(transaction.lastQueriedAt)],
+        ['重试次数', `${transaction.retryCount}次`]
+      );
+
+      const refundTimeline = [
+        [transactionTimeOnly(requestedAt), '用户申请退款'],
+        [transactionTimeOnly(addTransactionSeconds(requestedAt, 1)), '生成退款单'],
+        [transactionTimeOnly(submittedAt), '提交渠道退款']
+      ];
+      if (transaction.status === '处理中') refundTimeline.push(
+        [transactionTimeOnly(addTransactionSeconds(requestedAt, 5)), '渠道处理中']
+      );
+      if (transaction.status === '成功') refundTimeline.push(
+        [transactionTimeOnly(addTransactionSeconds(submittedAt, 2)), '渠道处理中'],
+        [transactionTimeOnly(transaction.completedAt), '渠道退款成功']
+      );
+      if (transaction.status === '失败') refundTimeline.push(
+        [transactionTimeOnly(addTransactionSeconds(requestedAt, 5)), '渠道退款失败', transaction.failureReason]
+      );
       detailContent = [
-        renderOrderDetailSection('基础信息', basicFields),
-        renderOrderDetailSection('退款信息', [
-          ['退款单号', transaction.refundNo], ['原支付流水号', transaction.originalPaymentNo], ['渠道退款号', transaction.channelRefundNo],
-          ['退款原因', transaction.reason, true], ['退款申请时间', transaction.requestedAt], ['退款完成时间', transaction.completedAt],
-          ['最近查询时间', transaction.lastQueriedAt]
-        ]),
-        exceptionSection,
+        `<div class="transaction-detail-alert ${transactionStatusClass(transaction.status)}" role="status">${alertText}</div>`,
+        renderOrderDetailSection('交易信息', transactionFields),
+        renderTransactionOrderSection(transaction),
         renderOrderDetailSection('处理记录', [], renderOrderTimeline(refundTimeline))
       ].join('');
     }
 
-    document.getElementById('restoredOrderTitle').textContent = '交易详情';
+    document.getElementById('restoredOrderTitle').textContent = transaction.type === '支付' ? '支付交易详情' : '退款交易详情';
     document.getElementById('restoredOrderContent').innerHTML = detailContent;
     document.getElementById('restoredOrderContent').scrollTop = 0;
     document.getElementById('restoredOrderMask').hidden = false;
@@ -1153,6 +1290,9 @@
     const row = orderRows.find(item => item[0] === orderNo);
     if (!row) return;
     const [number, packageName, buyer, patient, period, term, pay, time, status] = row;
+    const noteDrawer = document.getElementById('restoredOrderDrawer');
+    noteDrawer.dataset.noteScope = 'order-detail';
+    noteDrawer.dataset.noteEntity = number;
     const titleMap = { 待使用: '订单详情', 生效中: '服务详情', 已完成: '服务记录', 退款中: '退款进度', 已退款: '退款详情' };
     const patientName = ['待使用', '退款中', '已退款'].includes(status) || patient === '--' ? '未绑定' : patient;
     const statusMarkup = `<span class="order-badge ${badgeClass(status)}">${status}</span>`;
@@ -1161,11 +1301,30 @@
     const channelPaymentNumber = `42000027492024${number.slice(2)}`;
     const fullContactNumber = `1380013${number.slice(-4)}`;
     const contactNumber = renderSensitiveValue(`${fullContactNumber.slice(0, 3)}****${fullContactNumber.slice(-4)}`, fullContactNumber, '联系电话');
-    const publicFields = [
-      ['订单编号', number], ['订单状态', statusMarkup], ['服务包名称', packageName], ['服务周期', period],
-      ['购买人', buyer], ['联系电话', contactNumber], ['实付金额', `${pay.toFixed(2)} 元`], ['支付渠道', '微信支付'],
-      ['下单时间', time], ['交易流水号', transactionNumber], ['渠道支付流水号', channelPaymentNumber, true]
+    const isRefundOrder = ['退款中', '已退款'].includes(status);
+    const orderRefundNumber = `REF${number.slice(2)}`;
+    const orderRefundAppliedAt = '2026/08/06 10:30';
+    const orderRefundSubmittedAt = '2026/08/06 10:31';
+    const orderRefundProcessingAt = '2026/08/06 10:35';
+    const orderRefundCompletedAt = status === '已退款' ? '2026/08/06 10:40' : '—';
+    const orderInformationGroups = [
+      ['基础信息', [
+        ['订单编号', number], ['订单状态', statusMarkup], ['服务包名称', packageName], ['服务周期', period],
+        ['购买人', buyer], ['联系电话', contactNumber], ['下单时间', time]
+      ]],
+      ['支付信息', [
+        ['订单金额', `${pay.toFixed(2)} 元`], ['实付金额', `${pay.toFixed(2)} 元`], ['支付渠道', '微信支付'],
+        ['支付流水号', transactionNumber], ['渠道支付流水号', channelPaymentNumber, true], ['支付时间', addOrderTimelineMinutes(time, 1)]
+      ]]
     ];
+    if (isRefundOrder) orderInformationGroups.push(['退款信息', [
+      ['退款状态', `<span class="order-badge ${badgeClass(status)}">${status}</span>`], ['退款单号', orderRefundNumber],
+      ['原支付流水号', transactionNumber], ['渠道退款流水号', status === '已退款' ? '503000********' : '—'],
+      ['退款金额', `${pay.toFixed(2)} 元`], ['退款原因', '暂时不需要'], ['退款申请时间', orderRefundAppliedAt],
+      ['退款完成时间', orderRefundCompletedAt], ['退款方式', '原支付路径退回'],
+      ['退款去向', status === '已退款' ? '微信支付账户' : '等待渠道处理'],
+      ['渠道处理结果', status === '已退款' ? '退款成功' : '处理中']
+    ]]);
     const introMap = {
       待使用: '用户已支付，但尚未绑定就诊人，服务未开始。',
       生效中: '已绑定就诊人，服务已经开始执行。',
@@ -1173,104 +1332,115 @@
       退款中: '用户已经申请退款，退款请求正在支付渠道处理中。',
       已退款: '支付渠道已经确认退款成功，服务权益已失效。'
     };
+    const purchaseQuantity = 1;
+    const paidAt = addOrderTimelineMinutes(time, 1);
+    const baseOperationRecords = [
+      [time, '用户提交购买', `服务包：${packageName}<br>购买数量：${purchaseQuantity}份`],
+      [paidAt, '支付成功', `支付金额：${(pay * purchaseQuantity).toFixed(2)}元<br>支付方式：微信支付`],
+      [paidAt, '生成正式订单', `订单编号：${number}<br>实付金额：${pay.toFixed(2)}元`],
+      [paidAt, '生成待使用权益', '权益状态：待使用']
+    ];
     let stateContent = '';
 
     if (status === '待使用') {
       stateContent = [
         renderOrderDetailSection('服务信息', [
-          ['联系电话', contactNumber], ['服务状态', '未开始'], ['服务周期', period], ['生效规则', '绑定就诊人后立即生效'],
-          ['服务开始时间', '—'], ['服务结束时间', '—'], ['健康管理团队', '待分配'], ['健康方案', '尚未生成'],
-          ['健康负责人', '待分配', true]
+          ['就诊人姓名', '--'], ['联系电话', '--'], ['绑定时间', '--'],
+          ['服务状态', '未开始'], ['服务周期', period], ['生效规则', '绑定就诊人后立即生效'],
+          ['服务开始时间', '--'], ['服务结束时间', '--'], ['健康管理团队', '--'], ['健康方案', '--'],
+          ['健康负责人', '--', true]
         ]),
-        renderOrderDetailSection('操作记录', [], renderOrderTimeline([
-          [time, '用户提交订单'], [time, '支付成功'], [time, '生成待使用服务权益']
-        ])),
+        renderOrderDetailSection('操作记录', [], renderOrderTimeline(baseOperationRecords)),
         '<div class="order-permission-note">该服务包尚未绑定就诊人，绑定后立即生效并开始计算服务周期。</div>'
       ].join('');
     }
 
     if (status === '生效中') {
       const durationDays = Number.parseInt(period, 10) || 90;
+      const boundAt = `${serviceDates[0]} 15:40`;
+      const contentCreatedAt = addOrderTimelineMinutes(boundAt, 2);
       stateContent = [
         renderOrderDetailSection('服务信息', [
-          ['就诊人姓名', patientName], ['就诊人身份信息', renderSensitiveValue('4403********1234', '440305198804121234', '身份信息')],
-          ['联系电话', contactNumber], ['绑定时间', `${serviceDates[0]} 15:40`], ['服务状态', '<span class="order-badge active">生效中</span>'],
-          ['服务开始时间', serviceDates[0]], ['服务结束时间', serviceDates[1]], ['剩余服务天数', `${Math.max(1, durationDays - 19)}天`],
+          ['就诊人姓名', patientName], ['联系电话', contactNumber], ['绑定时间', `${serviceDates[0]} 15:40`],
+          ['服务状态', '<span class="order-badge active">生效中</span>'],
+          ['服务周期', period], ['服务开始时间', serviceDates[0]], ['服务结束时间', serviceDates[1]], ['剩余服务天数', `${Math.max(1, durationDays - 19)}天`],
           ['健康管理团队', '慢病健康管理团队'], ['健康方案', `${packageName.replace('服务包', '')}方案`], ['健康负责人', '李敏']
         ]),
         renderOrderDetailSection('操作记录', [], renderOrderTimeline([
-          [time, '用户提交订单'], [time, '支付成功'], [time, '生成待使用服务权益'],
-          [`${serviceDates[0]} 15:40`, '用户绑定就诊人'], [`${serviceDates[0]} 15:40`, '服务正式生效'],
-          [`${serviceDates[0]} 15:41`, '健康方案生成'], [`${serviceDates[0]} 15:42`, '健康任务生成'], [`${serviceDates[0]} 17:30`, '完成最近一次健康随访']
+          ...baseOperationRecords,
+          [boundAt, '用户绑定就诊人', `就诊人：${patientName}`],
+          [boundAt, '服务正式生效', `状态变化：待使用 → 生效中<br>服务周期：${serviceDates[0]}—${serviceDates[1]}`],
+          [contentCreatedAt, '服务内容创建完成', `健康方案：${packageName.replace('服务包', '')}方案<br>健康任务：已生成12项<br>服务团队：慢病健康管理团队`],
+          [`最近更新：${serviceDates[0]} 17:30`, '服务执行中', '已完成任务：8/12<br>已完成随访：3次']
         ])),
-        '<div class="order-permission-note">服务已经生效，当前版本不支持用户自行退款，如有特殊情况请联系客服处理。</div>',
-        `<div class="order-detail-actions"><button class="order-detail-action primary" data-view-patient-archive="${patientName}" type="button">查看档案</button></div>`
+        '<div class="order-permission-note">服务已经生效，当前版本不支持用户自行退款，如有特殊情况请联系客服处理。</div>'
       ].join('');
     }
 
     if (status === '已完成') {
+      const boundAt = `${serviceDates[0]} 09:00`;
+      const contentCreatedAt = addOrderTimelineMinutes(boundAt, 2);
       stateContent = [
         renderOrderDetailSection('服务信息', [
-          ['就诊人姓名', patientName], ['联系电话', contactNumber], ['绑定时间', `${serviceDates[0]} 09:00`], ['服务开始时间', serviceDates[0]], ['服务结束时间', serviceDates[1]],
-          ['实际完成时间', `${serviceDates[1]} 18:00`], ['完成方式', '服务到期'], ['服务状态', '<span class="order-badge done">已完成</span>'],
+          ['就诊人姓名', patientName], ['联系电话', contactNumber], ['绑定时间', `${serviceDates[0]} 09:00`],
+          ['服务状态', '<span class="order-badge done">已完成</span>'], ['服务周期', period], ['服务开始时间', serviceDates[0]],
+          ['服务结束时间', serviceDates[1]], ['实际完成时间', `${serviceDates[1]} 18:00`], ['完成方式', '服务到期'],
           ['健康管理团队', '慢病健康管理团队'], ['健康方案', `${packageName.replace('服务包', '')}方案`], ['健康负责人', '李敏'],
           ['服务权益完成情况', '全部权益已履行']
         ]),
         renderOrderDetailSection('操作记录', [], renderOrderTimeline([
-          [time, '用户提交订单'], [time, '支付成功'], [time, '生成待使用服务权益'],
-          [`${serviceDates[0]} 09:00`, '绑定就诊人'], [`${serviceDates[0]} 09:00`, '服务生效'],
-          [`${serviceDates[0]} 09:01`, '健康方案生成'], [`${serviceDates[0]} 09:02`, '健康任务生成'],
-          ['服务执行期间', '健康方案、任务、随访与评估按计划完成'], [`${serviceDates[1]} 18:00`, '服务完成']
+          ...baseOperationRecords,
+          [boundAt, '用户绑定就诊人', `就诊人：${patientName}`],
+          [boundAt, '服务正式生效', `状态变化：待使用 → 生效中<br>服务周期：${serviceDates[0]}—${serviceDates[1]}`],
+          [contentCreatedAt, '服务内容创建完成', `健康方案：${packageName.replace('服务包', '')}方案<br>健康任务：已生成12项<br>服务团队：慢病健康管理团队`],
+          [`最近更新：${serviceDates[1]} 18:00`, '服务执行中', '已完成任务：12/12<br>已完成随访：3次'],
+          [`${serviceDates[1]} 23:59`, '服务完成', '操作主体：系统<br>状态变化：生效中 → 已完成<br>完成方式：服务周期结束']
         ])),
         '<div class="order-permission-note">服务已完成，相关健康档案、任务记录和服务记录继续保留。</div>'
       ].join('');
     }
 
     if (status === '退款中') {
-      const refundNumber = `RF${number.slice(2)}`;
       stateContent = [
-        renderOrderDetailSection('退款信息', [
-          ['退款状态', '<span class="order-badge refunding">退款中</span>'], ['退款单号', refundNumber], ['退款金额', `${pay.toFixed(2)} 元`], ['退款原因', '用户主动申请退款'],
-          ['退款申请时间', '2026-08-05 10:25'], ['退款方式', '原支付路径退回'], ['当前退款进度', '支付渠道处理中'],
-          ['最近更新时间', '2026-08-05 10:30'], ['渠道处理结果', '处理中']
-        ], '<div class="order-refund-steps" role="list" aria-label="退款进度"><div class="order-refund-step finished" role="listitem"><i>✓</i><strong>退款申请已提交</strong><span>2026-08-05 10:25</span></div><div class="order-refund-step finished" role="listitem"><i>✓</i><strong>已提交支付渠道</strong><span>2026-08-05 10:26</span></div><div class="order-refund-step current" role="listitem" aria-current="step"><i>3</i><strong>支付渠道处理中</strong><span>预计 1–3 个工作日完成</span></div><div class="order-refund-step waiting" role="listitem"><i>4</i><strong>退款完成</strong><span>等待渠道处理结果</span></div></div>'),
         renderOrderDetailSection('服务信息', [
-          ['联系电话', contactNumber], ['服务状态', '退款处理中，权益已锁定'], ['服务开始时间', '—'], ['服务结束时间', '—'],
-          ['健康管理团队', '未分配'], ['健康方案', '未生成'], ['健康负责人', '未分配', true]
+          ['就诊人姓名', '--'], ['联系电话', '--'], ['绑定时间', '--'],
+          ['服务状态', '退款处理中，权益已锁定'], ['服务周期', period], ['服务开始时间', '--'], ['服务结束时间', '--'],
+          ['健康管理团队', '--'], ['健康方案', '--'], ['健康负责人', '--', true]
         ]),
         renderOrderDetailSection('操作记录', [], renderOrderTimeline([
-          [time, '用户提交订单'], [time, '支付成功'], [time, '生成待使用服务权益'], ['2026-08-05 10:25', '用户申请退款'],
-          ['2026-08-05 10:25', '服务权益锁定'], ['2026-08-05 10:26', '退款申请提交支付渠道'], ['2026-08-05 10:30', '支付渠道处理中']
+          ...baseOperationRecords,
+          [orderRefundAppliedAt, '用户申请退款', `退款原因：暂时不需要<br>退款金额：${pay.toFixed(2)}元`],
+          [orderRefundAppliedAt, '退款申请已受理', `状态变化：待使用 → 退款中<br>退款单号：${orderRefundNumber}<br>待使用权益：已锁定`],
+          [orderRefundSubmittedAt, '提交渠道退款', '退款方式：原支付路径退回'],
+          [`最近更新：${orderRefundProcessingAt}`, '渠道退款处理中', '处理结果：等待支付渠道确认']
         ])),
-        '<div class="order-permission-note">退款正在处理中，退款完成前该服务包暂不可绑定或使用。</div>',
-        '<div class="order-detail-actions"><button class="order-detail-action primary" data-refund-action="refresh" type="button">查询退款结果</button></div>'
+                    '<div class="order-permission-note">退款正在处理中，退款完成前该服务包暂不可绑定或使用。</div>'
       ].join('');
     }
 
     if (status === '已退款') {
-      const refundNumber = `RF${number.slice(2)}`;
       stateContent = [
-        renderOrderDetailSection('退款信息', [
-          ['退款状态', '<span class="order-badge refunded">已退款</span>'], ['退款单号', refundNumber], ['原支付流水号', transactionNumber],
-          ['渠道退款流水号', `WX${refundNumber.slice(2)}`], ['退款金额', `${pay.toFixed(2)} 元`], ['退款原因', '用户主动申请退款'],
-          ['退款申请时间', '2026-08-05 10:25'], ['退款完成时间', '2026-08-06 14:32'], ['退款方式', '原支付路径退回'],
-          ['退款去向', '微信支付账户'], ['渠道处理结果', '退款成功']
-        ]),
         renderOrderDetailSection('服务信息', [
-          ['联系电话', contactNumber], ['服务状态', '已失效'], ['服务开始时间', '—'], ['服务结束时间', '—'],
-          ['健康管理团队', '未分配'], ['健康方案', '未生成'], ['健康负责人', '未分配'], ['服务权益状态', '已作废']
+          ['就诊人姓名', '--'], ['联系电话', '--'], ['绑定时间', '--'],
+          ['服务状态', '已失效'], ['服务周期', period], ['服务开始时间', '--'], ['服务结束时间', '--'],
+          ['健康管理团队', '--'], ['健康方案', '--'], ['健康负责人', '--'], ['服务权益状态', '已作废']
         ]),
         renderOrderDetailSection('操作记录', [], renderOrderTimeline([
-          [time, '用户提交订单'], [time, '支付成功'], [time, '生成待使用服务权益'], ['2026-08-05 10:25', '用户申请退款'],
-          ['2026-08-05 10:25', '服务权益锁定'], ['2026-08-05 10:26', '提交渠道退款'],
-          ['2026-08-06 14:32', '支付渠道确认退款成功'], ['2026-08-06 14:32', '服务权益作废']
+          ...baseOperationRecords,
+          [orderRefundAppliedAt, '用户申请退款', `退款原因：暂时不需要<br>退款金额：${pay.toFixed(2)}元`],
+          [orderRefundAppliedAt, '退款申请已受理', `状态变化：待使用 → 退款中<br>退款单号：${orderRefundNumber}<br>待使用权益：已锁定`],
+          [orderRefundSubmittedAt, '提交渠道退款', '退款方式：原支付路径退回'],
+          [`最近更新：${orderRefundProcessingAt}`, '渠道退款处理中', '处理结果：等待支付渠道确认'],
+          [orderRefundCompletedAt, '渠道退款成功', `退款金额：${pay.toFixed(2)}元<br>渠道退款流水号：503000********`],
+          [orderRefundCompletedAt, '待使用权益作废', '权益状态：已失效'],
+          [orderRefundCompletedAt, '订单退款完成', '状态变化：退款中 → 已退款<br>退款方式：原支付路径退回']
         ])),
         '<div class="order-permission-note">退款已按原支付路径退回，具体到账时间以支付渠道为准。</div>'
       ].join('');
     }
 
     document.getElementById('restoredOrderTitle').textContent = titleMap[status] || '订单详情';
-    document.getElementById('restoredOrderContent').innerHTML = `<div class="order-detail-intro">${introMap[status] || ''}</div>${renderOrderDetailSection('订单信息', publicFields)}${stateContent}`;
+    document.getElementById('restoredOrderContent').innerHTML = `<div class="order-detail-intro">${introMap[status] || ''}</div>${renderOrderInformation(orderInformationGroups)}${stateContent}`;
     document.getElementById('restoredOrderContent').scrollTop = 0;
     document.getElementById('restoredOrderMask').hidden = false;
     document.getElementById('restoredOrderDrawer').classList.add('active');
@@ -1852,21 +2022,27 @@
     document.querySelectorAll('[data-benefit-editor]').forEach(editor => {
       const title = editor.querySelector('[data-benefit-title]')?.value.trim() || '未命名权益';
       const description = editor.querySelector('[data-benefit-description]')?.value.trim() || '暂无权益说明';
-      if (!groups.has(title)) groups.set(title, []);
+      if (!groups.has(title)) groups.set(title, { description, items: [] });
+      else if (description && description !== '暂无权益说明') groups.get(title).description = description;
       editor.querySelectorAll('[data-benefit-content]').forEach(contentRow => {
         const content = contentRow.querySelector('[data-benefit-content-name]')?.value.trim() || description || '请配置服务内容';
         const frequency = contentRow.querySelector('[data-benefit-frequency]')?.value || '--';
-        groups.get(title).push({ content, frequency });
+        groups.get(title).items.push({ content, frequency });
       });
     });
-    groups.forEach((items, title) => {
+    groups.forEach((groupData, title) => {
+      const { description, items } = groupData;
       if (!items.length) items.push({ content: '请配置服务内容', frequency: '--' });
       const group = document.createElement('div');
       group.className = 'package-benefit-group';
       const name = document.createElement('span');
       name.className = 'package-benefit-name';
       name.style.gridRow = `1 / span ${items.length}`;
-      name.textContent = title;
+      const nameTitle = document.createElement('strong');
+      nameTitle.textContent = title;
+      const nameDescription = document.createElement('small');
+      nameDescription.textContent = description || '暂无权益说明';
+      name.append(nameTitle, nameDescription);
       group.appendChild(name);
       items.forEach((item, index) => {
         const detail = document.createElement('span');
@@ -1939,8 +2115,8 @@
     if (previewPriceUnit) previewPriceUnit.textContent = `/ ${period}`;
     if (previewPeriodNote) previewPeriodNote.textContent = `服务包有效期${period}`;
     if (previewFooterPrice) previewFooterPrice.innerHTML = `¥${displayPrice}<small> / ${period}</small>`;
-    if (previewDescription) previewDescription.textContent = description || intro || '填写服务包描述后，将在这里实时展示给 C 端用户。';
-    if (previewIntro) previewIntro.textContent = intro || description || '填写服务介绍后，将在这里展示服务内容、服务方式及用户能够获得的健康价值。';
+    if (previewDescription) previewDescription.textContent = description || '填写服务包描述后，将在这里实时展示给 C 端用户。';
+    if (previewIntro) previewIntro.textContent = intro || '填写服务介绍后，将在这里展示服务内容、服务方式及用户能够获得的健康价值。';
     if (previewPlan) previewPlan.textContent = plan;
     const teamSelect = document.getElementById('packageTeamInput');
     if (previewTeam) previewTeam.textContent = teamSelect && teamSelect.selectedIndex > 0 ? teamSelect.value : '专业服务团队';
@@ -1968,6 +2144,7 @@
       intro: document.getElementById('packageIntroInput')
     };
     overlay.dataset.editCode = item?.[0] || '';
+    overlay.dataset.noteMode = item ? 'edit' : 'create';
     overlay.querySelector('.package-editor-title').textContent = item ? '编辑服务包' : '新建服务包';
     overlay.querySelector('.package-editor-save').textContent = item ? '保存修改' : '保存';
     if (item) {
@@ -1975,7 +2152,7 @@
       fields.name.value = name;
       fields.description.value = description;
       fields.price.value = price;
-      fields.intro.value = description;
+      fields.intro.value = item[11] || '';
       if (!Array.from(fields.plan.options).some(option => option.value === plan)) fields.plan.add(new Option(plan, plan));
       fields.plan.value = plan;
       const durationLabel = { '30天': '1个月', '90天': '3个月', '180天': '6个月', '365天': '1年' }[period] || '';
@@ -2046,6 +2223,7 @@
     item[6] = plan;
     item[9] = overlay.dataset.coverSource || '';
     item[10] = overlay.dataset.coverName || '';
+    item[11] = document.getElementById('packageIntroInput').value.trim();
     row.children[1].innerHTML = packageCoverIcon(item[1], item[9]);
     row.children[2].textContent = name;
     row.children[2].title = name;
@@ -2255,24 +2433,6 @@
       document.querySelectorAll('.order-tab').forEach(tab => tab.classList.toggle('active', tab === orderTab));
       applyOrderFilter();
     }
-    const patientArchiveButton = event.target.closest('[data-view-patient-archive]');
-    if (patientArchiveButton) {
-      const archivePatientName = patientArchiveButton.dataset.viewPatientArchive;
-      const archiveOrder = orderRows.find(item => item[3] === archivePatientName);
-      closeOrderDetail();
-      openPatientArchive({
-        name: archivePatientName,
-        visitNo: `V${archiveOrder?.[0].slice(2) || '202407020018'}`,
-        age: '38',
-        gender: '女',
-        phone: '138****6628',
-        department: archiveOrder?.[1].replace('服务包', '专科') || '健康管理专科',
-        diagnosis: archiveOrder ? `${archiveOrder[1]}服务中` : '健康管理服务中',
-        visitDate: archiveOrder?.[7].split(' ')[0] || '--',
-        team: '慢病健康管理团队'
-      });
-      return;
-    }
     const refundAction = event.target.closest('[data-refund-action]');
     if (refundAction) {
       if (refundAction.dataset.refundAction === 'note') {
@@ -2289,7 +2449,20 @@
     const detail = event.target.closest('[data-order-detail]');
     if (detail) openOrderDetail(detail.dataset.orderDetail);
     const transactionDetail = event.target.closest('[data-transaction-detail]');
-    if (transactionDetail) openTransactionDetail(transactionDetail.dataset.transactionDetail);
+    if (transactionDetail) {
+      openTransactionDetail(transactionDetail.dataset.transactionDetail);
+      return;
+    }
+    const transactionLocateOrder = event.target.closest('[data-transaction-locate-order]');
+    if (transactionLocateOrder) {
+      locateTransactionOrder(transactionLocateOrder.dataset.transactionLocateOrder);
+      return;
+    }
+    const transactionRow = event.target.closest('[data-transaction-row]');
+    if (transactionRow) {
+      openTransactionDetail(transactionRow.dataset.transactionNo);
+      return;
+    }
     if (event.target.closest('[data-close-restored-order]') || event.target.id === 'restoredOrderMask') closeOrderDetail();
     if (event.target.closest('[data-remove-package-cover]')) {
       setPackageCover('', '');
@@ -2517,6 +2690,11 @@
     if (event.key === 'Enter' && event.target.id === 'transactionSearchInput') {
       event.preventDefault();
       applyTransactionFilter();
+      return;
+    }
+    if (event.key === 'Enter' && event.target.matches('[data-transaction-row]')) {
+      event.preventDefault();
+      openTransactionDetail(event.target.dataset.transactionNo);
       return;
     }
     if (event.key === 'Enter' && event.target.closest('.package-filter')) {
