@@ -7,7 +7,10 @@
   const orderRows = [
     ['SO202407030001', '糖尿病随访管理服务包', '王购买', '--', '30天', '绑定后计算', 188, '2024/07/03 09:20', '待使用'],
     ['SO202407020018', '心脑血管健康服务包', '李购买', '李患者', '90天', '2024/07/02-2024/09/30', 268, '2024/07/02 15:34', '生效中'],
-    ['SO202407020006', '术后康复随访服务包', '陈购买', '--', '30天', '绑定后计算', 98, '2024/07/02 11:05', '待使用'],
+    ['SO202407020006', '术后康复随访服务包', '陈购买', '--', '30天', '绑定后计算', 98, '2024/07/02 11:05', '待审核'],
+    ['SO202407010021', '肾脏健康随访服务包', '何购买', '--', '30天', '绑定后计算', 158, '2024/07/01 10:22', '待审核'],
+    ['SO202406300019', '体重管理服务包', '许购买', '--', '90天', '绑定后计算', 299, '2024/06/30 14:05', '待审核'],
+    ['SO202406290017', '睡眠改善服务包', '林购买', '--', '30天', '绑定后计算', 199, '2024/06/29 19:36', '待审核'],
     ['SO202406280023', '孕产全周期管理服务包', '赵购买', '赵患者', '180天', '2024/01/01-2024/06/28', 560, '2024/01/01 08:30', '已完成'],
     ['SO202406250015', '高血压强化管理服务包', '孙购买', '--', '30天', '2024/06/25-2024/07/24', 128, '2024/06/25 18:12', '退款中'],
     ['SO202406220009', '用药提醒服务包', '周购买', '--', '30天', '2024/06/22-2024/07/21', 88, '2024/06/22 10:46', '已退款'],
@@ -15,6 +18,9 @@
     ['SO202406180027', '儿童保健随访服务包', '吴购买', '吴患者', '90天', '2024/03/20-2024/06/18', 298, '2024/03/20 16:40', '已完成'],
     ['SO202406150012', '慢病复诊随访服务包', '郑购买', '郑患者', '60天', '2024/06/15-2024/08/13', 168, '2024/06/15 09:15', '生效中']
   ];
+  const orderRefundReviewResults = new Map();
+  const orderOverallCount = orderRows.length;
+  const orderOverallPayTotal = orderRows.reduce((sum, row) => sum + row[6], 0);
   let orderCurrentPage = 1;
   let orderPageSize = 10;
 
@@ -147,6 +153,7 @@
       .order-badge.waiting { color: #c17800; background: #fff3d6; }
       .order-badge.active { color: #10a36f; background: #e8fbf2; }
       .order-badge.done { color: #627086; background: #edf2f8; }
+      .order-badge.review { color: #531dab; background: #f9f0ff; }
       .order-badge.refunding { color: #e07b00; background: #fff1df; }
       .order-badge.refunded { color: #59687f; background: #eef3fb; }
       .service-link { border: 0; color: #174dff; background: transparent; cursor: pointer; }
@@ -234,8 +241,12 @@
       .order-detail-timeline li { position: relative; min-height: 50px; padding: 0 0 16px 20px; border-left: 1px solid #d9d9d9; }
       .order-detail-timeline li:last-child { min-height: 0; padding-bottom: 0; border-left-color: transparent; }
       .order-detail-timeline li::before { content: ''; position: absolute; top: 4px; left: -5px; width: 8px; height: 8px; border: 1px solid #1677ff; border-radius: 50%; background: #fff; }
+      .order-detail-timeline li.failed::before { border-color: #ff4d4f; background: #fff1f0; }
       .order-detail-timeline strong { display: block; color: rgba(0,0,0,.88); font-size: 14px; font-weight: 500; }
+      .order-detail-timeline li.failed > strong { color: #cf1322; }
       .order-detail-timeline time, .order-detail-timeline span { display: block; margin-top: 4px; color: rgba(0,0,0,.45); font-size: 12px; line-height: 1.7; }
+      .order-detail-timeline .transaction-audit-result { display: inline; margin: 0; color: #389e0d; font-weight: 600; }
+      .order-detail-timeline .transaction-audit-result.failed { color: #cf1322; }
       .order-refund-steps { padding: 24px 16px 22px; display: flex; align-items: flex-start; overflow-x: auto; }
       .order-refund-step { position: relative; min-width: 130px; flex: 1 1 0; padding: 42px 8px 0; text-align: center; }
       .order-refund-step::after { content: ''; position: absolute; top: 14px; left: calc(50% + 14px); width: calc(100% - 28px); height: 1px; background: #d9d9d9; }
@@ -258,6 +269,32 @@
       .order-refund-note textarea { width: 100%; min-height: 72px; padding: 8px 11px; box-sizing: border-box; border: 1px solid #d9d9d9; border-radius: 6px; resize: vertical; outline: none; }
       .order-refund-note textarea:focus { border-color: #1677ff; box-shadow: 0 0 0 2px rgba(5,145,255,.1); }
       .order-permission-note { margin: 0 16px 16px; padding: 10px 12px; border-radius: 6px; color: rgba(0,0,0,.65); background: #fafafa; font-size: 12px; }
+      .order-review-panel { margin: 0 16px 16px; padding: 16px; border: 1px solid #f0f0f0; border-radius: 8px; background: #fff; }
+      .order-review-label { display: block; margin-bottom: 12px; color: rgba(0,0,0,.88); font-size: 14px; font-weight: 600; }
+      .order-review-label::before { content: '*'; margin-right: 4px; color: #ff4d4f; }
+      .order-review-options { display: flex; align-items: center; gap: 24px; }
+      .order-review-option { display: inline-flex; align-items: center; gap: 8px; color: rgba(0,0,0,.88); font-size: 14px; cursor: pointer; }
+      .order-review-option input { width: 16px; height: 16px; margin: 0; accent-color: #1677ff; }
+      .order-review-next { display: inline-flex; align-items: center; gap: 8px; color: rgba(0,0,0,.65); font-size: 13px; cursor: pointer; }
+      .order-review-next input { width: 16px; height: 16px; margin: 0; accent-color: #1677ff; }
+      .order-review-buttons { margin-top: 16px; display: flex; justify-content: flex-end; gap: 8px; }
+      .order-review-footer { margin-top: 16px; padding-top: 16px; display: flex; align-items: center; justify-content: space-between; gap: 16px; border-top: 1px solid #f0f0f0; }
+      .order-review-footer .order-review-buttons { margin-top: 0; }
+      .order-review-button { height: 32px; padding: 0 15px; border: 1px solid #d9d9d9; border-radius: 6px; color: rgba(0,0,0,.88); background: #fff; box-shadow: 0 2px 0 rgba(0,0,0,.02); font-size: 14px; cursor: pointer; }
+      .order-review-button:hover { color: #4096ff; border-color: #4096ff; }
+      .order-review-button.primary { color: #fff; border-color: #1677ff; background: #1677ff; box-shadow: 0 2px 0 rgba(5,145,255,.1); }
+      .order-review-button.primary:hover { border-color: #4096ff; background: #4096ff; }
+      .order-review-button.danger { color: #ff4d4f; border-color: #ff4d4f; }
+      .order-review-button.danger:hover { color: #ff7875; border-color: #ff7875; }
+      .order-review-reject-form { margin-top: 16px; }
+      .order-review-reject-form[hidden] { display: none; }
+      .order-review-reject-form label { display: block; margin-bottom: 8px; color: rgba(0,0,0,.88); font-size: 14px; }
+      .order-review-reject-form label::before { content: '*'; margin-right: 4px; color: #ff4d4f; }
+      .order-review-reject-form textarea { width: 100%; min-height: 76px; padding: 8px 11px; box-sizing: border-box; border: 1px solid #d9d9d9; border-radius: 6px; resize: vertical; outline: none; font: inherit; }
+      .order-review-reject-form textarea:focus { border-color: #1677ff; box-shadow: 0 0 0 2px rgba(5,145,255,.1); }
+      .order-review-reject-form textarea[aria-invalid="true"] { border-color: #ff4d4f; }
+      .order-review-error { display: block; margin-top: 6px; color: #ff4d4f; font-size: 12px; }
+      .order-review-error[hidden] { display: none; }
       .transaction-summary strong { color: #1f2d46; }
       .package-page { padding: 16px; }
       .package-toolbar { padding: 0 0 16px; display: flex; align-items: center; gap: 16px; box-sizing: border-box; }
@@ -505,6 +542,13 @@
       .package-field-grid .package-form-group.full { grid-column: 1 / -1; }
       .package-form-label { margin-bottom: 10px; display: flex; align-items: center; gap: 6px; color: #283750; font-size: 14px; font-weight: 800; }
       .package-required { color: #ff4d4f; }
+      .package-optional { color: #98a2b3; font-size: 12px; font-weight: 400; }
+      .package-radio-group { min-height: 42px; display: flex; align-items: center; gap: 28px; }
+      .package-radio-option { display: inline-flex; align-items: center; gap: 8px; color: rgba(0,0,0,.88); font-size: 14px; font-weight: 400; cursor: pointer; }
+      .package-radio-option input { width: 16px; height: 16px; margin: 0; appearance: none; border: 1px solid #d9d9d9; border-radius: 50%; background: #fff; cursor: pointer; transition: border-color .2s, box-shadow .2s; }
+      .package-radio-option input:hover { border-color: #1677ff; }
+      .package-radio-option input:checked { border: 5px solid #1677ff; }
+      .package-radio-option input:focus-visible { outline: 0; box-shadow: 0 0 0 3px rgba(22,119,255,.15); }
       .package-input-wrap { position: relative; }
       .package-form-input, .package-form-select, .package-form-textarea { width: 100%; box-sizing: border-box; border: 1px solid #dfe5ee; border-radius: 3px; color: #2b3b53; background: #fff; outline: none; }
       .package-form-input, .package-form-select { height: 42px; padding: 0 14px; }
@@ -665,12 +709,12 @@
   }
 
   function badgeClass(status) {
-    return { 待使用: 'waiting', 生效中: 'active', 已完成: 'done', 退款中: 'refunding', 已退款: 'refunded' }[status] || 'done';
+    return { 待使用: 'waiting', 生效中: 'active', 已完成: 'done', 待审核: 'review', 退款中: 'refunding', 已退款: 'refunded' }[status] || 'done';
   }
 
   function renderOrderRow(row) {
     const [orderNo, packageName, buyer, patient, period, term, pay, time, status] = row;
-    const detailLabel = { 待使用: '订单详情', 生效中: '服务详情', 已完成: '服务记录', 退款中: '退款进度', 已退款: '退款详情' }[status] || '订单详情';
+    const detailLabel = { 待使用: '订单详情', 生效中: '服务详情', 已完成: '服务记录', 待审核: '审核退款', 退款中: '退款进度', 已退款: '退款详情' }[status] || '订单详情';
     return `<tr data-order-row data-order-status="${status}" data-order-search="${row.join(' ')}">
       <td>${orderNo}</td><td title="${packageName}">${packageName}</td><td>${buyer}</td><td>${patient}</td>
       <td>${period}</td><td>${pay.toFixed(2)}</td><td>${time}</td>
@@ -760,9 +804,9 @@
         </div>
         <div class="service-summary">
           <div class="order-tabs">
-            ${['all:全部', '待使用:待使用', '生效中:生效中', '已完成:已完成', '退款中:退款中', '已退款:已退款'].map((item, index) => { const [value, label] = item.split(':'); return `<button class="order-tab${index === 0 ? ' active' : ''}" data-order-tab="${value}" data-label="${label}" type="button">${label}<span class="order-tab-count">（0）</span></button>`; }).join('')}
+            ${['all:全部', '待审核:待审核', '待使用:待使用', '生效中:生效中', '已完成:已完成', '退款中:退款中', '已退款:已退款'].map((item, index) => { const [value, label] = item.split(':'); return `<button class="order-tab${index === 0 ? ' active' : ''}" data-order-tab="${value}" data-label="${label}" type="button">${label}<span class="order-tab-count">（0）</span></button>`; }).join('')}
           </div>
-          <div class="order-summary-metrics"><span id="orderTotalText"><strong>9</strong> 个订单</span><span id="orderPayTotalText">实付款合计：<strong>1,994.00</strong> 元</span></div>
+          <div class="order-summary-metrics"><span id="orderTotalText"><strong>${orderOverallCount}</strong> 个订单</span><span id="orderPayTotalText">实付款合计：<strong>${orderOverallPayTotal.toLocaleString('zh-CN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</strong> 元</span></div>
         </div>
         <div class="service-table-wrap"><table class="service-table order-list-table"><colgroup><col style="width:13%"><col style="width:22%"><col style="width:9%"><col style="width:9%"><col style="width:8%"><col style="width:10%"><col style="width:14%"><col style="width:8%"><col style="width:7%"></colgroup><thead><tr>
           <th>订单编号</th><th>服务包</th><th>购买人</th><th>就诊人</th><th>服务周期</th><th>实付金额</th><th>下单时间</th><th>订单状态</th><th>操作</th>
@@ -842,6 +886,7 @@
               <div class="package-form-group full"><label class="package-form-label"><span class="package-required">*</span>服务包封面</label><label class="package-upload" for="packageCoverInput"><input id="packageCoverInput" type="file" accept="image/jpeg,image/png,image/webp" hidden><span class="package-upload-empty" id="packageUploadEmpty"><strong>＋</strong><span>上传封面</span></span><img class="package-upload-preview" id="packageCoverThumb" alt="服务包封面预览" hidden><span class="package-upload-replace" id="packageUploadReplace" hidden>重新上传</span></label><div class="package-upload-meta"><span id="packageCoverMeta">建议 750×420px，JPG/PNG/WebP，5MB以内</span><button data-remove-package-cover type="button" hidden>移除</button></div></div>
               <div class="package-form-group full"><label class="package-form-label"><span class="package-required">*</span>关键词标签 <span class="package-tag-status" id="packageTagStatus">已选 1/3 · 共 5/10</span></label><div class="package-tags" id="packageTagList"><button class="package-tag active" data-package-tag type="button"><span data-package-tag-label>三甲专家</span><i class="package-tag-remove" data-remove-package-tag title="删除标签">×</i></button><button class="package-tag" data-package-tag type="button"><span data-package-tag-label>个性化方案</span><i class="package-tag-remove" data-remove-package-tag title="删除标签">×</i></button><button class="package-tag" data-package-tag type="button"><span data-package-tag-label>全周期管理</span><i class="package-tag-remove" data-remove-package-tag title="删除标签">×</i></button><button class="package-tag" data-package-tag type="button"><span data-package-tag-label>专业健康评估</span><i class="package-tag-remove" data-remove-package-tag title="删除标签">×</i></button><button class="package-tag" data-package-tag type="button"><span data-package-tag-label>7×24h服务</span><i class="package-tag-remove" data-remove-package-tag title="删除标签">×</i></button><span class="package-tag-editor" data-package-tag-editor hidden><input id="packageCustomTagInput" maxlength="10" placeholder="输入标签内容" aria-label="自定义关键词标签"><button data-confirm-package-tag type="button" aria-label="添加标签">✓</button><button data-cancel-package-tag type="button" aria-label="取消添加">×</button></span><button class="package-tag add" data-add-package-tag type="button">＋ 自定义</button></div></div>
               <div class="package-form-group full package-service-intro"><label class="package-form-label"><span class="package-required">*</span>服务介绍</label><div class="package-input-wrap"><textarea class="package-form-textarea" id="packageIntroInput" data-package-form-input maxlength="500" placeholder="请输入服务内容、服务方式及用户价值"></textarea><span class="package-counter">0 / 500</span></div></div>
+              <div class="package-form-group full"><label class="package-form-label" id="packageVerificationModeLabel"><span class="package-required">*</span>核销操作</label><div class="package-radio-group" id="packageVerificationModeGroup" role="radiogroup" aria-labelledby="packageVerificationModeLabel"><label class="package-radio-option"><input type="radio" name="packageVerificationMode" value="本平台完成" checked><span>本平台完成</span></label><label class="package-radio-option"><input type="radio" name="packageVerificationMode" value="外部系统完成"><span>外部系统完成</span></label></div></div>
             </div></section>
             <section class="package-config-section" data-config-section="price"><div class="package-config-head"><span class="package-config-index">2</span><div><div class="package-config-title">价格与周期</div><div class="package-config-subtitle">设置销售价格和服务有效周期</div></div></div><div class="package-field-grid">
               <div class="package-form-group"><label class="package-form-label"><span class="package-required">*</span>服务包价格</label><div class="package-price-input"><span>¥</span><input class="package-form-input" id="packagePriceInput" data-package-form-input inputmode="decimal" placeholder="请输入价格"></div></div>
@@ -853,12 +898,12 @@
               ${renderBenefitEditor('全程健康守护', '持续监测健康指标并提供专业健康支持', [['关键健康指标持续监测与异常提醒', '全年持续'], ['日常健康咨询与用药提醒', '全年持续']], '✚')}
             </div><button class="package-benefit-add" data-add-benefit type="button">＋ 添加服务权益</button></section>
             <section class="package-config-section" data-config-section="plan"><div class="package-config-head"><span class="package-config-index">4</span><div><div class="package-config-title">关联方案</div><div class="package-config-subtitle">选择服务执行所使用的方案内容和服务团队</div></div></div><div class="package-field-grid">
-              <div class="package-form-group"><label class="package-form-label"><span class="package-required">*</span>方案内容</label><select class="package-form-select" id="packagePlanInput" data-package-form-input><option>请选择方案内容</option><option>90天健康减重管理方案</option><option>糖尿病全周期管理方案</option><option>高血压强化管理方案</option><option>心血管健康管理方案</option></select></div>
-              <div class="package-form-group"><label class="package-form-label"><span class="package-required">*</span>服务团队</label><select class="package-form-select" id="packageTeamInput" data-package-form-input><option>请选择服务团队</option><option>慢病健康管理团队</option><option>营养与体重管理团队</option><option>心血管专病服务团队</option><option>术后康复随访团队</option></select></div>
+              <div class="package-form-group"><label class="package-form-label">方案内容 <span class="package-optional">选填</span></label><select class="package-form-select" id="packagePlanInput" data-package-form-input><option value="">请选择方案内容</option><option>90天健康减重管理方案</option><option>糖尿病全周期管理方案</option><option>高血压强化管理方案</option><option>心血管健康管理方案</option></select></div>
+              <div class="package-form-group"><label class="package-form-label">服务团队 <span class="package-optional">选填</span></label><select class="package-form-select" id="packageTeamInput" data-package-form-input><option value="">请选择服务团队</option><option>慢病健康管理团队</option><option>营养与体重管理团队</option><option>心血管专病服务团队</option><option>术后康复随访团队</option></select></div>
             </div></section>
             <section class="package-config-section" data-config-section="rules"><div class="package-config-head"><span class="package-config-index">5</span><div><div class="package-config-title">服务规则与协议</div><div class="package-config-subtitle">明确服务边界，并配置用户订阅前需要确认的协议</div></div></div>
               <div class="package-form-group"><label class="package-form-label"><span class="package-required">*</span>服务规则</label><div class="package-input-wrap"><textarea class="package-form-textarea package-rules" id="packageRulesInput" data-package-form-input maxlength="500">1. 服务有效期自购买之日计算。&#10;2. 有效期内可按配置频次使用服务权益，超出有效期或次数用完后按正常服务价格收费。&#10;3. 一个订单仅限绑定一名就诊人，服务启用后不可更改。&#10;4. 服务包费用不包含检查、药品、手术及住院等医疗费用。&#10;5. 购买后7天内未启用服务，可联系客服申请退款。&#10;6. 客服电话：020-00000000</textarea><span class="package-counter">218 / 500</span></div></div>
-              <div class="package-agreement-list"><div class="package-agreement-item"><strong>健康管理服务协议</strong><select id="packageServiceAgreement" data-package-form-input><option>请选择协议模板</option><option selected>健康管理服务协议 V2.1</option></select><button data-preview-agreement="service" type="button">预览协议</button></div><div class="package-agreement-item"><strong>隐私与授权协议</strong><select id="packagePrivacyAgreement" data-package-form-input><option>请选择协议模板</option><option selected>隐私与健康数据授权协议 V1.3</option></select><button data-preview-agreement="privacy" type="button">预览协议</button></div></div>
+              <div class="package-agreement-list"><div class="package-agreement-item"><strong>健康管理服务协议</strong><select id="packageServiceAgreement" data-package-form-input><option>请选择协议模板</option><option selected>健康管理服务协议 V2.1</option></select><button data-preview-agreement="service" type="button">预览协议</button></div></div>
             </section>
           </form>
           </div>
@@ -963,9 +1008,8 @@
     const startDate = document.getElementById('orderStartDate')?.value || '';
     const endDate = document.getElementById('orderEndDate')?.value || '';
     const status = document.querySelector('.order-tab.active')?.dataset.orderTab || 'all';
-    const statusCounts = { all: 0, 待使用: 0, 生效中: 0, 已完成: 0, 退款中: 0, 已退款: 0 };
+    const statusCounts = { all: 0, 待使用: 0, 生效中: 0, 已完成: 0, 待审核: 0, 退款中: 0, 已退款: 0 };
     const matchedRows = [];
-    let total = 0;
     if (resetPage) orderCurrentPage = 1;
     document.querySelectorAll('#orderRows [data-order-row]').forEach(row => {
       const searchText = row.dataset.orderSearch.toLowerCase();
@@ -980,7 +1024,6 @@
       const hit = conditionHit && (status === 'all' || row.dataset.orderStatus === status);
       if (hit) {
         matchedRows.push(row);
-        total += Number(row.children[5].textContent || 0);
       }
     });
     const totalPages = Math.max(1, Math.ceil(matchedRows.length / orderPageSize));
@@ -995,8 +1038,8 @@
       const label = tab.dataset.label || value;
       tab.innerHTML = `${label}<span class="order-tab-count">（${statusCounts[value] || 0}）</span>`;
     });
-    document.getElementById('orderTotalText').innerHTML = `<strong>${matchedRows.length}</strong> 个订单`;
-    document.getElementById('orderPayTotalText').innerHTML = `实付款合计：<strong>${total.toLocaleString('zh-CN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</strong> 元`;
+    document.getElementById('orderTotalText').innerHTML = `<strong>${orderOverallCount}</strong> 个订单`;
+    document.getElementById('orderPayTotalText').innerHTML = `实付款合计：<strong>${orderOverallPayTotal.toLocaleString('zh-CN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</strong> 元`;
     renderOrderPagination(matchedRows.length);
   }
 
@@ -1095,7 +1138,7 @@
   }
 
   function renderOrderTimeline(items) {
-    return `<ol class="order-detail-timeline">${items.map(([time, title, note = '']) => `<li><strong>${title}</strong><time>${time}</time>${note ? `<span>${note}</span>` : ''}</li>`).join('')}</ol>`;
+    return `<ol class="order-detail-timeline">${items.map(([time, title, note = '', state = '']) => `<li${state ? ` class="${state}"` : ''}><strong>${title}</strong><time>${time}</time>${note ? `<span>${note}</span>` : ''}</li>`).join('')}</ol>`;
   }
 
   function addOrderTimelineMinutes(value, minutes) {
@@ -1132,6 +1175,16 @@
 
   function transactionMoney(value) {
     return `¥${Number(value).toFixed(2)}`;
+  }
+
+  function renderTransactionAuditData({ result = '通过', auditor, auditedAt, opinion, amount = '' }) {
+    return [
+      `审核结果：<b class="transaction-audit-result${result === '通过' ? '' : ' failed'}">${result}</b>`,
+      `审核人：${auditor}`,
+      `审核时间：${normalizeTransactionDateTime(auditedAt)}`,
+      result !== '通过' && opinion ? `审核意见：${opinion}` : '',
+      amount ? `核定金额：${amount}` : ''
+    ].filter(Boolean).join('<br>');
   }
 
   function transactionOrderStatus(transaction) {
@@ -1206,10 +1259,15 @@
     if (transaction.type === '支付') {
       const createdAt = normalizeTransactionDateTime(transaction.time);
       const completedAt = normalizeTransactionDateTime(transaction.channelTime);
+      const paymentAuditAt = completedAt;
       const timeline = [
         [transactionTimeOnly(createdAt), '创建支付交易'],
         [transactionTimeOnly(addTransactionSeconds(createdAt, 2)), '提交渠道支付'],
         [transactionTimeOnly(completedAt), '渠道确认支付成功'],
+        [transactionTimeOnly(paymentAuditAt), '支付结果审核通过', renderTransactionAuditData({
+          auditor: '张医生',
+          auditedAt: paymentAuditAt
+        })],
         [transactionTimeOnly(addTransactionSeconds(completedAt, 1)), '生成正式订单']
       ];
       detailContent = [
@@ -1224,6 +1282,7 @@
       ].join('');
     } else {
       const requestedAt = normalizeTransactionDateTime(transaction.requestedAt);
+      const refundAuditAt = addTransactionSeconds(requestedAt, 2);
       const submittedAt = addTransactionSeconds(requestedAt, 3);
       const originalPayment = transactionRows.find(item => item.type === '支付' && item.orderNo === transaction.orderNo);
       const originalPaymentNo = originalPayment?.no || '—';
@@ -1258,6 +1317,11 @@
       const refundTimeline = [
         [transactionTimeOnly(requestedAt), '用户申请退款'],
         [transactionTimeOnly(addTransactionSeconds(requestedAt, 1)), '生成退款单'],
+        [transactionTimeOnly(refundAuditAt), '退款申请审核通过', renderTransactionAuditData({
+          auditor: '李医生',
+          auditedAt: refundAuditAt,
+          amount: transactionMoney(transaction.amount)
+        })],
         [transactionTimeOnly(submittedAt), '提交渠道退款']
       ];
       if (transaction.status === '处理中') refundTimeline.push(
@@ -1268,7 +1332,13 @@
         [transactionTimeOnly(transaction.completedAt), '渠道退款成功']
       );
       if (transaction.status === '失败') refundTimeline.push(
-        [transactionTimeOnly(addTransactionSeconds(requestedAt, 5)), '渠道退款失败', transaction.failureReason]
+        [transactionTimeOnly(addTransactionSeconds(requestedAt, 5)), '渠道退款失败', transaction.failureReason, 'failed'],
+        [transactionTimeOnly(addTransactionSeconds(requestedAt, 6)), '退款结果审核失败', renderTransactionAuditData({
+          result: '失败',
+          auditor: '李医生',
+          auditedAt: addTransactionSeconds(requestedAt, 6),
+          opinion: transaction.failureReason.replace(/^渠道返回：/, '')
+        }), 'failed']
       );
       detailContent = [
         `<div class="transaction-detail-alert ${transactionStatusClass(transaction.status)}" role="status">${alertText}</div>`,
@@ -1293,20 +1363,27 @@
     const noteDrawer = document.getElementById('restoredOrderDrawer');
     noteDrawer.dataset.noteScope = 'order-detail';
     noteDrawer.dataset.noteEntity = number;
-    const titleMap = { 待使用: '订单详情', 生效中: '服务详情', 已完成: '服务记录', 退款中: '退款进度', 已退款: '退款详情' };
-    const patientName = ['待使用', '退款中', '已退款'].includes(status) || patient === '--' ? '未绑定' : patient;
+    const titleMap = { 待使用: '订单详情', 生效中: '服务详情', 已完成: '服务记录', 待审核: '退款详情', 退款中: '退款进度', 已退款: '退款详情' };
+    const patientName = ['待使用', '待审核', '退款中', '已退款'].includes(status) || patient === '--' ? '未绑定' : patient;
     const statusMarkup = `<span class="order-badge ${badgeClass(status)}">${status}</span>`;
     const serviceDates = term.includes('-') ? term.split('-') : ['绑定成功后开始', '绑定成功后计算'];
     const transactionNumber = `PAY${number.slice(2)}`;
     const channelPaymentNumber = `42000027492024${number.slice(2)}`;
     const fullContactNumber = `1380013${number.slice(-4)}`;
     const contactNumber = renderSensitiveValue(`${fullContactNumber.slice(0, 3)}****${fullContactNumber.slice(-4)}`, fullContactNumber, '联系电话');
-    const isRefundOrder = ['退款中', '已退款'].includes(status);
+    const isRefundOrder = ['待审核', '退款中', '已退款'].includes(status);
     const orderRefundNumber = `REF${number.slice(2)}`;
     const orderRefundAppliedAt = '2026/08/06 10:30';
+    const orderRefundReviewedAt = '2026/08/06 10:31';
     const orderRefundSubmittedAt = '2026/08/06 10:31';
     const orderRefundProcessingAt = '2026/08/06 10:35';
     const orderRefundCompletedAt = status === '已退款' ? '2026/08/06 10:40' : '—';
+    const orderRefundReason = {
+      SO202407020006: '服务计划变更',
+      SO202407010021: '误操作重复购买',
+      SO202406300019: '暂时不需要',
+      SO202406290017: '购买服务包有误'
+    }[number] || '暂时不需要';
     const orderInformationGroups = [
       ['基础信息', [
         ['订单编号', number], ['订单状态', statusMarkup], ['服务包名称', packageName], ['服务周期', period],
@@ -1320,15 +1397,16 @@
     if (isRefundOrder) orderInformationGroups.push(['退款信息', [
       ['退款状态', `<span class="order-badge ${badgeClass(status)}">${status}</span>`], ['退款单号', orderRefundNumber],
       ['原支付流水号', transactionNumber], ['渠道退款流水号', status === '已退款' ? '503000********' : '—'],
-      ['退款金额', `${pay.toFixed(2)} 元`], ['退款原因', '暂时不需要'], ['退款申请时间', orderRefundAppliedAt],
+      ['退款金额', `${pay.toFixed(2)} 元`], ['退款原因', orderRefundReason], ['退款申请时间', orderRefundAppliedAt],
       ['退款完成时间', orderRefundCompletedAt], ['退款方式', '原支付路径退回'],
-      ['退款去向', status === '已退款' ? '微信支付账户' : '等待渠道处理'],
-      ['渠道处理结果', status === '已退款' ? '退款成功' : '处理中']
+      ['退款去向', status === '已退款' ? '微信支付账户' : status === '待审核' ? '审核通过后原路退回' : '等待渠道处理'],
+      ['渠道处理结果', status === '已退款' ? '退款成功' : status === '待审核' ? '尚未提交支付渠道' : '处理中']
     ]]);
     const introMap = {
       待使用: '用户已支付，但尚未绑定就诊人，服务未开始。',
       生效中: '已绑定就诊人，服务已经开始执行。',
       已完成: '服务周期结束或服务权益已经全部履行。',
+      待审核: '用户已发起退款申请，等待医护人员审核。',
       退款中: '用户已经申请退款，退款请求正在支付渠道处理中。',
       已退款: '支付渠道已经确认退款成功，服务权益已失效。'
     };
@@ -1340,6 +1418,14 @@
       [paidAt, '生成正式订单', `订单编号：${number}<br>实付金额：${pay.toFixed(2)}元`],
       [paidAt, '生成待使用权益', '权益状态：待使用']
     ];
+    const refundReviewResult = orderRefundReviewResults.get(number);
+    const waitingOperationRecords = refundReviewResult?.approved === false ? [
+      ...baseOperationRecords,
+      [orderRefundAppliedAt, '用户申请退款', `退款原因：${orderRefundReason}<br>退款金额：${pay.toFixed(2)}元`],
+      [orderRefundAppliedAt, '退款申请待审核', '状态变化：待使用 → 待审核<br>待使用权益：已锁定<br>审核角色：医护人员'],
+      [refundReviewResult.reviewedAt, '退款审核不通过', `审核人员：医护人员<br>审核结果：不通过<br>不通过原因：${refundReviewResult.reason}<br>状态变化：待审核 → 待使用`],
+      [refundReviewResult.reviewedAt, '待使用权益解除锁定', '权益状态：待使用<br>服务包可继续绑定使用']
+    ] : baseOperationRecords;
     let stateContent = '';
 
     if (status === '待使用') {
@@ -1350,7 +1436,7 @@
           ['服务开始时间', '--'], ['服务结束时间', '--'], ['健康管理团队', '--'], ['健康方案', '--'],
           ['健康负责人', '--', true]
         ]),
-        renderOrderDetailSection('操作记录', [], renderOrderTimeline(baseOperationRecords)),
+        renderOrderDetailSection('操作记录', [], renderOrderTimeline(waitingOperationRecords)),
         '<div class="order-permission-note">该服务包尚未绑定就诊人，绑定后立即生效并开始计算服务周期。</div>'
       ].join('');
     }
@@ -1400,6 +1486,37 @@
       ].join('');
     }
 
+    if (status === '待审核') {
+      stateContent = [
+        renderOrderDetailSection('服务信息', [
+          ['就诊人姓名', '--'], ['联系电话', '--'], ['绑定时间', '--'],
+          ['服务状态', '退款待审核，权益已锁定'], ['服务周期', period], ['服务开始时间', '--'], ['服务结束时间', '--'],
+          ['健康管理团队', '--'], ['健康方案', '--'], ['健康负责人', '--', true]
+        ]),
+        renderOrderDetailSection('操作记录', [], renderOrderTimeline([
+          ...baseOperationRecords,
+          [orderRefundAppliedAt, '用户申请退款', `退款原因：${orderRefundReason}<br>退款金额：${pay.toFixed(2)}元`],
+          [orderRefundAppliedAt, '退款申请待审核', `状态变化：待使用 → 待审核<br>待使用权益：已锁定<br>审核角色：医护人员`]
+        ])),
+        '<div class="order-permission-note">用户已发起退款申请，需医护人员审核；审核通过后才会提交支付渠道退款。</div>',
+        `<div class="order-review-panel" data-order-review-panel data-order-no="${number}">
+          <span class="order-review-label">审核结果</span>
+          <div class="order-review-options" role="radiogroup" aria-label="审核结果">
+            <label class="order-review-option"><input data-order-review-decision type="radio" name="orderReviewDecision" value="approve">审核通过</label>
+            <label class="order-review-option"><input data-order-review-decision type="radio" name="orderReviewDecision" value="reject">审核不通过</label>
+          </div>
+          <span class="order-review-error" data-order-review-decision-error hidden>请选择审核结果</span>
+          <div class="order-review-reject-form" data-order-review-reject-form hidden>
+            <label for="orderReviewRejectReason">不通过原因</label><textarea id="orderReviewRejectReason" data-order-review-reject-reason maxlength="200" placeholder="请输入审核不通过原因"></textarea><span class="order-review-error" data-order-review-error hidden>请填写审核不通过原因</span>
+          </div>
+          <div class="order-review-footer">
+            <label class="order-review-next"><input data-order-review-next type="checkbox">审核完成后自动打开下一条待审核订单</label>
+            <div class="order-review-buttons"><button class="order-review-button" data-order-review-action="cancel" type="button">取消</button><button class="order-review-button primary" data-order-review-action="confirm" type="button">确定</button></div>
+          </div>
+        </div>`
+      ].join('');
+    }
+
     if (status === '退款中') {
       stateContent = [
         renderOrderDetailSection('服务信息', [
@@ -1409,8 +1526,10 @@
         ]),
         renderOrderDetailSection('操作记录', [], renderOrderTimeline([
           ...baseOperationRecords,
-          [orderRefundAppliedAt, '用户申请退款', `退款原因：暂时不需要<br>退款金额：${pay.toFixed(2)}元`],
-          [orderRefundAppliedAt, '退款申请已受理', `状态变化：待使用 → 退款中<br>退款单号：${orderRefundNumber}<br>待使用权益：已锁定`],
+          [orderRefundAppliedAt, '用户申请退款', `退款原因：${orderRefundReason}<br>退款金额：${pay.toFixed(2)}元`],
+          [orderRefundAppliedAt, '退款申请待审核', '状态变化：待使用 → 待审核<br>待使用权益：已锁定<br>审核角色：医护人员'],
+          [orderRefundReviewedAt, '退款审核通过', '审核人员：医护人员<br>审核结果：通过<br>状态变化：待审核 → 退款中'],
+          [orderRefundReviewedAt, '退款申请已受理', `退款单号：${orderRefundNumber}<br>待使用权益：已锁定`],
           [orderRefundSubmittedAt, '提交渠道退款', '退款方式：原支付路径退回'],
           [`最近更新：${orderRefundProcessingAt}`, '渠道退款处理中', '处理结果：等待支付渠道确认']
         ])),
@@ -1427,8 +1546,10 @@
         ]),
         renderOrderDetailSection('操作记录', [], renderOrderTimeline([
           ...baseOperationRecords,
-          [orderRefundAppliedAt, '用户申请退款', `退款原因：暂时不需要<br>退款金额：${pay.toFixed(2)}元`],
-          [orderRefundAppliedAt, '退款申请已受理', `状态变化：待使用 → 退款中<br>退款单号：${orderRefundNumber}<br>待使用权益：已锁定`],
+          [orderRefundAppliedAt, '用户申请退款', `退款原因：${orderRefundReason}<br>退款金额：${pay.toFixed(2)}元`],
+          [orderRefundAppliedAt, '退款申请待审核', '状态变化：待使用 → 待审核<br>待使用权益：已锁定<br>审核角色：医护人员'],
+          [orderRefundReviewedAt, '退款审核通过', '审核人员：医护人员<br>审核结果：通过<br>状态变化：待审核 → 退款中'],
+          [orderRefundReviewedAt, '退款申请已受理', `退款单号：${orderRefundNumber}<br>待使用权益：已锁定`],
           [orderRefundSubmittedAt, '提交渠道退款', '退款方式：原支付路径退回'],
           [`最近更新：${orderRefundProcessingAt}`, '渠道退款处理中', '处理结果：等待支付渠道确认'],
           [orderRefundCompletedAt, '渠道退款成功', `退款金额：${pay.toFixed(2)}元<br>渠道退款流水号：503000********`],
@@ -1445,6 +1566,32 @@
     document.getElementById('restoredOrderMask').hidden = false;
     document.getElementById('restoredOrderDrawer').classList.add('active');
     document.getElementById('restoredOrderDrawer').setAttribute('aria-hidden', 'false');
+  }
+
+  function completeOrderRefundReview(orderNo, approved, reason, openNext) {
+    const order = orderRows.find(item => item[0] === orderNo);
+    if (!order || order[8] !== '待审核') return;
+    orderRefundReviewResults.set(orderNo, { approved, reason, reviewedAt: '2026/08/06 10:31' });
+    const nextStatus = approved ? '退款中' : '待使用';
+    order[8] = nextStatus;
+    const detailButton = document.querySelector(`[data-order-detail="${orderNo}"]`);
+    const tableRow = detailButton?.closest('[data-order-row]');
+    if (tableRow) {
+      tableRow.dataset.orderStatus = nextStatus;
+      tableRow.dataset.orderSearch = order.join(' ');
+      const badge = tableRow.querySelector('.order-badge');
+      if (badge) {
+        badge.className = `order-badge ${badgeClass(nextStatus)}`;
+        badge.textContent = nextStatus;
+      }
+      if (detailButton) detailButton.textContent = approved ? '退款进度' : '订单详情';
+    }
+    if (!approved) tableRow?.setAttribute('data-review-reject-reason', reason);
+    applyOrderFilter(false);
+    const nextOrder = openNext ? orderRows.find(item => item[8] === '待审核') : null;
+    if (nextOrder) openOrderDetail(nextOrder[0]);
+    else closeOrderDetail();
+    showPackageToast(approved ? '审核已通过，退款申请进入渠道处理' : '审核不通过，待使用权益已解除锁定');
   }
 
   function closeOrderDetail() {
@@ -2119,7 +2266,7 @@
     if (previewIntro) previewIntro.textContent = intro || '填写服务介绍后，将在这里展示服务内容、服务方式及用户能够获得的健康价值。';
     if (previewPlan) previewPlan.textContent = plan;
     const teamSelect = document.getElementById('packageTeamInput');
-    if (previewTeam) previewTeam.textContent = teamSelect && teamSelect.selectedIndex > 0 ? teamSelect.value : '专业服务团队';
+    if (previewTeam) previewTeam.textContent = teamSelect && teamSelect.selectedIndex > 0 ? teamSelect.value : '暂未配置';
     if (previewTags) {
       previewTags.replaceChildren();
       [...(activeTags.length ? activeTags : ['健康服务']), period].forEach(text => {
@@ -2153,6 +2300,7 @@
       fields.description.value = description;
       fields.price.value = price;
       fields.intro.value = item[11] || '';
+      document.querySelectorAll('input[name="packageVerificationMode"]').forEach(input => { input.checked = input.value === (item[12] || '本平台完成'); });
       if (!Array.from(fields.plan.options).some(option => option.value === plan)) fields.plan.add(new Option(plan, plan));
       fields.plan.value = plan;
       const durationLabel = { '30天': '1个月', '90天': '3个月', '180天': '6个月', '365天': '1年' }[period] || '';
@@ -2164,7 +2312,7 @@
       const customMatch = String(period || '').match(/(\d+)\s*(天|个月|月|年)/);
       customValue.value = durationLabel ? '' : String(customMatch?.[1] || parseInt(period, 10) || 30);
       customUnit.value = durationLabel ? '天' : (customMatch?.[2] === '个月' ? '月' : customMatch?.[2] || '天');
-      fields.team.selectedIndex = Math.min(1, fields.team.options.length - 1);
+      fields.team.selectedIndex = 0;
     } else {
       [fields.name, fields.description, fields.price, fields.intro].forEach(field => { field.value = ''; });
       fields.plan.selectedIndex = 0;
@@ -2174,7 +2322,7 @@
       document.getElementById('packageCustomDurationValue').value = '';
       document.getElementById('packageCustomDurationUnit').value = '天';
       document.getElementById('packageServiceAgreement').selectedIndex = 1;
-      document.getElementById('packagePrivacyAgreement').selectedIndex = 1;
+      document.querySelectorAll('input[name="packageVerificationMode"]').forEach(input => { input.checked = input.value === '本平台完成'; });
     }
     document.querySelectorAll('#packageEditorOverlay select').forEach(rebuildPackageAntSelect);
     [fields.name, fields.description, fields.intro].forEach(field => {
@@ -2213,7 +2361,7 @@
     const description = document.getElementById('packageDescriptionInput').value.trim() || item[3];
     const price = document.getElementById('packagePriceInput').value.trim() || item[5];
     const planSelect = document.getElementById('packagePlanInput');
-    const plan = planSelect.selectedIndex > 0 ? planSelect.value : item[6];
+    const plan = planSelect.selectedIndex > 0 ? planSelect.value : '';
     const duration = readPackagePeriod();
     const period = { '1个月': '30天', '3个月': '90天', '6个月': '180天', '1年': '365天' }[duration] || duration || item[4];
     item[2] = name;
@@ -2224,6 +2372,7 @@
     item[9] = overlay.dataset.coverSource || '';
     item[10] = overlay.dataset.coverName || '';
     item[11] = document.getElementById('packageIntroInput').value.trim();
+    item[12] = document.querySelector('input[name="packageVerificationMode"]:checked')?.value || '本平台完成';
     row.children[1].innerHTML = packageCoverIcon(item[1], item[9]);
     row.children[2].textContent = name;
     row.children[2].title = name;
@@ -2231,8 +2380,8 @@
     row.children[3].title = description;
     row.children[4].textContent = period;
     row.children[5].textContent = price;
-    row.children[6].textContent = plan;
-    row.children[6].title = plan;
+    row.children[6].textContent = plan || '--';
+    row.children[6].title = plan || '--';
     row.dataset.packageSearch = `${code} ${name} ${description} ${plan}`;
     closePackageEditor();
     showPackageToast('服务包修改已保存');
@@ -2433,6 +2582,35 @@
       document.querySelectorAll('.order-tab').forEach(tab => tab.classList.toggle('active', tab === orderTab));
       applyOrderFilter();
     }
+    const reviewAction = event.target.closest('[data-order-review-action]');
+    if (reviewAction) {
+      const panel = reviewAction.closest('[data-order-review-panel]');
+      const form = panel?.querySelector('[data-order-review-reject-form]');
+      const reasonInput = panel?.querySelector('[data-order-review-reject-reason]');
+      const error = panel?.querySelector('[data-order-review-error]');
+      const decisionError = panel?.querySelector('[data-order-review-decision-error]');
+      const action = reviewAction.dataset.orderReviewAction;
+      if (action === 'cancel') {
+        closeOrderDetail();
+      }
+      if (action === 'confirm') {
+        const decision = panel?.querySelector('[data-order-review-decision]:checked')?.value || '';
+        if (!decision) {
+          if (decisionError) decisionError.hidden = false;
+          panel?.querySelector('[data-order-review-decision]')?.focus();
+          return;
+        }
+        const reason = reasonInput?.value.trim() || '';
+        if (decision === 'reject' && !reason) {
+          reasonInput?.setAttribute('aria-invalid', 'true');
+          if (error) error.hidden = false;
+          reasonInput?.focus();
+        } else {
+          completeOrderRefundReview(panel?.dataset.orderNo || '', decision === 'approve', reason, Boolean(panel?.querySelector('[data-order-review-next]')?.checked));
+        }
+      }
+      return;
+    }
     const refundAction = event.target.closest('[data-refund-action]');
     if (refundAction) {
       if (refundAction.dataset.refundAction === 'note') {
@@ -2504,8 +2682,7 @@
     }
     const agreementPreview = event.target.closest('[data-preview-agreement]');
     if (agreementPreview) {
-      const isPrivacy = agreementPreview.dataset.previewAgreement === 'privacy';
-      openPackageDialog({ title: isPrivacy ? '隐私与授权协议' : '健康管理服务协议', text: isPrivacy ? '说明健康数据的采集范围、使用目的、授权期限及用户撤回授权方式。' : '说明服务内容、服务周期、双方权利义务、退款规则及争议处理方式。', body: `<div class="package-share-card"><strong>${isPrivacy ? '隐私与健康数据授权协议 V1.3' : '健康管理服务协议 V2.1'}</strong><div class="package-share-link">当前已选择的协议模板将在用户订阅服务包前展示并确认。</div></div>`, confirmLabel: '关闭', onConfirm: closePackageDialog });
+      openPackageDialog({ title: '健康管理服务协议', text: '说明服务内容、服务周期、双方权利义务、退款规则及争议处理方式。', body: '<div class="package-share-card"><strong>健康管理服务协议 V2.1</strong><div class="package-share-link">当前已选择的协议模板将在用户订阅服务包前展示并确认。</div></div>', confirmLabel: '关闭', onConfirm: closePackageDialog });
       return;
     }
     if (event.target.closest('[data-add-package-tag]')) {
@@ -2550,6 +2727,11 @@
 
   document.addEventListener('input', event => {
     if (event.target.id === 'orderSearchInput') applyOrderFilter();
+    if (event.target.matches('[data-order-review-reject-reason]')) {
+      event.target.removeAttribute('aria-invalid');
+      const error = event.target.closest('[data-order-review-panel]')?.querySelector('[data-order-review-error]');
+      if (error) error.hidden = true;
+    }
     if (event.target.id === 'packageSubscriberSearch') {
       packageRecordState.page = 1;
       renderPackageSubscribers(event.target.value);
@@ -2563,6 +2745,22 @@
   });
 
   document.addEventListener('change', event => {
+    if (event.target.matches('[data-order-review-decision]')) {
+      const panel = event.target.closest('[data-order-review-panel]');
+      const form = panel?.querySelector('[data-order-review-reject-form]');
+      const reasonInput = panel?.querySelector('[data-order-review-reject-reason]');
+      const error = panel?.querySelector('[data-order-review-error]');
+      const decisionError = panel?.querySelector('[data-order-review-decision-error]');
+      if (decisionError) decisionError.hidden = true;
+      if (form) form.hidden = event.target.value !== 'reject';
+      if (event.target.value !== 'reject' && reasonInput) {
+        reasonInput.value = '';
+        reasonInput.removeAttribute('aria-invalid');
+        if (error) error.hidden = true;
+      }
+      if (event.target.value === 'reject') reasonInput?.focus();
+      return;
+    }
     if (event.target.id === 'orderStartDate' || event.target.id === 'orderEndDate') {
       const startDate = document.getElementById('orderStartDate');
       const endDate = document.getElementById('orderEndDate');
@@ -2730,7 +2928,7 @@
     resetOrderFilters();
     resetTransactionFilters();
     document.querySelectorAll('[data-package-form-input]').forEach(input => {
-      if (input.tagName === 'SELECT') input.selectedIndex = ['packageServiceAgreement', 'packagePrivacyAgreement'].includes(input.id) ? 1 : 0;
+      if (input.tagName === 'SELECT') input.selectedIndex = input.id === 'packageServiceAgreement' ? 1 : 0;
       else if (!input.classList.contains('package-rules')) input.value = '';
     });
     document.querySelectorAll('#packageEditorOverlay select').forEach(syncPackageAntSelect);
