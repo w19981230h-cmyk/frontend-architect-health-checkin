@@ -3170,7 +3170,7 @@
             <div class="patient-ai-actions"><div class="patient-ai-buttons"><button class="patient-ai-optimize" id="patientAiOptimize" data-optimize-smart-prompt disabled>✦ 一键优化</button><button class="patient-ai-generate" id="patientAiGenerate" data-generate-smart-filter disabled>一键生成</button></div></div>
           </section>
           <section class="patient-rule-template" aria-labelledby="patientRuleTemplateTitle">
-            <div class="patient-rule-template-head"><span class="patient-section-title"><span class="patient-section-title-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="4" y="4" width="6" height="6" rx="1"/><rect x="14" y="4" width="6" height="6" rx="1"/><rect x="4" y="14" width="6" height="6" rx="1"/><rect x="14" y="14" width="6" height="6" rx="1"/></svg></span><strong id="patientRuleTemplateTitle">规则配置模板</strong></span><span id="patientTemplateTotal">24 个模板，单选后立即回填</span></div>
+            <div class="patient-rule-template-head"><span class="patient-section-title"><span class="patient-section-title-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="4" y="4" width="6" height="6" rx="1"/><rect x="14" y="4" width="6" height="6" rx="1"/><rect x="4" y="14" width="6" height="6" rx="1"/><rect x="14" y="14" width="6" height="6" rx="1"/></svg></span><strong id="patientRuleTemplateTitle">规则配置模板</strong></span><span id="patientTemplateTotal">6 个预制模板，单选后立即回填</span></div>
             <div class="patient-rule-template-list" id="patientTemplateList" role="radiogroup" aria-label="规则配置模板"></div>
             <button class="patient-rule-template-more" id="patientRuleTemplateMore" data-toggle-rule-templates hidden>更多模板</button>
           </section>
@@ -4023,7 +4023,7 @@
     const patientListState = { keyword: '', team: '', page: 1, smartConditions: [], activeSmartTagId: '' };
     const patientBatchSelection = new Set();
     const PATIENT_SMART_FILTER_STORAGE = 'ai-patient-smart-filter-tags-v1';
-    const PATIENT_DELETED_SYSTEM_TEMPLATES_STORAGE = 'ai-patient-deleted-system-rule-templates-v1';
+    const PATIENT_DELETED_SYSTEM_TEMPLATES_STORAGE = 'ai-patient-deleted-system-rule-templates-v2';
     const patientTextOperators = [['contains', '包含'], ['notContains', '不包含'], ['eq', '等于']];
     const patientNumberOperators = [['eq', '等于'], ['neq', '不等于'], ['gt', '大于'], ['gte', '大于等于'], ['lt', '小于'], ['lte', '小于等于'], ['between', '介于']];
     const patientEnumOperators = [['eq', '等于'], ['neq', '不等于'], ['in', '属于任一'], ['nin', '不属于']];
@@ -4163,8 +4163,8 @@
     const patientDocumentOperatorKeys = { '等于':'eq','=':'eq','不等于':'neq','≠':'neq','>':'gt','≥':'gte','<':'lt','≤':'lte','介于':'between','包含':'contains','不包含':'notContains','属于任一':'in','包含任一':'containsAny','包含全部':'containsAll','早于':'before','晚于':'after','距今超过':'overDays','距今以内':'withinDays','为空':'isEmpty','不为空':'notEmpty' };
     const patientDocumentDictionaryOptions = {
       '院区':['总院','东院区','西院区'],'就诊机构':['省人民医院','市第一医院','社区卫生服务中心'],'就诊院区':['总院','东院区','西院区'],'就诊科室':['内分泌科','心血管内科','肾内科','肿瘤科','妇科','泌尿外科','小儿科','呼吸与危重症医学科'],'接诊医生':['张医生','李医生','王医生'],
-      '诊断名称':['糖尿病','高血压','慢性肾病','冠心病'],'诊断编码':['E11.9','I10','N18.3'],'临床状态':['活动期','缓解期','已解决'],'严重程度':['轻度','中度','重度'],
-      '指标名称':['血压','血糖','eGFR','UACR'],'指标编码':['LOINC','医院本地编码'],'检测方法':['生化法','免疫法','计算值'],'数据来源':['HIS','患者自填','报告解析'],
+      '诊断名称':['脊柱侧弯','高血压','糖尿病','CKD','慢性肾病','冠心病'],'诊断编码':['E11.9','I10','N18.3'],'临床状态':['活动期','缓解期','已解决'],'严重程度':['轻度','中度','重度'],
+      '指标名称':['血压','血糖','eGFR','UACR','BMI'],'指标编码':['LOINC','医院本地编码'],'异常标志':['异常','正常','H','L','HH','LL','A','AA'],'检测方法':['生化法','免疫法','计算值'],'数据来源':['HIS','患者自填','报告解析'],
       '报告类型':['检验报告','检查报告','病历'],'报告状态':['最终','初步','已审核'],'医院名称':['省人民医院','市第一医院'],'报告机构/科室':['检验科','影像科','内分泌科'],
       '疾病史':['糖尿病','高血压','慢性肾病'],'手术史':['阑尾切除术','冠脉介入术'],'过敏史':['青霉素','磺胺类'],'家族史':['糖尿病','高血压','肿瘤'],
       '健康数据名称':['空腹血糖','eGFR','BI-RADS'],'患者来源':['门诊','住院','体检','社区筛查','人工添加'],'来源渠道':['HIS','患者端','批量导入'],
@@ -4226,6 +4226,7 @@
       fastingGlucose: { ...patientSmartFieldConfig.bloodSugar, hidden: true, fixedQualifier: '空腹血糖' },
       systolicBP: { ...patientSmartFieldConfig.bloodPressure, hidden: true, fixedQualifier: '收缩压' },
       diastolicBP: { ...patientSmartFieldConfig.bloodPressure, hidden: true, fixedQualifier: '舒张压' },
+      bmi: { group: '健康指标 常用指标', label: 'BMI', aliases: '体重指数', type: 'number', unit: 'kg/m²', operators: patientNumberOperators, scopeOptions: [['latest','最新结果'],['specified','指定时间内任一结果']], hidden: true },
       biradsScore: { group: '健康指标 常用指标', label: 'BI-RADS分类', type: 'number', unit: '级', operators: patientNumberOperators, scopeOptions: [['latest','最新结果'],['specified','指定时间内任一结果']], hidden: true }
     });
 
@@ -4255,36 +4256,24 @@
         return new Set(Array.isArray(saved) ? saved : []);
       } catch (error) { return new Set(); }
     })();
+    const patientTemplateDate = offset => {
+      const date = new Date();
+      date.setHours(0, 0, 0, 0);
+      date.setDate(date.getDate() + offset);
+      return date.toISOString().slice(0, 10);
+    };
     const patientSystemRuleTemplates = [
-      ['男性糖尿病患者', [['gender','eq','男'],['diagnosis','contains','糖尿病']]],
-      ['女性糖尿病患者', [['gender','eq','女'],['diagnosis','contains','糖尿病']]],
-      ['60岁以上糖尿病患者', [['diagnosis','contains','糖尿病'],['age','gte','60']]],
-      ['高血压患者', [['diagnosis','contains','高血压']]],
-      ['糖尿病合并高血压', [['diagnosis','containsAll','糖尿病、高血压']]],
-      ['慢性肾病患者', [['diagnosis','contains','慢性肾病']]],
-      ['肾功能高风险患者', [['egfr','lt','60','and','latest'],['uacr','gte','30','or','latest']]],
-      ['最近一次eGFR低于60', [['egfr','lt','60','and','latest']]],
-      ['最近一次UACR不低于30', [['uacr','gte','30','and','latest']]],
-      ['空腹血糖偏高患者', [['fastingGlucose','gte','7','and','latest']]],
-      ['糖化血红蛋白未达标', [['hba1c','gte','7','and','latest']]],
-      ['收缩压偏高患者', [['systolicBP','gte','140','and','latest']]],
-      ['舒张压偏高患者', [['diastolicBP','gte','90','and','latest']]],
-      ['BI-RADS 4级及以上', [['biradsScore','gte','4','and','latest']]],
-      ['肿瘤科就诊患者', [['department','eq','肿瘤科']]],
-      ['近30天有复诊患者', [['visitDate','withinDays','30']]],
-      ['超过30天未复诊患者', [['visitDate','overDays','30']]],
-      ['待随访患者', [['followupStatus','eq','待随访']]],
-      ['逾期随访患者', [['followupStatus','eq','已逾期']]],
-      ['重点管理患者', [['managementStatus','eq','重点管理']]],
-      ['尚未入组患者', [['isEnrolled','eq','否']]],
-      ['社区筛查来源患者', [['source','eq','社区筛查']]],
-      ['高风险标签患者', [['tags','contains','高风险']]],
-      ['老年患者', [['age','gte','65']]]
+      ['脊柱侧弯随访患者', [['diagnosis','contains','脊柱侧弯'],['managementStatus','eq','管理中']]],
+      ['高血压管理患者', [['diagnosis','contains','高血压'],['managementStatus','eq','管理中']]],
+      ['糖尿病重点管理患者', [['diagnosis','contains','糖尿病'],['observationAbnormalFlag','eq','异常','and','specified','custom',patientTemplateDate(-89),patientTemplateDate(0)]]],
+      ['CKD肾功能异常患者', [['diagnosis','contains','CKD'],['egfr','lt','60','and','latest']]],
+      ['肥胖管理患者', [['bmi','gte','28','and','latest'],['managementStatus','eq','管理中']]],
+      ['慢病长期未复诊患者', [['managementStatus','eq','管理中'],['visitDate','overDays','180']]]
     ].map(([name, rules], templateIndex) => ({
       id: `system-rule-${templateIndex + 1}`,
       name,
       system: true,
-      conditions: rules.map(([field, operator, value, logic = 'and', scope = ''], index) => ({ id: `system-rule-${templateIndex + 1}-${index + 1}`, field, qualifier: patientSmartFieldConfig[field]?.fixedQualifier || '', operator, value, logic, scope, scopeValue: scope === 'specified' ? 'last3' : '', scopeStart: '', scopeEnd: '' }))
+      conditions: rules.map(([field, operator, value, logic = 'and', scope = '', scopeValue = '', scopeStart = '', scopeEnd = ''], index) => ({ id: `system-rule-${templateIndex + 1}-${index + 1}`, field, qualifier: patientSmartFieldConfig[field]?.fixedQualifier || '', operator, value, logic, scope, scopeValue: scope === 'specified' ? (scopeValue || 'last3') : '', scopeStart, scopeEnd }))
     }));
     let patientSmartDraft = [];
     let patientRuleTemplatesExpanded = false;
@@ -4653,7 +4642,7 @@
       const templates = patientAllRuleTemplates();
       const visibleTemplates = patientRuleTemplatesExpanded ? templates : templates.slice(0, PATIENT_RULE_TEMPLATE_VISIBLE_COUNT);
       const total = document.getElementById('patientTemplateTotal');
-      if (total) total.textContent = `${templates.length} 个模板，单选后立即回填`;
+      if (total) total.textContent = `${patientSystemRuleTemplates.length} 个预制模板${patientSmartFilterTags.length ? `，${patientSmartFilterTags.length} 个自建模板` : ''}，单选后立即回填`;
       container.innerHTML = visibleTemplates.length ? visibleTemplates.map(tag => `<div class="patient-rule-template-option ${tag.id === patientListState.activeSmartTagId ? 'active' : ''}" role="radio" aria-checked="${tag.id === patientListState.activeSmartTagId}">
         <button class="patient-rule-template-option-main" data-use-smart-filter-tag="${tag.id}" title="${esc(tag.summary || patientSmartSummary(tag.conditions))}"><strong>${esc(tag.name)}</strong></button>
         <button class="patient-rule-template-delete" data-remove-smart-filter-tag="${tag.id}" aria-label="删除${esc(tag.name)}模板" title="删除模板">×</button>
