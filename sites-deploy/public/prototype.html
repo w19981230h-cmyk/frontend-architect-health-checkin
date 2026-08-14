@@ -11704,7 +11704,7 @@
   const STATIC_DATA_URL = "data/interface-notes.json";
   const LOCAL_NOTES_KEY = `${PROJECT_ID}:interface-notes:v1`;
   const NOTE_TOOLBAR_KEY = `${PROJECT_ID}:interface-note-toolbar:v1`;
-  const NOTE_SCOPE_VERSION = 6;
+  const NOTE_SCOPE_VERSION = 7;
   const savedToolbarPreference = (() => {
     try {
       const value = JSON.parse(localStorage.getItem(NOTE_TOOLBAR_KEY) || "{}");
@@ -11713,13 +11713,14 @@
   })();
   const state = {
     notes: [],
-    visible: true,
+    visible: false,
     adding: false,
     editing: null,
     pageId: "",
     pageContext: null,
     projectId: PROJECT_ID,
     loading: false,
+    loadToken: 0,
     anchorMigrationIds: new Set(),
     toolbarCollapsed: Boolean(savedToolbarPreference.collapsed),
     toolbarPosition: Number.isFinite(savedToolbarPreference.x) && Number.isFinite(savedToolbarPreference.y)
@@ -11770,7 +11771,20 @@
     [...baseNotes, ...localNotes].forEach((note) => {
       if (note?.id) merged.set(note.id, note);
     });
-    return Array.from(merged.values());
+    const logicalActiveNotes = new Map();
+    const preservedDeletedNotes = [];
+    Array.from(merged.values()).forEach((note) => {
+      if (note.status === "deleted") {
+        preservedDeletedNotes.push(note);
+        return;
+      }
+      const logicalKey = [note.projectId, note.pageId, String(note.number)].join("::");
+      const previous = logicalActiveNotes.get(logicalKey);
+      const previousTime = Date.parse(previous?.updatedAt || previous?.createdAt || 0) || 0;
+      const currentTime = Date.parse(note.updatedAt || note.createdAt || 0) || 0;
+      if (!previous || currentTime >= previousTime) logicalActiveNotes.set(logicalKey, note);
+    });
+    return [...preservedDeletedNotes, ...logicalActiveNotes.values()];
   }
 
   function createPublishedNoteSnapshot(note) {
@@ -12337,7 +12351,7 @@
       "[class*='modal'][aria-hidden='false'] [role='dialog']"
     ];
     const explicitTargets = Array.from(document.querySelectorAll(explicitSelectors.join(",")))
-      .filter((node) => !node.closest("#interfaceNoteEditor"))
+      .filter((node) => !node.closest("[data-interface-note-ui]"))
       .filter(isOpenOverlayNode);
     const selectors = [
       "[role='dialog']",
@@ -12359,8 +12373,11 @@
       ...explicitTargets,
       ...Array.from(document.querySelectorAll(selectors.join(",")))
     ]))
-      .filter((node) => !node.closest("#interfaceNoteEditor"))
+      .filter((node) => !node.closest("[data-interface-note-ui]"))
       .filter((node) => !node.classList.contains("interface-note-modal-mask"))
+      .filter((node) => node.hasAttribute("data-note-scope")
+        || node.matches("[role='dialog'],[role='alertdialog']")
+        || !node.querySelector("[role='dialog'],[role='alertdialog']"))
       .filter(isOpenOverlayNode);
     if (!candidates.length) return null;
     const target = candidates
@@ -12377,10 +12394,20 @@
     const kind = declaredScope
       ? "screen"
       : /drawer/i.test(target.className || "") ? "drawer" : "dialog";
-    const contextRoot = target.closest("[id]") || target;
+    const contextRoot = target.closest("[data-note-scope]")
+      || (target.id ? target : target.closest("[id]"))
+      || target;
+    const entityDatasetKeys = [
+      "noteEntity", "entityId", "recordId", "orderId", "orderNo", "transactionNo",
+      "patientId", "packageCode", "reviewRowId", "editingCardId", "detailId"
+    ];
+    const genericEntity = [target, contextRoot]
+      .flatMap((node) => entityDatasetKeys.map((key) => normalizeNoteText(node?.dataset?.[key] || "")))
+      .find(Boolean) || "";
     const contextId = (declaredScope
       ? [declaredScope, declaredMode, declaredEntity].filter(Boolean).join(":")
-      : normalizeNoteText(contextRoot.id || target.id || target.className || kind)
+      : [normalizeNoteText(contextRoot.id || target.id || target.className || kind), genericEntity]
+        .filter(Boolean).join(":")
     ).slice(0, 100);
     const titleSelectors = [
       ".ant-modal-title",
@@ -12405,7 +12432,7 @@
     }
     title = title || normalizeNoteText(target.getAttribute("aria-label") || target.dataset.title || "");
     if (!title) title = normalizeNoteText(target.textContent || "").slice(0, 60) || "overlay";
-    return { kind, title, contextId };
+    return { kind, title, contextId, element: target };
   }
 
   function getPageContext() {
@@ -12436,7 +12463,8 @@
       contextTitle,
       contextId,
       routePath: stablePath,
-      routeHash: location.hash || "#"
+      routeHash: location.hash || "#",
+      surfaceElement: overlay?.element || getActivePageElement() || document.body
     };
   }
 
@@ -12444,16 +12472,16 @@
     return getPageContext().pageId;
   }
 
-  function isCurrentPageNote(note) {
+  function isCurrentPageNote(note, context = state.pageContext || getPageContext()) {
     if (note.projectId !== state.projectId || note.status === "deleted") return false;
-    const context = getPageContext();
     const supersededBaseNoteIds = new Set([
       "note_1785835734548_f06616fcf186b8",
       "note_1785843222699_22ab37c21a1a68"
     ]);
     if (context.contextType === "page" && supersededBaseNoteIds.has(note.id)) return false;
     const legacyEntityScopes = {
-      "note_1786026615978_84618d008aa458": "order-detail:SO202407030001"
+      "note_1786026615978_84618d008aa458": "order-detail:SO202407030001",
+      "note_1786025181471_45e921a81d0c88": "service-package-record:120101"
     };
     if (legacyEntityScopes[note.id]) {
       return context.contextId === legacyEntityScopes[note.id];
@@ -12538,6 +12566,25 @@
       return true;
     }
     return false;
+  }
+
+  function selectCurrentPageNotes(notes, context) {
+    const selectedByNumber = new Map();
+    notes.filter((note) => isCurrentPageNote(note, context)).forEach((note) => {
+      const numberKey = String(note.number);
+      const previous = selectedByNumber.get(numberKey);
+      const exactScope = note.scopeKey === context.scopeKey || note.pageId === context.pageId;
+      const previousExactScope = previous
+        && (previous.scopeKey === context.scopeKey || previous.pageId === context.pageId);
+      const currentTime = Date.parse(note.updatedAt || note.createdAt || 0) || 0;
+      const previousTime = Date.parse(previous?.updatedAt || previous?.createdAt || 0) || 0;
+      if (!previous
+        || (exactScope && !previousExactScope)
+        || (exactScope === previousExactScope && currentTime >= previousTime)) {
+        selectedByNumber.set(numberKey, note);
+      }
+    });
+    return Array.from(selectedByNumber.values());
   }
 
   function getNextNumber() {
@@ -12635,6 +12682,30 @@
   }
 
   function setNoteScrollPosition(note, clientX, clientY, target) {
+    const context = state.pageContext || getPageContext();
+    const surface = findScrollContainer(target) || context.surfaceElement || document.body;
+    const selector = surface === document.body ? "body" : scrollContainerSelector(surface);
+    const rect = surface?.getBoundingClientRect();
+    const surfaceWidth = Math.max(1, surface?.scrollWidth || rect?.width || window.innerWidth);
+    const surfaceHeight = Math.max(1, surface?.scrollHeight || rect?.height || window.innerHeight);
+    if (selector && rect && rect.width > 0 && rect.height > 0) {
+      const contentX = clientX - rect.left + Number(surface.scrollLeft || 0);
+      const contentY = clientY - rect.top + Number(surface.scrollTop || 0);
+      note.coordinateVersion = 2;
+      note.positionMode = "surface";
+      note.surfaceSelector = selector;
+      note.x = Math.max(0, Math.min(1, contentX / surfaceWidth));
+      note.y = Math.max(0, Math.min(1, contentY / surfaceHeight));
+      note.surfaceWidth = surfaceWidth;
+      note.surfaceHeight = surfaceHeight;
+      delete note.anchorSelector;
+      delete note.anchorXRatio;
+      delete note.anchorYRatio;
+      delete note.scrollAnchorSelector;
+      delete note.scrollAnchorX;
+      delete note.scrollAnchorY;
+      return;
+    }
     const position = clampPosition(window.scrollX + clientX, window.scrollY + clientY);
     note.x = position.x;
     note.y = position.y;
@@ -12649,16 +12720,34 @@
     note.positionMode = "document";
 
     const scrollContainer = findScrollContainer(target);
-    const selector = scrollContainerSelector(scrollContainer);
-    const rect = scrollContainer?.getBoundingClientRect();
-    if (!selector || !rect || rect.width <= 0 || rect.height <= 0) return;
+    const legacySelector = scrollContainerSelector(scrollContainer);
+    const legacyRect = scrollContainer?.getBoundingClientRect();
+    if (!legacySelector || !legacyRect || legacyRect.width <= 0 || legacyRect.height <= 0) return;
     note.positionMode = "scroll";
-    note.scrollAnchorSelector = selector;
-    note.scrollAnchorX = clientX - rect.left + scrollContainer.scrollLeft;
-    note.scrollAnchorY = clientY - rect.top + scrollContainer.scrollTop;
+    note.scrollAnchorSelector = legacySelector;
+    note.scrollAnchorX = clientX - legacyRect.left + scrollContainer.scrollLeft;
+    note.scrollAnchorY = clientY - legacyRect.top + scrollContainer.scrollTop;
   }
 
   function noteDisplayPosition(note) {
+    if (Number(note.coordinateVersion || 0) >= 2 && note.positionMode === "surface" && note.surfaceSelector) {
+      try {
+        const surface = document.querySelector(note.surfaceSelector);
+        const rect = surface?.getBoundingClientRect();
+        if (rect && rect.width > 0 && rect.height > 0) {
+          const surfaceWidth = Math.max(1, surface.scrollWidth || rect.width);
+          const surfaceHeight = Math.max(1, surface.scrollHeight || rect.height);
+          const clientX = rect.left + Number(note.x || 0) * surfaceWidth - Number(surface.scrollLeft || 0);
+          const clientY = rect.top + Number(note.y || 0) * surfaceHeight - Number(surface.scrollTop || 0);
+          return {
+            x: window.scrollX + clientX,
+            y: window.scrollY + clientY,
+            visible: clientX >= rect.left - 12 && clientX <= rect.right + 12
+              && clientY >= rect.top - 12 && clientY <= rect.bottom + 12
+          };
+        }
+      } catch {}
+    }
     if (note.positionMode === "scroll" && note.scrollAnchorSelector) {
       try {
         const scrollContainer = document.querySelector(note.scrollAnchorSelector);
@@ -12809,6 +12898,7 @@
       layer = document.createElement("div");
       layer.id = "interfaceNoteLayer";
       layer.className = "interface-note-layer";
+      layer.dataset.interfaceNoteUi = "layer";
       document.body.appendChild(layer);
     }
 
@@ -12817,10 +12907,11 @@
       toolbar = document.createElement("div");
       toolbar.id = "interfaceNoteToolbar";
       toolbar.className = "interface-note-toolbar";
+      toolbar.dataset.interfaceNoteUi = "toolbar";
       toolbar.innerHTML = `
         <button type="button" class="interface-note-drag-handle" data-note-drag-handle aria-label="拖动批注工具栏" title="按住拖动批注工具栏">⠿</button>
         <button type="button" class="interface-note-btn primary" data-note-action="add">添加备注</button>
-        <button type="button" class="interface-note-btn" data-note-action="toggle">隐藏备注</button>
+        <button type="button" class="interface-note-btn" data-note-action="toggle">显示备注</button>
         <span class="interface-note-count" data-note-count>0</span>
         <button type="button" class="interface-note-btn interface-note-collapse" data-note-action="collapse" aria-expanded="true">隐藏</button>
       `;
@@ -12865,7 +12956,6 @@
     activeNotes
       .sort((a, b) => Number(a.number) - Number(b.number))
       .forEach((note) => {
-        migrateLegacyNoteAnchor(note);
         const displayPosition = noteDisplayPosition(note);
         const point = document.createElement("button");
         point.type = "button";
@@ -12873,8 +12963,10 @@
         point.dataset.noteId = note.id;
         point.textContent = note.number;
         point.title = note.title || `备注 ${note.number}`;
+        point.setAttribute("aria-label", `备注 ${note.number}：${note.title || "未命名备注"}`);
         point.style.left = `${displayPosition.x - 12}px`;
         point.style.top = `${displayPosition.y - 12}px`;
+        point.hidden = displayPosition.visible === false;
         layer.appendChild(point);
       });
   }
@@ -12891,6 +12983,7 @@
         const position = noteDisplayPosition(note);
         point.style.left = `${position.x - 12}px`;
         point.style.top = `${position.y - 12}px`;
+        point.hidden = position.visible === false;
       });
     });
   }
@@ -12900,13 +12993,15 @@
     old?.remove();
     const node = document.createElement("div");
     node.className = "interface-note-toast";
+    node.dataset.interfaceNoteUi = "toast";
     node.textContent = message;
     document.body.appendChild(node);
     setTimeout(() => node.remove(), 2200);
   }
 
-  async function loadNotes() {
-    state.pageContext = getPageContext();
+  async function loadNotes(requestedContext = getPageContext()) {
+    const loadToken = ++state.loadToken;
+    state.pageContext = requestedContext;
     state.pageId = state.pageContext.pageId;
     state.loading = true;
 
@@ -12914,12 +13009,14 @@
       try {
         const response = await fetch(`${STATIC_DATA_URL}?v=${Date.now()}`, { cache: "no-store" });
         const payload = await response.json();
+        if (loadToken !== state.loadToken) return;
         state.notes = Array.isArray(payload)
-          ? payload.map(createPublishedNoteSnapshot).filter(isCurrentPageNote)
+          ? selectCurrentPageNotes(payload.map(createPublishedNoteSnapshot), requestedContext)
           : [];
       } catch {
-        state.notes = [];
+        if (loadToken === state.loadToken) state.notes = [];
       }
+      if (loadToken !== state.loadToken) return;
       state.loading = false;
       render();
       return;
@@ -12933,7 +13030,8 @@
         bundledNotes = Array.isArray(payload) ? payload : [];
       } catch {}
       const localNotes = recoverLocalNoteScopes(readLocalNotes(), state.pageContext);
-      state.notes = mergeNotes(bundledNotes, localNotes).filter(isCurrentPageNote);
+      if (loadToken !== state.loadToken) return;
+      state.notes = selectCurrentPageNotes(mergeNotes(bundledNotes, localNotes), requestedContext);
       state.loading = false;
       render();
       if (!localProjectSyncStarted) {
@@ -12949,7 +13047,8 @@
       const response = await fetch(url, { cache: "no-store" });
       const payload = await response.json();
       if (payload?.ok && Array.isArray(payload.data)) {
-        state.notes = payload.data.filter(isCurrentPageNote);
+        if (loadToken !== state.loadToken) return;
+        state.notes = selectCurrentPageNotes(payload.data, requestedContext);
         // An empty API result is still authoritative. Falling back to the static
         // seed here would make the last deleted note reappear after a refresh.
         apiLoaded = true;
@@ -12960,14 +13059,16 @@
       try {
         const response = await fetch(`${STATIC_DATA_URL}?v=${Date.now()}`, { cache: "no-store" });
         const payload = await response.json();
+        if (loadToken !== state.loadToken) return;
         state.notes = Array.isArray(payload)
-          ? payload.filter(isCurrentPageNote)
+          ? selectCurrentPageNotes(payload, requestedContext)
           : [];
       } catch {
-        state.notes = [];
+        if (loadToken === state.loadToken) state.notes = [];
       }
     }
 
+    if (loadToken !== state.loadToken) return;
     state.loading = false;
     render();
   }
@@ -13015,23 +13116,34 @@
   async function persistNote(note) {
     if (usesLocalNoteStorage()) {
       const now = new Date().toISOString();
+      const notes = readLocalNotes();
+      const existingDraft = !note.id
+        ? notes.find((item) => item.status !== "deleted"
+          && item.projectId === note.projectId
+          && item.pageId === note.pageId
+          && String(item.number) === String(note.number))
+        : null;
+      const { projectSyncPending: _projectSyncPending, ...noteData } = note;
       const saved = {
-        ...note,
-        id: note.id || `note_${Date.now()}_${Math.random().toString(16).slice(2)}`,
+        ...noteData,
+        id: note.id || existingDraft?.id || `note_${Date.now()}_${Math.random().toString(16).slice(2)}`,
         status: "active",
-        createdAt: note.createdAt || now,
+        createdAt: note.createdAt || existingDraft?.createdAt || now,
         updatedAt: now,
-        createdBy: note.createdBy || "current-user",
+        createdBy: note.createdBy || existingDraft?.createdBy || "current-user",
         updatedBy: "current-user",
         scopeVersion: NOTE_SCOPE_VERSION
       };
-      const notes = readLocalNotes();
       const index = notes.findIndex((item) => item.id === saved.id);
       if (index >= 0) notes[index] = saved;
       else notes.push(saved);
       writeLocalNotes(notes);
-      await syncNoteToProject(saved);
-      return saved;
+      try {
+        const projectSaved = await syncNoteToProject(saved);
+        return { ...projectSaved, projectSyncPending: false };
+      } catch {
+        return { ...saved, projectSyncPending: true };
+      }
     }
     assertAnnotationService();
     const response = await fetch(API_URL, {
@@ -13139,24 +13251,25 @@
     const mask = document.createElement("div");
     mask.className = "interface-note-modal-mask";
     mask.id = "interfaceNoteEditor";
+    mask.dataset.interfaceNoteUi = "editor";
     mask.innerHTML = `
-      <div class="interface-note-modal" role="dialog" aria-modal="true">
+      <div class="interface-note-modal" role="dialog" aria-modal="true" aria-labelledby="interfaceNoteEditorTitle">
         <div class="interface-note-modal-head">
-          <span>${editing.id ? "编辑备注" : "添加备注"}</span>
-          <button type="button" class="interface-note-close" data-editor-action="close">×</button>
+          <span id="interfaceNoteEditorTitle">${editing.id ? "编辑备注" : "添加备注"}</span>
+          <button type="button" class="interface-note-close" data-editor-action="close" aria-label="关闭备注编辑">×</button>
         </div>
         <div class="interface-note-form">
           <div class="interface-note-field">
-            <label>备注编号</label>
-            <input type="number" min="1" step="1" data-note-field="number" value="${esc(editing.number)}">
+            <label for="interfaceNoteNumber">备注编号</label>
+            <input id="interfaceNoteNumber" type="number" min="1" step="1" data-note-field="number" value="${esc(editing.number)}">
           </div>
           <div class="interface-note-field">
-            <label>备注标题</label>
-            <input type="text" data-note-field="title" value="${esc(editing.title)}" placeholder="请输入需要调整的标题">
+            <label for="interfaceNoteTitle">备注标题</label>
+            <input id="interfaceNoteTitle" type="text" data-note-field="title" value="${esc(editing.title)}" placeholder="请输入需要调整的标题">
           </div>
           <div class="interface-note-field">
-            <label>备注内容</label>
-            <textarea data-note-field="content" placeholder="请输入需要修改的数字、文案、展示内容或交互说明">${esc(editing.content)}</textarea>
+            <label for="interfaceNoteContent">备注内容</label>
+            <textarea id="interfaceNoteContent" data-note-field="content" placeholder="请输入需要修改的数字、文案、展示内容或交互说明">${esc(editing.content)}</textarea>
           </div>
         </div>
         <div class="interface-note-modal-actions">
@@ -13168,6 +13281,7 @@
     `;
     document.body.appendChild(mask);
     mask.addEventListener("click", handleEditorClick);
+    requestAnimationFrame(() => mask.querySelector("[data-note-field='number']")?.focus());
   }
 
   async function handleEditorClick(event) {
@@ -13186,9 +13300,19 @@
 
     if (action === "delete") {
       if (!state.editing?.id) return;
+      const deleteButton = event.target.closest("[data-editor-action='delete']");
+      if (deleteButton.dataset.confirmDelete !== "true") {
+        deleteButton.dataset.confirmDelete = "true";
+        deleteButton.textContent = "确认删除";
+        setTimeout(() => {
+          if (!deleteButton.isConnected || deleteButton.disabled) return;
+          deleteButton.dataset.confirmDelete = "false";
+          deleteButton.textContent = "删除";
+        }, 3000);
+        return;
+      }
       const deletingNote = { ...state.editing };
       const noteId = deletingNote.id;
-      const deleteButton = event.target.closest("[data-editor-action='delete']");
       deleteButton.disabled = true;
       deleteButton.textContent = "删除中...";
       try {
@@ -13243,7 +13367,7 @@
         else state.notes.push(saved);
         closeEditor();
         render();
-        toast("备注已保存");
+        toast(saved.projectSyncPending ? "备注已保存到本机，项目同步将在服务恢复后自动重试" : "备注已保存");
       } catch (error) {
         toast(error.message || "备注保存失败");
       }
@@ -13267,6 +13391,7 @@
     selectedPoint?.classList.add("selected");
     const popover = document.createElement("div");
     popover.className = "interface-note-popover";
+    popover.dataset.interfaceNoteUi = "popover";
     const parseDrawer = document.getElementById("archiveParseDrawer");
     const displayPosition = noteDisplayPosition(note);
     const rightBoundary = parseDrawer?.classList.contains("open")
@@ -13290,7 +13415,22 @@
       const action = event.target.closest("[data-popover-action]")?.dataset.popoverAction;
       if (action === "close") closePopover();
       if (action === "modify") openEditor(note);
-      if (action === "delete") removeNoteFromPopover(note);
+      if (action === "delete") {
+        const deleteButton = event.target.closest("[data-popover-action='delete']");
+        if (deleteButton.dataset.confirmDelete !== "true") {
+          deleteButton.dataset.confirmDelete = "true";
+          deleteButton.textContent = "确认删除";
+          setTimeout(() => {
+            if (!deleteButton.isConnected || deleteButton.disabled) return;
+            deleteButton.dataset.confirmDelete = "false";
+            deleteButton.textContent = "删除";
+          }, 3000);
+          return;
+        }
+        deleteButton.disabled = true;
+        deleteButton.textContent = "删除中...";
+        removeNoteFromPopover(note);
+      }
     });
   }
 
@@ -13410,7 +13550,7 @@
         note.routeHash = context.routeHash;
         const saved = await persistNote(note);
         Object.assign(note, saved);
-        toast("备注位置已保存");
+        toast(saved.projectSyncPending ? "备注位置已保存到本机，项目同步待重试" : "备注位置已保存");
       } catch (error) {
         toast(error.message || "备注位置保存失败");
         loadNotes();
@@ -13423,6 +13563,19 @@
   }
 
   let refreshTimer = null;
+  function enterNoteContext(nextContext) {
+    state.loadToken += 1;
+    state.visible = false;
+    state.adding = false;
+    state.notes = [];
+    state.pageContext = nextContext;
+    state.pageId = nextContext.pageId;
+    closePopover();
+    closeEditor();
+    render();
+    loadNotes(nextContext);
+  }
+
   function schedulePageRefresh() {
     clearTimeout(refreshTimer);
     const layer = document.getElementById("interfaceNoteLayer");
@@ -13430,9 +13583,7 @@
     refreshTimer = setTimeout(() => {
       const nextContext = getPageContext();
       if (nextContext.pageId !== state.pageId) {
-        closePopover();
-        state.pageContext = nextContext;
-        loadNotes();
+        enterNoteContext(nextContext);
       } else {
         state.pageContext = nextContext;
         render();
@@ -13460,8 +13611,8 @@
   ensureShell();
   document.addEventListener("click", handleDocumentClick, true);
   document.addEventListener("pointerdown", handlePointerDown, true);
-  window.addEventListener("popstate", loadNotes);
-  window.addEventListener("hashchange", loadNotes);
+  window.addEventListener("popstate", schedulePageRefresh);
+  window.addEventListener("hashchange", schedulePageRefresh);
   window.addEventListener("resize", () => {
     const toolbar = document.getElementById("interfaceNoteToolbar");
     if (toolbar && state.toolbarPosition) applyToolbarPreference(toolbar);
@@ -13478,15 +13629,13 @@
     if (state.loading) return;
     const nextContext = getPageContext();
     if (nextContext.pageId === state.pageId) return;
-    closePopover();
-    state.pageContext = nextContext;
-    loadNotes();
+    enterNoteContext(nextContext);
   }, 300);
   loadNotes();
 })();
 </script>
 
-<script src="./js/service-management.js"></script>
+<script src="./js/service-management.js?v=annotations-v7"></script>
 <script src="./assets/echarts.min.js"></script>
 <script src="./js/team-management.js"></script>
 </body>

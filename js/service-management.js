@@ -836,17 +836,17 @@
       </aside>
       <div class="package-more-menu" id="packageMoreMenu" role="menu" hidden></div>
       <div class="package-record-mask" id="packageRecordMask" hidden></div>
-      <aside class="package-record-drawer" id="packageRecordDrawer" aria-hidden="true" aria-label="服务记录">
+      <aside class="package-record-drawer" id="packageRecordDrawer" data-note-scope="service-package-record" data-note-entity="" aria-hidden="true" aria-label="服务记录">
         <div class="package-record-head"><strong>服务记录</strong><button class="package-record-close" data-close-package-record type="button" aria-label="关闭">×</button></div>
         <div class="package-record-content" id="packageRecordContent"></div>
       </aside>
       <div class="package-dialog-mask" id="packageDialogMask" hidden></div>
-      <section class="package-dialog" id="packageActionDialog" role="dialog" aria-modal="true" hidden>
+      <section class="package-dialog" id="packageActionDialog" data-note-scope="service-package-dialog" data-note-entity="" role="dialog" aria-modal="true" hidden>
         <h3 id="packageDialogTitle"></h3><p id="packageDialogText"></p><div class="package-dialog-body" id="packageDialogBody"></div>
         <div class="package-dialog-actions"><button data-close-package-dialog type="button">取消</button><button class="primary" id="packageDialogConfirm" type="button">确认</button></div>
       </section>
       <div class="package-dialog-mask" id="packageShareMask" hidden></div>
-      <section class="package-share-dialog" id="packageShareDialog" role="dialog" aria-modal="true" aria-labelledby="packageShareTitle" hidden>
+      <section class="package-share-dialog" id="packageShareDialog" data-note-scope="service-package-share" data-note-entity="" role="dialog" aria-modal="true" aria-labelledby="packageShareTitle" hidden>
         <header class="package-share-head"><strong id="packageShareTitle">分享服务包</strong><button class="package-share-close" data-close-package-share type="button" aria-label="关闭分享弹窗">×</button></header>
         <div class="package-share-content"><h3 class="package-share-name" id="packageShareName"></h3><p class="package-share-tip">患者可通过链接或扫码直接打开服务详情页，并可订阅购买</p>
           <label class="package-share-label" for="packageShareLink">分享链接</label><div class="package-share-input-group"><input id="packageShareLink" readonly><button data-copy-package-link type="button">复制</button></div>
@@ -1909,6 +1909,7 @@
     renderPackageSubscribers();
     document.getElementById('packageRecordMask').hidden = false;
     const drawer = document.getElementById('packageRecordDrawer');
+    drawer.dataset.noteEntity = code;
     drawer.classList.add('active');
     drawer.setAttribute('aria-hidden', 'false');
     document.body.style.overflow = 'hidden';
@@ -1928,7 +1929,7 @@
     pendingPackageDialogAction = null;
   }
 
-  function openPackageDialog({ title, text = '', body = '', confirmLabel = '确认', danger = false, onConfirm = null }) {
+  function openPackageDialog({ title, text = '', body = '', confirmLabel = '确认', danger = false, onConfirm = null, noteEntity = 'general' }) {
     document.getElementById('packageDialogTitle').textContent = title;
     document.getElementById('packageDialogText').textContent = text;
     document.getElementById('packageDialogBody').innerHTML = body;
@@ -1938,7 +1939,9 @@
     confirm.classList.toggle('primary', !danger);
     pendingPackageDialogAction = onConfirm;
     document.getElementById('packageDialogMask').hidden = false;
-    document.getElementById('packageActionDialog').hidden = false;
+    const dialog = document.getElementById('packageActionDialog');
+    dialog.dataset.noteEntity = noteEntity;
+    dialog.hidden = false;
   }
 
   function drawPackageShareQr(value) {
@@ -1988,6 +1991,7 @@
     document.getElementById('packageShareName').textContent = item[2];
     document.getElementById('packageShareLink').value = shareUrl;
     document.getElementById('packageShareDialog').dataset.packageCode = item[0];
+    document.getElementById('packageShareDialog').dataset.noteEntity = item[0];
     drawPackageShareQr(shareUrl);
     document.getElementById('packageShareMask').hidden = false;
     document.getElementById('packageShareDialog').hidden = false;
@@ -2059,6 +2063,7 @@
       text: `${item[2]}｜${record.gender}｜${record.age}岁｜${record.status}`,
       body: `<div class="service-detail-sections">${sections.map(([label, value]) => `<div class="service-detail-section"><span>${label}</span><strong>${value}</strong></div>`).join('')}</div>`,
       confirmLabel: '关闭',
+      noteEntity: `profile:${code}:${record.id}`,
       onConfirm: closePackageDialog
     });
   }
@@ -2077,7 +2082,7 @@
     }
     if (action === 'shelf') {
       const isPending = item[8] !== '已上架';
-      openPackageDialog({ title: isPending ? '确认上架服务包' : '确认下架服务包', text: isPending ? '上架后，C端用户可以查看并订阅该服务包。' : '下架后，服务包将变为待上架状态，C端停止展示和新订阅。', confirmLabel: isPending ? '确认上架' : '确认下架', danger: !isPending, onConfirm: () => {
+      openPackageDialog({ title: isPending ? '确认上架服务包' : '确认下架服务包', text: isPending ? '上架后，C端用户可以查看并订阅该服务包。' : '下架后，服务包将变为待上架状态，C端停止展示和新订阅。', confirmLabel: isPending ? '确认上架' : '确认下架', danger: !isPending, noteEntity: `${isPending ? 'publish' : 'unpublish'}:${code}`, onConfirm: () => {
         item[8] = isPending ? '已上架' : '待上架';
         const status = row.querySelector('.package-status');
         status.textContent = item[8];
@@ -2090,7 +2095,7 @@
     }
     if (action === 'edit') openPackageEditor(item);
     if (action === 'delete') {
-      openPackageDialog({ title: '删除服务包', text: `删除“${item[2]}”后将无法恢复，历史订单与服务记录仍会保留。`, confirmLabel: '确认删除', danger: true, onConfirm: () => {
+      openPackageDialog({ title: '删除服务包', text: `删除“${item[2]}”后将无法恢复，历史订单与服务记录仍会保留。`, confirmLabel: '确认删除', danger: true, noteEntity: `delete:${code}`, onConfirm: () => {
         row.remove();
         const index = servicePackageRows.indexOf(item);
         if (index >= 0) servicePackageRows.splice(index, 1);
@@ -2292,6 +2297,7 @@
     };
     overlay.dataset.editCode = item?.[0] || '';
     overlay.dataset.noteMode = item ? 'edit' : 'create';
+    overlay.dataset.noteEntity = item?.[0] || 'new';
     overlay.querySelector('.package-editor-title').textContent = item ? '编辑服务包' : '新建服务包';
     overlay.querySelector('.package-editor-save').textContent = item ? '保存修改' : '保存';
     if (item) {
@@ -2682,7 +2688,7 @@
     }
     const agreementPreview = event.target.closest('[data-preview-agreement]');
     if (agreementPreview) {
-      openPackageDialog({ title: '健康管理服务协议', text: '说明服务内容、服务周期、双方权利义务、退款规则及争议处理方式。', body: '<div class="package-share-card"><strong>健康管理服务协议 V2.1</strong><div class="package-share-link">当前已选择的协议模板将在用户订阅服务包前展示并确认。</div></div>', confirmLabel: '关闭', onConfirm: closePackageDialog });
+      openPackageDialog({ title: '健康管理服务协议', text: '说明服务内容、服务周期、双方权利义务、退款规则及争议处理方式。', body: '<div class="package-share-card"><strong>健康管理服务协议 V2.1</strong><div class="package-share-link">当前已选择的协议模板将在用户订阅服务包前展示并确认。</div></div>', confirmLabel: '关闭', noteEntity: `agreement:${document.getElementById('packageEditorOverlay')?.dataset.editCode || 'new'}`, onConfirm: closePackageDialog });
       return;
     }
     if (event.target.closest('[data-add-package-tag]')) {
