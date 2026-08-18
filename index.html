@@ -409,7 +409,24 @@
     .patient-condition-summary-text { color: #334f87; font-weight: 500; }
     .patient-condition-row { position: relative; min-height: 54px; padding: 10px 12px; border: 1px solid #e2e7ef; border-radius: 6px; background: #fff; }
     .patient-condition-line { min-width: 0; display: grid; align-items: center; gap: 8px; }
-    .patient-condition-line-single { grid-template-columns: 58px minmax(180px, .9fr) minmax(330px, 1.55fr) minmax(190px, 1fr) 30px; }
+    .patient-condition-line-single { grid-template-columns: 24px 58px minmax(180px, .9fr) minmax(330px, 1.55fr) minmax(190px, 1fr) 30px; }
+    .patient-condition-select { width: 16px; height: 16px; margin: 0; accent-color: #3154ff; cursor: pointer; }
+    .patient-condition-select-spacer { width: 16px; height: 16px; }
+    .patient-condition-group-toolbar { min-height: 40px; padding: 0 4px; display: flex; align-items: center; justify-content: space-between; gap: 12px; color: #69768a; font-size: 12px; }
+    .patient-condition-group-toolbar strong { color: #3154ff; }
+    .patient-condition-group-action { height: 32px; padding: 0 12px; border: 1px solid #3154ff; border-radius: 4px; color: #3154ff; background: #fff; font-weight: 600; }
+    .patient-condition-group-action:hover { background: #f5f7ff; }
+    .patient-condition-group-action:disabled { cursor: not-allowed; color: rgba(0,0,0,.25); border-color: #d9d9d9; background: rgba(0,0,0,.04); }
+    .patient-condition-group { padding: 10px; border: 1px solid #adc6ff; border-radius: 6px; background: #f7f9ff; }
+    .patient-condition-group-head { min-height: 34px; margin-bottom: 8px; display: flex; align-items: center; gap: 8px; }
+    .patient-condition-group-head .patient-condition-logic { width: 58px; flex: 0 0 auto; }
+    .patient-condition-group-title { color: #3154ff; font-size: 13px; font-weight: 700; }
+    .patient-condition-group-count { color: #7b8799; font-size: 12px; }
+    .patient-condition-group-head-spacer { flex: 1; }
+    .patient-condition-ungroup { height: 30px; padding: 0 10px; border-radius: 4px; color: #536177; background: transparent; font-size: 12px; }
+    .patient-condition-ungroup:hover { color: #3154ff; background: #eef3ff; }
+    .patient-condition-group-list { display: flex; flex-direction: column; gap: 8px; }
+    .patient-condition-group .patient-condition-row { border-color: #dce5ff; }
     .patient-condition-cell { min-width: 0; display: grid; grid-template-columns: 38px minmax(0, 1fr); align-items: center; gap: 8px; }
     .patient-condition-rule-controls { min-width: 0; display: flex; align-items: center; gap: 6px; }
     .patient-condition-rule-controls > .patient-condition-qualifier,
@@ -495,7 +512,7 @@
       .patient-list-toolbar-actions { width: 100%; justify-content: flex-end; }
       .patient-ai-actions { align-items: flex-start; flex-direction: column; }
       .patient-ai-buttons { align-self: flex-end; }
-      .patient-condition-line-single { grid-template-columns: 52px minmax(160px, .85fr) minmax(290px, 1.45fr) minmax(170px, 1fr) 30px; }
+      .patient-condition-line-single { grid-template-columns: 24px 52px minmax(160px, .85fr) minmax(290px, 1.45fr) minmax(170px, 1fr) 30px; }
     }
     @media (max-width: 680px) {
       .patient-smart-body { overflow: auto; }
@@ -3177,7 +3194,7 @@
           <div class="patient-condition-head">
             <div class="patient-condition-head-title"><span class="patient-section-title-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 7h10M18 7h2M4 17h2M10 17h10"/><circle cx="16" cy="7" r="2"/><circle cx="8" cy="17" r="2"/></svg></span><strong>规则配置</strong>
               <button class="patient-condition-help" data-toggle-patient-condition-help aria-expanded="false" aria-controls="patientConditionHelpPopover" aria-label="查看规则配置说明">?</button>
-              <div class="patient-condition-help-popover" id="patientConditionHelpPopover" role="note" hidden>选择模板可快速切换下方规则；“且”表示条件需同时满足，“或”表示满足任一条件即可。</div>
+              <div class="patient-condition-help-popover" id="patientConditionHelpPopover" role="note" hidden>选择模板可快速切换下方规则；勾选两条及以上未分组条件可创建一个条件组。条件只能加入一个组，不支持嵌套；组内以及条件组与其他规则之间都可设置“且 / 或”关系。</div>
             </div>
             <div class="patient-condition-head-actions"><button class="patient-condition-save" data-save-smart-filter disabled>保存为模板</button></div>
           </div>
@@ -4276,6 +4293,7 @@
       conditions: rules.map(([field, operator, value, logic = 'and', scope = '', scopeValue = '', scopeStart = '', scopeEnd = ''], index) => ({ id: `system-rule-${templateIndex + 1}-${index + 1}`, field, qualifier: patientSmartFieldConfig[field]?.fixedQualifier || '', operator, value, logic, scope, scopeValue: scope === 'specified' ? (scopeValue || 'last3') : '', scopeStart, scopeEnd }))
     }));
     let patientSmartDraft = [];
+    const patientConditionGroupSelection = new Set();
     let patientRuleTemplatesExpanded = false;
     let pendingPatientRuleTemplateId = '';
     const PATIENT_RULE_TEMPLATE_VISIBLE_COUNT = 4;
@@ -4286,7 +4304,7 @@
 
     function patientSmartCondition(field = 'age', value = '') {
       const config = patientSmartFieldConfig[field] || patientSmartFieldConfig.age;
-      return { id: crypto.randomUUID ? crypto.randomUUID() : `${Date.now()}-${Math.random()}`, logic: 'and', field, qualifier: config.fixedQualifier || '', scope: config.scopeOptions?.[0]?.[0] || '', scopeValue: '', scopeStart: '', scopeEnd: '', operator: config.operators[0][0], value };
+      return { id: crypto.randomUUID ? crypto.randomUUID() : `${Date.now()}-${Math.random()}`, logic: 'and', groupId: '', groupLogic: 'and', field, qualifier: config.fixedQualifier || '', scope: config.scopeOptions?.[0]?.[0] || '', scopeValue: '', scopeStart: '', scopeEnd: '', operator: config.operators[0][0], value };
     }
 
     function persistPatientSmartTags() {
@@ -4355,53 +4373,141 @@
       </div>`;
     }
 
+    function patientSmartTopLevelNodes(conditions) {
+      const visitedGroups = new Set();
+      return conditions.flatMap(condition => {
+        if (!condition.groupId) return [{ type: 'condition', condition, logic: condition.logic || 'and' }];
+        if (visitedGroups.has(condition.groupId)) return [];
+        visitedGroups.add(condition.groupId);
+        const members = conditions.filter(item => item.groupId === condition.groupId);
+        return [{ type: 'group', groupId: condition.groupId, conditions: members, logic: condition.groupLogic || condition.logic || 'and' }];
+      });
+    }
+
+    function patientConditionRowMarkup(condition, options = {}) {
+      const { firstInScope = false, grouped = false } = options;
+      const config = patientSmartFieldConfig[condition.field];
+      const hasField = Boolean(config);
+      if (config?.scopeOptions) {
+        const validScopes = config.scopeOptions.map(([value]) => value);
+        if (!validScopes.includes(condition.scope) && !(condition.progressive && !condition.scope)) {
+          if (condition.scope === 'recentAny') {
+            const days = Number(condition.scopeValue);
+            condition.scope = 'specified';
+            condition.scopeValue = days >= 30 ? 'last30' : days >= 7 ? 'last7' : 'last3';
+          } else if (condition.scope === 'rangeAny') {
+            const [start = '', end = ''] = String(condition.scopeValue || '').split(/[~～]/);
+            condition.scope = 'specified';
+            condition.scopeValue = 'custom';
+            condition.scopeStart = start;
+            condition.scopeEnd = end;
+          } else {
+            condition.scope = config.scopeOptions[0][0];
+            condition.scopeValue = '';
+          }
+        }
+      }
+      const operators = hasField ? config.operators.map(([value, label]) => `<option value="${value}" ${condition.operator === value ? 'selected' : ''}>${label}</option>`).join('') : '';
+      const qualifierReady = hasField && (!config.qualifierOptions?.length || Boolean(condition.qualifier || config.fixedQualifier));
+      const scopeReady = qualifierReady && (!config.scopeOptions || Boolean(condition.scope));
+      const operatorReady = scopeReady && Boolean(condition.operator);
+      const ruleControls = hasField ? `${patientConditionQualifierControl(condition)}
+        ${qualifierReady && config.scopeOptions ? patientConditionScopeControl(condition) : config.qualifierOptions?.length && !qualifierReady ? '<span class="patient-condition-step-placeholder">请先选择子指标</span>' : ''}
+        ${patientConditionScopeDetail(condition)}
+        ${scopeReady ? `<select class="patient-condition-op" data-smart-condition-operator="${condition.id}" aria-label="规则"><option value="" ${condition.operator ? '' : 'selected'} disabled>请选择规则</option>${operators}</select>` : qualifierReady ? '<span class="patient-condition-step-placeholder">请先选择结果范围</span>' : ''}` : '<span class="patient-condition-step-placeholder">选择条件后加载规则</span>';
+      const relationTitle = firstInScope ? (grouped ? '组内首条条件无需设置关系' : '首条规则无需设置关系') : (grouped ? '与组内上一条条件的关系' : '与上一条规则的关系');
+      return `<div class="patient-condition-row" data-smart-condition-row="${condition.id}">
+        <div class="patient-condition-line patient-condition-line-single">
+          ${grouped ? '<span class="patient-condition-select-spacer" title="已成组的条件不能重复成组"></span>' : `<input type="checkbox" class="patient-condition-select" data-select-smart-condition="${condition.id}" ${patientConditionGroupSelection.has(condition.id) ? 'checked' : ''} aria-label="选择${config?.label || '当前'}条件用于成组">`}
+          <select class="patient-condition-logic" data-smart-condition-logic="${condition.id}" ${firstInScope ? `disabled title="${relationTitle}"` : ''} aria-label="${relationTitle}"><option value="and" ${condition.logic !== 'or' ? 'selected' : ''}>${firstInScope ? '' : '且'}</option><option value="or" ${condition.logic === 'or' ? 'selected' : ''}>或</option></select>
+          <div class="patient-condition-cell"><span class="patient-condition-line-label">条件</span>${patientConditionFieldControl(condition)}</div>
+          <div class="patient-condition-cell"><span class="patient-condition-line-label">规则</span><div class="patient-condition-rule-controls">${ruleControls}</div></div>
+          <div class="patient-condition-cell patient-condition-value-cell"><span class="patient-condition-line-label">值</span>${operatorReady ? patientConditionValueControl(condition) : '<span class="patient-condition-step-placeholder">选择规则后填写值</span>'}</div>
+          <button class="patient-condition-remove" data-remove-smart-condition="${condition.id}" aria-label="删除${config?.label || '当前'}条件">×</button>
+        </div>
+      </div>`;
+    }
+
     function renderPatientSmartConditions() {
       const list = document.getElementById('patientConditionList');
       if (!list) return;
-      list.innerHTML = patientSmartDraft.length ? patientSmartDraft.map((condition, index) => {
-        const config = patientSmartFieldConfig[condition.field];
-        const hasField = Boolean(config);
-        if (config?.scopeOptions) {
-          const validScopes = config.scopeOptions.map(([value]) => value);
-          if (!validScopes.includes(condition.scope) && !(condition.progressive && !condition.scope)) {
-            if (condition.scope === 'recentAny') {
-              const days = Number(condition.scopeValue);
-              condition.scope = 'specified';
-              condition.scopeValue = days >= 30 ? 'last30' : days >= 7 ? 'last7' : 'last3';
-            } else if (condition.scope === 'rangeAny') {
-              const [start = '', end = ''] = String(condition.scopeValue || '').split(/[~～]/);
-              condition.scope = 'specified';
-              condition.scopeValue = 'custom';
-              condition.scopeStart = start;
-              condition.scopeEnd = end;
-            } else {
-              condition.scope = config.scopeOptions[0][0];
-              condition.scopeValue = '';
-            }
-          }
-        }
-        const operators = hasField ? config.operators.map(([value, label]) => `<option value="${value}" ${condition.operator === value ? 'selected' : ''}>${label}</option>`).join('') : '';
-        const qualifierReady = hasField && (!config.qualifierOptions?.length || Boolean(condition.qualifier || config.fixedQualifier));
-        const scopeReady = qualifierReady && (!config.scopeOptions || Boolean(condition.scope));
-        const operatorReady = scopeReady && Boolean(condition.operator);
-        const ruleControls = hasField ? `${patientConditionQualifierControl(condition)}
-          ${qualifierReady && config.scopeOptions ? patientConditionScopeControl(condition) : config.qualifierOptions?.length && !qualifierReady ? '<span class="patient-condition-step-placeholder">请先选择子指标</span>' : ''}
-          ${patientConditionScopeDetail(condition)}
-          ${scopeReady ? `<select class="patient-condition-op" data-smart-condition-operator="${condition.id}" aria-label="规则"><option value="" ${condition.operator ? '' : 'selected'} disabled>请选择规则</option>${operators}</select>` : qualifierReady ? '<span class="patient-condition-step-placeholder">请先选择结果范围</span>' : ''}` : '<span class="patient-condition-step-placeholder">选择条件后加载规则</span>';
-        return `<div class="patient-condition-row" data-smart-condition-row="${condition.id}">
-          <div class="patient-condition-line patient-condition-line-single">
-            <select class="patient-condition-logic" data-smart-condition-logic="${condition.id}" ${index === 0 ? 'disabled title="首条条件无需设置关系"' : ''} aria-label="${index === 0 ? '首条条件，无需设置关系' : '与上一条条件的关系'}"><option value="and" ${condition.logic !== 'or' ? 'selected' : ''}>${index === 0 ? '' : '且'}</option><option value="or" ${condition.logic === 'or' ? 'selected' : ''}>或</option></select>
-            <div class="patient-condition-cell"><span class="patient-condition-line-label">条件</span>${patientConditionFieldControl(condition)}</div>
-            <div class="patient-condition-cell"><span class="patient-condition-line-label">规则</span><div class="patient-condition-rule-controls">${ruleControls}</div></div>
-            <div class="patient-condition-cell patient-condition-value-cell"><span class="patient-condition-line-label">值</span>${operatorReady ? patientConditionValueControl(condition) : '<span class="patient-condition-step-placeholder">选择规则后填写值</span>'}</div>
-            <button class="patient-condition-remove" data-remove-smart-condition="${condition.id}" aria-label="删除${config?.label || '当前'}条件">×</button>
-          </div>
-        </div>`;
-      }).join('') : '<div class="patient-condition-empty"><span>暂无查询条件<br>输入一句话让 AI 生成，或手动添加条件</span></div>';
+      patientConditionGroupSelection.forEach(id => {
+        if (!patientSmartDraft.some(condition => condition.id === id && !condition.groupId)) patientConditionGroupSelection.delete(id);
+      });
+      if (!patientSmartDraft.length) {
+        list.innerHTML = '<div class="patient-condition-empty"><span>暂无查询条件<br>输入一句话让 AI 生成，或手动添加条件</span></div>';
+      } else {
+        const nodes = patientSmartTopLevelNodes(patientSmartDraft);
+        const toolbar = `<div class="patient-condition-group-toolbar"><span>${patientConditionGroupSelection.size ? `已选择 <strong>${patientConditionGroupSelection.size}</strong> 条未分组条件` : '勾选至少 2 条未分组条件，可合并为一个条件组'}</span><button class="patient-condition-group-action" data-create-smart-condition-group ${patientConditionGroupSelection.size < 2 ? 'disabled title="请先选择至少两条未分组条件"' : ''}>成组</button></div>`;
+        list.innerHTML = toolbar + nodes.map((node, nodeIndex) => {
+          if (node.type === 'condition') return patientConditionRowMarkup(node.condition, { firstInScope: nodeIndex === 0 });
+          const groupRelationTitle = nodeIndex === 0 ? '首个规则组无需设置关系' : '条件组与上一条规则或规则组的关系';
+          return `<section class="patient-condition-group" data-smart-condition-group="${node.groupId}" aria-label="条件组，共${node.conditions.length}条条件">
+            <div class="patient-condition-group-head">
+              <select class="patient-condition-logic" data-smart-group-logic="${node.groupId}" ${nodeIndex === 0 ? `disabled title="${groupRelationTitle}"` : ''} aria-label="${groupRelationTitle}"><option value="and" ${node.logic !== 'or' ? 'selected' : ''}>${nodeIndex === 0 ? '' : '且'}</option><option value="or" ${node.logic === 'or' ? 'selected' : ''}>或</option></select>
+              <span class="patient-condition-group-title">条件组</span><span class="patient-condition-group-count">${node.conditions.length} 条</span>
+              <span class="patient-condition-group-head-spacer"></span><button class="patient-condition-ungroup" data-dissolve-smart-condition-group="${node.groupId}">取消分组</button>
+            </div>
+            <div class="patient-condition-group-list">${node.conditions.map((condition, memberIndex) => patientConditionRowMarkup(condition, { firstInScope: memberIndex === 0, grouped: true })).join('')}</div>
+          </section>`;
+        }).join('');
+      }
       renderPatientSmartDraftSummary();
       const hasValid = patientSmartDraft.length > 0 && patientSmartDraft.every(patientConditionIsComplete);
       document.querySelector('[data-apply-smart-filter]')?.toggleAttribute('disabled', !hasValid);
       document.querySelector('[data-save-smart-filter]')?.toggleAttribute('disabled', !hasValid);
+    }
+
+    function createPatientSmartConditionGroup() {
+      syncPatientSmartDraftFromControls();
+      const selected = patientSmartDraft.filter(condition => patientConditionGroupSelection.has(condition.id) && !condition.groupId);
+      if (selected.length < 2) return;
+      const selectedIds = new Set(selected.map(condition => condition.id));
+      const insertIndex = patientSmartDraft.findIndex(condition => selectedIds.has(condition.id));
+      const groupId = crypto.randomUUID ? crypto.randomUUID() : `group-${Date.now()}`;
+      const groupLogic = selected[0].logic || 'and';
+      selected.forEach((condition, index) => {
+        condition.groupId = groupId;
+        condition.groupLogic = groupLogic;
+        if (!index) condition.logic = 'and';
+      });
+      const remaining = patientSmartDraft.filter(condition => !selectedIds.has(condition.id));
+      remaining.splice(insertIndex, 0, ...selected);
+      patientSmartDraft = remaining;
+      patientConditionGroupSelection.clear();
+      patientListState.activeSmartTagId = '';
+      renderPatientSmartConditions();
+      renderPatientSmartTags();
+      showToast(`已将 ${selected.length} 条条件合并为条件组`, 'top');
+    }
+
+    function dissolvePatientSmartConditionGroup(groupId) {
+      const members = patientSmartDraft.filter(condition => condition.groupId === groupId);
+      if (!members.length) return;
+      const groupLogic = members[0].groupLogic || 'and';
+      members.forEach((condition, index) => {
+        condition.groupId = '';
+        condition.groupLogic = 'and';
+        if (!index) condition.logic = groupLogic;
+      });
+      patientListState.activeSmartTagId = '';
+      renderPatientSmartConditions();
+      renderPatientSmartTags();
+      showToast('条件组已取消，原有条件继续保留', 'top');
+    }
+
+    function normalizePatientSmartConditionGroups() {
+      const counts = patientSmartDraft.reduce((map, condition) => {
+        if (condition.groupId) map.set(condition.groupId, (map.get(condition.groupId) || 0) + 1);
+        return map;
+      }, new Map());
+      patientSmartDraft.forEach(condition => {
+        if (condition.groupId && counts.get(condition.groupId) < 2) {
+          condition.logic = condition.groupLogic || condition.logic || 'and';
+          condition.groupId = '';
+          condition.groupLogic = 'and';
+        }
+      });
     }
 
     function patientConditionIsComplete(condition) {
@@ -4416,6 +4522,7 @@
 
     function openPatientSmartFilter() {
       patientSmartDraft = patientListState.smartConditions.length ? JSON.parse(JSON.stringify(patientListState.smartConditions)) : [];
+      patientConditionGroupSelection.clear();
       patientListState.activeSmartTagId = '';
       document.getElementById('patientAiPrompt').value = '';
       document.getElementById('patientAiGenerate').disabled = true;
@@ -4470,6 +4577,7 @@
       button.textContent = '解析中';
       setTimeout(() => {
         patientSmartDraft = conditionsFromPatientPrompt(prompt);
+        patientConditionGroupSelection.clear();
         renderPatientSmartConditions();
         button.classList.remove('loading');
         button.disabled = false;
@@ -4552,10 +4660,14 @@
 
     function patientMatchesSmartConditions(patient, conditions) {
       if (!conditions.length) return true;
-      return conditions.reduce((result, condition, index) => {
-        const matched = patientMatchesSmartCondition(patient, condition);
+      return patientSmartTopLevelNodes(conditions).reduce((result, node, index) => {
+        const matched = node.type === 'group' ? node.conditions.reduce((groupResult, condition, memberIndex) => {
+          const conditionMatched = patientMatchesSmartCondition(patient, condition);
+          if (!memberIndex) return conditionMatched;
+          return condition.logic === 'or' ? groupResult || conditionMatched : groupResult && conditionMatched;
+        }, true) : patientMatchesSmartCondition(patient, node.condition);
         if (!index) return matched;
-        return condition.logic === 'or' ? result || matched : result && matched;
+        return node.logic === 'or' ? result || matched : result && matched;
       }, true);
     }
 
@@ -4579,27 +4691,35 @@
     }
 
     function patientSmartExpression(conditions) {
-      return conditions.map((condition, index) => `${index ? (condition.logic === 'or' ? ' 或 ' : ' 且 ') : ''}${patientSmartConditionText(condition)}`).join('');
+      return patientSmartTopLevelNodes(conditions).map((node, index) => {
+        const text = node.type === 'group' ? `（${node.conditions.map((condition, memberIndex) => `${memberIndex ? (condition.logic === 'or' ? ' 或 ' : ' 且 ') : ''}${patientSmartConditionText(condition)}`).join('')}）` : patientSmartConditionText(node.condition);
+        return `${index ? (node.logic === 'or' ? ' 或 ' : ' 且 ') : ''}${text}`;
+      }).join('');
     }
 
     function patientSmartSummary(conditions) {
-      const summaries = conditions.map(condition => {
+      const conditionSummary = condition => {
         const value = String(condition.value ?? '').trim();
         const config = patientSmartFieldConfig[condition.field] || {};
         const scopeLabel = patientConditionScopeText(condition, config);
         const qualifierLabel = condition.qualifier || config.fixedQualifier || '';
         if (!value && !['isEmpty','notEmpty'].includes(condition.operator)) return null;
-        if (['isEmpty','notEmpty'].includes(condition.operator)) return { logic: condition.logic, text: `${config.label}${condition.operator === 'isEmpty' ? '为空' : '不为空'}` };
+        if (['isEmpty','notEmpty'].includes(condition.operator)) return `${config.label}${condition.operator === 'isEmpty' ? '为空' : '不为空'}`;
         if (['number','dynamic'].includes(config.type)) {
           const numberOperators = { gte: '不低于', gt: '大于', lte: '不高于', lt: '小于', eq: '为', neq: '不等于', between: '介于' };
-          return { logic: condition.logic, text: `${scopeLabel ? `${scopeLabel}的` : ''}${config.label}${qualifierLabel ? `（${qualifierLabel}）` : ''}${numberOperators[condition.operator] || '为'}${value}${config.unit || ''}` };
+          return `${scopeLabel ? `${scopeLabel}的` : ''}${config.label}${qualifierLabel ? `（${qualifierLabel}）` : ''}${numberOperators[condition.operator] || '为'}${value}${config.unit || ''}`;
         }
-        if (condition.field === 'gender') return { logic: condition.logic, text: `性别${condition.operator === 'neq' ? '不为' : '为'}${value}` };
-        if (config.type === 'date' && condition.operator === 'withinDays') return { logic: condition.logic, text: `${config.label}在最近${value}天内` };
+        if (condition.field === 'gender') return `性别${condition.operator === 'neq' ? '不为' : '为'}${value}`;
+        if (config.type === 'date' && condition.operator === 'withinDays') return `${config.label}在最近${value}天内`;
         const field = config.label || condition.field;
         const operatorWords = { contains: '包含', containsAny: '包含任一', containsAll: '包含全部', notContains: '不包含', eq: '为', neq: '不为', in: '属于任一', nin: '不属于', after: '晚于', before: '早于', between: '介于', overDays: '超过' };
-        return { logic: condition.logic, text: `${scopeLabel ? `${scopeLabel}的` : ''}${field}${operatorWords[condition.operator] || ''}${value}${condition.operator === 'overDays' ? '天' : ''}` };
-      }).filter(Boolean);
+        return `${scopeLabel ? `${scopeLabel}的` : ''}${field}${operatorWords[condition.operator] || ''}${value}${condition.operator === 'overDays' ? '天' : ''}`;
+      };
+      const summaries = patientSmartTopLevelNodes(conditions).map(node => {
+        if (node.type === 'condition') return { logic: node.logic, text: conditionSummary(node.condition) };
+        const members = node.conditions.map((condition, index) => ({ logic: condition.logic, text: conditionSummary(condition), index })).filter(item => item.text);
+        return { logic: node.logic, text: members.length ? `（${members.map((item, index) => `${index ? (item.logic === 'or' ? '或' : '且') : ''}${item.text}`).join('')}）` : '' };
+      }).filter(item => item.text);
       if (!summaries.length) return '';
       const description = summaries.map((item, index) => `${index ? (item.logic === 'or' ? '，或' : '，且') : ''}${item.text}`).join('');
       return `筛选${description}的患者`;
@@ -4675,7 +4795,13 @@
       syncPatientSmartDraftFromControls();
       if (!patientSmartDraft.length || patientSmartDraft.some(condition => !patientConditionIsComplete(condition))) return;
       patientListState.smartConditions = JSON.parse(JSON.stringify(patientSmartDraft));
-      const conditionSignature = conditions => JSON.stringify(conditions.map(({ field, qualifier = '', scope = '', scopeValue = '', scopeStart = '', scopeEnd = '', operator, value, logic = 'and' }) => ({ field, qualifier, scope, scopeValue, scopeStart, scopeEnd, operator, value, logic })));
+      const conditionSignature = conditions => {
+        const groupNumbers = new Map();
+        return JSON.stringify(conditions.map(({ field, qualifier = '', scope = '', scopeValue = '', scopeStart = '', scopeEnd = '', operator, value, logic = 'and', groupId = '', groupLogic = 'and' }) => {
+          if (groupId && !groupNumbers.has(groupId)) groupNumbers.set(groupId, groupNumbers.size + 1);
+          return { field, qualifier, scope, scopeValue, scopeStart, scopeEnd, operator, value, logic, group: groupId ? groupNumbers.get(groupId) : 0, groupLogic };
+        }));
+      };
       const matchingTag = patientAllRuleTemplates().find(tag => conditionSignature(tag.conditions) === conditionSignature(patientListState.smartConditions));
       patientListState.activeSmartTagId = matchingTag?.id || '';
       patientListState.page = 1;
@@ -4705,6 +4831,7 @@
         id: crypto.randomUUID ? crypto.randomUUID() : `${Date.now()}-${Math.random()}`
       }));
       patientListState.activeSmartTagId = id;
+      patientConditionGroupSelection.clear();
       renderPatientSmartConditions();
       renderPatientSmartTags();
       showToast(`已切换为“${tag.name}”，可直接查询或继续调整`, 'top');
@@ -8202,9 +8329,20 @@
         renderPatientSmartConditions();
         return;
       }
+      if (e.target.closest('[data-create-smart-condition-group]')) {
+        createPatientSmartConditionGroup();
+        return;
+      }
+      const dissolveSmartConditionGroup = e.target.closest('[data-dissolve-smart-condition-group]');
+      if (dissolveSmartConditionGroup) {
+        dissolvePatientSmartConditionGroup(dissolveSmartConditionGroup.dataset.dissolveSmartConditionGroup);
+        return;
+      }
       const removeSmartCondition = e.target.closest('[data-remove-smart-condition]');
       if (removeSmartCondition) {
+        patientConditionGroupSelection.delete(removeSmartCondition.dataset.removeSmartCondition);
         patientSmartDraft = patientSmartDraft.filter(condition => condition.id !== removeSmartCondition.dataset.removeSmartCondition);
+        normalizePatientSmartConditionGroups();
         if (!patientSmartDraft.length) {
           patientListState.activeSmartTagId = '';
           renderPatientSmartTags();
@@ -9150,8 +9288,25 @@
       }
       if (e.target.matches('[data-smart-condition-logic]')) {
         const condition = patientSmartDraft.find(item => item.id === e.target.dataset.smartConditionLogic);
-        if (condition) condition.logic = e.target.value;
+        if (condition) {
+          condition.logic = e.target.value;
+          patientListState.activeSmartTagId = '';
+        }
         renderPatientSmartDraftSummary();
+        renderPatientSmartTags();
+        return;
+      }
+      if (e.target.matches('[data-smart-group-logic]')) {
+        patientSmartDraft.filter(condition => condition.groupId === e.target.dataset.smartGroupLogic).forEach(condition => { condition.groupLogic = e.target.value; });
+        patientListState.activeSmartTagId = '';
+        renderPatientSmartDraftSummary();
+        renderPatientSmartTags();
+        return;
+      }
+      if (e.target.matches('[data-select-smart-condition]')) {
+        if (e.target.checked) patientConditionGroupSelection.add(e.target.dataset.selectSmartCondition);
+        else patientConditionGroupSelection.delete(e.target.dataset.selectSmartCondition);
+        renderPatientSmartConditions();
         return;
       }
       if (e.target.matches('[data-smart-condition-field]')) {
