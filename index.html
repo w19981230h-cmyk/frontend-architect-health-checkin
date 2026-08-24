@@ -12818,10 +12818,11 @@
   }
 
   function getPageContext() {
-    const stablePath = (location.pathname || "/")
+    const requestedPath = (location.pathname || "/")
       .split("/")
       .filter(Boolean)
       .pop() || "index.html";
+    const stablePath = requestedPath === "prototype.html" ? "index.html" : requestedPath;
     const pageTitle = getPageTitle();
     const activeText = getActiveText();
     const viewKey = getViewKey();
@@ -14017,7 +14018,7 @@
 })();
 </script>
 
-<script src="./js/service-management.js?v=annotations-v7"></script>
+<script src="./js/service-management.js?v=annotations-v8"></script>
 <script src="./assets/echarts.min.js"></script>
 <script src="./js/team-management.js"></script>
 </body>

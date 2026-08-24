@@ -620,8 +620,12 @@
       .package-content-row > span + span { border-left: 1px solid #edf1f6; }
       .package-add-content { height: 40px; padding: 0 14px; display: flex; align-items: center; gap: 8px; border: 1px solid #edf1f6; border-top: 0; color: #6c7990; background: #fff; cursor: pointer; }
       .package-add-service { height: 40px; padding: 0 14px; display: inline-flex; align-items: center; gap: 8px; border: 1px solid #dfe5ee; border-radius: 4px; color: #53627a; background: #fff; cursor: pointer; }
-      .package-benefit-editor { margin-bottom: 16px; overflow: hidden; border: 1px solid #dfe5ee; border-radius: 8px; background: #fff; }
-      .package-benefit-editor-head { min-height: 68px; padding: 14px 16px; display: grid; grid-template-columns: minmax(180px,.8fr) minmax(260px,1.35fr) auto; align-items: center; gap: 14px; background: #f8fafc; }
+      .package-benefit-editor { margin-bottom: 16px; overflow: hidden; border: 1px solid #dfe5ee; border-radius: 8px; background: #fff; transition: border-color .16s, box-shadow .16s, opacity .16s; }
+      .package-benefit-editor-head { min-height: 68px; padding: 14px 16px; display: grid; grid-template-columns: 24px minmax(0,1fr) auto; align-items: center; gap: 12px; background: #f8fafc; }
+      .package-benefit-editor-drag { color: #aeb8c5; font-size: 18px; line-height: 1; cursor: grab; user-select: none; }
+      .package-benefit-editor-drag:active, .package-benefit-drag:active { cursor: grabbing; }
+      .package-benefit-editor.sorting, .package-benefit-content.sorting { opacity: .46; }
+      .package-benefit-editor.sort-target, .package-benefit-content.sort-target { border-color: #1677ff; box-shadow: inset 0 2px 0 #1677ff; }
       .package-benefit-field { min-width: 0; display: grid; gap: 8px; color: #65738a; font-size: 12px; }
       .package-benefit-field > span { font-weight: 700; }
       .package-benefit-field .package-required { font-style: normal; }
@@ -652,7 +656,7 @@
       .package-frequency-control.open input { border-color: #1677ff; box-shadow: 0 0 0 2px rgba(5,145,255,.1); }
       .package-frequency-dropdown { top: 42px; min-width: 180px; }
       .package-frequency-dropdown-title { height: 28px; padding: 0 12px; display: flex; align-items: center; color: rgba(0,0,0,.45); font-size: 12px; }
-      .package-benefit-drag { color: #aeb8c5; cursor: grab; }
+      .package-benefit-drag { color: #aeb8c5; cursor: grab; user-select: none; }
       .package-benefit-remove { width: 28px; height: 28px; border: 0; color: #ef4f5f; background: transparent; font-size: 18px; cursor: pointer; }
       .package-benefit-add-content { height: 42px; padding: 0 16px; display: flex; align-items: center; border: 0; border-top: 1px solid #edf1f6; color: #174dff; background: #fff; cursor: pointer; }
       .package-benefit-add { width: 100%; height: 44px; border: 1px dashed #b8c8e5; border-radius: 6px; color: #174dff; background: #f8faff; cursor: pointer; }
@@ -695,7 +699,7 @@
         .package-editor-card { padding: 0; }
         .package-config-section { padding: 24px 20px 28px; }
         .package-field-grid, .package-benefit-meta { grid-template-columns: 1fr; }
-        .package-benefit-editor-head { grid-template-columns: minmax(0,1fr) auto; }
+        .package-benefit-editor-head { grid-template-columns: 24px minmax(0,1fr) auto; }
         .package-benefit-field.description { grid-column: 1 / -1; }
         .package-benefit-content { grid-template-columns: 18px minmax(0,1fr) 28px; }
         .package-frequency-control { grid-column: 2; }
@@ -771,11 +775,11 @@
   }
 
   function renderBenefitContent(content = '', frequency = '服务期内1次') {
-    return `<div class="package-benefit-content" data-benefit-content><span class="package-benefit-drag">⠿</span><input data-benefit-content-name value="${content}" placeholder="请输入服务内容"><div class="package-frequency-control" data-package-frequency-combobox><input data-benefit-frequency value="${frequency}" placeholder="选择或输入频次" aria-label="服务频次" role="combobox" aria-autocomplete="list" aria-expanded="false"><button class="package-frequency-trigger" data-package-frequency-trigger type="button" aria-label="展开历史频次"><svg viewBox="0 0 12 12" aria-hidden="true"><path d="m2.2 4.2 3.8 3.6 3.8-3.6" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></button><div class="package-ant-select-dropdown package-frequency-dropdown" data-package-frequency-dropdown role="listbox" aria-label="历史频次" hidden></div></div><button class="package-benefit-remove" data-remove-benefit-content type="button" aria-label="删除服务内容">×</button></div>`;
+    return `<div class="package-benefit-content" data-benefit-content><span class="package-benefit-drag" draggable="true" role="button" tabindex="0" aria-label="拖动排序服务内容">⠿</span><input data-benefit-content-name value="${content}" placeholder="请输入服务内容"><div class="package-frequency-control" data-package-frequency-combobox><input data-benefit-frequency value="${frequency}" placeholder="选择或输入频次" aria-label="服务频次" role="combobox" aria-autocomplete="list" aria-expanded="false"><button class="package-frequency-trigger" data-package-frequency-trigger type="button" aria-label="展开历史频次"><svg viewBox="0 0 12 12" aria-hidden="true"><path d="m2.2 4.2 3.8 3.6 3.8-3.6" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></button><div class="package-ant-select-dropdown package-frequency-dropdown" data-package-frequency-dropdown role="listbox" aria-label="历史频次" hidden></div></div><button class="package-benefit-remove" data-remove-benefit-content type="button" aria-label="删除服务内容">×</button></div>`;
   }
 
   function renderBenefitEditor(title = '', description = '', contents = []) {
-    return `<section class="package-benefit-editor" data-benefit-editor><div class="package-benefit-editor-head"><label class="package-benefit-field"><input data-benefit-title value="${title}" placeholder="请输入权益名称" aria-label="权益名称"></label><label class="package-benefit-field description"><input data-benefit-description value="${description}" placeholder="请输入权益说明" aria-label="权益说明"></label><button class="package-benefit-delete" data-remove-benefit type="button" aria-label="删除权益" title="删除权益"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M9 7V4h6v3m-8 0 1 13h8l1-13M10 11v5m4-5v5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></button></div><div data-benefit-content-list>${contents.map(([content, frequency]) => renderBenefitContent(content, frequency)).join('')}</div><button class="package-benefit-add-content" data-add-benefit-content type="button">＋ 添加服务内容</button></section>`;
+    return `<section class="package-benefit-editor" data-benefit-editor><div class="package-benefit-editor-head"><span class="package-benefit-editor-drag" draggable="true" role="button" tabindex="0" aria-label="拖动排序服务权益">⠿</span><label class="package-benefit-field"><input data-benefit-title value="${title}" placeholder="请输入权益名称" aria-label="权益名称"></label><button class="package-benefit-delete" data-remove-benefit type="button" aria-label="删除权益" title="删除权益"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M9 7V4h6v3m-8 0 1 13h8l1-13M10 11v5m4-5v5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></button></div><div data-benefit-content-list>${contents.map(([content, frequency]) => renderBenefitContent(content, frequency)).join('')}</div><button class="package-benefit-add-content" data-add-benefit-content type="button">＋ 添加服务内容</button></section>`;
   }
 
   function injectViews() {
@@ -2166,24 +2170,77 @@
     if (countText) countText.textContent = `${count}个服务权益`;
   }
 
+  let sortingBenefitNode = null;
+  let sortingBenefitType = '';
+
+  function clearBenefitSortState() {
+    document.querySelectorAll('.package-benefit-editor.sorting,.package-benefit-content.sorting,.package-benefit-editor.sort-target,.package-benefit-content.sort-target').forEach(node => node.classList.remove('sorting', 'sort-target'));
+    sortingBenefitNode = null;
+    sortingBenefitType = '';
+  }
+
+  function moveBenefitByKeyboard(handle, direction) {
+    const isEditor = handle.matches('.package-benefit-editor-drag');
+    const item = handle.closest(isEditor ? '[data-benefit-editor]' : '[data-benefit-content]');
+    if (!item) return;
+    const sibling = direction < 0 ? item.previousElementSibling : item.nextElementSibling;
+    if (!sibling || !sibling.matches(isEditor ? '[data-benefit-editor]' : '[data-benefit-content]')) return;
+    if (direction < 0) item.parentElement.insertBefore(item, sibling);
+    else item.parentElement.insertBefore(sibling, item);
+    updatePackagePreview();
+    handle.focus();
+  }
+
+  function handleBenefitDragStart(event) {
+    const editorHandle = event.target.closest('.package-benefit-editor-drag');
+    const contentHandle = event.target.closest('.package-benefit-drag');
+    if (!editorHandle && !contentHandle) return;
+    sortingBenefitType = editorHandle ? 'editor' : 'content';
+    sortingBenefitNode = (editorHandle || contentHandle).closest(editorHandle ? '[data-benefit-editor]' : '[data-benefit-content]');
+    sortingBenefitNode?.classList.add('sorting');
+    event.dataTransfer.effectAllowed = 'move';
+    event.dataTransfer.setData('text/plain', sortingBenefitType);
+  }
+
+  function handleBenefitDragOver(event) {
+    if (!sortingBenefitNode) return;
+    const selector = sortingBenefitType === 'editor' ? '[data-benefit-editor]' : '[data-benefit-content]';
+    const target = event.target.closest(selector);
+    if (!target || target === sortingBenefitNode) return;
+    if (sortingBenefitType === 'content' && target.closest('[data-benefit-editor]') !== sortingBenefitNode.closest('[data-benefit-editor]')) return;
+    event.preventDefault();
+    event.dataTransfer.dropEffect = 'move';
+    document.querySelectorAll(`${selector}.sort-target`).forEach(node => node.classList.remove('sort-target'));
+    target.classList.add('sort-target');
+    const rect = target.getBoundingClientRect();
+    const insertAfter = event.clientY > rect.top + rect.height / 2;
+    target.parentElement.insertBefore(sortingBenefitNode, insertAfter ? target.nextElementSibling : target);
+  }
+
+  function finishBenefitSort(event) {
+    if (!sortingBenefitNode) return;
+    event?.preventDefault?.();
+    clearBenefitSortState();
+    updatePackagePreview();
+  }
+
   function updatePackageBenefitsPreview() {
     const container = document.getElementById('packagePreviewBenefitRows');
     if (!container) return;
     container.replaceChildren();
-    const groups = new Map();
+    const groups = [];
     document.querySelectorAll('[data-benefit-editor]').forEach(editor => {
       const title = editor.querySelector('[data-benefit-title]')?.value.trim() || '未命名权益';
-      const description = editor.querySelector('[data-benefit-description]')?.value.trim() || '暂无权益说明';
-      if (!groups.has(title)) groups.set(title, { description, items: [] });
-      else if (description && description !== '暂无权益说明') groups.get(title).description = description;
+      const groupData = { title, items: [] };
+      groups.push(groupData);
       editor.querySelectorAll('[data-benefit-content]').forEach(contentRow => {
-        const content = contentRow.querySelector('[data-benefit-content-name]')?.value.trim() || description || '请配置服务内容';
+        const content = contentRow.querySelector('[data-benefit-content-name]')?.value.trim() || '请配置服务内容';
         const frequency = contentRow.querySelector('[data-benefit-frequency]')?.value || '--';
-        groups.get(title).items.push({ content, frequency });
+        groupData.items.push({ content, frequency });
       });
     });
-    groups.forEach((groupData, title) => {
-      const { description, items } = groupData;
+    groups.forEach(groupData => {
+      const { title, items } = groupData;
       if (!items.length) items.push({ content: '请配置服务内容', frequency: '--' });
       const group = document.createElement('div');
       group.className = 'package-benefit-group';
@@ -2192,9 +2249,7 @@
       name.style.gridRow = `1 / span ${items.length}`;
       const nameTitle = document.createElement('strong');
       nameTitle.textContent = title;
-      const nameDescription = document.createElement('small');
-      nameDescription.textContent = description || '暂无权益说明';
-      name.append(nameTitle, nameDescription);
+      name.append(nameTitle);
       group.appendChild(name);
       items.forEach((item, index) => {
         const detail = document.createElement('span');
@@ -2397,6 +2452,11 @@
   if (!injectViews()) return;
   enhancePackageSelects();
   refreshPackageFrequencyOptions();
+
+  document.addEventListener('dragstart', handleBenefitDragStart);
+  document.addEventListener('dragover', handleBenefitDragOver);
+  document.addEventListener('drop', finishBenefitSort);
+  document.addEventListener('dragend', finishBenefitSort);
 
   document.addEventListener('click', event => {
     const packageFrequencyOption = event.target.closest('[data-package-frequency-option]');
@@ -2817,6 +2877,12 @@
   });
 
   document.addEventListener('keydown', event => {
+    const benefitSortHandle = event.target.closest('.package-benefit-editor-drag,.package-benefit-drag');
+    if (benefitSortHandle && ['ArrowUp', 'ArrowDown'].includes(event.key) && (event.altKey || event.ctrlKey)) {
+      event.preventDefault();
+      moveBenefitByKeyboard(benefitSortHandle, event.key === 'ArrowUp' ? -1 : 1);
+      return;
+    }
     if (event.target.matches('[data-package-row]') && ['Enter', ' '].includes(event.key)) {
       event.preventDefault();
       openPackageEditor(getPackageData(event.target.dataset.packageCode));
