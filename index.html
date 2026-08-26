@@ -426,6 +426,9 @@
     .patient-condition-ungroup:hover { color: #3154ff; background: #eef3ff; }
     .patient-condition-group-list { display: flex; flex-direction: column; gap: 8px; }
     .patient-condition-group .patient-condition-row { border-color: #dce5ff; }
+    .patient-condition-group-add { height: 32px; margin-top: 8px; padding: 0 12px; border: 1px dashed #91caff; border-radius: 4px; color: #3154ff; background: transparent; font-size: 13px; }
+    .patient-condition-group-add:hover { border-color: #5975ff; background: #eef3ff; }
+    .patient-condition-group-add:focus-visible { outline: 2px solid rgba(49,84,255,.25); outline-offset: 2px; }
     .patient-condition-select:disabled { cursor: not-allowed; opacity: .35; }
     .patient-condition-cell { min-width: 0; display: grid; grid-template-columns: 38px minmax(0, 1fr); align-items: center; gap: 8px; }
     .patient-condition-field-cell { grid-template-columns: minmax(0, 1fr); }
@@ -2741,7 +2744,7 @@
           <div class="menu-section"><div class="menu-item" data-list-view="patients"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8Z"/><path d="M4 21a8 8 0 0 1 16 0"/></svg><span>患者管理</span><svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="m18 15-6-6-6 6"/></svg></div><div class="submenu"><div class="submenu-item" data-list-view="patients">全部患者</div><div class="submenu-item" data-patient-team-list>团队患者</div></div></div>
           <div class="menu-section">
             <div class="menu-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M7 4h10v16H7z"/><path d="M9 8h6M9 12h6M9 16h3"/></svg><span>方案与内容</span><svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="m18 15-6-6-6 6"/></svg></div>
-            <div class="submenu"><div class="submenu-item" data-list-view="plans">方案管理</div><div class="submenu-item" data-list-view="scale">量表管理</div><div class="submenu-item">评估报告</div><div class="submenu-item">文章管理</div><div class="submenu-item">知识库</div></div>
+            <div class="submenu"><div class="submenu-item" data-list-view="plans">方案管理</div><div class="submenu-item" data-list-view="scale">量表管理</div><div class="submenu-item">评估报告</div><div class="submenu-item">文章管理</div><div class="submenu-item" data-list-view="knowledge">知识库</div></div>
           </div>
           <div class="menu-section"><div class="menu-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M4 19V8a3 3 0 0 1 3-3h10a3 3 0 0 1 3 3v11"/><path d="M8 19v-5h8v5"/></svg><span>运营管理</span><svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="m18 15-6-6-6 6"/></svg></div><div class="submenu"><div class="submenu-item">统计报表</div></div></div>
           <div class="menu-section"><div class="menu-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M12 3 7 21M12 3l5 18M5 9h14M5 15h14"/></svg><span>AI医助</span><svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="m8 10 4 4 4-4"/></svg></div></div>
@@ -4540,6 +4543,7 @@
               <span class="patient-condition-group-head-spacer"></span><button class="patient-condition-ungroup" data-dissolve-smart-condition-group="${node.groupId}" aria-label="解散条件组${groupNumber}">解组</button>
             </div>
             <div class="patient-condition-group-list">${node.conditions.map((condition, memberIndex) => patientConditionRowMarkup(condition, { firstInScope: memberIndex === 0, grouped: true })).join('')}</div>
+            <button class="patient-condition-group-add" data-add-smart-condition-to-group="${node.groupId}">＋ 添加组内条件</button>
           </section></div>`;
         }).join('');
       }
@@ -4592,6 +4596,32 @@
       showToast('条件组已解组，原有条件继续保留', 'top');
     }
 
+    function addPatientSmartConditionToGroup(groupId) {
+      syncPatientSmartDraftFromControls();
+      const memberIndexes = patientSmartDraft.reduce((indexes, condition, index) => {
+        if (condition.groupId === groupId) indexes.push(index);
+        return indexes;
+      }, []);
+      if (!memberIndexes.length) return;
+      const firstMember = patientSmartDraft[memberIndexes[0]];
+      const condition = {
+        ...patientSmartCondition('age', ''),
+        field: '',
+        qualifier: '',
+        scope: '',
+        operator: '',
+        value: '',
+        logic: 'and',
+        groupId,
+        groupLogic: firstMember.groupLogic || 'and',
+        progressive: true
+      };
+      patientSmartDraft.splice(memberIndexes[memberIndexes.length - 1] + 1, 0, condition);
+      patientListState.activeSmartTagId = '';
+      renderPatientSmartConditions();
+      renderPatientSmartTags();
+    }
+
     function normalizePatientSmartConditionGroups() {
       const groups = patientSmartDraft.reduce((map, condition) => {
         if (condition.groupId) {
@@ -4601,7 +4631,7 @@
         return map;
       }, new Map());
       groups.forEach(members => {
-        if (members.length < 2 || members.some(condition => !patientConditionIsComplete(condition))) {
+        if (members.length < 2) {
           const outerLogic = members[0]?.groupLogic || members[0]?.logic || 'and';
           members.forEach((condition, index) => {
             if (!index) condition.logic = outerLogic;
@@ -5468,6 +5498,7 @@
       const isPatients = view === 'patients';
       const isHealthTasks = view === 'healthTasks';
       const isCheckinEvaluation = view === 'checkinEvaluation';
+      const isKnowledge = view === 'knowledge';
       document.getElementById('workbenchView')?.classList.toggle('active', isWorkbench);
       document.getElementById('planManagementView')?.classList.toggle('active', isPlans);
       document.getElementById('scaleManagementView')?.classList.toggle('active', isScale);
@@ -5477,10 +5508,13 @@
       document.getElementById('patientListView')?.classList.toggle('active', isPatients);
       document.getElementById('healthTaskView')?.classList.toggle('active', isHealthTasks);
       document.getElementById('checkinEvaluationView')?.classList.toggle('active', isCheckinEvaluation);
+      document.getElementById('knowledgeBaseView')?.classList.toggle('active', isKnowledge);
+      document.getElementById('knowledgeDetailView')?.classList.remove('active');
       if (document.getElementById('listPageTitle')) document.getElementById('listPageTitle').textContent = isHealthTasks ? '健康任务' : isCheckinEvaluation ? '评价任务' : isPatients ? '全部患者' : isIndicator ? '指标模板' : isScale ? '量表管理' : '方案管理';
-      const listTitleMap = { workbench: '工作台', healthTasks: '健康任务', checkinEvaluation: '评价任务', patients: '全部患者', indicator: '指标模板', teams: '团队管理', scale: '量表管理', plans: '方案管理' };
+      const listTitleMap = { workbench: '工作台', healthTasks: '健康任务', checkinEvaluation: '评价任务', patients: '全部患者', indicator: '指标模板', teams: '团队管理', scale: '量表管理', plans: '方案管理', knowledge: '知识库' };
       if (document.getElementById('listPageTitle')) document.getElementById('listPageTitle').textContent = listTitleMap[view] || '方案管理';
       document.querySelector('.list-main')?.classList.toggle('workbench-main', isWorkbench);
+      document.querySelector('.list-main')?.classList.remove('knowledge-detail-main');
       document.querySelectorAll('#listPage .menu .menu-item, #listPage .menu .submenu-item').forEach(item => item.classList.remove('active'));
       const activeSubmenuItems = document.querySelectorAll(`#listPage .menu .submenu-item[data-list-view="${view}"]`);
       activeSubmenuItems.forEach(item => {
@@ -8540,6 +8574,11 @@
       if (e.target.closest('[data-add-smart-condition]')) {
         patientSmartDraft.push({ ...patientSmartCondition('age', ''), field: '', qualifier: '', scope: '', operator: '', value: '', progressive: true });
         renderPatientSmartConditions();
+        return;
+      }
+      const addSmartConditionToGroup = e.target.closest('[data-add-smart-condition-to-group]');
+      if (addSmartConditionToGroup) {
+        addPatientSmartConditionToGroup(addSmartConditionToGroup.dataset.addSmartConditionToGroup);
         return;
       }
       if (e.target.closest('[data-create-smart-condition-group]')) {
@@ -14019,6 +14058,7 @@
 </script>
 
 <script src="./js/service-management.js?v=annotations-v8"></script>
+<script src="./js/knowledge-base.js?v=knowledge-v1"></script>
 <script src="./assets/echarts.min.js"></script>
 <script src="./js/team-management.js"></script>
 </body>

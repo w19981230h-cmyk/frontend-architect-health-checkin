@@ -488,6 +488,10 @@
       .package-detail-price-unit { margin-left: 5px; color: #f15a00; font-size: 15px; line-height: 1.2; }
       .package-detail-sold { margin-left: auto; color: #a5acb9; font-size: 12px; }
       .package-detail-summary { margin: 15px 0 0; color: #8b94a5; font-size: 12px; line-height: 1.65; }
+      .package-detail-gallery { padding: 10px 0 0; background: #f3f6fb; }
+      .package-detail-gallery[hidden] { display: none; }
+      .package-detail-gallery img { width: 100%; height: auto; display: block; background: #e9eef6; }
+      .package-detail-gallery img + img { margin-top: 8px; }
       .package-recommendation { margin-top: 16px; padding: 13px; border: 1px solid #b9d1ff; border-radius: 15px; background: #f7f9ff; }
       .package-recommendation-head { display: flex; align-items: center; color: #123b87; font-size: 14px; font-weight: 800; }
       .package-recommendation-bot { width: 30px; height: 30px; margin-right: 8px; display: grid; place-items: center; border-radius: 50%; color: #fff; background: linear-gradient(135deg, #2549d9, #70b8ff); box-shadow: inset 0 0 0 3px #d7e9ff; font-size: 11px; }
@@ -583,6 +587,32 @@
       .package-upload-meta { min-height: 24px; margin-top: 8px; display: flex; align-items: center; gap: 12px; color: #9aa6b6; font-size: 12px; }
       .package-upload-meta button { padding: 0; border: 0; color: #ef4f5f; background: transparent; cursor: pointer; }
       .package-upload-meta button[hidden] { display: none; }
+      .package-detail-images-head { margin-bottom: 10px; display: flex; align-items: center; gap: 8px; }
+      .package-detail-images-head .package-form-label { margin: 0; }
+      .package-detail-images-count { margin-left: auto; color: #7d899b; font-size: 12px; }
+      .package-detail-images-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; }
+      .package-detail-image-card, .package-detail-image-add { position: relative; min-height: 132px; box-sizing: border-box; border: 1px solid #dfe5ee; border-radius: 8px; background: #fff; overflow: hidden; }
+      .package-detail-image-card { cursor: grab; transition: border-color .16s, box-shadow .16s, opacity .16s, transform .16s; }
+      .package-detail-image-card:active { cursor: grabbing; }
+      .package-detail-image-card.sorting { opacity: .45; }
+      .package-detail-image-card.sort-target { border-color: #1677ff; box-shadow: 0 0 0 2px rgba(22,119,255,.12); }
+      .package-detail-image-preview { width: 100%; aspect-ratio: 16 / 9; display: block; border: 0; padding: 0; overflow: hidden; background: #edf2f8; cursor: zoom-in; }
+      .package-detail-image-preview img { width: 100%; height: 100%; display: block; object-fit: cover; }
+      .package-detail-image-index { position: absolute; top: 7px; left: 7px; z-index: 2; min-width: 24px; height: 22px; padding: 0 6px; display: inline-flex; align-items: center; justify-content: center; box-sizing: border-box; border-radius: 5px; color: #fff; background: rgba(24,39,64,.72); font-size: 11px; font-weight: 700; }
+      .package-detail-image-drag { position: absolute; top: 7px; right: 7px; z-index: 2; width: 24px; height: 22px; display: grid; place-items: center; border-radius: 5px; color: #fff; background: rgba(24,39,64,.72); font-size: 15px; }
+      .package-detail-image-actions { height: 38px; padding: 0 8px; display: flex; align-items: center; justify-content: center; gap: 6px; border-top: 1px solid #edf1f6; }
+      .package-detail-image-actions button { padding: 0; border: 0; color: #1677ff; background: transparent; font-size: 12px; cursor: pointer; }
+      .package-detail-image-actions button + button::before { content: ''; height: 12px; margin-right: 6px; display: inline-block; vertical-align: -2px; border-left: 1px solid #e3e8ef; }
+      .package-detail-image-actions button[data-delete-package-detail-image] { color: #ff4d4f; }
+      .package-detail-image-add { display: grid; place-items: center; align-content: center; gap: 7px; border-style: dashed; color: #7f8ca0; cursor: pointer; }
+      .package-detail-image-add:hover { color: #1677ff; border-color: #1677ff; background: #f7fbff; }
+      .package-detail-image-add strong { font-size: 24px; font-weight: 400; line-height: 1; }
+      .package-detail-image-add span { font-size: 12px; }
+      .package-detail-images-tip { margin: 10px 0 0; color: #8b97a9; font-size: 12px; line-height: 1.7; }
+      .package-image-lightbox { position: fixed; inset: 0; z-index: 2400; padding: 56px; display: grid; place-items: center; box-sizing: border-box; background: rgba(10,18,32,.76); }
+      .package-image-lightbox[hidden] { display: none; }
+      .package-image-lightbox img { max-width: min(1100px, calc(100vw - 112px)); max-height: calc(100vh - 112px); display: block; border-radius: 8px; background: #fff; box-shadow: 0 24px 80px rgba(0,0,0,.35); }
+      .package-image-lightbox-close { position: fixed; top: 22px; right: 28px; width: 38px; height: 38px; display: grid; place-items: center; border: 0; border-radius: 50%; color: #fff; background: rgba(255,255,255,.18); font-size: 24px; cursor: pointer; }
       .package-price-input { width: 144px; position: relative; }
       .package-price-input span { position: absolute; left: 12px; top: 11px; color: #7f8ca0; }
       .package-price-input input { padding-left: 30px; }
@@ -700,6 +730,7 @@
         .package-config-section { padding: 24px 20px 28px; }
         .package-field-grid, .package-benefit-meta { grid-template-columns: 1fr; }
         .package-benefit-editor-head { grid-template-columns: 24px minmax(0,1fr) auto; }
+        .package-detail-images-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
         .package-benefit-field.description { grid-column: 1 / -1; }
         .package-benefit-content { grid-template-columns: 18px minmax(0,1fr) 28px; }
         .package-frequency-control { grid-column: 2; }
@@ -872,6 +903,7 @@
                     <div class="package-detail-tags" id="packagePreviewTags"><span>科学减重</span><span>饮食管理</span><span>运动指导</span></div>
                     <div class="package-detail-price-row"><strong class="package-detail-price" id="packagePreviewPrice">¥299</strong><span class="package-detail-price-unit" id="packagePreviewPriceUnit">/ 90天</span><span class="package-detail-sold">已售：9,860+</span></div>
                     <p class="package-detail-summary" id="packagePreviewDescription">通过个性化饮食和运动方案，帮助您健康减重，塑造理想体型。</p></section>
+                    <section class="package-detail-gallery" id="packagePreviewDetailImages" aria-label="服务详情展示图" hidden></section>
                     <section class="package-detail-section"><div class="package-detail-section-head"><h3 class="package-detail-section-title">服务介绍</h3><span class="package-detail-section-note">服务内容实时同步</span></div><article class="package-intro-card package-intro-summary"><span class="package-intro-index">01</span><div><p id="packagePreviewIntro">填写服务介绍后，将在这里展示服务内容、服务方式及用户能够获得的健康价值。</p></div></article></section>
                     <section class="package-detail-section"><div class="package-detail-section-head"><h3 class="package-detail-section-title">服务权益</h3><span class="package-detail-section-note" id="packagePreviewPeriodNote">服务包有效期90天</span></div><div class="package-benefit-table">
                       <div class="package-benefit-row head"><span>服务权益</span><span>权益说明</span><span>次数</span></div>
@@ -888,6 +920,7 @@
               <div class="package-form-group full"><label class="package-form-label"><span class="package-required">*</span>服务包名称</label><div class="package-input-wrap"><input class="package-form-input" id="packageNameInput" data-package-form-input maxlength="20" placeholder="请输入服务包名称"><span class="package-counter">0 / 20</span></div></div>
               <div class="package-form-group full"><label class="package-form-label"><span class="package-required">*</span>服务包描述</label><div class="package-input-wrap"><input class="package-form-input" id="packageDescriptionInput" data-package-form-input maxlength="20" placeholder="一句话简介 / 核心价值"><span class="package-counter">0 / 20</span></div></div>
               <div class="package-form-group full"><label class="package-form-label"><span class="package-required">*</span>服务包封面</label><label class="package-upload" for="packageCoverInput"><input id="packageCoverInput" type="file" accept="image/jpeg,image/png,image/webp" hidden><span class="package-upload-empty" id="packageUploadEmpty"><strong>＋</strong><span>上传封面</span></span><img class="package-upload-preview" id="packageCoverThumb" alt="服务包封面预览" hidden><span class="package-upload-replace" id="packageUploadReplace" hidden>重新上传</span></label><div class="package-upload-meta"><span id="packageCoverMeta">建议 750×420px，JPG/PNG/WebP，5MB以内</span><button data-remove-package-cover type="button" hidden>移除</button></div></div>
+              <div class="package-form-group full" data-package-detail-images><div class="package-detail-images-head"><label class="package-form-label">详情展示图 <span class="package-optional">选填</span></label><span class="package-detail-images-count" id="packageDetailImagesCount">已上传 0/9</span></div><input id="packageDetailImagesInput" type="file" accept="image/jpeg,image/png,image/webp" multiple hidden><div class="package-detail-images-grid" id="packageDetailImagesGrid"></div><p class="package-detail-images-tip">≡ 拖动图片可调整 C 端展示顺序；最多 9 张，支持 JPG/JPEG/PNG/WebP，单张不超过 5MB，建议 750×420px（16:9）。上传后自动压缩并保持原始比例。</p></div>
               <div class="package-form-group full"><label class="package-form-label"><span class="package-required">*</span>关键词标签 <span class="package-tag-status" id="packageTagStatus">已选 1/3 · 共 5/10</span></label><div class="package-tags" id="packageTagList"><button class="package-tag active" data-package-tag type="button"><span data-package-tag-label>三甲专家</span><i class="package-tag-remove" data-remove-package-tag title="删除标签">×</i></button><button class="package-tag" data-package-tag type="button"><span data-package-tag-label>个性化方案</span><i class="package-tag-remove" data-remove-package-tag title="删除标签">×</i></button><button class="package-tag" data-package-tag type="button"><span data-package-tag-label>全周期管理</span><i class="package-tag-remove" data-remove-package-tag title="删除标签">×</i></button><button class="package-tag" data-package-tag type="button"><span data-package-tag-label>专业健康评估</span><i class="package-tag-remove" data-remove-package-tag title="删除标签">×</i></button><button class="package-tag" data-package-tag type="button"><span data-package-tag-label>7×24h服务</span><i class="package-tag-remove" data-remove-package-tag title="删除标签">×</i></button><span class="package-tag-editor" data-package-tag-editor hidden><input id="packageCustomTagInput" maxlength="10" placeholder="输入标签内容" aria-label="自定义关键词标签"><button data-confirm-package-tag type="button" aria-label="添加标签">✓</button><button data-cancel-package-tag type="button" aria-label="取消添加">×</button></span><button class="package-tag add" data-add-package-tag type="button">＋ 自定义</button></div></div>
               <div class="package-form-group full package-service-intro"><label class="package-form-label"><span class="package-required">*</span>服务介绍</label><div class="package-input-wrap"><textarea class="package-form-textarea" id="packageIntroInput" data-package-form-input maxlength="500" placeholder="请输入服务内容、服务方式及用户价值"></textarea><span class="package-counter">0 / 500</span></div></div>
               <div class="package-form-group full"><label class="package-form-label" id="packageVerificationModeLabel"><span class="package-required">*</span>核销操作</label><div class="package-radio-group" id="packageVerificationModeGroup" role="radiogroup" aria-labelledby="packageVerificationModeLabel"><label class="package-radio-option"><input type="radio" name="packageVerificationMode" value="本平台完成" checked><span>本平台完成</span></label><label class="package-radio-option"><input type="radio" name="packageVerificationMode" value="外部系统完成"><span>外部系统完成</span></label></div></div>
@@ -912,6 +945,7 @@
           </form>
           </div>
         </div>
+        <div class="package-image-lightbox" id="packageDetailImageLightbox" hidden role="dialog" aria-modal="true" aria-label="查看详情展示图"><button class="package-image-lightbox-close" data-close-package-detail-image type="button" aria-label="关闭大图">×</button><img id="packageDetailImageLightboxPreview" alt="详情展示图大图预览"></div>
       </section>
     `);
     return true;
@@ -2147,6 +2181,223 @@
     reader.readAsDataURL(file);
   }
 
+  const packageDetailImageLimit = 9;
+  let packageDetailImages = [];
+  let packageDetailReplaceId = '';
+  let sortingPackageDetailImageId = '';
+
+  function createPackageDetailImageId() {
+    return globalThis.crypto?.randomUUID?.() || `detail-${Date.now()}-${Math.random().toString(16).slice(2)}`;
+  }
+
+  function updatePackageDetailImagesPreview() {
+    const preview = document.getElementById('packagePreviewDetailImages');
+    if (!preview) return;
+    preview.replaceChildren();
+    packageDetailImages.forEach((item, index) => {
+      const image = document.createElement('img');
+      image.src = item.source;
+      image.alt = `服务详情展示图 ${String(index + 1).padStart(2, '0')}`;
+      preview.appendChild(image);
+    });
+    preview.hidden = packageDetailImages.length === 0;
+  }
+
+  function renderPackageDetailImages() {
+    const grid = document.getElementById('packageDetailImagesGrid');
+    const count = document.getElementById('packageDetailImagesCount');
+    if (!grid || !count) return;
+    grid.replaceChildren();
+    packageDetailImages.forEach((item, index) => {
+      const card = document.createElement('article');
+      card.className = 'package-detail-image-card';
+      card.dataset.packageDetailImageId = item.id;
+      card.draggable = true;
+      card.tabIndex = 0;
+      card.setAttribute('aria-label', `详情展示图 ${index + 1}，可拖动排序`);
+
+      const sequence = document.createElement('span');
+      sequence.className = 'package-detail-image-index';
+      sequence.textContent = String(index + 1).padStart(2, '0');
+      const drag = document.createElement('span');
+      drag.className = 'package-detail-image-drag';
+      drag.textContent = '≡';
+      drag.setAttribute('aria-hidden', 'true');
+      const previewButton = document.createElement('button');
+      previewButton.className = 'package-detail-image-preview';
+      previewButton.type = 'button';
+      previewButton.dataset.viewPackageDetailImage = item.id;
+      previewButton.setAttribute('aria-label', `查看详情展示图 ${index + 1} 大图`);
+      const image = document.createElement('img');
+      image.src = item.source;
+      image.alt = `详情展示图 ${index + 1}`;
+      previewButton.appendChild(image);
+
+      const actions = document.createElement('div');
+      actions.className = 'package-detail-image-actions';
+      [['查看', 'viewPackageDetailImage'], ['替换', 'replacePackageDetailImage'], ['删除', 'deletePackageDetailImage']].forEach(([label, dataKey]) => {
+        const button = document.createElement('button');
+        button.type = 'button';
+        button.textContent = label;
+        button.dataset[dataKey] = item.id;
+        actions.appendChild(button);
+      });
+      card.append(sequence, drag, previewButton, actions);
+      grid.appendChild(card);
+    });
+    if (packageDetailImages.length < packageDetailImageLimit) {
+      const add = document.createElement('button');
+      add.className = 'package-detail-image-add';
+      add.type = 'button';
+      add.dataset.addPackageDetailImage = '';
+      add.innerHTML = '<strong>＋</strong><span>上传图片</span>';
+      grid.appendChild(add);
+    }
+    count.textContent = `已上传 ${packageDetailImages.length}/${packageDetailImageLimit}`;
+    updatePackageDetailImagesPreview();
+  }
+
+  function setPackageDetailImages(items = []) {
+    packageDetailImages = Array.isArray(items) ? items.slice(0, packageDetailImageLimit).map(item => ({
+      id: item?.id || createPackageDetailImageId(),
+      source: typeof item === 'string' ? item : item?.source || '',
+      name: typeof item === 'string' ? '详情展示图' : item?.name || '详情展示图'
+    })).filter(item => item.source) : [];
+    packageDetailReplaceId = '';
+    renderPackageDetailImages();
+  }
+
+  function compressPackageDetailImage(file) {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.addEventListener('error', () => reject(new Error('图片读取失败')));
+      reader.addEventListener('load', () => {
+        const image = new Image();
+        image.addEventListener('error', () => reject(new Error('图片解析失败')));
+        image.addEventListener('load', () => {
+          const maxWidth = 1500;
+          const scale = Math.min(1, maxWidth / image.naturalWidth);
+          const canvas = document.createElement('canvas');
+          canvas.width = Math.max(1, Math.round(image.naturalWidth * scale));
+          canvas.height = Math.max(1, Math.round(image.naturalHeight * scale));
+          const context = canvas.getContext('2d');
+          context.drawImage(image, 0, 0, canvas.width, canvas.height);
+          const outputType = file.type === 'image/png' ? 'image/png' : file.type === 'image/webp' ? 'image/webp' : 'image/jpeg';
+          resolve(canvas.toDataURL(outputType, .88));
+        });
+        image.src = String(reader.result || '');
+      });
+      reader.readAsDataURL(file);
+    });
+  }
+
+  async function handlePackageDetailImageFiles(fileList) {
+    const files = Array.from(fileList || []);
+    if (!files.length) return;
+    const input = document.getElementById('packageDetailImagesInput');
+    const isReplacing = Boolean(packageDetailReplaceId);
+    if (packageDetailReplaceId) files.splice(1);
+    else files.splice(Math.max(0, packageDetailImageLimit - packageDetailImages.length));
+    if (!packageDetailReplaceId && !files.length) {
+      showPackageToast('详情展示图最多上传 9 张');
+      return;
+    }
+    let successCount = 0;
+    for (const file of files) {
+      if (!['image/jpeg', 'image/png', 'image/webp'].includes(file.type)) {
+        showPackageToast(`${file.name} 格式不支持，请上传 JPG、PNG 或 WebP`);
+        continue;
+      }
+      if (file.size > 5 * 1024 * 1024) {
+        showPackageToast(`${file.name} 超过 5MB，未上传`);
+        continue;
+      }
+      try {
+        const source = await compressPackageDetailImage(file);
+        const imageItem = { id: createPackageDetailImageId(), source, name: file.name };
+        if (packageDetailReplaceId) {
+          const index = packageDetailImages.findIndex(item => item.id === packageDetailReplaceId);
+          if (index >= 0) packageDetailImages.splice(index, 1, { ...imageItem, id: packageDetailReplaceId });
+          packageDetailReplaceId = '';
+        } else if (packageDetailImages.length < packageDetailImageLimit) packageDetailImages.push(imageItem);
+        successCount += 1;
+      } catch (error) {
+        showPackageToast(`${file.name} 处理失败，请重新上传`);
+      }
+    }
+    if (input) input.value = '';
+    renderPackageDetailImages();
+    if (successCount) showPackageToast(`${isReplacing ? '图片已替换' : `已上传 ${successCount} 张详情展示图`}，C端预览已同步`);
+  }
+
+  function openPackageDetailImageLightbox(id) {
+    const item = packageDetailImages.find(image => image.id === id);
+    const lightbox = document.getElementById('packageDetailImageLightbox');
+    const preview = document.getElementById('packageDetailImageLightboxPreview');
+    if (!item || !lightbox || !preview) return;
+    preview.src = item.source;
+    preview.alt = item.name || '详情展示图大图预览';
+    lightbox.hidden = false;
+    lightbox.querySelector('[data-close-package-detail-image]')?.focus();
+  }
+
+  function closePackageDetailImageLightbox() {
+    const lightbox = document.getElementById('packageDetailImageLightbox');
+    if (lightbox) lightbox.hidden = true;
+  }
+
+  function syncPackageDetailImagesFromDom() {
+    const imageMap = new Map(packageDetailImages.map(item => [item.id, item]));
+    const ids = Array.from(document.querySelectorAll('[data-package-detail-image-id]')).map(card => card.dataset.packageDetailImageId);
+    packageDetailImages = ids.map(id => imageMap.get(id)).filter(Boolean);
+    updatePackageDetailImagesPreview();
+  }
+
+  function handlePackageDetailImageDragStart(event) {
+    const card = event.target.closest('[data-package-detail-image-id]');
+    if (!card || event.target.closest('.package-detail-image-actions button')) return;
+    sortingPackageDetailImageId = card.dataset.packageDetailImageId;
+    card.classList.add('sorting');
+    event.dataTransfer.effectAllowed = 'move';
+    event.dataTransfer.setData('text/plain', sortingPackageDetailImageId);
+  }
+
+  function handlePackageDetailImageDragOver(event) {
+    if (!sortingPackageDetailImageId) return;
+    const target = event.target.closest('[data-package-detail-image-id]');
+    const source = document.querySelector(`[data-package-detail-image-id="${sortingPackageDetailImageId}"]`);
+    if (!target || !source || target === source) return;
+    event.preventDefault();
+    event.dataTransfer.dropEffect = 'move';
+    document.querySelectorAll('.package-detail-image-card.sort-target').forEach(card => card.classList.remove('sort-target'));
+    target.classList.add('sort-target');
+    const rect = target.getBoundingClientRect();
+    const sourceRect = source.getBoundingClientRect();
+    const sameRow = Math.abs(sourceRect.top - rect.top) < rect.height / 2;
+    const insertAfter = sameRow ? event.clientX > rect.left + rect.width / 2 : event.clientY > rect.top + rect.height / 2;
+    target.parentElement.insertBefore(source, insertAfter ? target.nextElementSibling : target);
+    syncPackageDetailImagesFromDom();
+  }
+
+  function finishPackageDetailImageSort(event) {
+    if (!sortingPackageDetailImageId) return;
+    event?.preventDefault?.();
+    syncPackageDetailImagesFromDom();
+    document.querySelectorAll('.package-detail-image-card.sorting,.package-detail-image-card.sort-target').forEach(card => card.classList.remove('sorting', 'sort-target'));
+    sortingPackageDetailImageId = '';
+    renderPackageDetailImages();
+  }
+
+  function movePackageDetailImageByKeyboard(card, direction) {
+    const current = packageDetailImages.findIndex(item => item.id === card.dataset.packageDetailImageId);
+    const target = current + direction;
+    if (current < 0 || target < 0 || target >= packageDetailImages.length) return;
+    [packageDetailImages[current], packageDetailImages[target]] = [packageDetailImages[target], packageDetailImages[current]];
+    const movedId = packageDetailImages[target].id;
+    renderPackageDetailImages();
+    document.querySelector(`[data-package-detail-image-id="${movedId}"]`)?.focus();
+  }
+
   function readPackagePeriod() {
     const manual = document.querySelector('[data-manual-period]');
     if (manual?.classList.contains('active')) {
@@ -2393,6 +2644,7 @@
     const coverInput = document.getElementById('packageCoverInput');
     if (coverInput) coverInput.value = '';
     setPackageCover(item?.[9] || '', item?.[10] || '');
+    setPackageDetailImages(item?.[13] || []);
     overlay.hidden = false;
     overlay.querySelector('.package-editor-scroll').scrollTop = 0;
     document.body.style.overflow = 'hidden';
@@ -2404,6 +2656,7 @@
     if (!overlay) return;
     closePackageAntSelects();
     closePackageFrequencyDropdowns();
+    closePackageDetailImageLightbox();
     overlay.hidden = true;
     document.body.style.overflow = '';
   }
@@ -2434,6 +2687,7 @@
     item[10] = overlay.dataset.coverName || '';
     item[11] = document.getElementById('packageIntroInput').value.trim();
     item[12] = document.querySelector('input[name="packageVerificationMode"]:checked')?.value || '本平台完成';
+    item[13] = packageDetailImages.map(({ source, name }) => ({ source, name }));
     row.children[1].innerHTML = packageCoverIcon(item[1], item[9]);
     row.children[2].textContent = name;
     row.children[2].title = name;
@@ -2457,6 +2711,10 @@
   document.addEventListener('dragover', handleBenefitDragOver);
   document.addEventListener('drop', finishBenefitSort);
   document.addEventListener('dragend', finishBenefitSort);
+  document.addEventListener('dragstart', handlePackageDetailImageDragStart);
+  document.addEventListener('dragover', handlePackageDetailImageDragOver);
+  document.addEventListener('drop', finishPackageDetailImageSort);
+  document.addEventListener('dragend', finishPackageDetailImageSort);
 
   document.addEventListener('click', event => {
     const packageFrequencyOption = event.target.closest('[data-package-frequency-option]');
@@ -2708,6 +2966,41 @@
       return;
     }
     if (event.target.closest('[data-close-restored-order]') || event.target.id === 'restoredOrderMask') closeOrderDetail();
+    if (event.target.closest('[data-add-package-detail-image]')) {
+      packageDetailReplaceId = '';
+      const input = document.getElementById('packageDetailImagesInput');
+      if (input) {
+        input.multiple = true;
+        input.click();
+      }
+      return;
+    }
+    const viewDetailImage = event.target.closest('[data-view-package-detail-image]');
+    if (viewDetailImage) {
+      openPackageDetailImageLightbox(viewDetailImage.dataset.viewPackageDetailImage);
+      return;
+    }
+    const replaceDetailImage = event.target.closest('[data-replace-package-detail-image]');
+    if (replaceDetailImage) {
+      packageDetailReplaceId = replaceDetailImage.dataset.replacePackageDetailImage;
+      const input = document.getElementById('packageDetailImagesInput');
+      if (input) {
+        input.multiple = false;
+        input.click();
+      }
+      return;
+    }
+    const deleteDetailImage = event.target.closest('[data-delete-package-detail-image]');
+    if (deleteDetailImage) {
+      packageDetailImages = packageDetailImages.filter(item => item.id !== deleteDetailImage.dataset.deletePackageDetailImage);
+      renderPackageDetailImages();
+      showPackageToast('详情展示图已删除，其余图片已自动补位');
+      return;
+    }
+    if (event.target.closest('[data-close-package-detail-image]') || event.target.id === 'packageDetailImageLightbox') {
+      closePackageDetailImageLightbox();
+      return;
+    }
     if (event.target.closest('[data-remove-package-cover]')) {
       setPackageCover('', '');
       const coverInput = document.getElementById('packageCoverInput');
@@ -2871,12 +3164,19 @@
       return;
     }
     if (event.target.id === 'packageCoverInput') handlePackageCoverFile(event.target.files?.[0]);
+    if (event.target.id === 'packageDetailImagesInput') handlePackageDetailImageFiles(event.target.files);
     if (event.target.matches('[data-benefit-frequency]')) rememberPackageFrequency(event.target.value);
     if (event.target.id === 'packageCustomDurationUnit') activateManualPackagePeriod();
     if (event.target.closest('#packageEditorForm')) updatePackagePreview();
   });
 
   document.addEventListener('keydown', event => {
+    const detailImageCard = event.target.closest('[data-package-detail-image-id]');
+    if (detailImageCard && ['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown'].includes(event.key) && (event.altKey || event.ctrlKey)) {
+      event.preventDefault();
+      movePackageDetailImageByKeyboard(detailImageCard, ['ArrowLeft', 'ArrowUp'].includes(event.key) ? -1 : 1);
+      return;
+    }
     const benefitSortHandle = event.target.closest('.package-benefit-editor-drag,.package-benefit-drag');
     if (benefitSortHandle && ['ArrowUp', 'ArrowDown'].includes(event.key) && (event.altKey || event.ctrlKey)) {
       event.preventDefault();
@@ -2973,6 +3273,10 @@
       return;
     }
     if (event.key === 'Escape') {
+      if (!document.getElementById('packageDetailImageLightbox')?.hidden) {
+        closePackageDetailImageLightbox();
+        return;
+      }
       if (document.querySelector('[data-package-frequency-combobox].open')) {
         const input = document.querySelector('[data-package-frequency-combobox].open [data-benefit-frequency]');
         closePackageFrequencyDropdowns();
