@@ -3,18 +3,34 @@
   window.__knowledgeBaseInitialized = true;
 
   const rows = [
-    { name: '医保卡知识', intro: '医保政策、报销范围及办理流程相关知识', tag: '医保政策', count: '12 份', updated: '2025-08-21 16:30' },
-    { name: '健康饮食知识库', intro: '健康饮食、营养搭配及注意事项相关知识', tag: '健康宣教', count: '28 份', updated: '2025-08-20 15:10' },
-    { name: 'CKD疾病知识库', intro: 'CKD疾病诊疗、护理及管理相关知识', tag: '疾病知识', count: '26 份', updated: '2025-08-19 09:45' },
-    { name: '医院管理制度', intro: '医院各类管理制度及规范流程相关知识', tag: '医院制度', count: '18 份', updated: '2025-08-18 11:20' },
-    { name: '就诊流程指引', intro: '患者就诊全流程指引及注意事项', tag: '就诊指引', count: '15 份', updated: '2025-08-17 17:05' }
+    { name: '医保政策与结算知识库', intro: '覆盖职工医保、居民医保、门诊统筹、异地就医备案与报销结算规则', tags: ['医保政策', '就诊指引'], count: '32 份', updated: '2026-08-25 16:30', department: '医保办公室' },
+    { name: '健康饮食与营养管理', intro: '面向慢病患者的膳食结构、营养评估、食谱模板及特殊人群饮食建议', tags: ['健康宣教', '慢病管理'], count: '46 份', updated: '2026-08-25 14:20', department: '营养科' },
+    { name: 'CKD全程管理知识库', intro: 'CKD分期诊疗、肾功能监测、用药安全、营养护理和随访管理标准', tags: ['疾病知识', '护理规范', '随访管理'], count: '38 份', updated: '2026-08-24 09:45', department: '肾内科' },
+    { name: '糖尿病患者教育中心', intro: '糖尿病筛查、血糖监测、胰岛素使用、低血糖处置及足部护理知识', tags: ['疾病知识', '用药指导', '健康宣教'], count: '54 份', updated: '2026-08-23 17:40', department: '内分泌科' },
+    { name: '高血压规范管理', intro: '高血压分级、家庭血压测量、危险因素干预、用药依从性和复诊策略', tags: ['慢病管理', '用药指导', '随访管理'], count: '41 份', updated: '2026-08-22 15:15', department: '心血管内科' },
+    { name: '医院核心制度与质量安全', intro: '医疗质量安全核心制度、患者安全目标、不良事件上报及应急预案', tags: ['医院制度', '质量安全'], count: '29 份', updated: '2026-08-21 11:20', department: '医务部' },
+    { name: '门诊与住院就诊流程', intro: '预约挂号、检查检验、入出院办理、转诊转院和便民服务全流程指引', tags: ['就诊指引', '患者服务'], count: '24 份', updated: '2026-08-20 17:05', department: '门诊部' },
+    { name: '临床护理操作规范', intro: '基础护理、管路护理、压疮预防、跌倒风险管理和护理记录规范', tags: ['护理规范', '质量安全'], count: '63 份', updated: '2026-08-19 10:50', department: '护理部' },
+    { name: '常用药物安全手册', intro: '常用药物适应证、禁忌证、相互作用、不良反应监测与患者用药教育', tags: ['用药指导', '质量安全'], count: '57 份', updated: '2026-08-18 13:36', department: '药学部' },
+    { name: '患者随访服务标准', intro: '出院随访、慢病随访、失访处置、风险升级及标准沟通话术模板', tags: ['随访管理', '患者服务'], count: '35 份', updated: '2026-08-17 16:10', department: '患者服务中心' },
+    { name: '肿瘤康复与症状管理', intro: '治疗期症状观察、疼痛管理、营养支持、心理关怀及康复随访知识', tags: ['疾病知识', '健康宣教', '随访管理'], count: '44 份', updated: '2026-08-16 09:25', department: '肿瘤科' },
+    { name: '互联网医院运营规范', intro: '线上问诊、电子处方、药品配送、隐私保护和运营质量监测规则', tags: ['医院制度', '患者服务', '质量安全'], count: '21 份', updated: '2026-08-15 18:00', department: '互联网医院' }
   ];
   const knowledgeFiles = {
-    '医保卡知识': [
-      { name: '医保报销政策.pdf', type: 'PDF', size: '2.4MB', updated: '2026-08-25 15:20' },
-      { name: '异地医保办理指南.docx', type: 'DOCX', size: '1.8MB', updated: '2026-08-23 10:12' },
-      { name: '门诊医保流程.pdf', type: 'PDF', size: '860KB', updated: '2026-08-20 09:30' },
-      { name: '医保常见问题.txt', type: 'TXT', size: '120KB', updated: '2026-08-18 16:40' }
+    '医保政策与结算知识库': [
+      { name: '2026年度基本医疗保险政策汇编.pdf', type: 'PDF', size: '4.8MB', updated: '2026-08-25 15:20' },
+      { name: '异地就医备案与直接结算指南.docx', type: 'DOCX', size: '1.8MB', updated: '2026-08-23 10:12' },
+      { name: '门诊慢特病认定与报销流程.pdf', type: 'PDF', size: '2.1MB', updated: '2026-08-22 09:30' },
+      { name: '医保电子凭证使用说明.pdf', type: 'PDF', size: '860KB', updated: '2026-08-20 09:30' },
+      { name: '医保咨询高频问题与标准答复.txt', type: 'TXT', size: '156KB', updated: '2026-08-18 16:40' },
+      { name: '住院费用结算审核要点.docx', type: 'DOCX', size: '1.2MB', updated: '2026-08-16 11:05' }
+    ],
+    'CKD全程管理知识库': [
+      { name: '慢性肾脏病分期与诊疗路径.pdf', type: 'PDF', size: '3.6MB', updated: '2026-08-24 09:45' },
+      { name: 'CKD患者肾功能监测项目清单.docx', type: 'DOCX', size: '980KB', updated: '2026-08-23 14:12' },
+      { name: '肾病患者低盐优质低蛋白饮食手册.pdf', type: 'PDF', size: '2.7MB', updated: '2026-08-22 10:30' },
+      { name: 'CKD随访分层与预警规则.docx', type: 'DOCX', size: '1.4MB', updated: '2026-08-20 16:40' },
+      { name: '肾功能异常患者用药注意事项.txt', type: 'TXT', size: '188KB', updated: '2026-08-19 08:50' }
     ]
   };
 
@@ -33,6 +49,7 @@
     .knowledge-table-wrap { flex: 1; min-height: 0; overflow: hidden; }
     .knowledge-table th, .knowledge-table td { padding-inline: 12px; }
     .knowledge-name-cell { min-width: 0; color: #25324a; font-weight: 600; }
+    .knowledge-tags { display: flex; flex-wrap: wrap; gap: 5px; }
     .knowledge-content-tag { min-height: 22px; padding: 2px 9px; display: inline-flex; align-items: center; border-radius: 5px; font-size: 13px; line-height: 18px; }
     .knowledge-content-tag.blue { color: #2b6ae2; background: #eaf2ff; }
     .knowledge-content-tag.green { color: #15945b; background: #e9f8f0; }
@@ -66,6 +83,7 @@
     .knowledge-detail-meta-item:first-child { padding-left: 0; border-left: 0; }
     .knowledge-detail-meta-label { font-weight: 500; }
     .knowledge-detail-tag { padding: 4px 12px; border-radius: 8px; color: #1762e8; background: #edf4ff; font-size: 15px; }
+    .knowledge-detail-tags { display: inline-flex; flex-wrap: wrap; gap: 6px; }
     .knowledge-detail-content { min-height: 520px; padding: 30px; flex: 1 0 auto; display: flex; flex-direction: column; border: 1px solid #e0e8f4; border-radius: 10px 10px 0 0; background: #fff; }
     .knowledge-detail-section-title { margin: 0 0 28px; color: #111d32; font-size: 21px; line-height: 28px; font-weight: 700; }
     .knowledge-file-toolbar { min-height: 48px; display: flex; align-items: flex-start; gap: 18px; }
@@ -146,12 +164,48 @@
     .knowledge-file-size { width: 96px; height: 30px; padding: 0 10px; border-radius: 4px; font-size: 14px; }
     .knowledge-toast { position: fixed; left: 50%; top: 24px; z-index: 12000; padding: 10px 16px; border: 1px solid #dce5f5; border-radius: 7px; color: #233650; background: #fff; box-shadow: 0 8px 24px rgba(32,52,85,.16); transform: translate(-50%, -16px); opacity: 0; pointer-events: none; transition: opacity .2s, transform .2s; }
     .knowledge-toast.show { opacity: 1; transform: translate(-50%, 0); }
+    .knowledge-modal-mask { position: fixed; inset: 0; z-index: 11900; display: none; align-items: center; justify-content: center; padding: 24px; background: rgba(15,28,51,.45); }
+    .knowledge-modal-mask.open { display: flex; }
+    .knowledge-modal { width: min(680px, calc(100vw - 48px)); max-height: calc(100vh - 48px); overflow: auto; border-radius: 8px; background: #fff; box-shadow: 0 18px 48px rgba(20,38,70,.22); }
+    .knowledge-modal-header { height: 58px; padding: 0 22px; display: flex; align-items: center; border-bottom: 1px solid #f0f0f0; }
+    .knowledge-modal-header h2 { margin: 0; color: #1f1f1f; font-size: 17px; font-weight: 600; }
+    .knowledge-modal-close { margin-left: auto; width: 32px; height: 32px; display: grid; place-items: center; border-radius: 4px; color: #8c8c8c; font-size: 22px; }
+    .knowledge-modal-close:hover { color: #1f1f1f; background: #f5f5f5; }
+    .knowledge-form { padding: 22px; }
+    .knowledge-field { margin-bottom: 18px; }
+    .knowledge-field-label { margin-bottom: 8px; display: block; color: #262626; font-size: 14px; font-weight: 500; }
+    .knowledge-field-label.required::before { content: '*'; margin-right: 4px; color: #ff4d4f; }
+    .knowledge-field input, .knowledge-field textarea, .knowledge-field select { width: 100%; border: 1px solid #d9d9d9; border-radius: 6px; color: #262626; background: #fff; font: inherit; transition: border-color .2s, box-shadow .2s; }
+    .knowledge-field input, .knowledge-field select { height: 36px; padding: 0 11px; }
+    .knowledge-field textarea { min-height: 82px; padding: 8px 11px; resize: vertical; line-height: 1.6; }
+    .knowledge-field input:hover, .knowledge-field textarea:hover, .knowledge-field select:hover { border-color: #4096ff; }
+    .knowledge-field input:focus, .knowledge-field textarea:focus, .knowledge-field select:focus { border-color: #1677ff; box-shadow: 0 0 0 2px rgba(5,145,255,.1); outline: 0; }
+    .knowledge-field-help { margin-top: 5px; color: #8c8c8c; font-size: 12px; }
+    .knowledge-field-error { min-height: 18px; margin-top: 3px; color: #ff4d4f; font-size: 12px; }
+    .knowledge-tag-selector { min-height: 84px; padding: 10px; display: flex; flex-wrap: wrap; align-content: flex-start; gap: 8px; border: 1px solid #d9d9d9; border-radius: 6px; }
+    .knowledge-tag-option { position: relative; }
+    .knowledge-tag-option input { position: absolute; width: 1px; height: 1px; opacity: 0; pointer-events: none; }
+    .knowledge-tag-option span { min-height: 28px; padding: 3px 10px; display: inline-flex; align-items: center; border: 1px solid #d9d9d9; border-radius: 6px; color: #595959; background: #fff; cursor: pointer; user-select: none; transition: all .2s; }
+    .knowledge-tag-option span:hover { color: #1677ff; border-color: #4096ff; }
+    .knowledge-tag-option input:checked + span { color: #1677ff; border-color: #91caff; background: #e6f4ff; }
+    .knowledge-tag-option input:focus-visible + span { outline: 2px solid rgba(22,119,255,.22); outline-offset: 2px; }
+    .knowledge-selected-tags { min-height: 24px; margin-top: 8px; color: #595959; font-size: 13px; }
+    .knowledge-form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    .knowledge-modal-footer { padding: 12px 22px; display: flex; justify-content: flex-end; gap: 8px; border-top: 1px solid #f0f0f0; }
+    .knowledge-modal-footer button { height: 36px; padding: 0 15px; border-radius: 6px; font-size: 14px; }
+    .knowledge-modal-cancel { border: 1px solid #d9d9d9; color: #262626; background: #fff; }
+    .knowledge-modal-cancel:hover { color: #4096ff; border-color: #4096ff; }
+    .knowledge-modal-submit { border: 1px solid #1677ff; color: #fff; background: #1677ff; box-shadow: 0 2px 0 rgba(5,145,255,.1); }
+    .knowledge-modal-submit:hover { border-color: #4096ff; background: #4096ff; }
+    .knowledge-modal-close:focus-visible, .knowledge-modal-footer button:focus-visible { outline: 2px solid rgba(22,119,255,.25); outline-offset: 2px; }
     @media (max-width: 1180px) { .knowledge-base-view .knowledge-search { width: 200px; } .knowledge-tag-filter select { width: 148px; } .knowledge-detail-summary, .knowledge-detail-content { padding-inline: 14px; } .knowledge-file-search { width: 200px; } .knowledge-file-type select { width: 148px; } }
+    @media (max-width: 720px) { .knowledge-form-grid { grid-template-columns: 1fr; gap: 0; } .knowledge-modal-mask { padding: 12px; } .knowledge-modal { width: calc(100vw - 24px); max-height: calc(100vh - 24px); } }
     @media (prefers-reduced-motion: reduce) { .knowledge-base-view * { transition: none !important; } }
   `;
   document.head.appendChild(style);
 
-  const tagOptions = [...new Set(rows.map(row => row.tag))].map(tag => `<option value="${tag}">${tag}</option>`).join('');
+  const availableTags = ['疾病知识', '慢病管理', '用药指导', '护理规范', '随访管理', '健康宣教', '医保政策', '就诊指引', '患者服务', '医院制度', '质量安全'];
+  const tagOptions = availableTags.map(tag => `<option value="${tag}">${tag}</option>`).join('');
   const view = document.createElement('section');
   view.className = 'list-panel list-view knowledge-base-view';
   view.id = 'knowledgeBaseView';
@@ -170,7 +224,7 @@
         <tbody id="knowledgeRows"></tbody>
       </table>
     </div>
-    <div class="pager knowledge-pager"><span id="knowledgeTotal">共 5 条</span><button class="page-btn disabled" type="button" aria-label="上一页">‹</button><button class="page-btn active" type="button">1</button><button class="page-btn disabled" type="button" aria-label="下一页">›</button><button class="page-select" type="button">10 条/页⌄</button></div>
+    <div class="pager knowledge-pager"><span id="knowledgeTotal">共 12 条</span><button class="page-btn disabled" type="button" aria-label="上一页">‹</button><button class="page-btn active" type="button">1</button><button class="page-btn" type="button">2</button><button class="page-btn" type="button" aria-label="下一页">›</button><button class="page-select" type="button">20 条/页⌄</button></div>
     <div class="knowledge-toast" id="knowledgeToast" role="status" aria-live="polite"></div>`;
   document.querySelector('#listPage .list-main')?.appendChild(view);
 
@@ -184,11 +238,11 @@
     <section class="knowledge-detail-summary">
       <div class="knowledge-detail-hero">
         <span class="knowledge-detail-icon" aria-hidden="true"><svg viewBox="0 0 48 48" fill="none"><rect x="8" y="14" width="32" height="25" rx="4" fill="white"/><path d="M13 14V11a4 4 0 0 1 4-4h7l4 4h7a4 4 0 0 1 4 4" fill="white" opacity=".9"/><rect x="19" y="23" width="10" height="3" rx="1.5" fill="#367bf5"/></svg></span>
-        <div class="knowledge-detail-heading"><h1 id="knowledgeDetailName">医保卡知识</h1><p id="knowledgeDetailIntro">医保政策及办理流程相关知识</p></div>
+        <div class="knowledge-detail-heading"><h1 id="knowledgeDetailName">医保政策与结算知识库</h1><p id="knowledgeDetailIntro">覆盖职工医保、居民医保、门诊统筹、异地就医备案与报销结算规则</p></div>
         <button class="knowledge-detail-edit" type="button" data-edit-current-knowledge><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="m4 16-1 5 5-1L19 9l-4-4Z"/><path d="m13 7 4 4M10 21h11"/></svg>编辑知识库</button>
       </div>
       <div class="knowledge-detail-meta">
-        <span class="knowledge-detail-meta-item"><span class="knowledge-detail-meta-label">内容标签：</span><span class="knowledge-detail-tag" id="knowledgeDetailTag">医保政策</span></span>
+        <span class="knowledge-detail-meta-item"><span class="knowledge-detail-meta-label">内容标签：</span><span class="knowledge-detail-tags" id="knowledgeDetailTags"></span></span>
         <span class="knowledge-detail-meta-item"><span class="knowledge-detail-meta-label">内容数量：</span><span id="knowledgeDetailCount">12 份</span></span>
         <span class="knowledge-detail-meta-item"><span class="knowledge-detail-meta-label">最近更新：</span><span id="knowledgeDetailUpdated">2026-08-25 16:30</span></span>
       </div>
@@ -208,6 +262,28 @@
   document.querySelector('#listPage .list-main')?.appendChild(detailView);
   document.querySelector('#listPage .list-main')?.appendChild(document.getElementById('knowledgeToast'));
 
+  const modalMask = document.createElement('div');
+  modalMask.className = 'knowledge-modal-mask';
+  modalMask.id = 'knowledgeModalMask';
+  modalMask.setAttribute('aria-hidden', 'true');
+  modalMask.innerHTML = `
+    <section class="knowledge-modal" role="dialog" aria-modal="true" aria-labelledby="knowledgeModalTitle">
+      <header class="knowledge-modal-header"><h2 id="knowledgeModalTitle">创建知识库</h2><button class="knowledge-modal-close" type="button" data-close-knowledge-modal aria-label="关闭">×</button></header>
+      <form id="knowledgeForm" novalidate>
+        <div class="knowledge-form">
+          <div class="knowledge-field"><label class="knowledge-field-label required" for="knowledgeNameInput">知识库名称</label><input id="knowledgeNameInput" maxlength="30" placeholder="请输入清晰、便于识别的知识库名称" autocomplete="off"><div class="knowledge-field-error" id="knowledgeNameError"></div></div>
+          <div class="knowledge-field"><label class="knowledge-field-label required" for="knowledgeIntroInput">知识库简介</label><textarea id="knowledgeIntroInput" maxlength="120" placeholder="说明知识库的适用人群、内容范围和使用场景"></textarea><div class="knowledge-field-help"><span id="knowledgeIntroCount">0</span>/120</div><div class="knowledge-field-error" id="knowledgeIntroError"></div></div>
+          <div class="knowledge-field"><span class="knowledge-field-label required">内容标签（可多选）</span><div class="knowledge-tag-selector" role="group" aria-label="内容标签">${availableTags.map(tag => `<label class="knowledge-tag-option"><input type="checkbox" name="knowledgeTags" value="${tag}"><span>${tag}</span></label>`).join('')}</div><div class="knowledge-selected-tags" id="knowledgeSelectedTags">暂未选择标签</div><div class="knowledge-field-error" id="knowledgeTagsError"></div></div>
+          <div class="knowledge-form-grid">
+            <div class="knowledge-field"><label class="knowledge-field-label required" for="knowledgeDepartmentInput">所属部门</label><select id="knowledgeDepartmentInput"><option value="">请选择所属部门</option><option>医务部</option><option>护理部</option><option>药学部</option><option>患者服务中心</option><option>专科科室</option><option>互联网医院</option></select><div class="knowledge-field-error" id="knowledgeDepartmentError"></div></div>
+            <div class="knowledge-field"><label class="knowledge-field-label" for="knowledgeVisibilityInput">使用范围</label><select id="knowledgeVisibilityInput"><option>全院可见</option><option>本科室可见</option><option>指定团队可见</option></select><div class="knowledge-field-help">创建后可在权限设置中调整</div></div>
+          </div>
+        </div>
+        <footer class="knowledge-modal-footer"><button class="knowledge-modal-cancel" type="button" data-close-knowledge-modal>取消</button><button class="knowledge-modal-submit" type="submit">确认创建</button></footer>
+      </form>
+    </section>`;
+  document.body.appendChild(modalMask);
+
   function tagClass(tag) {
     if (tag === '健康宣教') return 'purple';
     if (tag === '医院制度') return 'orange';
@@ -216,10 +292,18 @@
     return 'blue';
   }
 
+  function escapeHtml(value) {
+    return String(value).replace(/[&<>'"]/g, character => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' })[character]);
+  }
+
+  function renderTags(tags, detail = false) {
+    return tags.map(tag => `<span class="${detail ? 'knowledge-detail-tag' : `knowledge-content-tag ${tagClass(tag)}`}">${escapeHtml(tag)}</span>`).join('');
+  }
+
   function filesForKnowledge(row) {
     return knowledgeFiles[row.name] || [
       { name: `${row.name}说明.pdf`, type: 'PDF', size: '1.6MB', updated: row.updated },
-      { name: `${row.tag}工作指引.docx`, type: 'DOCX', size: '980KB', updated: row.updated },
+      { name: `${row.tags[0]}工作指引.docx`, type: 'DOCX', size: '980KB', updated: row.updated },
       { name: `${row.name}常见问题.txt`, type: 'TXT', size: '86KB', updated: row.updated }
     ];
   }
@@ -243,10 +327,10 @@
     if (!row) return;
     detailView.dataset.knowledgeName = row.name;
     document.getElementById('knowledgeDetailName').textContent = row.name;
-    document.getElementById('knowledgeDetailIntro').textContent = row.name === '医保卡知识' ? '医保政策及办理流程相关知识' : row.intro;
-    document.getElementById('knowledgeDetailTag').textContent = row.tag;
+    document.getElementById('knowledgeDetailIntro').textContent = row.intro;
+    document.getElementById('knowledgeDetailTags').innerHTML = renderTags(row.tags, true);
     document.getElementById('knowledgeDetailCount').textContent = row.count;
-    document.getElementById('knowledgeDetailUpdated').textContent = row.name === '医保卡知识' ? '2026-08-25 16:30' : row.updated;
+    document.getElementById('knowledgeDetailUpdated').textContent = row.updated;
     document.getElementById('knowledgeFileSearch').value = '';
     document.getElementById('knowledgeFileType').value = '';
     document.querySelectorAll('#listPage .list-main > .list-view').forEach(panel => panel.classList.toggle('active', panel === detailView));
@@ -266,12 +350,63 @@
   function render() {
     const keyword = document.getElementById('knowledgeSearch')?.value.trim().toLowerCase() || '';
     const tag = document.getElementById('knowledgeTagFilter')?.value || '';
-    const filtered = rows.filter(row => (!keyword || row.name.toLowerCase().includes(keyword)) && (!tag || row.tag === tag));
+    const filtered = rows.filter(row => (!keyword || `${row.name} ${row.intro} ${row.department}`.toLowerCase().includes(keyword)) && (!tag || row.tags.includes(tag)));
     document.getElementById('knowledgeTotal').textContent = `共 ${filtered.length} 条`;
     document.getElementById('knowledgeRows').innerHTML = filtered.length ? filtered.map(row => `
-      <tr><td><div class="knowledge-name-cell"><span title="${row.name}">${row.name}</span></div></td>
-      <td title="${row.intro}">${row.intro}</td><td><span class="knowledge-content-tag ${tagClass(row.tag)}">${row.tag}</span></td>
-      <td>${row.count}</td><td>${row.updated}</td><td><span class="knowledge-row-actions"><button class="knowledge-row-action" type="button" data-edit-knowledge="${row.name}">编辑</button><button class="knowledge-row-action" type="button" data-view-knowledge="${row.name}">详情</button><button class="knowledge-row-action danger" type="button" data-delete-knowledge="${row.name}">删除</button></span></td></tr>`).join('') : '<tr><td class="knowledge-empty" colspan="6">暂无符合条件的知识库，请调整搜索或内容标签</td></tr>';
+      <tr><td><div class="knowledge-name-cell"><span title="${escapeHtml(row.name)}">${escapeHtml(row.name)}</span></div></td>
+      <td title="${escapeHtml(row.intro)}">${escapeHtml(row.intro)}</td><td><div class="knowledge-tags">${renderTags(row.tags)}</div></td>
+      <td>${row.count}</td><td>${row.updated}</td><td><span class="knowledge-row-actions"><button class="knowledge-row-action" type="button" data-edit-knowledge="${escapeHtml(row.name)}">编辑</button><button class="knowledge-row-action" type="button" data-view-knowledge="${escapeHtml(row.name)}">详情</button><button class="knowledge-row-action danger" type="button" data-delete-knowledge="${escapeHtml(row.name)}">删除</button></span></td></tr>`).join('') : '<tr><td class="knowledge-empty" colspan="6">暂无符合条件的知识库，请调整搜索或内容标签</td></tr>';
+  }
+
+  let editingKnowledgeName = '';
+
+  function selectedModalTags() {
+    return [...modalMask.querySelectorAll('input[name="knowledgeTags"]:checked')].map(input => input.value);
+  }
+
+  function updateSelectedTagText() {
+    const selected = selectedModalTags();
+    document.getElementById('knowledgeSelectedTags').textContent = selected.length ? `已选择 ${selected.length} 个：${selected.join('、')}` : '暂未选择标签';
+    if (selected.length) document.getElementById('knowledgeTagsError').textContent = '';
+  }
+
+  function openKnowledgeModal(name = '') {
+    const row = rows.find(item => item.name === name);
+    editingKnowledgeName = row?.name || '';
+    document.getElementById('knowledgeModalTitle').textContent = row ? '编辑知识库' : '创建知识库';
+    modalMask.querySelector('.knowledge-modal-submit').textContent = row ? '保存修改' : '确认创建';
+    document.getElementById('knowledgeNameInput').value = row?.name || '';
+    document.getElementById('knowledgeIntroInput').value = row?.intro || '';
+    document.getElementById('knowledgeDepartmentInput').value = row?.department || '';
+    document.getElementById('knowledgeVisibilityInput').value = '全院可见';
+    modalMask.querySelectorAll('input[name="knowledgeTags"]').forEach(input => { input.checked = Boolean(row?.tags.includes(input.value)); });
+    modalMask.querySelectorAll('.knowledge-field-error').forEach(error => { error.textContent = ''; });
+    document.getElementById('knowledgeIntroCount').textContent = String((row?.intro || '').length);
+    updateSelectedTagText();
+    modalMask.classList.add('open');
+    modalMask.setAttribute('aria-hidden', 'false');
+    document.body.style.overflow = 'hidden';
+    setTimeout(() => document.getElementById('knowledgeNameInput').focus(), 0);
+  }
+
+  function closeKnowledgeModal() {
+    modalMask.classList.remove('open');
+    modalMask.setAttribute('aria-hidden', 'true');
+    document.body.style.overflow = '';
+    editingKnowledgeName = '';
+  }
+
+  function validateKnowledgeForm() {
+    const name = document.getElementById('knowledgeNameInput').value.trim();
+    const intro = document.getElementById('knowledgeIntroInput').value.trim();
+    const department = document.getElementById('knowledgeDepartmentInput').value;
+    const tags = selectedModalTags();
+    const duplicate = rows.some(row => row.name === name && row.name !== editingKnowledgeName);
+    document.getElementById('knowledgeNameError').textContent = !name ? '请输入知识库名称' : duplicate ? '知识库名称已存在，请更换名称' : '';
+    document.getElementById('knowledgeIntroError').textContent = !intro ? '请输入知识库简介' : '';
+    document.getElementById('knowledgeTagsError').textContent = !tags.length ? '请至少选择一个内容标签' : '';
+    document.getElementById('knowledgeDepartmentError').textContent = !department ? '请选择所属部门' : '';
+    return { valid: Boolean(name && intro && tags.length && department && !duplicate), name, intro, tags, department };
   }
 
   let toastTimer;
@@ -291,9 +426,9 @@
     if (event.target.matches('#knowledgeTagFilter')) render();
   });
   view.addEventListener('click', event => {
-    if (event.target.closest('[data-create-knowledge]')) return showToast('已进入创建知识库流程');
+    if (event.target.closest('[data-create-knowledge]')) return openKnowledgeModal();
     const editAction = event.target.closest('[data-edit-knowledge]');
-    if (editAction) return showToast(`正在编辑“${editAction.dataset.editKnowledge}”`);
+    if (editAction) return openKnowledgeModal(editAction.dataset.editKnowledge);
     const viewAction = event.target.closest('[data-view-knowledge]');
     if (viewAction) return openKnowledgeDetail(viewAction.dataset.viewKnowledge);
     const deleteAction = event.target.closest('[data-delete-knowledge]');
@@ -316,10 +451,64 @@
   detailView.addEventListener('click', event => {
     const currentName = detailView.dataset.knowledgeName || '知识库';
     if (event.target.closest('[data-back-knowledge-list]')) return returnToKnowledgeList();
-    if (event.target.closest('[data-edit-current-knowledge]')) return showToast(`正在编辑“${currentName}”`);
+    if (event.target.closest('[data-edit-current-knowledge]')) return openKnowledgeModal(currentName);
     if (event.target.closest('[data-upload-knowledge-file]')) return showToast(`正在为“${currentName}”上传文件`);
     const fileMore = event.target.closest('[data-knowledge-file-more]');
     if (fileMore) return showToast(`可预览、下载或删除“${fileMore.dataset.knowledgeFileMore}”`);
+  });
+
+  modalMask.addEventListener('click', event => {
+    if (event.target === modalMask || event.target.closest('[data-close-knowledge-modal]')) closeKnowledgeModal();
+  });
+  modalMask.addEventListener('change', event => {
+    if (event.target.matches('input[name="knowledgeTags"]')) updateSelectedTagText();
+    if (event.target.matches('#knowledgeDepartmentInput') && event.target.value) document.getElementById('knowledgeDepartmentError').textContent = '';
+  });
+  modalMask.addEventListener('input', event => {
+    if (event.target.matches('#knowledgeIntroInput')) {
+      document.getElementById('knowledgeIntroCount').textContent = String(event.target.value.length);
+      if (event.target.value.trim()) document.getElementById('knowledgeIntroError').textContent = '';
+    }
+    if (event.target.matches('#knowledgeNameInput') && event.target.value.trim()) document.getElementById('knowledgeNameError').textContent = '';
+  });
+  document.getElementById('knowledgeForm').addEventListener('submit', event => {
+    event.preventDefault();
+    const result = validateKnowledgeForm();
+    if (!result.valid) {
+      modalMask.querySelector('.knowledge-field-error:not(:empty)')?.previousElementSibling?.focus?.();
+      return;
+    }
+    const now = new Date();
+    const updated = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')} ${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
+    const existing = rows.find(row => row.name === editingKnowledgeName);
+    if (existing) {
+      const oldName = existing.name;
+      existing.name = result.name;
+      existing.intro = result.intro;
+      existing.tags = result.tags;
+      existing.department = result.department;
+      existing.updated = updated;
+      if (oldName !== result.name && knowledgeFiles[oldName]) {
+        knowledgeFiles[result.name] = knowledgeFiles[oldName];
+        delete knowledgeFiles[oldName];
+      }
+      if (detailView.dataset.knowledgeName === oldName) detailView.dataset.knowledgeName = result.name;
+      closeKnowledgeModal();
+      render();
+      if (detailView.classList.contains('active')) openKnowledgeDetail(result.name);
+      showToast(`已保存“${result.name}”`);
+      return;
+    }
+    rows.unshift({ name: result.name, intro: result.intro, tags: result.tags, count: '0 份', updated, department: result.department });
+    knowledgeFiles[result.name] = [];
+    closeKnowledgeModal();
+    document.getElementById('knowledgeSearch').value = '';
+    document.getElementById('knowledgeTagFilter').value = '';
+    render();
+    showToast(`知识库“${result.name}”创建成功`);
+  });
+  document.addEventListener('keydown', event => {
+    if (event.key === 'Escape' && modalMask.classList.contains('open')) closeKnowledgeModal();
   });
 
   document.addEventListener('click', event => {
