@@ -7,7 +7,8 @@
   const PROJECT_ID = "frontend-architect-health-checkin";
   const API_PATH = "/api/ui-notes";
   const LEGACY_LOCAL_KEY = PROJECT_ID + ":interface-notes:v1";
-  const STATIC_DATA_URL = "data/interface-notes.json";
+  const STATIC_DATA_URL = "/data/interface-notes.json";
+  const STATIC_DATA_VERSION = "20260827-v3-4";
   const TOOL_STATE_KEY = PROJECT_ID + ":ui-note-tool:v3";
   const MAX_ATTACHMENTS_PER_FIELD = 5;
   const MAX_SOURCE_IMAGE_BYTES = 8 * 1024 * 1024;
@@ -464,13 +465,43 @@
     const controller = new AbortController();
     const timeout = setTimeout(function abortRequest() { controller.abort(); }, 7000);
     try {
-      const response = await fetch(url, Object.assign({ cache: "no-store", signal: controller.signal }, options || {}));
-      const payload = await response.json().catch(function emptyPayload() { return {}; });
+      const response = await fetch(url, Object.assign({
+        cache: "no-store",
+        credentials: "same-origin",
+        headers: { "Accept": "application/json" },
+        signal: controller.signal
+      }, options || {}));
+      const body = await response.text();
+      let payload;
+      try {
+        payload = JSON.parse(body);
+      } catch (error) {
+        throw new Error("线上批注快照返回格式不正确");
+      }
       if (!response.ok) throw new Error(payload.message || "批注服务请求失败");
       return payload;
     } finally {
       clearTimeout(timeout);
     }
+  }
+
+  async function loadStaticNotes() {
+    const urls = [
+      STATIC_DATA_URL + "?v=" + encodeURIComponent(STATIC_DATA_VERSION),
+      new URL("data/interface-notes.json?v=" + encodeURIComponent(STATIC_DATA_VERSION), document.baseURI).href
+    ];
+    let lastError;
+    for (let index = 0; index < urls.length; index += 1) {
+      try {
+        const payload = await requestJson(urls[index], {});
+        const notes = Array.isArray(payload) ? payload : payload.data || payload.notes;
+        if (!Array.isArray(notes)) throw new Error("线上批注快照缺少备注列表");
+        return notes;
+      } catch (error) {
+        lastError = error;
+      }
+    }
+    throw lastError || new Error("线上批注快照读取失败");
   }
 
   async function loadNotes(context) {
@@ -481,8 +512,7 @@
     let writable = config.viewerMode !== "read-only";
     try {
       if (config.viewerMode === "read-only") {
-        const payload = await requestJson(STATIC_DATA_URL + "?v=annotations-v3", {});
-        loaded = Array.isArray(payload) ? payload : payload.data || payload.notes || [];
+        loaded = await loadStaticNotes();
         writable = false;
       } else {
         const payload = await requestJson(apiUrl(API_PATH) + "?projectId=" + encodeURIComponent(PROJECT_ID) + "&scope=all", {});
@@ -492,8 +522,7 @@
     } catch (error) {
       writable = false;
       try {
-        const payload = await requestJson(STATIC_DATA_URL + "?v=annotations-v3-fallback", {});
-        loaded = Array.isArray(payload) ? payload : payload.data || payload.notes || [];
+        loaded = await loadStaticNotes();
       } catch (staticError) {
         loaded = [];
       }
