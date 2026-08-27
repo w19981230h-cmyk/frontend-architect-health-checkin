@@ -5,7 +5,9 @@ import { createServer } from "node:http";
 
 const root = dirname(fileURLToPath(import.meta.url));
 const port = Number(process.env.PREVIEW_PORT || 5173);
-const notesFile = join(root, "data", "interface-notes.json");
+const notesFile = process.env.INTERFACE_NOTES_FILE
+  ? resolve(root, process.env.INTERFACE_NOTES_FILE)
+  : join(root, "data", "interface-notes.json");
 
 const contentTypes = {
   ".html": "text/html; charset=utf-8",
@@ -33,7 +35,7 @@ function sendJson(res, status, payload) {
     "Content-Type": "application/json; charset=utf-8",
     "Cache-Control": "no-store, no-cache, must-revalidate, proxy-revalidate",
     "Access-Control-Allow-Origin": "*",
-    "Access-Control-Allow-Methods": "GET, POST, DELETE, OPTIONS",
+    "Access-Control-Allow-Methods": "GET, POST, PATCH, DELETE, OPTIONS",
     "Access-Control-Allow-Headers": "Content-Type",
     "Access-Control-Allow-Private-Network": "true"
   });
@@ -45,7 +47,7 @@ function readJsonBody(req) {
     let raw = "";
     req.on("data", (chunk) => {
       raw += chunk;
-      if (raw.length > 1024 * 1024) {
+      if (raw.length > 6 * 1024 * 1024) {
         rejectBody(new Error("body too large"));
         req.destroy();
       }
@@ -77,7 +79,43 @@ function saveNotes(notes) {
 }
 
 function noteKey(note) {
-  return [note.projectId || "default", note.pageId || "default", String(note.number || "")].join("::");
+  return [note.projectId || "default", note.pageId || "default", String(note.noteNumber || note.number || "")].join("::");
+}
+
+function noteId(note) {
+  return String(note.noteId || note.id || "");
+}
+
+function validateAttachmentList(value, fieldName) {
+  const attachments = Array.isArray(value) ? value : [];
+  if (attachments.length > 5) throw new Error(`${fieldName}最多保留 5 张截图`);
+  attachments.forEach((item) => {
+    const mimeType = String(item?.mimeType || "");
+    const dataUrl = String(item?.dataUrl || "");
+    const url = String(item?.url || "");
+    if (mimeType && !/^image\/(png|jpeg|jpg|webp)$/i.test(mimeType)) throw new Error("截图格式不受支持");
+    if (dataUrl && (!dataUrl.startsWith("data:image/") || dataUrl.length > 1600000)) throw new Error("截图内容过大或格式错误");
+    if (url && !/^https:\/\//i.test(url)) throw new Error("截图地址必须使用 HTTPS");
+  });
+}
+
+function validateNote(note) {
+  const projectId = String(note.projectId || "");
+  const pageId = String(note.pageId || "");
+  const title = String(note.title || "");
+  const content = String(note.content || "");
+  const interactionContent = String(note.targetSnapshot?.interactionContent || "");
+  const number = Number(note.noteNumber || note.number);
+  const x = Number(note.x);
+  const y = Number(note.y);
+  if (!projectId || projectId.length > 160) throw new Error("projectId 无效");
+  if (!pageId || pageId.length > 600) throw new Error("pageId 无效");
+  if (!Number.isInteger(number) || number < 1 || number > 999999) throw new Error("批注编号无效");
+  if (!title.trim() || title.length > 120) throw new Error("批注标题无效");
+  if (content.length > 12000 || interactionContent.length > 12000) throw new Error("批注内容过长");
+  if (!Number.isFinite(x) || !Number.isFinite(y) || x < 0 || x > 1 || y < 0 || y > 1) throw new Error("批注坐标无效");
+  validateAttachmentList(note.targetSnapshot?.attachments, "逻辑补充");
+  validateAttachmentList(note.targetSnapshot?.interactionAttachments, "交互逻辑补充");
 }
 
 async function handleNotesApi(req, res, url) {
@@ -91,48 +129,82 @@ async function handleNotesApi(req, res, url) {
       if (pageId && note.pageId !== pageId) return false;
       return true;
     });
-    return sendJson(res, 200, { ok: true, data: filtered });
+    return sendJson(res, 200, { ok: true, notes: filtered, data: filtered });
   }
 
   if (req.method === "POST") {
     const body = await readJsonBody(req);
     const now = new Date().toISOString();
+    const generatedId = body.noteId || body.id || `note_${Date.now()}_${Math.random().toString(16).slice(2)}`;
     const incoming = {
       ...body,
-      id: body.id || `note_${Date.now()}_${Math.random().toString(16).slice(2)}`,
+      id: generatedId,
+      noteId: generatedId,
+      number: Number(body.noteNumber || body.number),
+      noteNumber: Number(body.noteNumber || body.number),
       status: body.status || "active",
       createdAt: body.createdAt || now,
       updatedAt: now,
       createdBy: body.createdBy || "current-user",
       updatedBy: body.updatedBy || "current-user"
     };
+    validateNote(incoming);
     const duplicate = notes.find((note) => (
       note.status !== "deleted" &&
-      note.id !== incoming.id &&
+      noteId(note) !== incoming.id &&
       noteKey(note) === noteKey(incoming)
     ));
     if (duplicate) {
       return sendJson(res, 409, { ok: false, message: "当前页面已存在相同备注编号" });
     }
-    const index = notes.findIndex((note) => note.id === incoming.id);
+    const index = notes.findIndex((note) => noteId(note) === incoming.id);
     if (index >= 0) {
       notes[index] = { ...notes[index], ...incoming, createdAt: notes[index].createdAt || incoming.createdAt };
     } else {
       notes.push(incoming);
     }
     saveNotes(notes);
-    return sendJson(res, 200, { ok: true, data: incoming });
+    return sendJson(res, 200, { ok: true, note: incoming, data: incoming });
+  }
+
+  if (req.method === "PATCH") {
+    const id = decodeURIComponent(url.pathname.split("/").pop() || "");
+    const index = notes.findIndex((note) => noteId(note) === id && note.status !== "deleted");
+    if (index < 0) return sendJson(res, 404, { ok: false, message: "批注不存在或已删除" });
+    const body = await readJsonBody(req);
+    const incoming = {
+      ...notes[index],
+      ...body,
+      id,
+      noteId: id,
+      number: Number(body.noteNumber || body.number || notes[index].noteNumber || notes[index].number),
+      noteNumber: Number(body.noteNumber || body.number || notes[index].noteNumber || notes[index].number),
+      createdAt: notes[index].createdAt,
+      updatedAt: new Date().toISOString(),
+      updatedBy: body.updatedBy || "current-user",
+      status: "active"
+    };
+    validateNote(incoming);
+    const duplicate = notes.find((note) => (
+      note.status !== "deleted" &&
+      noteId(note) !== id &&
+      noteKey(note) === noteKey(incoming)
+    ));
+    if (duplicate) return sendJson(res, 409, { ok: false, message: "当前界面已存在相同批注编号" });
+    notes[index] = incoming;
+    saveNotes(notes);
+    return sendJson(res, 200, { ok: true, note: incoming, data: incoming });
   }
 
   if (req.method === "DELETE") {
     const id = decodeURIComponent(url.pathname.split("/").pop() || "");
-    const index = notes.findIndex((note) => note.id === id && note.status !== "deleted");
+    const index = notes.findIndex((note) => noteId(note) === id && note.status !== "deleted");
     if (index < 0) {
       return sendJson(res, 404, { ok: false, message: "备注不存在或已删除" });
     }
     notes[index] = { ...notes[index], status: "deleted", updatedAt: new Date().toISOString() };
     saveNotes(notes);
-    return sendJson(res, 200, { ok: true, data: { id, status: "deleted" } });
+    return sendJson(res, 200, { ok: true, note: notes[index], data: notes[index] });
   }
 
   return sendJson(res, 405, { ok: false, message: "method not allowed" });
@@ -140,11 +212,16 @@ async function handleNotesApi(req, res, url) {
 
 createServer(async (req, res) => {
   const requestUrl = new URL(req.url || "/", "http://localhost");
-  if (requestUrl.pathname === "/api/interface-notes" || requestUrl.pathname.startsWith("/api/interface-notes/")) {
+  if (
+    requestUrl.pathname === "/api/ui-notes"
+    || requestUrl.pathname.startsWith("/api/ui-notes/")
+    || requestUrl.pathname === "/api/interface-notes"
+    || requestUrl.pathname.startsWith("/api/interface-notes/")
+  ) {
     if (req.method === "OPTIONS") {
       res.writeHead(204, {
         "Access-Control-Allow-Origin": "*",
-        "Access-Control-Allow-Methods": "GET, POST, DELETE, OPTIONS",
+        "Access-Control-Allow-Methods": "GET, POST, PATCH, DELETE, OPTIONS",
         "Access-Control-Allow-Headers": "Content-Type",
         "Access-Control-Allow-Private-Network": "true"
       });
