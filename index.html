@@ -453,15 +453,16 @@
     .patient-condition-group .patient-relation-segmented { box-shadow: 0 0 0 6px #f7f9ff; }
     .patient-condition-time-row { min-height: 48px; margin: 8px 30px 0 32px; padding: 10px 0 0; border-top: 1px dashed #e5eaf2; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
     .patient-condition-time-label { flex: 0 0 auto; color: #69768a; font-size: 12px; font-weight: 600; white-space: nowrap; }
-    .patient-data-range-select, .patient-calculation-select, .patient-range-unit { height: 32px; padding: 0 28px 0 9px; border: 1px solid #dce2eb; border-radius: 4px; color: #42516a; background: #fff; }
+    .patient-data-range-select, .patient-calculation-select, .patient-range-unit, .patient-calculation-parameter-unit { height: 32px; padding: 0 28px 0 9px; border: 1px solid #dce2eb; border-radius: 4px; color: #42516a; background: #fff; }
     .patient-data-range-select { width: 132px; }
     .patient-calculation-select { width: 112px; }
     .patient-condition-scope-detail { min-width: 0; display: inline-flex; align-items: center; gap: 6px; }
     .patient-condition-scope-detail .patient-range-number, .patient-calculation-parameter input { width: 64px; height: 32px; padding: 0 8px; border: 1px solid #dce2eb; border-radius: 4px; color: #42516a; background: #fff; }
     .patient-range-unit { width: 68px; }
+    .patient-calculation-parameter-unit { width: 64px; }
     .patient-condition-scope-detail > span, .patient-calculation-parameter > span { color: #69768a; font-size: 12px; white-space: nowrap; }
     .patient-calculation-parameter { display: inline-flex; align-items: center; gap: 6px; }
-    .patient-data-range-select:focus-visible, .patient-calculation-select:focus-visible, .patient-range-unit:focus-visible, .patient-condition-scope-detail .patient-range-number:focus-visible, .patient-calculation-parameter input:focus-visible { outline: 2px solid rgba(49,84,255,.18); outline-offset: 1px; border-color: #5975ff; }
+    .patient-data-range-select:focus-visible, .patient-calculation-select:focus-visible, .patient-range-unit:focus-visible, .patient-calculation-parameter-unit:focus-visible, .patient-condition-scope-detail .patient-range-number:focus-visible, .patient-calculation-parameter input:focus-visible { outline: 2px solid rgba(49,84,255,.18); outline-offset: 1px; border-color: #5975ff; }
     .patient-condition-field-wrap { position: relative; min-width: 0; }
     .patient-condition-field { display: flex; align-items: center; justify-content: space-between; gap: 8px; text-align: left; }
     .patient-condition-field::after { content: ""; width: 6px; height: 6px; flex: 0 0 auto; border-right: 1px solid #6f7d91; border-bottom: 1px solid #6f7d91; transform: rotate(45deg) translateY(-2px); }
@@ -4458,7 +4459,7 @@
 
     function patientSmartCondition(field = 'age', value = '') {
       const config = patientSmartFieldConfig[field] || patientSmartFieldConfig.age;
-      return { id: crypto.randomUUID ? crypto.randomUUID() : `${Date.now()}-${Math.random()}`, logic: 'and', groupId: '', groupLogic: 'and', field, qualifier: config.fixedQualifier || '', scope: config.scopeOptions ? 'latest' : '', scopeValue: '', rangeAmount: '14', rangeUnit: 'day', calculation: '', calculationParameter: '', scopeStart: '', scopeEnd: '', operator: config.operators[0][0], value };
+      return { id: crypto.randomUUID ? crypto.randomUUID() : `${Date.now()}-${Math.random()}`, logic: 'and', groupId: '', groupLogic: 'and', field, qualifier: config.fixedQualifier || '', scope: config.scopeOptions ? 'latest' : '', scopeValue: '', rangeAmount: '14', rangeUnit: 'day', calculation: '', calculationParameter: '', calculationParameterUnit: '', scopeStart: '', scopeEnd: '', operator: config.operators[0][0], value };
     }
 
     function persistPatientSmartTags() {
@@ -4523,12 +4524,18 @@
         condition.rangeUnit = ['day', 'week', 'month'].includes(condition.rangeUnit) ? condition.rangeUnit : 'day';
         const options = patientConditionCalculationOptions(condition, config);
         if (!options.some(([value]) => value === condition.calculation)) condition.calculation = 'any';
-        if (['consecutiveMatch', 'consecutiveRecord'].includes(condition.calculation)) condition.calculationParameter = String(Math.max(1, Number(condition.calculationParameter) || (condition.calculation === 'consecutiveRecord' ? 7 : 3)));
-        else condition.calculationParameter = '';
+        if (['consecutiveMatch', 'consecutiveRecord'].includes(condition.calculation)) {
+          condition.calculationParameter = String(Math.max(1, Number(condition.calculationParameter) || (condition.calculation === 'consecutiveRecord' ? 7 : 3)));
+          condition.calculationParameterUnit = ['times', 'day'].includes(condition.calculationParameterUnit) ? condition.calculationParameterUnit : (condition.calculation === 'consecutiveRecord' ? 'day' : 'times');
+        } else {
+          condition.calculationParameter = '';
+          condition.calculationParameterUnit = '';
+        }
       } else {
         condition.scopeValue = '';
         condition.calculation = '';
         condition.calculationParameter = '';
+        condition.calculationParameterUnit = '';
       }
       condition.scopeStart = '';
       condition.scopeEnd = '';
@@ -4544,7 +4551,7 @@
         <span class="patient-condition-time-label">数据范围</span>
         <select class="patient-data-range-select" data-smart-condition-data-range="${condition.id}" aria-label="数据范围">${patientDataRangePresets.map(([value, label]) => `<option value="${value}" ${rangeValue === value ? 'selected' : ''}>${label}${value === 'custom' ? ' X 天/周/月' : ''}</option>`).join('')}</select>
         ${condition.scope === 'recent' && condition.scopeValue === 'custom' ? `<div class="patient-condition-scope-detail"><span>最近</span><input class="patient-range-number" type="number" min="1" step="1" data-smart-condition-range-amount="${condition.id}" value="${esc(condition.rangeAmount || '14')}" aria-label="最近数量"><select class="patient-range-unit" data-smart-condition-range-unit="${condition.id}" aria-label="时间单位"><option value="day" ${condition.rangeUnit === 'day' ? 'selected' : ''}>天</option><option value="week" ${condition.rangeUnit === 'week' ? 'selected' : ''}>周</option><option value="month" ${condition.rangeUnit === 'month' ? 'selected' : ''}>月</option></select></div>` : ''}
-        ${condition.scope === 'recent' ? `<span class="patient-condition-time-label">计算方式</span><select class="patient-calculation-select" data-smart-condition-calculation="${condition.id}" aria-label="计算方式">${calculations.map(([value, label]) => `<option value="${value}" ${condition.calculation === value ? 'selected' : ''}>${label}</option>`).join('')}</select>${['consecutiveMatch', 'consecutiveRecord'].includes(condition.calculation) ? `<label class="patient-calculation-parameter"><span>连续</span><input type="number" min="1" step="1" data-smart-condition-calculation-parameter="${condition.id}" value="${esc(condition.calculationParameter)}" aria-label="连续次数"><span>${condition.calculation === 'consecutiveRecord' ? '天' : '次'}</span></label>` : ''}` : ''}
+        ${condition.scope === 'recent' ? `<span class="patient-condition-time-label">计算方式</span><select class="patient-calculation-select" data-smart-condition-calculation="${condition.id}" aria-label="计算方式">${calculations.map(([value, label]) => `<option value="${value}" ${condition.calculation === value ? 'selected' : ''}>${label}</option>`).join('')}</select>${['consecutiveMatch', 'consecutiveRecord'].includes(condition.calculation) ? `<label class="patient-calculation-parameter"><span>连续</span><input type="number" min="1" step="1" data-smart-condition-calculation-parameter="${condition.id}" value="${esc(condition.calculationParameter)}" aria-label="连续数量"><select class="patient-calculation-parameter-unit" data-smart-condition-calculation-parameter-unit="${condition.id}" aria-label="连续单位"><option value="times" ${condition.calculationParameterUnit === 'times' ? 'selected' : ''}>次</option><option value="day" ${condition.calculationParameterUnit === 'day' ? 'selected' : ''}>天</option></select></label>` : ''}` : ''}
       </div>`;
     }
 
@@ -4921,8 +4928,9 @@
     function patientConditionCalculationText(condition) {
       if (condition.scope !== 'recent') return '';
       const label = [...patientCalculationMethods, ['sum','累计值']].find(item => item[0] === condition.calculation)?.[1] || '';
-      if (condition.calculation === 'consecutiveMatch') return `${label}（连续${condition.calculationParameter || 3}次）`;
-      if (condition.calculation === 'consecutiveRecord') return `${label}（连续${condition.calculationParameter || 7}天）`;
+      const parameterUnit = condition.calculationParameterUnit === 'day' ? '天' : '次';
+      if (condition.calculation === 'consecutiveMatch') return `${label}（连续${condition.calculationParameter || 3}${parameterUnit}）`;
+      if (condition.calculation === 'consecutiveRecord') return `${label}（连续${condition.calculationParameter || 7}${parameterUnit}）`;
       return label;
     }
 
@@ -4960,6 +4968,7 @@
         const isMetric = ['number', 'dynamic'].includes(config.type);
         if (condition.scope === 'latest') return `${scope} ${fieldLabel}${isMetric ? '结果' : ''}`;
         const calculation = condition.calculation || 'any';
+        const parameterUnit = condition.calculationParameterUnit === 'day' ? '天' : '次';
         const calculationText = {
           any: isMetric ? `任一条 ${fieldLabel} 结果` : `${fieldLabel}任一条记录`,
           max: `${fieldLabel} 最高值`,
@@ -4967,8 +4976,8 @@
           avg: `${fieldLabel} 平均值`,
           count: `${fieldLabel} 记录次数`,
           sum: `${fieldLabel} 累计值`,
-          consecutiveMatch: `${fieldLabel} 连续 ${condition.calculationParameter || 3} 次满足条件`,
-          consecutiveRecord: `${fieldLabel} 连续 ${condition.calculationParameter || 7} 天有记录`
+          consecutiveMatch: `${fieldLabel} 连续 ${condition.calculationParameter || 3} ${parameterUnit}满足条件`,
+          consecutiveRecord: `${fieldLabel} 连续 ${condition.calculationParameter || 7} ${parameterUnit}有记录`
         }[calculation] || fieldLabel;
         return `${scope}内 ${calculationText}`;
       };
@@ -5066,6 +5075,7 @@
         condition.rangeUnit = row.querySelector('[data-smart-condition-range-unit]')?.value ?? condition.rangeUnit;
         condition.calculation = row.querySelector('[data-smart-condition-calculation]')?.value ?? condition.calculation;
         condition.calculationParameter = row.querySelector('[data-smart-condition-calculation-parameter]')?.value ?? condition.calculationParameter;
+        condition.calculationParameterUnit = row.querySelector('[data-smart-condition-calculation-parameter-unit]')?.value ?? condition.calculationParameterUnit;
         condition.operator = row.querySelector('[data-smart-condition-operator]')?.value || condition.operator;
         condition.value = row.querySelector('[data-smart-condition-value]')?.value ?? condition.value;
       });
@@ -5077,9 +5087,9 @@
       patientListState.smartConditions = JSON.parse(JSON.stringify(patientSmartDraft));
       const conditionSignature = conditions => {
         const groupNumbers = new Map();
-        return JSON.stringify(conditions.map(({ field, qualifier = '', scope = '', scopeValue = '', rangeAmount = '', rangeUnit = '', calculation = '', calculationParameter = '', operator, value, logic = 'and', groupId = '', groupLogic = 'and' }) => {
+        return JSON.stringify(conditions.map(({ field, qualifier = '', scope = '', scopeValue = '', rangeAmount = '', rangeUnit = '', calculation = '', calculationParameter = '', calculationParameterUnit = '', operator, value, logic = 'and', groupId = '', groupLogic = 'and' }) => {
           if (groupId && !groupNumbers.has(groupId)) groupNumbers.set(groupId, groupNumbers.size + 1);
-          return { field, qualifier, scope, scopeValue, rangeAmount, rangeUnit, calculation, calculationParameter, operator, value, logic, group: groupId ? groupNumbers.get(groupId) : 0, groupLogic };
+          return { field, qualifier, scope, scopeValue, rangeAmount, rangeUnit, calculation, calculationParameter, calculationParameterUnit, operator, value, logic, group: groupId ? groupNumbers.get(groupId) : 0, groupLogic };
         }));
       };
       const matchingTag = patientAllRuleTemplates().find(tag => conditionSignature(tag.conditions) === conditionSignature(patientListState.smartConditions));
@@ -8731,6 +8741,7 @@
           condition.rangeUnit = 'day';
           condition.calculation = '';
           condition.calculationParameter = '';
+          condition.calculationParameterUnit = '';
           condition.scopeStart = '';
           condition.scopeEnd = '';
           condition.operator = '';
@@ -9779,6 +9790,7 @@
           condition.rangeUnit = 'day';
           condition.calculation = '';
           condition.calculationParameter = '';
+          condition.calculationParameterUnit = '';
           condition.operator = '';
           condition.value = '';
           renderPatientSmartConditions();
@@ -9795,6 +9807,7 @@
           condition.rangeUnit = condition.rangeUnit || 'day';
           condition.calculation = value === 'latest' ? '' : (condition.calculation || 'any');
           condition.calculationParameter = '';
+          condition.calculationParameterUnit = '';
           patientListState.activeSmartTagId = '';
           renderPatientSmartConditions();
           renderPatientSmartTags();
@@ -9814,10 +9827,19 @@
         if (condition) {
           condition.calculation = e.target.value;
           condition.calculationParameter = condition.calculation === 'consecutiveRecord' ? '7' : condition.calculation === 'consecutiveMatch' ? '3' : '';
+          condition.calculationParameterUnit = condition.calculation === 'consecutiveRecord' ? 'day' : condition.calculation === 'consecutiveMatch' ? 'times' : '';
           patientListState.activeSmartTagId = '';
           renderPatientSmartConditions();
           renderPatientSmartTags();
         }
+        return;
+      }
+      if (e.target.matches('[data-smart-condition-calculation-parameter-unit]')) {
+        const condition = patientSmartDraft.find(item => item.id === e.target.dataset.smartConditionCalculationParameterUnit);
+        if (condition) condition.calculationParameterUnit = e.target.value;
+        patientListState.activeSmartTagId = '';
+        renderPatientSmartDraftSummary();
+        renderPatientSmartTags();
         return;
       }
       if (e.target.matches('[data-smart-condition-scope-value]')) {
@@ -9842,6 +9864,7 @@
           condition.rangeUnit = 'day';
           condition.calculation = '';
           condition.calculationParameter = '';
+          condition.calculationParameterUnit = '';
           condition.operator = '';
           condition.value = '';
           renderPatientSmartConditions();
