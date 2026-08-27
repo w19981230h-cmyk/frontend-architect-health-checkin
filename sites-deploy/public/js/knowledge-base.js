@@ -195,9 +195,18 @@
     .knowledge-file-table tbody tr { height: 84px; border-bottom: 1px solid #e4e9f1; }
     .knowledge-file-table td { padding: 0 22px; color: #1e2d46; font-size: 16px; }
     .knowledge-file-name { display: flex; align-items: center; gap: 22px; font-weight: 500; }
-    .knowledge-file-icon { position: relative; width: 32px; height: 38px; flex: 0 0 auto; display: grid; place-items: center; border-radius: 4px; color: #fff; font-size: 17px; line-height: 1; box-shadow: 0 4px 8px rgba(30,64,120,.12); }
+    .knowledge-file-copy { min-width: 0; flex: 1; display: flex; align-items: center; gap: 14px; }
+    .knowledge-file-label { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .knowledge-upload-progress { display: flex; align-items: center; gap: 8px; color: #8c8c8c; font-size: 12px; font-weight: 400; }
+    .knowledge-upload-progress-track { width: 150px; height: 8px; overflow: hidden; border-radius: 99px; background: #dce6f3; }
+    .knowledge-upload-progress-bar { position: relative; min-width: 8px; height: 100%; overflow: hidden; border-radius: inherit; background: linear-gradient(90deg, #082f73 0%, #0b4ba8 58%, #1769d2 100%); box-shadow: 0 0 0 1px rgba(8,47,115,.08); transition: width .18s cubic-bezier(.16,1,.3,1); }
+    .knowledge-upload-progress-bar::after { content: ''; position: absolute; inset: 0; background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,.42) 50%, transparent 100%); transform: translateX(-100%); animation: knowledge-progress-shine .52s linear infinite; }
+    .knowledge-upload-progress-value { min-width: 32px; color: #082f73; font-weight: 500; font-variant-numeric: tabular-nums; }
+    @keyframes knowledge-progress-shine { to { transform: translateX(100%); } }
+    .knowledge-file-icon { position: relative; width: 32px; height: 38px; flex: 0 0 auto; display: grid; place-items: center; border-radius: 4px; color: #fff; font-size: 12px; font-weight: 700; line-height: 1; box-shadow: 0 4px 8px rgba(30,64,120,.12); }
     .knowledge-file-icon::after { content: ''; position: absolute; right: 0; top: 0; border-top: 8px solid rgba(255,255,255,.82); border-left: 8px solid transparent; }
     .knowledge-file-icon.pdf { background: linear-gradient(145deg, #ed4c43, #cf271e); }
+    .knowledge-file-icon.pdf { font-size: 9px; letter-spacing: -.2px; }
     .knowledge-file-icon.docx { background: linear-gradient(145deg, #4286f4, #1858c8); }
     .knowledge-file-icon.txt { background: linear-gradient(145deg, #55a1f7, #2184e8); }
     .knowledge-file-table th:last-child, .knowledge-file-table td:last-child { overflow: visible; text-align: center; }
@@ -211,13 +220,22 @@
     .knowledge-file-action:hover { color: #1677ff; background: #f5f8ff; }
     .knowledge-file-action.danger { color: #ff4d4f; }
     .knowledge-file-action.danger:hover { color: #d9363e; background: #fff1f0; }
+    .knowledge-file-cancel-upload { height: 30px; padding: 0 8px; border-radius: 4px; color: #ff4d4f; background: transparent; font-size: 14px; white-space: nowrap; }
+    .knowledge-file-cancel-upload:hover { color: #d9363e; background: #fff1f0; }
+    .knowledge-file-status { display: inline-flex; align-items: center; color: #8c8c8c; background: transparent; font-size: 14px; white-space: nowrap; }
+    .knowledge-file-status-track { position: relative; width: 28px; height: 16px; flex: 0 0 auto; border-radius: 99px; background: rgba(0,0,0,.25); transition: background .2s; }
+    .knowledge-file-status-track::after { content: ''; position: absolute; top: 2px; left: 2px; width: 12px; height: 12px; border-radius: 50%; background: #fff; box-shadow: 0 1px 3px rgba(0,0,0,.2); transition: transform .2s; }
+    .knowledge-file-status[aria-checked="true"] { color: #1677ff; }
+    .knowledge-file-status[aria-checked="true"] .knowledge-file-status-track { background: #1677ff; }
+    .knowledge-file-status[aria-checked="true"] .knowledge-file-status-track::after { transform: translateX(12px); }
+    .knowledge-file-status:disabled { cursor: not-allowed; opacity: .45; }
     .knowledge-file-empty { height: 220px; text-align: center; color: #8e9aab; }
     .knowledge-file-footer { min-height: 78px; margin-top: auto; padding-top: 30px; display: flex; align-items: center; color: #263650; font-size: 16px; }
     .knowledge-file-pagination { margin-left: auto; display: flex; align-items: center; gap: 12px; }
     .knowledge-file-page { width: 44px; height: 46px; display: inline-grid; place-items: center; border: 1px solid #d8e0eb; border-radius: 7px; color: #9eacbe; background: #fff; font-size: 22px; }
     .knowledge-file-page.active { color: #fff; border-color: #1762f1; background: #1762f1; font-size: 16px; }
     .knowledge-file-size { width: 170px; height: 46px; padding: 0 16px; border: 1px solid #d8e0eb; border-radius: 7px; color: #263650; background: #fff; font-size: 16px; }
-    .knowledge-detail-edit:focus-visible, .knowledge-file-upload:focus-visible, .knowledge-file-more:focus-visible, .knowledge-file-action:focus-visible, .knowledge-file-page:focus-visible { outline: 2px solid rgba(23,98,241,.3); outline-offset: 2px; }
+    .knowledge-detail-edit:focus-visible, .knowledge-file-upload:focus-visible, .knowledge-file-more:focus-visible, .knowledge-file-action:focus-visible, .knowledge-file-page:focus-visible, .knowledge-file-status:focus-visible, .knowledge-file-cancel-upload:focus-visible { outline: 2px solid rgba(23,98,241,.3); outline-offset: 2px; }
     .list-main.knowledge-detail-main { padding: 14px; background: #f2f5ff; }
     .knowledge-detail-view { gap: 14px; font-size: 14px; }
     .knowledge-detail-view button, .knowledge-detail-view input, .knowledge-detail-view select, .knowledge-detail-view table { font-size: 14px; }
@@ -261,14 +279,16 @@
     .knowledge-file-size { width: 96px; height: 30px; padding: 0 10px; border-radius: 4px; font-size: 14px; }
     .knowledge-toast { position: fixed; left: 50%; top: 24px; z-index: 12000; padding: 10px 16px; border: 1px solid #dce5f5; border-radius: 7px; color: #233650; background: #fff; box-shadow: 0 8px 24px rgba(32,52,85,.16); transform: translate(-50%, -16px); opacity: 0; pointer-events: none; transition: opacity .2s, transform .2s; }
     .knowledge-toast.show { opacity: 1; transform: translate(-50%, 0); }
-    .knowledge-modal-mask { position: fixed; inset: 0; z-index: 11900; display: none; align-items: center; justify-content: center; padding: 24px; background: rgba(15,28,51,.45); }
-    .knowledge-modal-mask.open { display: flex; }
-    .knowledge-modal { width: min(680px, calc(100vw - 48px)); max-height: calc(100vh - 48px); overflow: auto; border-radius: 8px; background: #fff; box-shadow: 0 18px 48px rgba(20,38,70,.22); }
+    .knowledge-modal-mask { position: fixed; inset: 0; z-index: 11900; visibility: hidden; background: rgba(15,28,51,.45); opacity: 0; pointer-events: none; transition: opacity .2s, visibility .2s; }
+    .knowledge-modal-mask.open { visibility: visible; opacity: 1; pointer-events: auto; }
+    .knowledge-modal { position: absolute; top: 0; right: 0; width: min(680px, 100vw); height: 100vh; display: grid; grid-template-rows: 58px minmax(0,1fr); overflow: hidden; border-left: 1px solid #e5eaf2; background: #fff; box-shadow: -16px 0 40px rgba(15,28,51,.2); transform: translateX(102%); transition: transform .22s cubic-bezier(.16,1,.3,1); }
+    .knowledge-modal-mask.open .knowledge-modal { transform: translateX(0); }
     .knowledge-modal-header { height: 58px; padding: 0 22px; display: flex; align-items: center; border-bottom: 1px solid #f0f0f0; }
     .knowledge-modal-header h2 { margin: 0; color: #1f1f1f; font-size: 17px; font-weight: 600; }
     .knowledge-modal-close { margin-left: auto; width: 32px; height: 32px; display: grid; place-items: center; border-radius: 4px; color: #8c8c8c; font-size: 22px; }
     .knowledge-modal-close:hover { color: #1f1f1f; background: #f5f5f5; }
-    .knowledge-form { padding: 22px; }
+    #knowledgeForm { min-height: 0; display: grid; grid-template-rows: minmax(0,1fr) auto; overflow: hidden; }
+    .knowledge-form { min-height: 0; padding: 22px; overflow: auto; }
     .knowledge-field { margin-bottom: 18px; }
     .knowledge-field-label { margin-bottom: 8px; display: block; color: #262626; font-size: 14px; font-weight: 500; }
     .knowledge-field-label.required::before { content: '*'; margin-right: 4px; color: #ff4d4f; }
@@ -311,16 +331,17 @@
     .knowledge-create-file-size { color: #8c8c8c; font-size: 12px; white-space: nowrap; }
     .knowledge-create-file-remove { width: 26px; height: 26px; display: grid; place-items: center; border-radius: 4px; color: #8c8c8c; font-size: 18px; }
     .knowledge-create-file-remove:hover { color: #ff4d4f; background: #fff1f0; }
-    .knowledge-modal-footer { padding: 12px 22px; display: flex; justify-content: flex-end; gap: 8px; border-top: 1px solid #f0f0f0; }
+    .knowledge-modal-footer { padding: 12px 22px; display: flex; justify-content: flex-start; gap: 8px; border-top: 1px solid #f0f0f0; background: #fff; }
     .knowledge-modal-footer button { height: 36px; padding: 0 15px; border-radius: 6px; font-size: 14px; }
     .knowledge-modal-cancel { border: 1px solid #d9d9d9; color: #262626; background: #fff; }
     .knowledge-modal-cancel:hover { color: #4096ff; border-color: #4096ff; }
     .knowledge-modal-submit { border: 1px solid #1677ff; color: #fff; background: #1677ff; box-shadow: 0 2px 0 rgba(5,145,255,.1); }
     .knowledge-modal-submit:hover { border-color: #4096ff; background: #4096ff; }
     .knowledge-modal-close:focus-visible, .knowledge-modal-footer button:focus-visible { outline: 2px solid rgba(22,119,255,.25); outline-offset: 2px; }
-    .knowledge-upload-mask { position: fixed; inset: 0; z-index: 12020; display: none; align-items: center; justify-content: center; padding: 24px; background: rgba(15,28,51,.45); }
-    .knowledge-upload-mask.open { display: flex; }
-    .knowledge-upload-dialog { width: min(780px, calc(100vw - 48px)); max-height: min(620px, calc(100vh - 48px)); display: grid; grid-template-rows: 58px minmax(260px,1fr) 64px; overflow: hidden; border-radius: 8px; background: #fff; box-shadow: 0 18px 48px rgba(20,38,70,.24); }
+    .knowledge-upload-mask { position: fixed; inset: 0; z-index: 12020; visibility: hidden; background: rgba(15,28,51,.45); opacity: 0; pointer-events: none; transition: opacity .2s, visibility .2s; }
+    .knowledge-upload-mask.open { visibility: visible; opacity: 1; pointer-events: auto; }
+    .knowledge-upload-dialog { position: absolute; top: 0; right: 0; width: min(680px, 100vw); height: 100vh; display: grid; grid-template-rows: 58px minmax(0,1fr) 64px; overflow: hidden; border-left: 1px solid #e5eaf2; background: #fff; box-shadow: -16px 0 40px rgba(15,28,51,.22); transform: translateX(102%); transition: transform .22s cubic-bezier(.16,1,.3,1); }
+    .knowledge-upload-mask.open .knowledge-upload-dialog { transform: translateX(0); }
     .knowledge-upload-head { padding: 0 22px; display: flex; align-items: center; border-bottom: 1px solid #f0f0f0; }
     .knowledge-upload-head h2 { margin: 0; color: #1f1f1f; font-size: 17px; font-weight: 600; }
     .knowledge-upload-close { margin-left: auto; width: 32px; height: 32px; display: grid; place-items: center; border-radius: 4px; color: #8c8c8c; font-size: 22px; }
@@ -338,11 +359,31 @@
     .knowledge-upload-add:hover { color: #1677ff; border-color: #1677ff; background: #f0f7ff; }
     .knowledge-upload-foot { padding: 0 22px; display: flex; align-items: center; border-top: 1px solid #f0f0f0; }
     .knowledge-upload-count { color: #8c8c8c; font-size: 13px; }
-    .knowledge-upload-actions { margin-left: auto; display: flex; gap: 8px; }
+    .knowledge-upload-actions { margin-left: 16px; display: flex; gap: 8px; }
     .knowledge-upload-actions button { height: 36px; padding: 0 15px; border-radius: 6px; font-size: 14px; }
     .knowledge-upload-cancel { border: 1px solid #d9d9d9; color: #262626; background: #fff; }
     .knowledge-upload-confirm { border: 1px solid #1677ff; color: #fff; background: #1677ff; }
     .knowledge-upload-confirm:disabled { color: rgba(0,0,0,.25); border-color: #d9d9d9; background: rgba(0,0,0,.04); cursor: not-allowed; }
+    .knowledge-rename-mask { position: fixed; inset: 0; z-index: 12050; visibility: hidden; background: rgba(15,28,51,.45); opacity: 0; pointer-events: none; transition: opacity .2s, visibility .2s; }
+    .knowledge-rename-mask.open { visibility: visible; opacity: 1; pointer-events: auto; }
+    .knowledge-rename-drawer { position: absolute; top: 0; right: 0; width: min(440px,100vw); height: 100vh; display: grid; grid-template-rows: 58px minmax(0,1fr) 64px; border-left: 1px solid #e5eaf2; background: #fff; box-shadow: -16px 0 40px rgba(15,28,51,.22); transform: translateX(102%); transition: transform .22s cubic-bezier(.16,1,.3,1); }
+    .knowledge-rename-mask.open .knowledge-rename-drawer { transform: translateX(0); }
+    .knowledge-rename-head { padding: 0 22px; display: flex; align-items: center; border-bottom: 1px solid #f0f0f0; }
+    .knowledge-rename-head h2 { margin: 0; color: #1f1f1f; font-size: 17px; font-weight: 600; }
+    .knowledge-rename-close { margin-left: auto; width: 32px; height: 32px; display: grid; place-items: center; border-radius: 4px; color: #8c8c8c; font-size: 22px; }
+    .knowledge-rename-close:hover { color: #1f1f1f; background: #f5f5f5; }
+    .knowledge-rename-body { padding: 22px; }
+    .knowledge-rename-label { margin-bottom: 8px; display: block; color: #262626; font-size: 14px; font-weight: 500; }
+    .knowledge-rename-label::before { content: '*'; margin-right: 4px; color: #ff4d4f; }
+    .knowledge-rename-input { width: 100%; height: 36px; padding: 0 11px; border: 1px solid #d9d9d9; border-radius: 6px; color: #262626; font-size: 14px; }
+    .knowledge-rename-input:hover { border-color: #4096ff; }
+    .knowledge-rename-input:focus { border-color: #1677ff; box-shadow: 0 0 0 2px rgba(5,145,255,.1); outline: 0; }
+    .knowledge-rename-help { margin-top: 6px; color: #8c8c8c; font-size: 12px; }
+    .knowledge-rename-error { min-height: 20px; margin-top: 4px; color: #ff4d4f; font-size: 12px; }
+    .knowledge-rename-foot { padding: 0 22px; display: flex; align-items: center; justify-content: flex-start; gap: 8px; border-top: 1px solid #f0f0f0; }
+    .knowledge-rename-foot button { height: 36px; padding: 0 15px; border-radius: 6px; font-size: 14px; }
+    .knowledge-rename-cancel { border: 1px solid #d9d9d9; color: #262626; background: #fff; }
+    .knowledge-rename-save { color: #fff; border: 1px solid #1677ff; background: #1677ff; }
     .knowledge-preview-backdrop { position: fixed; inset: 0; z-index: 12030; visibility: hidden; background: rgba(15,28,51,.38); opacity: 0; transition: opacity .2s, visibility .2s; }
     .knowledge-preview-backdrop.open { visibility: visible; opacity: 1; }
     .knowledge-preview-drawer { position: fixed; z-index: 12040; top: 0; right: 0; width: min(760px, calc(100vw - 32px)); height: 100vh; display: flex; flex-direction: column; background: #525659; border-left: 1px solid #3f4248; box-shadow: -16px 0 40px rgba(15,28,51,.2); transform: translateX(102%); transition: transform .22s ease; }
@@ -361,8 +402,8 @@
     .knowledge-preview-text { min-height: calc(100vh - 64px); margin: 0; padding: 28px; border-radius: 6px; color: #262626; background: #fff; font: 14px/1.8 ui-monospace, SFMono-Regular, Consolas, monospace; white-space: pre-wrap; }
     .knowledge-replace-input, .knowledge-upload-input { display: none; }
     @media (max-width: 1180px) { .knowledge-base-view .knowledge-search { width: 200px; } .knowledge-tag-filter-trigger { width: 156px; } .knowledge-detail-summary, .knowledge-detail-content { padding-inline: 14px; } .knowledge-file-search { width: 200px; } .knowledge-file-type select { width: 148px; } }
-    @media (max-width: 720px) { .knowledge-modal-mask, .knowledge-upload-mask { padding: 12px; } .knowledge-modal, .knowledge-upload-dialog { width: calc(100vw - 24px); max-height: calc(100vh - 24px); } .knowledge-upload-grid { grid-template-columns: repeat(3,minmax(76px,1fr)); } .knowledge-preview-body.is-text, .knowledge-preview-body.is-document { padding: 16px; } .knowledge-preview-document { padding: 48px 24px; } }
-    @media (prefers-reduced-motion: reduce) { .knowledge-base-view * { transition: none !important; } }
+    @media (max-width: 720px) { .knowledge-modal, .knowledge-upload-dialog, .knowledge-rename-drawer { width: 100vw; } .knowledge-upload-grid { grid-template-columns: repeat(3,minmax(76px,1fr)); } .knowledge-preview-body.is-text, .knowledge-preview-body.is-document { padding: 16px; } .knowledge-preview-document { padding: 48px 24px; } }
+    @media (prefers-reduced-motion: reduce) { .knowledge-base-view *, .knowledge-modal-mask, .knowledge-modal, .knowledge-upload-mask, .knowledge-upload-dialog, .knowledge-rename-mask, .knowledge-rename-drawer { transition: none !important; } .knowledge-upload-progress-bar::after { animation: none !important; } }
   `;
   document.head.appendChild(style);
 
@@ -417,7 +458,7 @@
         <button class="knowledge-file-upload" type="button" data-upload-knowledge-file><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M12 16V4M7 9l5-5 5 5M5 15v5h14v-5"/></svg>上传文件</button>
       </div>
       <div class="knowledge-file-table-wrap">
-        <table class="knowledge-file-table"><colgroup><col style="width:40%"><col style="width:12%"><col style="width:12%"><col style="width:28%"><col style="width:8%"></colgroup><thead><tr><th>文件名称</th><th>类型</th><th>大小</th><th>最近更新时间</th><th>操作</th></tr></thead><tbody id="knowledgeFileRows"></tbody></table>
+        <table class="knowledge-file-table"><colgroup><col style="width:54%"><col style="width:12%"><col style="width:10%"><col style="width:16%"><col style="width:8%"></colgroup><thead><tr><th>文件名称</th><th>大小</th><th>状态</th><th>最近更新时间</th><th>操作</th></tr></thead><tbody id="knowledgeFileRows"></tbody></table>
       </div>
       <div class="knowledge-file-footer"><span id="knowledgeFileTotal">共 4 条</span><div class="knowledge-file-pagination"><button class="knowledge-file-page" type="button" disabled aria-label="上一页">‹</button><button class="knowledge-file-page active" type="button">1</button><button class="knowledge-file-page" type="button" disabled aria-label="下一页">›</button><select class="knowledge-file-size" aria-label="每页文件数"><option>20 条/页</option><option>50 条/页</option></select></div></div>
     </section>`;
@@ -438,7 +479,7 @@
           <div class="knowledge-field"><span class="knowledge-field-label required">内容标签（可多选）</span><div class="knowledge-tag-selector" role="group" aria-label="内容标签">${availableTags.map(tag => `<label class="knowledge-tag-option"><input type="checkbox" name="knowledgeTags" value="${tag}"><span>${tag}</span></label>`).join('')}</div><div class="knowledge-selected-tags" id="knowledgeSelectedTags">暂未选择标签</div><div class="knowledge-field-error" id="knowledgeTagsError"></div></div>
           <div class="knowledge-field"><span class="knowledge-field-label">添加文件</span><input class="knowledge-create-file-input" id="knowledgeCreateFileInput" type="file" accept=".pdf,.docx,.txt" multiple><div class="knowledge-create-file-area" id="knowledgeCreateFileArea"><div class="knowledge-create-file-list" id="knowledgeCreateFileList" aria-live="polite"></div><button class="knowledge-create-upload" id="knowledgeCreateUpload" type="button" data-trigger-knowledge-create-files aria-label="添加文件"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M12 16V4M7 9l5-5 5 5M5 15v5h14v-5"/></svg><span class="knowledge-create-upload-copy"><strong>点击或拖拽文件到此处添加</strong><small>支持 PDF、DOCX、TXT，单个文件不超过 50MB，最多 20 个</small></span><span class="knowledge-create-upload-plus" aria-hidden="true">＋</span></button></div></div>
         </div>
-        <footer class="knowledge-modal-footer"><button class="knowledge-modal-cancel" type="button" data-close-knowledge-modal>取消</button><button class="knowledge-modal-submit" type="submit">确认创建</button></footer>
+        <footer class="knowledge-modal-footer"><button class="knowledge-modal-submit" type="submit">确认创建</button><button class="knowledge-modal-cancel" type="button" data-close-knowledge-modal>取消</button></footer>
       </form>
     </section>`;
   document.body.appendChild(modalMask);
@@ -457,9 +498,21 @@
           <button class="knowledge-upload-add" type="button" data-trigger-knowledge-upload aria-label="选择文件">＋</button>
         </div>
       </div>
-      <footer class="knowledge-upload-foot"><span class="knowledge-upload-count" id="knowledgeUploadCount">已选择 0/20 个文件</span><div class="knowledge-upload-actions"><button class="knowledge-upload-cancel" type="button" data-close-knowledge-upload>取消</button><button class="knowledge-upload-confirm" type="button" data-confirm-knowledge-upload disabled>确认上传</button></div></footer>
+      <footer class="knowledge-upload-foot"><span class="knowledge-upload-count" id="knowledgeUploadCount">已选择 0/20 个文件</span><div class="knowledge-upload-actions"><button class="knowledge-upload-confirm" type="button" data-confirm-knowledge-upload disabled>确认上传</button><button class="knowledge-upload-cancel" type="button" data-close-knowledge-upload>取消</button></div></footer>
     </section>`;
   document.body.appendChild(uploadMask);
+
+  const renameMask = document.createElement('div');
+  renameMask.className = 'knowledge-rename-mask';
+  renameMask.id = 'knowledgeRenameMask';
+  renameMask.setAttribute('aria-hidden', 'true');
+  renameMask.innerHTML = `
+    <form class="knowledge-rename-drawer" id="knowledgeRenameForm" role="dialog" aria-modal="true" aria-labelledby="knowledgeRenameTitle" novalidate>
+      <header class="knowledge-rename-head"><h2 id="knowledgeRenameTitle">编辑文件名称</h2><button class="knowledge-rename-close" type="button" data-close-knowledge-rename aria-label="关闭">×</button></header>
+      <div class="knowledge-rename-body"><label class="knowledge-rename-label" for="knowledgeRenameInput">文件名称</label><input class="knowledge-rename-input" id="knowledgeRenameInput" maxlength="120" autocomplete="off"><div class="knowledge-rename-help">保留原文件格式，仅修改文件名称。</div><div class="knowledge-rename-error" id="knowledgeRenameError"></div></div>
+      <footer class="knowledge-rename-foot"><button class="knowledge-rename-save" type="button" data-save-knowledge-rename>保存修改</button><button class="knowledge-rename-cancel" type="button" data-close-knowledge-rename>取消</button></footer>
+    </form>`;
+  document.body.appendChild(renameMask);
 
   const previewBackdrop = document.createElement('div');
   previewBackdrop.className = 'knowledge-preview-backdrop';
@@ -584,7 +637,7 @@
   }
 
   function countTextFor(row) {
-    return `${filesForKnowledge(row).length} 份`;
+    return `${filesForKnowledge(row).filter(file => file.uploadState !== 'uploading').length} 份`;
   }
 
   function currentKnowledgeRow() {
@@ -613,7 +666,7 @@
   }
 
   function createKnowledgeFile(file) {
-    return { name: file.name, type: fileType(file), size: fileSize(file.size), updated: currentTimeText(), sourceFile: file };
+    return { name: file.name, type: fileType(file), size: fileSize(file.size), updated: currentTimeText(), enabled: true, sourceFile: file };
   }
 
   function adjustKnowledgeCount(row) {
@@ -624,7 +677,7 @@
   }
 
   function fileIcon(file) {
-    const label = file.type === 'DOCX' ? 'W' : file.type === 'TXT' ? 'T' : '⌁';
+    const label = file.type === 'DOCX' ? 'W' : file.type === 'TXT' ? 'T' : 'PDF';
     return `<span class="knowledge-file-icon ${file.type.toLowerCase()}">${label}</span>`;
   }
 
@@ -637,14 +690,91 @@
     document.getElementById('knowledgeFileTotal').textContent = `共 ${filtered.length} 条`;
     document.getElementById('knowledgeFileRows').innerHTML = filtered.length ? filtered.map(file => {
       const index = files.indexOf(file);
-      return `<tr><td><div class="knowledge-file-name">${fileIcon(file)}<span title="${escapeHtml(file.name)}">${escapeHtml(file.name)}</span></div></td><td>${file.type}</td><td>${file.size}</td><td>${file.updated}</td><td><span class="knowledge-file-action-wrap"><button class="knowledge-file-more" type="button" data-toggle-knowledge-file-actions aria-haspopup="menu" aria-expanded="false" aria-label="${escapeHtml(file.name)}的更多操作">•••</button><span class="knowledge-file-menu" role="menu" hidden><button class="knowledge-file-action" role="menuitem" type="button" data-view-knowledge-file="${index}">查看</button><button class="knowledge-file-action" role="menuitem" type="button" data-replace-knowledge-file="${index}">替换</button><button class="knowledge-file-action danger" role="menuitem" type="button" data-delete-knowledge-file="${index}">删除</button></span></span></td></tr>`;
+      const uploading = file.uploadState === 'uploading';
+      const progress = Math.max(0, Math.min(100, Number(file.progress) || 0));
+      const progressView = uploading ? `<div class="knowledge-upload-progress" role="progressbar" aria-label="${escapeHtml(file.name)}上传进度" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${progress}"><span class="knowledge-upload-progress-track"><span class="knowledge-upload-progress-bar" style="width:${progress}%"></span></span><span class="knowledge-upload-progress-value">${progress}%</span></div>` : '';
+      const statusView = `<button class="knowledge-file-status" type="button" role="switch" aria-checked="${file.enabled !== false}" data-toggle-knowledge-file-status="${index}" aria-label="${file.enabled !== false ? '关闭' : '开启'}${escapeHtml(file.name)}"${uploading ? ' disabled title="文件上传完成后可操作"' : ''}><span class="knowledge-file-status-track" aria-hidden="true"></span></button>`;
+      const operationView = uploading ? `<button class="knowledge-file-cancel-upload" type="button" data-cancel-knowledge-upload="${index}">取消上传</button>` : `<span class="knowledge-file-action-wrap"><button class="knowledge-file-more" type="button" data-toggle-knowledge-file-actions aria-haspopup="menu" aria-expanded="false" aria-label="${escapeHtml(file.name)}的更多操作">•••</button><span class="knowledge-file-menu" role="menu" hidden><button class="knowledge-file-action" role="menuitem" type="button" data-view-knowledge-file="${index}">查看</button><button class="knowledge-file-action" role="menuitem" type="button" data-edit-knowledge-file="${index}">编辑</button><button class="knowledge-file-action" role="menuitem" type="button" data-download-knowledge-file="${index}">下载</button><button class="knowledge-file-action" role="menuitem" type="button" data-replace-knowledge-file="${index}">替换</button><button class="knowledge-file-action danger" role="menuitem" type="button" data-delete-knowledge-file="${index}">删除</button></span></span>`;
+      return `<tr${uploading ? ' class="knowledge-file-uploading"' : ''}><td><div class="knowledge-file-name">${fileIcon(file)}<span class="knowledge-file-copy"><span class="knowledge-file-label" title="${escapeHtml(file.name)}">${escapeHtml(file.name)}</span>${progressView}</span></div></td><td>${file.size}</td><td>${statusView}</td><td>${uploading ? '刚刚' : file.updated}</td><td>${operationView}</td></tr>`;
     }).join('') : '<tr><td class="knowledge-file-empty" colspan="5">暂无符合条件的文件，请调整文件名称或类型</td></tr>';
   }
 
   const uploadState = { files: [] };
   const createFileState = { files: [] };
+  const uploadTimers = new Map();
   let replaceTargetIndex = -1;
+  let renameTargetIndex = -1;
   let activePreviewUrl = '';
+
+  function startKnowledgeUploads(row, selectedFiles) {
+    const records = selectedFiles.map(file => ({ ...createKnowledgeFile(file), uploadState: 'uploading', progress: 0 }));
+    filesForKnowledge(row).unshift(...records);
+    records.forEach(record => {
+      const timer = window.setInterval(() => {
+        record.progress = Math.min(100, (Number(record.progress) || 0) + 4);
+        if (record.progress >= 100) {
+          window.clearInterval(timer);
+          uploadTimers.delete(record);
+          delete record.uploadState;
+          delete record.progress;
+          record.updated = currentTimeText();
+          adjustKnowledgeCount(row);
+          render();
+          showToast(`“${record.name}”上传完成`);
+        }
+        if (detailView.classList.contains('active') && currentKnowledgeRow() === row) renderKnowledgeFiles();
+      }, 220);
+      uploadTimers.set(record, timer);
+    });
+    renderKnowledgeFiles();
+    render();
+  }
+
+  function cancelActiveKnowledgeUpload(row, index) {
+    const files = filesForKnowledge(row);
+    const file = files[index];
+    if (!file || file.uploadState !== 'uploading') return;
+    window.clearInterval(uploadTimers.get(file));
+    uploadTimers.delete(file);
+    files.splice(index, 1);
+    renderKnowledgeFiles();
+    render();
+    showToast(`已取消“${file.name}”上传，未保留文件数据`);
+  }
+
+  function openKnowledgeRename(index) {
+    const file = filesForKnowledge(currentKnowledgeRow())[index];
+    if (!file || file.uploadState === 'uploading') return;
+    renameTargetIndex = index;
+    document.getElementById('knowledgeRenameInput').value = file.name;
+    document.getElementById('knowledgeRenameError').textContent = '';
+    renameMask.classList.add('open');
+    renameMask.setAttribute('aria-hidden', 'false');
+    document.body.style.overflow = 'hidden';
+    setTimeout(() => document.getElementById('knowledgeRenameInput').focus(), 0);
+  }
+
+  function closeKnowledgeRename() {
+    renameMask.classList.remove('open');
+    renameMask.setAttribute('aria-hidden', 'true');
+    renameTargetIndex = -1;
+    document.body.style.overflow = '';
+  }
+
+  function downloadKnowledgeFile(file) {
+    if (!file) return;
+    const content = `知识库文件：${file.name}\n文件类型：${file.type}\n更新时间：${file.updated}\n\n该文件由知识库原型提供下载。`;
+    const blob = file.sourceFile || new Blob([`\ufeff${content}`], { type: file.type === 'TXT' ? 'text/plain;charset=utf-8' : 'application/octet-stream' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = file.name;
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+    window.setTimeout(() => URL.revokeObjectURL(url), 1000);
+    showToast(`已开始下载“${file.name}”`);
+  }
 
   function renderUploadFiles() {
     const grid = document.getElementById('knowledgeUploadGrid');
@@ -820,7 +950,7 @@
     modalMask.querySelector('.knowledge-modal-submit').textContent = row ? '保存修改' : '确认创建';
     document.getElementById('knowledgeNameInput').value = row?.name || '';
     document.getElementById('knowledgeIntroInput').value = row?.intro || '';
-    createFileState.files = row ? filesForKnowledge(row).map(file => ({ ...file })) : [];
+    createFileState.files = row ? filesForKnowledge(row).filter(file => file.uploadState !== 'uploading').map(file => ({ ...file })) : [];
     document.getElementById('knowledgeCreateFileInput').value = '';
     renderCreateFiles();
     modalMask.querySelectorAll('input[name="knowledgeTags"]').forEach(input => { input.checked = Boolean(row?.tags.includes(input.value)); });
@@ -963,6 +1093,22 @@
       return;
     }
     const files = filesForKnowledge(currentKnowledgeRow());
+    const cancelUpload = event.target.closest('[data-cancel-knowledge-upload]');
+    if (cancelUpload) return cancelActiveKnowledgeUpload(currentKnowledgeRow(), Number(cancelUpload.dataset.cancelKnowledgeUpload));
+    const toggleStatus = event.target.closest('[data-toggle-knowledge-file-status]');
+    if (toggleStatus) {
+      const file = files[Number(toggleStatus.dataset.toggleKnowledgeFileStatus)];
+      if (!file) return;
+      file.enabled = file.enabled === false;
+      file.updated = currentTimeText();
+      const row = currentKnowledgeRow();
+      row.updated = file.updated;
+      document.getElementById('knowledgeDetailUpdated').textContent = row.updated;
+      renderKnowledgeFiles();
+      render();
+      showToast(`已${file.enabled ? '开启' : '关闭'}“${file.name}”`);
+      return;
+    }
     const viewFile = event.target.closest('[data-view-knowledge-file]');
     if (viewFile) {
       closeFileMenus();
@@ -975,6 +1121,16 @@
       replaceInput.value = '';
       replaceInput.click();
       return;
+    }
+    const editFile = event.target.closest('[data-edit-knowledge-file]');
+    if (editFile) {
+      closeFileMenus();
+      return openKnowledgeRename(Number(editFile.dataset.editKnowledgeFile));
+    }
+    const downloadFile = event.target.closest('[data-download-knowledge-file]');
+    if (downloadFile) {
+      closeFileMenus();
+      return downloadKnowledgeFile(files[Number(downloadFile.dataset.downloadKnowledgeFile)]);
     }
     const deleteFile = event.target.closest('[data-delete-knowledge-file]');
     if (deleteFile) {
@@ -1017,13 +1173,10 @@
     }
     if (event.target.closest('[data-confirm-knowledge-upload]')) {
       const row = currentKnowledgeRow();
-      const records = uploadState.files.map(createKnowledgeFile);
-      filesForKnowledge(row).unshift(...records);
-      adjustKnowledgeCount(row);
+      const selectedFiles = [...uploadState.files];
       closeKnowledgeUpload();
-      renderKnowledgeFiles();
-      render();
-      showToast(`已成功上传 ${records.length} 个文件`);
+      startKnowledgeUploads(row, selectedFiles);
+      showToast(`已开始上传 ${selectedFiles.length} 个文件`);
     }
   });
   previewBackdrop.addEventListener('click', closeKnowledgePreview);
@@ -1041,7 +1194,7 @@
       return;
     }
     if (!previous) return;
-    files[replaceTargetIndex] = createKnowledgeFile(file);
+    files[replaceTargetIndex] = { ...createKnowledgeFile(file), enabled: previous.enabled !== false };
     const row = currentKnowledgeRow();
     row.updated = currentTimeText();
     document.getElementById('knowledgeDetailUpdated').textContent = row.updated;
@@ -1050,6 +1203,51 @@
     showToast(`已用“${file.name}”替换“${previous.name}”`);
     event.target.value = '';
     replaceTargetIndex = -1;
+  });
+
+  function saveKnowledgeRename() {
+    const row = currentKnowledgeRow();
+    const files = filesForKnowledge(row);
+    const file = files[renameTargetIndex];
+    const name = document.getElementById('knowledgeRenameInput').value.trim();
+    const error = document.getElementById('knowledgeRenameError');
+    if (!file) return closeKnowledgeRename();
+    const expectedExtension = `.${file.type.toLowerCase()}`;
+    if (!name) {
+      error.textContent = '请输入文件名称';
+      return;
+    }
+    if (!name.toLowerCase().endsWith(expectedExtension)) {
+      error.textContent = `文件格式需保留为 ${file.type}`;
+      return;
+    }
+    if (files.some((item, index) => index !== renameTargetIndex && item.name.toLowerCase() === name.toLowerCase())) {
+      error.textContent = '文件名称已存在，请更换名称';
+      return;
+    }
+    const oldName = file.name;
+    file.name = name;
+    file.updated = currentTimeText();
+    row.updated = file.updated;
+    document.getElementById('knowledgeDetailUpdated').textContent = row.updated;
+    closeKnowledgeRename();
+    renderKnowledgeFiles();
+    render();
+    showToast(`已将“${oldName}”修改为“${name}”`);
+  }
+
+  renameMask.addEventListener('click', event => {
+    if (event.target === renameMask || event.target.closest('[data-close-knowledge-rename]')) return closeKnowledgeRename();
+  });
+  renameMask.querySelector('[data-save-knowledge-rename]').addEventListener('click', () => {
+    try { saveKnowledgeRename(); } catch (error) { document.getElementById('knowledgeRenameError').textContent = `保存失败：${error.message}`; }
+  });
+  document.getElementById('knowledgeRenameInput').addEventListener('input', () => {
+    document.getElementById('knowledgeRenameError').textContent = '';
+  });
+  document.getElementById('knowledgeRenameForm').addEventListener('submit', event => {
+    event.preventDefault();
+    saveKnowledgeRename();
   });
 
   modalMask.addEventListener('click', event => {
@@ -1100,12 +1298,13 @@
     const editedFiles = createFileState.files.map(file => typeof file.size === 'string' ? { ...file } : createKnowledgeFile(file));
     if (existing) {
       const oldName = existing.name;
+      const uploadingFiles = filesForKnowledge(existing).filter(file => file.uploadState === 'uploading');
       existing.name = result.name;
       existing.intro = result.intro;
       existing.tags = result.tags;
       existing.updated = updated;
       if (oldName !== result.name) delete knowledgeFiles[oldName];
-      knowledgeFiles[result.name] = editedFiles;
+      knowledgeFiles[result.name] = [...uploadingFiles, ...editedFiles];
       adjustKnowledgeCount(existing);
       if (detailView.dataset.knowledgeName === oldName) detailView.dataset.knowledgeName = result.name;
       closeKnowledgeModal();
@@ -1126,6 +1325,7 @@
   document.addEventListener('keydown', event => {
     if (event.key !== 'Escape') return;
     if (previewDrawer.classList.contains('open')) return closeKnowledgePreview();
+    if (renameMask.classList.contains('open')) return closeKnowledgeRename();
     if (uploadMask.classList.contains('open')) return closeKnowledgeUpload();
     if (modalMask.classList.contains('open')) return closeKnowledgeModal();
     closeTagFilter();
