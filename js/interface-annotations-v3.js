@@ -8,7 +8,7 @@
   const API_PATH = "/api/ui-notes";
   const LEGACY_LOCAL_KEY = PROJECT_ID + ":interface-notes:v1";
   const STATIC_DATA_URL = "/data/interface-notes.json";
-  const STATIC_DATA_VERSION = "20260828-v3-6";
+  const STATIC_DATA_VERSION = "20260828-v3-7";
   const TOOL_STATE_KEY = PROJECT_ID + ":ui-note-tool:v3";
   const MAX_ATTACHMENTS_PER_FIELD = 5;
   const MAX_SOURCE_IMAGE_BYTES = 8 * 1024 * 1024;
@@ -39,6 +39,7 @@
     loadSource: "pending",
     loadError: "",
     requestToken: 0,
+    retryTimer: 0,
     pendingContext: null,
     // Always expose the complete toolbar after a reload. A previously saved
     // collapsed state could leave only the small expand control behind other
@@ -524,23 +525,36 @@
     const token = ++state.requestToken;
     state.loading = true;
     renderToolbar();
-    let loaded = [];
+    const embedded = Array.isArray(window.__INTERFACE_NOTES_SNAPSHOT__)
+      ? clone(window.__INTERFACE_NOTES_SNAPSHOT__)
+      : [];
+    let loaded = embedded;
     let writable = config.viewerMode !== "read-only";
+    clearTimeout(state.retryTimer);
+    state.retryTimer = 0;
     try {
       if (config.viewerMode === "read-only") {
         loaded = await loadStaticNotes();
         writable = false;
       } else {
         const payload = await requestJson(apiUrl(API_PATH) + "?projectId=" + encodeURIComponent(PROJECT_ID) + "&scope=all", {});
-        loaded = payload.notes || payload.data || [];
+        const remote = payload.notes || payload.data || [];
+        loaded = embedded.concat(Array.isArray(remote) ? remote : []);
+        state.loadSource = embedded.length ? "project-snapshot+api" : "api";
+        state.loadError = "";
         writable = true;
       }
     } catch (error) {
       writable = false;
-      try {
-        loaded = await loadStaticNotes();
-      } catch (staticError) {
-        loaded = [];
+      state.loadError = String(error?.message || "批注服务未连接");
+      if (!loaded.length) {
+        try {
+          loaded = await loadStaticNotes();
+        } catch (staticError) {
+          loaded = [];
+        }
+      } else {
+        state.loadSource = "project-snapshot";
       }
     }
 
@@ -559,6 +573,11 @@
     state.loading = false;
     if (context && (!state.context || context.pageId !== state.context.pageId)) enterContext(context);
     renderAll();
+    if (!writable && config.viewerMode !== "read-only") {
+      state.retryTimer = setTimeout(function retryProjectNotes() {
+        if (!state.loading && state.context) loadNotes(state.context);
+      }, 2000);
+    }
   }
 
   async function persistNote(note, isNew) {

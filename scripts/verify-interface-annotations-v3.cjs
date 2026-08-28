@@ -18,10 +18,12 @@ assert.equal(sourceCss, publicCss, "发布包的批注样式必须与项目版�
 assert.deepEqual(publicNotes, notes, "发布包必须包含项目中的全部备注");
 assert.equal(sourceSnapshot, publicSnapshot, "发布包的内嵌备注快照必须与项目版本一致");
 assert.match(sourceSnapshot, /window\.__INTERFACE_NOTES_SNAPSHOT__\s*=/);
-assert.match(sourceHtml, /interface-notes-snapshot\.js\?v=20260828-v3-6[\s\S]*interface-annotations-v3\.js\?v=20260828-v3-6/);
-assert.match(publicHtml, /interface-notes-snapshot\.js\?v=20260828-v3-6[\s\S]*interface-annotations-v3\.js\?v=20260828-v3-6/);
+assert.match(sourceHtml, /interface-notes-snapshot\.js\?v=20260828-v3-7[\s\S]*interface-annotations-v3\.js\?v=20260828-v3-7/);
+assert.match(publicHtml, /interface-notes-snapshot\.js\?v=20260828-v3-7[\s\S]*interface-annotations-v3\.js\?v=20260828-v3-7/);
 assert.match(sourceScript, /loadSource:\s*"pending"/);
 assert.match(sourceScript, /window\.__INTERFACE_NOTES_SNAPSHOT__/);
+assert.match(sourceScript, /loaded\s*=\s*embedded\.concat/);
+assert.match(sourceScript, /retryProjectNotes/);
 assert.match(sourceScript, /uiNotesMode["']\)\s*===\s*["']readonly["']/);
 assert.match(sourceScript, /collapsed:\s*false/);
 assert.match(sourceScript, /data-ui-note-action="place"/);
