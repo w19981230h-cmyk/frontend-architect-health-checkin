@@ -8,14 +8,15 @@
   const API_PATH = "/api/ui-notes";
   const LEGACY_LOCAL_KEY = PROJECT_ID + ":interface-notes:v1";
   const STATIC_DATA_URL = "/data/interface-notes.json";
-  const STATIC_DATA_VERSION = "20260828-v3-5";
+  const STATIC_DATA_VERSION = "20260828-v3-6";
   const TOOL_STATE_KEY = PROJECT_ID + ":ui-note-tool:v3";
   const MAX_ATTACHMENTS_PER_FIELD = 5;
   const MAX_SOURCE_IMAGE_BYTES = 8 * 1024 * 1024;
   const MAX_STORED_IMAGE_CHARACTERS = 1600000;
   const MAX_TEXT_LENGTH = 12000;
   const localHost = location.hostname === "127.0.0.1" || location.hostname === "localhost";
-  const publishedReadOnly = location.protocol !== "file:" && !localHost;
+  const forcedReadOnlyPreview = localHost && new URLSearchParams(location.search).get("uiNotesMode") === "readonly";
+  const publishedReadOnly = (location.protocol !== "file:" && !localHost) || forcedReadOnlyPreview;
   const apiBase = location.protocol === "file:" ? "http://127.0.0.1:5173" : "";
   const config = {
     projectId: PROJECT_ID,
@@ -35,6 +36,8 @@
     editorOriginal: "",
     writeAvailable: !publishedReadOnly,
     loading: false,
+    loadSource: "pending",
+    loadError: "",
     requestToken: 0,
     pendingContext: null,
     // Always expose the complete toolbar after a reload. A previously saved
@@ -489,6 +492,12 @@
   }
 
   async function loadStaticNotes() {
+    const embedded = window.__INTERFACE_NOTES_SNAPSHOT__;
+    if (Array.isArray(embedded)) {
+      state.loadSource = "project-snapshot";
+      state.loadError = "";
+      return clone(embedded);
+    }
     const urls = [
       STATIC_DATA_URL + "?v=" + encodeURIComponent(STATIC_DATA_VERSION),
       new URL("data/interface-notes.json?v=" + encodeURIComponent(STATIC_DATA_VERSION), document.baseURI).href
@@ -499,11 +508,15 @@
         const payload = await requestJson(urls[index], {});
         const notes = Array.isArray(payload) ? payload : payload.data || payload.notes;
         if (!Array.isArray(notes)) throw new Error("线上批注快照缺少备注列表");
+        state.loadSource = "json";
+        state.loadError = "";
         return notes;
       } catch (error) {
         lastError = error;
       }
     }
+    state.loadSource = "failed";
+    state.loadError = String(lastError?.message || "线上批注快照读取失败");
     throw lastError || new Error("线上批注快照读取失败");
   }
 
@@ -625,6 +638,13 @@
     const status = toolbar.querySelector(".ui-note-toolbar-status");
     status.className = "ui-note-toolbar-status" + (statusClass ? " " + statusClass : "");
     status.title = statusTitle;
+    toolbar.dataset.uiNotePageId = state.context?.pageId || "";
+    toolbar.dataset.uiNoteViewKey = state.context?.viewKey || "";
+    toolbar.dataset.uiNoteLoadSource = state.loadSource;
+    toolbar.dataset.uiNoteLoadedCount = String(state.notes.filter(function activeNote(note) { return note.status !== "deleted"; }).length);
+    toolbar.dataset.uiNoteCurrentCount = String(notes.length);
+    if (state.loadError) toolbar.dataset.uiNoteLoadError = state.loadError;
+    else delete toolbar.dataset.uiNoteLoadError;
     const place = toolbar.querySelector("[data-ui-note-action='place']");
     place.disabled = readonly || offline;
     place.textContent = state.placing ? "请点击页面位置" : "添加批注";
