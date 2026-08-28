@@ -8,7 +8,7 @@
   const API_PATH = "/api/ui-notes";
   const LEGACY_LOCAL_KEY = PROJECT_ID + ":interface-notes:v1";
   const STATIC_DATA_URL = "/data/interface-notes.json";
-  const STATIC_DATA_VERSION = "20260827-v3-4";
+  const STATIC_DATA_VERSION = "20260828-v3-5";
   const TOOL_STATE_KEY = PROJECT_ID + ":ui-note-tool:v3";
   const MAX_ATTACHMENTS_PER_FIELD = 5;
   const MAX_SOURCE_IMAGE_BYTES = 8 * 1024 * 1024;
@@ -37,7 +37,10 @@
     loading: false,
     requestToken: 0,
     pendingContext: null,
-    collapsed: readToolState().collapsed === true,
+    // Always expose the complete toolbar after a reload. A previously saved
+    // collapsed state could leave only the small expand control behind other
+    // fixed widgets, making the annotation feature appear to be missing.
+    collapsed: false,
     drag: null,
     suppressPointClick: false,
     refreshTimer: 0,
@@ -597,7 +600,11 @@
   }
 
   function renderToolbar() {
-    const toolbar = document.getElementById("uiNoteToolbar");
+    let toolbar = document.getElementById("uiNoteToolbar");
+    if (!toolbar) {
+      ensureShell();
+      toolbar = document.getElementById("uiNoteToolbar");
+    }
     if (!toolbar) return;
     if (!toolbar.querySelector("[data-ui-note-action='place']")) {
       toolbar.innerHTML = [
@@ -606,7 +613,7 @@
         '<button type="button" class="ui-note-btn" data-ui-note-action="toggle"></button>',
         '<button type="button" class="ui-note-btn" data-ui-note-action="summary">批注汇总</button>',
         '<button type="button" class="ui-note-btn ui-note-icon-btn" data-ui-note-action="collapse" aria-label="收起批注工具" title="收起批注工具">−</button>',
-        '<button type="button" class="ui-note-btn ui-note-icon-btn primary" data-ui-note-action="expand" aria-label="展开批注工具" title="展开批注工具">注</button>'
+        '<button type="button" class="ui-note-btn primary ui-note-expand-btn" data-ui-note-action="expand" aria-label="展开批注工具" title="展开批注工具">批注</button>'
       ].join("");
     }
     const notes = currentNotes();
@@ -1318,6 +1325,7 @@
   function requestContextRefresh() {
     clearTimeout(state.refreshTimer);
     state.refreshTimer = setTimeout(function refreshContext() {
+      ensureShell();
       const next = resolveContext();
       if (!state.context) {
         enterContext(next);
