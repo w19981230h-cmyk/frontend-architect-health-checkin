@@ -8,7 +8,7 @@
   const API_PATH = "/api/ui-notes";
   const LEGACY_LOCAL_KEY = PROJECT_ID + ":interface-notes:v1";
   const STATIC_DATA_URL = "/data/interface-notes.json";
-  const STATIC_DATA_VERSION = "20260828-v3-7";
+  const STATIC_DATA_VERSION = "20260828-v3-10";
   const TOOL_STATE_KEY = PROJECT_ID + ":ui-note-tool:v3";
   const MAX_ATTACHMENTS_PER_FIELD = 5;
   const MAX_SOURCE_IMAGE_BYTES = 8 * 1024 * 1024;
@@ -294,7 +294,11 @@
 
   function resolveContext() {
     const requested = (location.pathname || "/").split("/").filter(Boolean).pop() || "index.html";
-    const routePath = requested === "prototype.html" ? "index.html" : requested;
+    // Sites exposes the published page as both /prototype and /prototype.html.
+    // They are the same product screen and must resolve to the same annotation identity.
+    const routePath = requested === "prototype" || requested === "prototype.html"
+      ? "index.html"
+      : requested;
     const viewKey = activeViewKey();
     const overlay = openOverlayContext();
     const contextType = overlay ? overlay.type : "page";
@@ -688,9 +692,13 @@
     }
     const surface = state.context?.surfaceElement || document.body;
     document.querySelectorAll(".ui-note-surface-active").forEach(function clearSurface(node) {
-      if (node !== surface) node.classList.remove("ui-note-surface-active");
+      node.classList.remove("ui-note-surface-active");
     });
-    surface.classList.add("ui-note-surface-active");
+    /* Preserve fixed/absolute overlay positioning. Only static surfaces need
+       the relative positioning helper used by the annotation layer. */
+    if (window.getComputedStyle(surface).position === "static") {
+      surface.classList.add("ui-note-surface-active");
+    }
     if (layer.parentElement !== surface) surface.appendChild(layer);
     return layer;
   }
@@ -704,11 +712,17 @@
       const savedHeight = Number(note.targetSnapshot?.annotationSurfaceHeight || metrics.height);
       return Math.max(result, note.y * savedHeight + 36);
     }, metrics.height);
+    const maxAnchorX = notes.reduce(function widest(result, note) {
+      const savedWidth = Math.max(1, Number(note.targetSnapshot?.annotationSurfaceWidth || metrics.width));
+      return Math.max(result, note.x * savedWidth + 36);
+    }, metrics.width);
     layer.style.height = Math.max(metrics.height, maxAnchor) + "px";
+    layer.style.width = Math.max(metrics.width, maxAnchorX) + "px";
     layer.hidden = !state.visible;
     layer.innerHTML = notes.map(function pointMarkup(note) {
+      const savedWidth = Math.max(1, Number(note.targetSnapshot?.annotationSurfaceWidth || metrics.width));
       const savedHeight = Math.max(1, Number(note.targetSnapshot?.annotationSurfaceHeight || metrics.height));
-      const left = Math.max(13, Math.min(metrics.width - 13, note.x * metrics.width));
+      const left = Math.max(13, note.x * savedWidth);
       const top = Math.max(13, note.y * savedHeight);
       const selected = note.id === state.selectedId ? " is-selected" : "";
       return '<button type="button" class="ui-note-point' + selected + '" data-ui-note-ui data-ui-note-id="' + escapeHtml(note.id) + '" style="left:' + left + 'px;top:' + top + 'px" aria-label="批注 ' + note.noteNumber + '：' + escapeHtml(note.title) + '" title="' + escapeHtml(note.title) + '">' + note.noteNumber + '</button>';

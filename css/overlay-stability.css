@@ -1,0 +1,111 @@
+/* Project-wide overlay stability policy. */
+html {
+  /* The page keeps the same usable width when an overlay locks scrolling. */
+  scrollbar-gutter: stable;
+}
+
+body.project-overlay-open {
+  overflow: hidden !important;
+}
+
+:where(
+  [role="dialog"],
+  [role="alertdialog"],
+  [aria-modal="true"],
+  .modal-mask,
+  [class*="-modal"],
+  [class*="-dialog"],
+  [class*="-drawer"],
+  [class*="-mask"],
+  [class*="-backdrop"],
+  [class*="-overlay"],
+  [class*="-lightbox"]
+) {
+  animation: none !important;
+  transition: none !important;
+  backface-visibility: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Blur on a newly-created fixed layer is the main source of a full-screen
+   white flash in Chromium.  A stable translucent mask keeps the same visual
+   hierarchy without forcing a new filtered compositor layer. */
+:where(
+  .modal-mask,
+  [class*="-mask"],
+  [class*="-backdrop"]
+) {
+  -webkit-backdrop-filter: none !important;
+  backdrop-filter: none !important;
+}
+
+/* The annotation drawer used to animate the page width at the same time as
+   the overlay.  Make that layout change immediate as well. */
+body.ui-note-drawer-open {
+  transition: none !important;
+}
+
+/* Service-management overlays switch atomically as one composed layer. This
+   prevents intermediate mask/panel frames while large contents are painted. */
+.order-detail-mask,
+.package-record-mask,
+.package-dialog-mask {
+  visibility: hidden;
+  opacity: 0;
+  pointer-events: none;
+  transition: none !important;
+}
+
+.order-detail-mask.is-visible,
+.package-record-mask.is-visible,
+.package-dialog-mask.is-visible {
+  visibility: visible;
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.order-detail-drawer,
+.package-record-drawer {
+  visibility: hidden;
+  opacity: 0;
+  pointer-events: none;
+  transform: translate3d(102%, 0, 0) !important;
+  transition: none !important;
+}
+
+.order-detail-drawer.active,
+.package-record-drawer.active {
+  visibility: visible;
+  opacity: 1;
+  pointer-events: auto;
+  transform: translate3d(0, 0, 0) !important;
+}
+
+.package-dialog,
+.package-share-dialog {
+  visibility: hidden;
+  opacity: 0;
+  pointer-events: none;
+  transform: translate(-50%, calc(-50% + 8px)) scale(.985) !important;
+  transition: none !important;
+}
+
+.package-dialog.is-visible,
+.package-share-dialog.is-visible {
+  visibility: visible;
+  opacity: 1;
+  pointer-events: auto;
+  transform: translate(-50%, -50%) scale(1) !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .order-detail-mask,
+  .package-record-mask,
+  .package-dialog-mask,
+  .order-detail-drawer,
+  .package-record-drawer,
+  .package-dialog,
+  .package-share-dialog {
+    transition-duration: 0s !important;
+  }
+}

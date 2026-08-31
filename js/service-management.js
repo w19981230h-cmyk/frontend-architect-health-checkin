@@ -3,6 +3,41 @@
   window.__serviceManagementRestored = true;
 
   const defaultPackageCover = './assets/service-package/weight-management-clean.png';
+  const visibleOverlayPanels = new Set();
+  const overlayCloseTimers = new WeakMap();
+
+  function syncOverlayScrollLock() {
+    document.body.classList.toggle('project-overlay-open', visibleOverlayPanels.size > 0);
+  }
+
+  function showStableOverlay(mask, panel, activeClass = 'is-visible') {
+    if (!panel) return;
+    if (visibleOverlayPanels.has(panel) && panel.classList.contains(activeClass)) return;
+    const closeTimer = overlayCloseTimers.get(panel);
+    if (closeTimer) window.clearTimeout(closeTimer);
+    overlayCloseTimers.delete(panel);
+    visibleOverlayPanels.add(panel);
+    syncOverlayScrollLock();
+    if (mask) {
+      mask.hidden = false;
+      mask.classList.add('is-visible');
+    }
+    panel.hidden = false;
+    panel.classList.add(activeClass);
+    panel.setAttribute('aria-hidden', 'false');
+  }
+
+  function hideStableOverlay(mask, panel, activeClass = 'is-visible') {
+    if (!panel) return;
+    visibleOverlayPanels.delete(panel);
+    mask?.classList.remove('is-visible');
+    panel.classList.remove(activeClass);
+    panel.setAttribute('aria-hidden', 'true');
+    if (mask) mask.hidden = true;
+    panel.hidden = true;
+    syncOverlayScrollLock();
+    overlayCloseTimers.delete(panel);
+  }
 
   const orderRows = [
     ['SO202407030001', '糖尿病随访管理服务包', '王购买', '--', '30天', '绑定后计算', 188, '2024/07/03 09:20', '待使用'],
@@ -1389,9 +1424,11 @@
     document.getElementById('restoredOrderTitle').textContent = transaction.type === '支付' ? '支付交易详情' : '退款交易详情';
     document.getElementById('restoredOrderContent').innerHTML = detailContent;
     document.getElementById('restoredOrderContent').scrollTop = 0;
-    document.getElementById('restoredOrderMask').hidden = false;
-    document.getElementById('restoredOrderDrawer').classList.add('active');
-    document.getElementById('restoredOrderDrawer').setAttribute('aria-hidden', 'false');
+    showStableOverlay(
+      document.getElementById('restoredOrderMask'),
+      document.getElementById('restoredOrderDrawer'),
+      'active'
+    );
   }
 
   function openOrderDetail(orderNo) {
@@ -1601,9 +1638,11 @@
     document.getElementById('restoredOrderTitle').textContent = titleMap[status] || '订单详情';
     document.getElementById('restoredOrderContent').innerHTML = `<div class="order-detail-intro">${introMap[status] || ''}</div>${renderOrderInformation(orderInformationGroups)}${stateContent}`;
     document.getElementById('restoredOrderContent').scrollTop = 0;
-    document.getElementById('restoredOrderMask').hidden = false;
-    document.getElementById('restoredOrderDrawer').classList.add('active');
-    document.getElementById('restoredOrderDrawer').setAttribute('aria-hidden', 'false');
+    showStableOverlay(
+      document.getElementById('restoredOrderMask'),
+      document.getElementById('restoredOrderDrawer'),
+      'active'
+    );
   }
 
   function completeOrderRefundReview(orderNo, approved, reason, openNext) {
@@ -1633,9 +1672,11 @@
   }
 
   function closeOrderDetail() {
-    document.getElementById('restoredOrderMask').hidden = true;
-    document.getElementById('restoredOrderDrawer').classList.remove('active');
-    document.getElementById('restoredOrderDrawer').setAttribute('aria-hidden', 'true');
+    hideStableOverlay(
+      document.getElementById('restoredOrderMask'),
+      document.getElementById('restoredOrderDrawer'),
+      'active'
+    );
   }
 
   let pendingPackageDialogAction = null;
@@ -1945,25 +1986,21 @@
       <div class="package-record-tabs" role="tablist" aria-label="服务状态"><button class="package-record-tab active" data-package-record-status="全部" type="button" role="tab"><span>全部</span><strong>${currentPackageServiceRecords.length}</strong></button><button class="package-record-tab" data-package-record-status="生效中" type="button" role="tab"><span>生效中</span><strong>${activeCount}</strong></button><button class="package-record-tab" data-package-record-status="已完成" type="button" role="tab"><span>已完成</span><strong>${completedCount}</strong></button></div>
       <div class="package-record-list" data-package-service-record-list></div><div class="package-record-footer" data-package-record-footer></div>`;
     renderPackageSubscribers();
-    document.getElementById('packageRecordMask').hidden = false;
     const drawer = document.getElementById('packageRecordDrawer');
     drawer.dataset.noteEntity = code;
-    drawer.classList.add('active');
-    drawer.setAttribute('aria-hidden', 'false');
-    document.body.style.overflow = 'hidden';
+    showStableOverlay(document.getElementById('packageRecordMask'), drawer, 'active');
   }
 
   function closePackageSubscriptions() {
-    document.getElementById('packageRecordMask').hidden = true;
     const drawer = document.getElementById('packageRecordDrawer');
-    drawer.classList.remove('active');
-    drawer.setAttribute('aria-hidden', 'true');
-    if (document.getElementById('packageEditorOverlay')?.hidden !== false) document.body.style.overflow = '';
+    hideStableOverlay(document.getElementById('packageRecordMask'), drawer, 'active');
   }
 
   function closePackageDialog() {
-    document.getElementById('packageDialogMask').hidden = true;
-    document.getElementById('packageActionDialog').hidden = true;
+    hideStableOverlay(
+      document.getElementById('packageDialogMask'),
+      document.getElementById('packageActionDialog')
+    );
     pendingPackageDialogAction = null;
   }
 
@@ -1976,10 +2013,9 @@
     confirm.classList.toggle('danger', danger);
     confirm.classList.toggle('primary', !danger);
     pendingPackageDialogAction = onConfirm;
-    document.getElementById('packageDialogMask').hidden = false;
     const dialog = document.getElementById('packageActionDialog');
     dialog.dataset.noteEntity = noteEntity;
-    dialog.hidden = false;
+    showStableOverlay(document.getElementById('packageDialogMask'), dialog);
   }
 
   function drawPackageShareQr(value) {
@@ -2031,16 +2067,17 @@
     document.getElementById('packageShareDialog').dataset.packageCode = item[0];
     document.getElementById('packageShareDialog').dataset.noteEntity = item[0];
     drawPackageShareQr(shareUrl);
-    document.getElementById('packageShareMask').hidden = false;
-    document.getElementById('packageShareDialog').hidden = false;
-    document.body.style.overflow = 'hidden';
+    showStableOverlay(
+      document.getElementById('packageShareMask'),
+      document.getElementById('packageShareDialog')
+    );
   }
 
   function closePackageShareDialog() {
-    document.getElementById('packageShareMask').hidden = true;
-    document.getElementById('packageShareDialog').hidden = true;
-    if (document.getElementById('packageEditorOverlay')?.hidden === false || document.getElementById('packageRecordDrawer')?.getAttribute('aria-hidden') === 'false') return;
-    document.body.style.overflow = '';
+    hideStableOverlay(
+      document.getElementById('packageShareMask'),
+      document.getElementById('packageShareDialog')
+    );
   }
 
   async function copyPackageShareLink() {
