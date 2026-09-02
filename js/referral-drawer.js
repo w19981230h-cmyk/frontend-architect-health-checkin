@@ -64,12 +64,10 @@
                   <div class="referral-form-grid">
                     <div class="referral-field"><label class="required" for="referralInstitution">转入机构</label><input class="referral-control" id="referralInstitution" list="referralInstitutionOptions" placeholder="请输入机构名称搜索" autocomplete="off" required><datalist id="referralInstitutionOptions"><option value="南宁市第二人民医院"></option><option value="广西医科大学第一附属医院"></option><option value="南宁市青秀区人民医院"></option><option value="青秀区建政社区卫生服务中心"></option><option value="青秀区南湖社区卫生服务中心"></option></datalist><div class="referral-field-hint">仅展示与当前机构存在转诊关系的医疗机构</div><div class="referral-error" data-error-for="referralInstitution"></div></div>
                     <div class="referral-field"><label class="required" for="referralDepartment">转入科室</label><select class="referral-control" id="referralDepartment" required disabled><option value="">请先选择转入机构</option></select><div class="referral-field-hint">科室范围随转入机构自动更新</div><div class="referral-error" data-error-for="referralDepartment"></div></div>
-                    <div class="referral-field full">
-                      <span class="referral-field-label">转诊方向</span>
-                      <div class="referral-direction" id="referralDirection" data-direction=""><span class="referral-direction-dot"></span><strong>选择转入机构后自动判断</strong><small>该字段由系统判断，不可修改</small></div>
-                    </div>
-                    <div class="referral-field"><label class="required" for="referralReason">转诊原因</label><select class="referral-control" id="referralReason" required disabled><option value="">请先选择转入机构</option></select><div class="referral-error" data-error-for="referralReason"></div></div>
-                    <div class="referral-field"><span class="referral-field-label required">转诊目的</span><div class="referral-purpose-tags" id="referralPurposeTags">
+                    <div class="referral-field"><label for="referralDirection">转诊方向</label><input class="referral-control referral-control-derived" id="referralDirection" data-direction="" value="选择转入机构后自动带入" readonly><div class="referral-field-hint">系统根据机构上下级关系自动判断，不可修改</div></div>
+                    <div class="referral-field"><label class="required" for="referralType">转诊类型</label><select class="referral-control" id="referralType" required><option value="普通">普通</option><option value="加急">加急</option></select><div class="referral-error" data-error-for="referralType"></div></div>
+                    <div class="referral-field"><label class="required" for="referralReason">转诊原因</label><div class="referral-combo"><textarea class="referral-control referral-reason-input" id="referralReason" rows="2" maxlength="300" required disabled placeholder="请先选择转入机构"></textarea><button type="button" class="referral-combo-trigger" data-toggle-reason-shortcuts aria-label="展开转诊原因快捷文本" aria-expanded="false" disabled>⌄</button><div class="referral-combo-popup referral-reason-shortcuts" id="referralReasonShortcuts" hidden></div></div><div class="referral-field-hint">可手动输入，也可从下拉选项中多选并快速追加</div><div class="referral-error" data-error-for="referralReason"></div></div>
+                    <div class="referral-field"><span class="referral-field-label required">转诊目的</span><div class="referral-combo"><button type="button" class="referral-control referral-multi-control" id="referralPurposeControl" data-toggle-purpose aria-expanded="false"><span id="referralPurposeSummary">请选择转诊目的（可多选）</span><i>⌄</i></button><div class="referral-combo-popup referral-purpose-popup" id="referralPurposeDropdown" hidden><div class="referral-purpose-tags" id="referralPurposeTags">
                       <label><input type="checkbox" name="referralPurpose" value="进一步专科评估"><span>进一步专科评估</span></label>
                       <label><input type="checkbox" name="referralPurpose" value="进一步检查"><span>进一步检查</span></label>
                       <label><input type="checkbox" name="referralPurpose" value="进一步治疗"><span>进一步治疗</span></label>
@@ -80,7 +78,7 @@
                       <label><input type="checkbox" name="referralPurpose" value="指标监测"><span>指标监测</span></label>
                       <label><input type="checkbox" name="referralPurpose" value="健康管理"><span>健康管理</span></label>
                       <label><input type="checkbox" name="referralPurpose" value="其他"><span>其他</span></label>
-                    </div><div class="referral-error" data-error-for="referralPurpose"></div></div>
+                    </div></div></div><div class="referral-error" data-error-for="referralPurpose"></div></div>
                     <div class="referral-field full referral-date-field"><label for="referralExpectedDate">期望转诊日期</label><input class="referral-control" id="referralExpectedDate" type="date"><div class="referral-field-hint">仅作为期望就诊时间，不代表预约成功。</div></div>
                   </div>
                 </div>
@@ -165,10 +163,43 @@
   }
 
   function renderReasonOptions(direction) {
-    const select = document.getElementById('referralReason');
+    const input = document.getElementById('referralReason');
+    const trigger = document.querySelector('[data-toggle-reason-shortcuts]');
+    const popup = document.getElementById('referralReasonShortcuts');
     const options = reasonOptions[direction] || [];
-    select.innerHTML = `<option value="">${direction ? '请选择转诊原因' : '请先选择转入机构'}</option>${options.map(item => `<option>${item}</option>`).join('')}`;
-    select.disabled = !direction;
+    popup.innerHTML = options.map(item => `<button type="button" data-reason-shortcut="${item}"><span>✓</span>${item}</button>`).join('');
+    input.disabled = !direction;
+    input.placeholder = direction ? '请输入转诊原因，或展开下拉快捷添加' : '请先选择转入机构';
+    trigger.disabled = !direction;
+    if (!direction) {
+      popup.hidden = true;
+      trigger.setAttribute('aria-expanded', 'false');
+    }
+  }
+
+  function updateReasonShortcutState() {
+    const value = document.getElementById('referralReason')?.value || '';
+    document.querySelectorAll('[data-reason-shortcut]').forEach(button => {
+      button.classList.toggle('selected', value.includes(button.dataset.reasonShortcut));
+    });
+  }
+
+  function updatePurposeSummary() {
+    const selected = [...document.querySelectorAll('input[name="referralPurpose"]:checked')].map(input => input.value);
+    const summary = document.getElementById('referralPurposeSummary');
+    const control = document.getElementById('referralPurposeControl');
+    if (summary) summary.textContent = selected.length ? selected.join('、') : '请选择转诊目的（可多选）';
+    control?.classList.toggle('has-value', Boolean(selected.length));
+  }
+
+  function closeComboPopups(exceptId) {
+    [['referralReasonShortcuts', '[data-toggle-reason-shortcuts]'], ['referralPurposeDropdown', '[data-toggle-purpose]']].forEach(([id, selector]) => {
+      if (id === exceptId) return;
+      const popup = document.getElementById(id);
+      const trigger = document.querySelector(selector);
+      if (popup) popup.hidden = true;
+      trigger?.setAttribute('aria-expanded', 'false');
+    });
   }
 
   function syncInstitution() {
@@ -185,11 +216,12 @@
 
     directionNode.dataset.direction = nextDirection;
     directionNode.classList.toggle('active', Boolean(nextDirection));
-    directionNode.querySelector('strong').textContent = nextDirection ? `系统判断：向${nextDirection === 'up' ? '上' : '下'}转诊` : '选择转入机构后自动判断';
+    directionNode.value = nextDirection ? `向${nextDirection === 'up' ? '上' : '下'}转诊` : '选择转入机构后自动带入';
 
     if (previousDirection !== nextDirection) {
       renderReasonOptions(nextDirection);
       document.getElementById('referralReason').value = '';
+      updateReasonShortcutState();
       if (previousDirection && nextDirection) notify('转诊方向已变化，请重新选择转诊原因');
     }
 
@@ -231,8 +263,10 @@
     document.getElementById('referralDepartment').disabled = true;
     document.getElementById('referralDirection').dataset.direction = '';
     document.getElementById('referralDirection').classList.remove('active');
-    document.getElementById('referralDirection').querySelector('strong').textContent = '选择转入机构后自动判断';
+    document.getElementById('referralDirection').value = '选择转入机构后自动带入';
     renderReasonOptions('');
+    updatePurposeSummary();
+    closeComboPopups();
     const duration = managementDuration(activePatient).replace('已管理 ', '').replace(' 天', '');
     document.getElementById('referralSituation').value = `患者已纳入${activePatient.disease || '慢病'}健康管理${duration}天，持续开展指标监测、用药提醒及生活方式管理，近期关键指标仍多次高于目标范围，整体控制效果有待改善。`;
     document.getElementById('referralSymptoms').value = '';
@@ -263,7 +297,8 @@
     const requirements = [
       ['referralInstitution', '请选择转入机构'],
       ['referralDepartment', '请选择该机构下的转入科室'],
-      ['referralReason', '请选择转诊原因'],
+      ['referralType', '请选择转诊类型'],
+      ['referralReason', '请填写转诊原因'],
       ['referralSituation', '请填写患者当前情况说明']
     ];
     let firstInvalid = null;
@@ -278,11 +313,11 @@
 
     const purposes = [...document.querySelectorAll('input[name="referralPurpose"]')];
     const purposeValid = purposes.some(input => input.checked);
-    const purposeTags = document.getElementById('referralPurposeTags');
-    purposeTags.classList.toggle('invalid', !purposeValid);
+    const purposeControl = document.getElementById('referralPurposeControl');
+    purposeControl.classList.toggle('invalid', !purposeValid);
     const purposeError = document.querySelector('[data-error-for="referralPurpose"]');
     if (purposeError) purposeError.textContent = purposeValid ? '' : '请至少选择一个转诊目的';
-    if (!purposeValid && !firstInvalid) firstInvalid = purposes[0];
+    if (!purposeValid && !firstInvalid) firstInvalid = purposeControl;
 
     firstInvalid?.focus();
     firstInvalid?.scrollIntoView({ block: 'center', behavior: 'smooth' });
@@ -349,6 +384,37 @@
       document.getElementById('referralAttachmentInput')?.click();
       return;
     }
+    const reasonToggle = event.target.closest('[data-toggle-reason-shortcuts]');
+    if (reasonToggle) {
+      const popup = document.getElementById('referralReasonShortcuts');
+      const willOpen = popup.hidden;
+      closeComboPopups(willOpen ? 'referralReasonShortcuts' : '');
+      popup.hidden = !willOpen;
+      reasonToggle.setAttribute('aria-expanded', String(willOpen));
+      return;
+    }
+    const reasonShortcut = event.target.closest('[data-reason-shortcut]');
+    if (reasonShortcut) {
+      const input = document.getElementById('referralReason');
+      const phrase = reasonShortcut.dataset.reasonShortcut;
+      const values = input.value.split(/[；;]/).map(item => item.trim()).filter(Boolean);
+      const existingIndex = values.indexOf(phrase);
+      if (existingIndex >= 0) values.splice(existingIndex, 1);
+      else values.push(phrase);
+      input.value = values.join('；');
+      input.dispatchEvent(new Event('input', { bubbles: true }));
+      return;
+    }
+    const purposeToggle = event.target.closest('[data-toggle-purpose]');
+    if (purposeToggle) {
+      const popup = document.getElementById('referralPurposeDropdown');
+      const willOpen = popup.hidden;
+      closeComboPopups(willOpen ? 'referralPurposeDropdown' : '');
+      popup.hidden = !willOpen;
+      purposeToggle.setAttribute('aria-expanded', String(willOpen));
+      return;
+    }
+    if (!event.target.closest('.referral-combo')) closeComboPopups();
     const confirmButton = event.target.closest('[data-confirm-referral]');
     if (confirmButton) {
       if (!validateForm()) return;
@@ -372,10 +438,11 @@
       event.target.value = '';
     }
     if (event.target.name === 'referralPurpose') {
-      const tags = document.getElementById('referralPurposeTags');
-      tags.classList.remove('invalid');
+      const control = document.getElementById('referralPurposeControl');
+      control.classList.remove('invalid');
       const error = document.querySelector('[data-error-for="referralPurpose"]');
       if (error) error.textContent = '';
+      updatePurposeSummary();
     }
     if (event.target.matches('#referralForm .referral-control') && event.target.value) {
       event.target.classList.remove('invalid');
@@ -385,7 +452,7 @@
   });
 
   document.addEventListener('input', event => {
-    if (event.target.id === 'referralInstitution') syncInstitution();
+    if (event.target.id === 'referralReason') updateReasonShortcutState();
     if (event.target.id === 'referralSituation') updateCount('referralSituation', 'referralSituationCount');
     if (event.target.matches('#referralForm .referral-control') && event.target.value) {
       event.target.classList.remove('invalid');
@@ -395,6 +462,10 @@
   });
 
   document.addEventListener('keydown', event => {
+    if (event.key === 'Escape' && document.querySelector('.referral-combo-popup:not([hidden])')) {
+      closeComboPopups();
+      return;
+    }
     if (event.key === 'Escape' && document.getElementById('patientReferralDrawer')?.classList.contains('open')) closeDrawer();
   });
 
