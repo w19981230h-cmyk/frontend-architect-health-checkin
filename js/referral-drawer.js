@@ -26,7 +26,7 @@
           <header class="referral-head">
             <div class="referral-head-main">
               <span class="referral-head-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 12h12M13 7l5 5-5 5"/><path d="M5 5v14"/></svg></span>
-              <div class="referral-title"><h2 id="referralDrawerTitle">转诊申请</h2><p id="referralDrawerSubtitle">为患者填写转诊评估信息</p></div>
+              <div class="referral-title"><h2 id="referralDrawerTitle">转诊申请</h2></div>
               <button type="button" class="referral-close" data-close-referral aria-label="关闭转诊申请">×</button>
             </div>
           </header>
@@ -128,7 +128,6 @@
     if (!activePatient) return;
     lastTrigger = trigger;
     const drawer = document.getElementById('patientReferralDrawer');
-    setText('referralDrawerSubtitle', `${activePatient.name} · ${activePatient.visitNo} · 填写转诊评估信息`);
     setText('referralAvatar', activePatient.name.slice(-1));
     setText('referralPatientName', activePatient.name);
     setText('referralPatientGender', activePatient.gender);
