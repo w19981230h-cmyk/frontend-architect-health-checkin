@@ -39,10 +39,10 @@
                     <span class="referral-avatar" id="referralAvatar">患</span>
                     <div class="referral-patient-main">
                       <div class="referral-patient-name"><strong id="referralPatientName">--</strong><i class="referral-gender" id="referralPatientGender">--</i><em id="referralPatientAge">--岁</em></div>
-                      <span id="referralPatientId">患者ID：--</span><span id="referralPatientPhone">联系电话：--</span>
+                      <span id="referralPatientPhone">联系电话：--</span>
                     </div>
-                    <div class="referral-patient-detail"><span id="referralPatientIdentity">身份证号：--</span><span id="referralPatientInsurance">医保类型：--</span><span id="referralPatientTeam">管理团队：--</span></div>
-                    <div class="referral-patient-detail"><span id="referralPatientDiagnosis">当前诊断：--</span><span id="referralPatientDoctor">管理医生：--</span><span id="referralPatientJoined">入组时间：--</span></div>
+                    <div class="referral-patient-detail"><span id="referralPatientIdentity">证件号码：--</span><span id="referralPatientTeam">当前管理团队：--</span></div>
+                    <div class="referral-patient-detail"><span id="referralPatientInstitution">当前管理机构：--</span></div>
                   </div></div>
                 </section>
                 <section class="referral-card">
@@ -107,21 +107,9 @@
     if (node) node.textContent = value;
   }
 
-  function patientDisplayId(patient) {
-    const digits = String(patient.visitNo || '').replace(/\D/g, '');
-    return `P${digits.slice(-8).padStart(8, '0')}`;
-  }
-
   function maskedIdentity(patient) {
     const digits = String(patient.visitNo || '').replace(/\D/g, '');
     return `320***********${digits.slice(-4).padStart(4, '0')}`;
-  }
-
-  function joinedDate(patient) {
-    const digits = String(patient.visitNo || '').replace(/\D/g, '');
-    const month = String((Number(digits.slice(-2)) % 12) + 1).padStart(2, '0');
-    const day = String((Number(digits.slice(-4, -2)) % 28) + 1).padStart(2, '0');
-    return `2024-${month}-${day}`;
   }
 
   function syncReferralDirection() {
@@ -144,15 +132,11 @@
     setText('referralAvatar', activePatient.name.slice(-1));
     setText('referralPatientName', activePatient.name);
     setText('referralPatientGender', activePatient.gender);
-    setText('referralPatientId', `患者ID：${patientDisplayId(activePatient)}`);
     setText('referralPatientAge', `${activePatient.age}岁`);
     setText('referralPatientPhone', `联系电话：${activePatient.phone}`);
-    setText('referralPatientIdentity', `身份证号：${maskedIdentity(activePatient)}`);
-    setText('referralPatientInsurance', '医保类型：城乡居民医保');
-    setText('referralPatientTeam', `管理团队：${activePatient.team || '健康管理团队'}`);
-    setText('referralPatientDiagnosis', `当前诊断：${activePatient.diagnosis.replace(/\.\.\.$/, '')}`);
-    setText('referralPatientDoctor', `管理医生：${activePatient.caseManager || '待分配'}`);
-    setText('referralPatientJoined', `入组时间：${joinedDate(activePatient)}`);
+    setText('referralPatientIdentity', `证件号码：${maskedIdentity(activePatient)}`);
+    setText('referralPatientTeam', `当前管理团队：${activePatient.team || '健康管理团队'}`);
+    setText('referralPatientInstitution', `当前管理机构：${activePatient.managementInstitution || '杭州市第一人民医院'}`);
     setText('referralMetricBp', `${activePatient.systolicBP}/${activePatient.diastolicBP} mmHg`);
     setText('referralMetricGlucose', `${activePatient.fastingGlucose} mmol/L`);
     setText('referralMetricBmi', activePatient.bmi);

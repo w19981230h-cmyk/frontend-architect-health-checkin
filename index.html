@@ -4055,7 +4055,7 @@
     </main>
   </section>
 
-  <script src="./js/referral-drawer.js?v=20260828-10"></script>
+  <script src="./js/referral-drawer.js?v=20260902-1"></script>
   <script>
     const scaleRows = [
       ['测试', 0, 0, '第1版', 1, '张媛丽', '2026/06/02 18:23:37', '未发布', false],
@@ -4155,6 +4155,7 @@
       currentPlan: patientDemoProfiles.plans[index % patientDemoProfiles.plans.length],
       managementStatus: patientDemoProfiles.statuses[index % patientDemoProfiles.statuses.length],
       caseManager: patientDemoProfiles.managers[index % patientDemoProfiles.managers.length],
+      managementInstitution: ['杭州市第一人民医院', '宁波市第一医院', '温州市中心医院', '绍兴市人民医院'][index % 4],
       riskLevel: ['低风险', '中风险', '高风险'][index % 3],
       standardFeature: patientDemoProfiles.standardFeatures[index % patientDemoProfiles.standardFeatures.length],
       businessTag: patientDemoProfiles.businessTags[index % patientDemoProfiles.businessTags.length]
