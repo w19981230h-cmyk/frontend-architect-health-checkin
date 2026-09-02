@@ -2,9 +2,18 @@
   let activePatient = null;
   let lastTrigger = null;
 
-  function escHtml(value) {
-    return String(value ?? '').replace(/[&<>'"]/g, char => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[char]));
-  }
+  const institutionConfig = {
+    '南宁市第二人民医院': { direction: 'up', departments: ['心血管内科', '内分泌科', '肾内科', '呼吸与危重症医学科'] },
+    '广西医科大学第一附属医院': { direction: 'up', departments: ['心血管内科', '神经内科', '肿瘤科', '全科医学科'] },
+    '南宁市青秀区人民医院': { direction: 'up', departments: ['心血管内科', '内分泌科', '康复医学科'] },
+    '青秀区建政社区卫生服务中心': { direction: 'down', departments: ['全科医学科', '慢病管理门诊', '康复医学科'] },
+    '青秀区南湖社区卫生服务中心': { direction: 'down', departments: ['全科医学科', '慢病管理门诊', '预防保健科'] }
+  };
+
+  const reasonOptions = {
+    up: ['持续管理无明显改善', '病情/症状明显加重', '关键指标持续异常', '需要进一步专科诊疗', '需要进一步检查或治疗', '当前机构服务能力有限', '其他'],
+    down: ['病情稳定，适合基层继续管理', '阶段性治疗已完成', '转长期随访管理', '转康复管理', '转属地机构继续管理', '其他']
+  };
 
   function notify(message) {
     if (typeof window.showToast === 'function') {
@@ -26,73 +35,106 @@
           <header class="referral-head">
             <div class="referral-head-main">
               <span class="referral-head-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 12h12M13 7l5 5-5 5"/><path d="M5 5v14"/></svg></span>
-              <div class="referral-title"><h2 id="referralDrawerTitle">转诊申请</h2></div>
+              <div class="referral-title"><h2 id="referralDrawerTitle">发起转诊申请</h2></div>
+              <span class="referral-head-meta">转诊申请</span>
               <button type="button" class="referral-close" data-close-referral aria-label="关闭转诊申请">×</button>
             </div>
           </header>
+
           <div class="referral-body">
-            <div class="referral-layout">
-              <div class="referral-column">
-                <section class="referral-card">
-                  <div class="referral-card-head"><h3>患者基本信息</h3><small>转诊对象</small></div>
-                  <div class="referral-card-body"><div class="referral-patient">
+            <form class="referral-form" id="referralForm" novalidate>
+              <section class="referral-card">
+                <div class="referral-card-head"><h3>患者信息</h3><small>系统自动带出，不可编辑</small></div>
+                <div class="referral-card-body">
+                  <div class="referral-patient">
                     <span class="referral-avatar" id="referralAvatar">患</span>
                     <div class="referral-patient-main">
                       <div class="referral-patient-name"><strong id="referralPatientName">--</strong><i class="referral-gender" id="referralPatientGender">--</i><em id="referralPatientAge">--岁</em></div>
                       <span id="referralPatientPhone">联系电话：--</span>
                     </div>
-                    <div class="referral-patient-detail"><span id="referralPatientIdentity">证件号码：--</span><span id="referralPatientTeam">当前管理团队：--</span></div>
-                    <div class="referral-patient-detail"><span id="referralPatientInstitution">当前管理机构：--</span></div>
-                  </div></div>
-                </section>
-                <section class="referral-card">
-                  <div class="referral-card-head"><h3>健康管理数据摘要</h3><small>用于辅助转诊评估</small></div>
-                  <div class="referral-card-body"><div class="referral-metrics">
-                    <div class="referral-metric danger"><label>近期血压</label><strong id="referralMetricBp">--</strong></div>
-                    <div class="referral-metric"><label>空腹血糖</label><strong id="referralMetricGlucose">--</strong></div>
-                    <div class="referral-metric"><label>BMI</label><strong id="referralMetricBmi">--</strong></div>
-                    <div class="referral-metric"><label>最近就诊</label><strong id="referralMetricVisit">--</strong></div>
-                  </div></div>
-                </section>
-                <section class="referral-card">
-                  <div class="referral-card-head"><h3>转诊信息</h3><small><span style="color:#ff4d4f">*</span> 为必填项</small></div>
-                  <div class="referral-card-body">
-                    <form class="referral-form-grid" id="referralForm" novalidate>
-                      <div class="referral-field full"><label class="required" for="referralReason">转诊原因</label><input class="referral-control" id="referralReason" type="text" maxlength="100" required placeholder="请填写转诊原因"><div class="referral-error" data-error-for="referralReason"></div></div>
-                      <div class="referral-field full"><label class="required" for="referralPurpose">转诊目的</label><input class="referral-control" id="referralPurpose" type="text" maxlength="100" required placeholder="请填写转诊目的"><div class="referral-error" data-error-for="referralPurpose"></div></div>
-                      <div class="referral-field full"><label class="required" for="referralType">转诊类型</label><select class="referral-control" id="referralType" required><option value="">请选择转诊类型</option><option>普通</option><option>加急</option></select><div class="referral-error" data-error-for="referralType"></div></div>
-                      <div class="referral-field"><label class="required" for="referralInstitution">转入机构</label><select class="referral-control" id="referralInstitution" required><option value="">请选择接收机构</option><option data-direction="平级">杭州市第一人民医院</option><option data-direction="上转">浙江大学医学院附属第二医院</option><option data-direction="上转">浙江省人民医院</option><option data-direction="下转">杭州市社区卫生服务中心</option></select><div class="referral-error" data-error-for="referralInstitution"></div></div>
-                      <div class="referral-field"><label class="required" for="referralDepartment">转入科室</label><select class="referral-control" id="referralDepartment" required><option value="">请选择接收科室</option><option>心血管内科</option><option>内分泌科</option><option>肾内科</option><option>呼吸与危重症医学科</option><option>肿瘤科</option><option>全科医学科</option></select><div class="referral-error" data-error-for="referralDepartment"></div></div>
-                      <div class="referral-field"><label class="required" for="referralDirection">转诊方向</label><select class="referral-control referral-control-derived" id="referralDirection" required aria-describedby="referralDirectionHint"><option value="">选择转入机构后自动匹配</option><option>上转</option><option>下转</option><option>平级</option></select><small class="referral-field-hint" id="referralDirectionHint">根据转入机构级别自动匹配</small><div class="referral-error" data-error-for="referralDirection"></div></div>
-                      <div class="referral-field full"><label class="required" for="referralSummary">临床情况摘要</label><div class="referral-textarea-wrap"><textarea class="referral-control" id="referralSummary" maxlength="300" required placeholder="系统生成后请医生确认或修改"></textarea><span class="referral-count"><b id="referralSummaryCount">0</b>/300</span></div><div class="referral-error" data-error-for="referralSummary"></div></div>
-                      <div class="referral-field full"><label for="referralNotes">特殊注意事项 <span class="referral-conditional">条件必填</span></label><div class="referral-textarea-wrap"><textarea class="referral-control" id="referralNotes" maxlength="200" placeholder="如高龄、跌倒风险、药物过敏或行动不便等"></textarea><span class="referral-count"><b id="referralNotesCount">0</b>/200</span></div><div class="referral-error" data-error-for="referralNotes"></div></div>
-                    </form>
+                    <div class="referral-patient-detail"><span id="referralPatientDisease">当前管理病种：--</span><span id="referralPatientInstitution">当前管理机构：--</span></div>
+                    <div class="referral-patient-detail"><span id="referralPatientTeam">当前管理团队：--</span></div>
                   </div>
-                </section>
-              </div>
-              <div class="referral-column">
-                <section class="referral-card">
-                  <div class="referral-card-head"><h3>近期重要检查</h3><small>最近90天</small></div>
-                  <div class="referral-card-body"><div class="referral-records">
-                    <div class="referral-record"><span>血常规</span><time>2026-08-20</time></div><div class="referral-record"><span>肝肾功能</span><time>2026-08-20</time></div><div class="referral-record"><span>心电图</span><time>2026-08-15</time></div><div class="referral-record"><span>尿常规</span><time>2026-08-02</time></div>
-                  </div></div>
-                </section>
-                <section class="referral-card">
-                  <div class="referral-card-head"><h3>关联医疗资料</h3><label class="referral-check-item"><input type="checkbox" id="referralSelectAllDocs" checked>全选</label></div>
-                  <div class="referral-card-body"><div class="referral-check-list" id="referralDocumentList">
-                    <label class="referral-check-item"><input type="checkbox" checked><span>最近30天血压数据</span><a href="#" data-referral-view>查看</a></label>
-                    <label class="referral-check-item"><input type="checkbox" checked><span>近期门诊病历</span><a href="#" data-referral-view>查看</a></label>
-                    <label class="referral-check-item"><input type="checkbox" checked><span>当前用药记录</span><a href="#" data-referral-view>查看</a></label>
-                    <label class="referral-check-item"><input type="checkbox" checked><span>肝肾功能检查</span><a href="#" data-referral-view>查看</a></label>
-                    <label class="referral-check-item"><input type="checkbox" checked><span>心电图检查</span><a href="#" data-referral-view>查看</a></label>
-                    <label class="referral-check-item"><input type="checkbox" checked><span>最近随访记录</span><a href="#" data-referral-view>查看</a></label>
-                    <label class="referral-check-item"><input type="checkbox" checked><span>过敏史</span><a href="#" data-referral-view>查看</a></label>
-                  </div></div>
-                </section>
-              </div>
-            </div>
+                </div>
+              </section>
+
+              <section class="referral-card">
+                <div class="referral-card-head"><h3>转诊信息</h3><small><span class="referral-required-mark">*</span> 为必填项</small></div>
+                <div class="referral-card-body">
+                  <div class="referral-form-grid">
+                    <div class="referral-field"><label class="required" for="referralInstitution">转入机构</label><input class="referral-control" id="referralInstitution" list="referralInstitutionOptions" placeholder="请输入机构名称搜索" autocomplete="off" required><datalist id="referralInstitutionOptions"><option value="南宁市第二人民医院"></option><option value="广西医科大学第一附属医院"></option><option value="南宁市青秀区人民医院"></option><option value="青秀区建政社区卫生服务中心"></option><option value="青秀区南湖社区卫生服务中心"></option></datalist><div class="referral-field-hint">仅展示与当前机构存在转诊关系的医疗机构</div><div class="referral-error" data-error-for="referralInstitution"></div></div>
+                    <div class="referral-field"><label class="required" for="referralDepartment">转入科室</label><select class="referral-control" id="referralDepartment" required disabled><option value="">请先选择转入机构</option></select><div class="referral-field-hint">科室范围随转入机构自动更新</div><div class="referral-error" data-error-for="referralDepartment"></div></div>
+                    <div class="referral-field full">
+                      <span class="referral-field-label">转诊方向</span>
+                      <div class="referral-direction" id="referralDirection" data-direction=""><span class="referral-direction-dot"></span><strong>选择转入机构后自动判断</strong><small>该字段由系统判断，不可修改</small></div>
+                    </div>
+                    <div class="referral-field"><label class="required" for="referralReason">转诊原因</label><select class="referral-control" id="referralReason" required disabled><option value="">请先选择转入机构</option></select><div class="referral-error" data-error-for="referralReason"></div></div>
+                    <div class="referral-field"><span class="referral-field-label required">转诊目的</span><div class="referral-purpose-tags" id="referralPurposeTags">
+                      <label><input type="checkbox" name="referralPurpose" value="进一步专科评估"><span>进一步专科评估</span></label>
+                      <label><input type="checkbox" name="referralPurpose" value="进一步检查"><span>进一步检查</span></label>
+                      <label><input type="checkbox" name="referralPurpose" value="进一步治疗"><span>进一步治疗</span></label>
+                      <label><input type="checkbox" name="referralPurpose" value="住院评估"><span>住院评估</span></label>
+                      <label><input type="checkbox" name="referralPurpose" value="定期复查"><span>定期复查</span></label>
+                      <label><input type="checkbox" name="referralPurpose" value="康复管理"><span>康复管理</span></label>
+                      <label><input type="checkbox" name="referralPurpose" value="长期随访"><span>长期随访</span></label>
+                      <label><input type="checkbox" name="referralPurpose" value="指标监测"><span>指标监测</span></label>
+                      <label><input type="checkbox" name="referralPurpose" value="健康管理"><span>健康管理</span></label>
+                      <label><input type="checkbox" name="referralPurpose" value="其他"><span>其他</span></label>
+                    </div><div class="referral-error" data-error-for="referralPurpose"></div></div>
+                    <div class="referral-field full referral-date-field"><label for="referralExpectedDate">期望转诊日期</label><input class="referral-control" id="referralExpectedDate" type="date"><div class="referral-field-hint">仅作为期望就诊时间，不代表预约成功。</div></div>
+                  </div>
+                </div>
+              </section>
+
+              <section class="referral-card">
+                <div class="referral-card-head"><h3>患者当前情况</h3><small>优先从患者档案自动带出</small></div>
+                <div class="referral-card-body">
+                  <div class="referral-current-overview">
+                    <div><label>当前主要诊断</label><strong id="referralCurrentDiagnosis">--</strong><button type="button" class="referral-text-action" data-view-all-diagnoses>查看全部诊断</button></div>
+                    <div><label>当前健康管理方案</label><strong id="referralCurrentPlan">--</strong></div>
+                    <div><label>管理时长</label><strong id="referralManagementDuration">--</strong></div>
+                  </div>
+                  <div class="referral-field">
+                    <label class="required" for="referralSituation">当前情况说明</label>
+                    <div class="referral-textarea-wrap"><textarea class="referral-control referral-situation" id="referralSituation" maxlength="500" required placeholder="请简要说明患者近期情况、健康管理效果及主要变化，例如持续管理时间、指标控制情况、症状变化等。"></textarea><span class="referral-count"><b id="referralSituationCount">0</b>/500</span></div>
+                    <div class="referral-error" data-error-for="referralSituation"></div>
+                  </div>
+                  <div class="referral-data-section">
+                    <div class="referral-data-head"><div><h4>近期关键指标/异常</h4><p>非必填，可从患者已有健康数据中关联</p></div><button type="button" class="referral-secondary-btn" data-link-metric>关联指标/异常记录</button></div>
+                    <div class="referral-empty" id="referralMetricEmpty">暂无已关联数据</div>
+                    <div class="referral-linked-metric" id="referralLinkedMetric" hidden>
+                      <div><strong>血压</strong><span id="referralMetricSummary">最近7天：--</span><small>异常记录：5次</small></div>
+                      <div class="referral-linked-actions"><button type="button" data-view-metric>查看趋势 ›</button><button type="button" data-remove-metric>删除</button></div>
+                    </div>
+                  </div>
+                  <div class="referral-field">
+                    <label for="referralSymptoms">近期症状/异常情况</label>
+                    <textarea class="referral-control" id="referralSymptoms" maxlength="300" placeholder="如近期出现头晕、胸闷、水肿、疼痛加重等情况，可在此补充。"></textarea>
+                  </div>
+                </div>
+              </section>
+
+              <section class="referral-card">
+                <div class="referral-card-head"><div><h3>相关医疗资料</h3><small>可关联患者现有医疗资料，便于接收机构了解患者情况。</small></div></div>
+                <div class="referral-card-body">
+                  <div class="referral-data-head referral-doc-toolbar"><div class="referral-doc-types">门诊记录 · 住院记录 · 出院记录 · 检查报告 · 检验报告 · 影像报告 · 病理报告 · 健康管理记录</div><div class="referral-toolbar-actions"><button type="button" class="referral-secondary-btn" data-select-docs>选择患者资料</button><button type="button" class="referral-secondary-btn" data-upload-other>上传其他附件</button><input type="file" id="referralAttachmentInput" accept=".pdf,.doc,.docx,.jpg,.jpeg,.png" hidden></div></div>
+                  <div class="referral-doc-list" id="referralDocumentList">
+                    <div class="referral-doc-item"><span class="referral-doc-icon">记</span><div><strong>2026-08-25 门诊记录</strong><small>心血管内科</small></div><div><button type="button" data-doc-view>查看</button><button type="button" data-doc-remove>移除</button></div></div>
+                    <div class="referral-doc-item"><span class="referral-doc-icon">检</span><div><strong>2026-08-28 血常规检验报告</strong><small>检验报告</small></div><div><button type="button" data-doc-view>查看</button><button type="button" data-doc-remove>移除</button></div></div>
+                    <div class="referral-doc-item"><span class="referral-doc-icon">管</span><div><strong>2026-08-30 血压管理记录</strong><small>健康管理记录</small></div><div><button type="button" data-doc-view>查看</button><button type="button" data-doc-remove>移除</button></div></div>
+                  </div>
+                  <div class="referral-upload-help">附件支持 PDF、Word、JPG、PNG 格式</div>
+                </div>
+              </section>
+
+              <section class="referral-card">
+                <div class="referral-card-head"><h3>补充说明</h3><small>非必填</small></div>
+                <div class="referral-card-body"><div class="referral-field"><label for="referralNotes">其他说明</label><textarea class="referral-control" id="referralNotes" maxlength="300" placeholder="如有其他需要接收机构重点关注的信息，请在此补充。"></textarea></div></div>
+              </section>
+            </form>
           </div>
-          <footer class="referral-foot"><button type="button" class="referral-cancel" data-close-referral>取消</button><div class="referral-foot-actions"><button type="button" class="referral-draft" data-save-referral-draft>保存草稿</button><button type="button" class="referral-confirm" data-confirm-referral>确定转诊</button></div></footer>
+
+          <footer class="referral-foot"><span><b>*</b> 为必填项</span><div class="referral-foot-actions"><button type="button" class="referral-cancel" data-close-referral>取消</button><button type="button" class="referral-confirm" data-confirm-referral>提交转诊申请</button></div></footer>
         </aside>
       </div>`);
   }
@@ -107,19 +149,54 @@
     if (node) node.textContent = value;
   }
 
-  function maskedIdentity(patient) {
-    const digits = String(patient.visitNo || '').replace(/\D/g, '');
-    return `320***********${digits.slice(-4).padStart(4, '0')}`;
+  function updateCount(inputId, countId) {
+    setText(countId, document.getElementById(inputId)?.value.length || 0);
   }
 
-  function syncReferralDirection() {
+  function managementDuration(patient) {
+    const days = Number(patient.managementDays);
+    return `已管理 ${Number.isFinite(days) && days > 0 ? days : 62} 天`;
+  }
+
+  function renderReasonOptions(direction) {
+    const select = document.getElementById('referralReason');
+    const options = reasonOptions[direction] || [];
+    select.innerHTML = `<option value="">${direction ? '请选择转诊原因' : '请先选择转入机构'}</option>${options.map(item => `<option>${item}</option>`).join('')}`;
+    select.disabled = !direction;
+  }
+
+  function syncInstitution() {
     const institution = document.getElementById('referralInstitution');
-    const direction = document.getElementById('referralDirection');
-    if (!institution || !direction) return;
-    direction.value = institution.selectedOptions[0]?.dataset.direction || '';
-    direction.classList.remove('invalid');
-    const error = document.querySelector('[data-error-for="referralDirection"]');
-    if (error) error.textContent = '';
+    const department = document.getElementById('referralDepartment');
+    const directionNode = document.getElementById('referralDirection');
+    const selected = institutionConfig[institution.value];
+    const previousDirection = directionNode.dataset.direction;
+    const nextDirection = selected?.direction || '';
+
+    department.innerHTML = `<option value="">${selected ? '请选择转入科室' : '请先选择转入机构'}</option>${(selected?.departments || []).map(item => `<option>${item}</option>`).join('')}`;
+    department.disabled = !selected;
+    department.value = '';
+
+    directionNode.dataset.direction = nextDirection;
+    directionNode.classList.toggle('active', Boolean(nextDirection));
+    directionNode.querySelector('strong').textContent = nextDirection ? `系统判断：向${nextDirection === 'up' ? '上' : '下'}转诊` : '选择转入机构后自动判断';
+
+    if (previousDirection !== nextDirection) {
+      renderReasonOptions(nextDirection);
+      document.getElementById('referralReason').value = '';
+      if (previousDirection && nextDirection) notify('转诊方向已变化，请重新选择转诊原因');
+    }
+
+    ['referralInstitution', 'referralDepartment', 'referralReason'].forEach(id => {
+      document.getElementById(id)?.classList.remove('invalid');
+      const error = document.querySelector(`[data-error-for="${id}"]`);
+      if (error) error.textContent = '';
+    });
+  }
+
+  function resetLinkedMetric() {
+    document.getElementById('referralMetricEmpty').hidden = false;
+    document.getElementById('referralLinkedMetric').hidden = true;
   }
 
   function openDrawer(visitNo, trigger) {
@@ -127,33 +204,39 @@
     activePatient = findPatient(visitNo);
     if (!activePatient) return;
     lastTrigger = trigger;
-    const drawer = document.getElementById('patientReferralDrawer');
+
     setText('referralAvatar', activePatient.name.slice(-1));
     setText('referralPatientName', activePatient.name);
     setText('referralPatientGender', activePatient.gender);
     setText('referralPatientAge', `${activePatient.age}岁`);
     setText('referralPatientPhone', `联系电话：${activePatient.phone}`);
-    setText('referralPatientIdentity', `证件号码：${maskedIdentity(activePatient)}`);
+    setText('referralPatientDisease', `当前管理病种：${activePatient.disease || activePatient.tags?.[0] || '慢病管理'}`);
+    setText('referralPatientInstitution', `当前管理机构：${activePatient.managementInstitution || '青秀区XX社区卫生服务中心'}`);
     setText('referralPatientTeam', `当前管理团队：${activePatient.team || '健康管理团队'}`);
-    setText('referralPatientInstitution', `当前管理机构：${activePatient.managementInstitution || '杭州市第一人民医院'}`);
-    setText('referralMetricBp', `${activePatient.systolicBP}/${activePatient.diastolicBP} mmHg`);
-    setText('referralMetricGlucose', `${activePatient.fastingGlucose} mmol/L`);
-    setText('referralMetricBmi', activePatient.bmi);
-    setText('referralMetricVisit', activePatient.visitDate);
-    document.getElementById('referralReason').value = '';
-    document.getElementById('referralPurpose').value = '';
-    document.getElementById('referralType').value = '普通';
-    document.getElementById('referralDirection').value = '';
-    document.getElementById('referralDepartment').value = [...document.getElementById('referralDepartment').options].some(option => option.value === activePatient.department) ? activePatient.department : '';
-    document.getElementById('referralInstitution').value = '';
-    document.getElementById('referralSummary').value = `患者${activePatient.name}，${activePatient.age}岁，近期诊断：${activePatient.diagnosis.replace(/\.\.\.$/, '')}。当前健康管理重点为${activePatient.standardFeature || '病情监测'}，建议转至专科进一步评估并优化诊疗方案。`;
+    setText('referralCurrentDiagnosis', (activePatient.diagnosis || activePatient.disease || '原发性高血压').replace(/\.\.\.$/, ''));
+    setText('referralCurrentPlan', activePatient.currentPlan || '高血压90天健康管理方案');
+    setText('referralManagementDuration', managementDuration(activePatient));
+    setText('referralMetricSummary', `最近7天：最高${Math.max(Number(activePatient.systolicBP) || 168, 168)}/${Math.max(Number(activePatient.diastolicBP) || 102, 102)}mmHg`);
+
+    const form = document.getElementById('referralForm');
+    form.reset();
+    document.getElementById('referralDepartment').innerHTML = '<option value="">请先选择转入机构</option>';
+    document.getElementById('referralDepartment').disabled = true;
+    document.getElementById('referralDirection').dataset.direction = '';
+    document.getElementById('referralDirection').classList.remove('active');
+    document.getElementById('referralDirection').querySelector('strong').textContent = '选择转入机构后自动判断';
+    renderReasonOptions('');
+    const duration = managementDuration(activePatient).replace('已管理 ', '').replace(' 天', '');
+    document.getElementById('referralSituation').value = `患者已纳入${activePatient.disease || '慢病'}健康管理${duration}天，持续开展指标监测、用药提醒及生活方式管理，近期关键指标仍多次高于目标范围，整体控制效果有待改善。`;
+    document.getElementById('referralSymptoms').value = '';
     document.getElementById('referralNotes').value = '';
-    document.querySelectorAll('#referralForm .referral-control').forEach(control => control.classList.remove('invalid'));
-    document.querySelectorAll('#referralForm .referral-error').forEach(error => { error.textContent = ''; });
-    updateCount('referralSummary', 'referralSummaryCount');
-    updateCount('referralNotes', 'referralNotesCount');
-    const drawerBody = drawer.querySelector('.referral-body');
-    if (drawerBody) drawerBody.scrollTop = 0;
+    document.querySelectorAll('#referralForm .invalid').forEach(node => node.classList.remove('invalid'));
+    document.querySelectorAll('#referralForm .referral-error').forEach(node => { node.textContent = ''; });
+    resetLinkedMetric();
+    updateCount('referralSituation', 'referralSituationCount');
+
+    const drawer = document.getElementById('patientReferralDrawer');
+    drawer.querySelector('.referral-body').scrollTop = 0;
     drawer.classList.add('open');
     drawer.setAttribute('aria-hidden', 'false');
     document.body.style.overflow = 'hidden';
@@ -169,39 +252,42 @@
     window.setTimeout(() => lastTrigger?.focus(), 20);
   }
 
-  function updateCount(inputId, countId) {
-    setText(countId, document.getElementById(inputId)?.value.length || 0);
-  }
-
   function validateForm() {
     const requirements = [
-      ['referralReason', '请填写转诊原因'],
-      ['referralPurpose', '请填写转诊目的'],
-      ['referralType', '请选择转诊类型'],
-      ['referralDirection', '请选择转诊方向'],
-      ['referralInstitution', '请选择接收机构'],
-      ['referralDepartment', '请选择接收科室'],
-      ['referralSummary', '请确认临床情况摘要']
+      ['referralInstitution', '请选择转入机构'],
+      ['referralDepartment', '请选择该机构下的转入科室'],
+      ['referralReason', '请选择转诊原因'],
+      ['referralSituation', '请填写患者当前情况说明']
     ];
     let firstInvalid = null;
     requirements.forEach(([id, message]) => {
       const control = document.getElementById(id);
-      const valid = Boolean(control.value);
+      const valid = Boolean(control.value.trim());
       control.classList.toggle('invalid', !valid);
       const error = document.querySelector(`[data-error-for="${id}"]`);
       if (error) error.textContent = valid ? '' : message;
       if (!valid && !firstInvalid) firstInvalid = control;
     });
-    const referralType = document.getElementById('referralType').value;
-    const notes = document.getElementById('referralNotes');
-    const notesRequired = referralType === '加急';
-    const notesValid = !notesRequired || Boolean(notes.value.trim());
-    notes.classList.toggle('invalid', !notesValid);
-    const notesError = document.querySelector('[data-error-for="referralNotes"]');
-    if (notesError) notesError.textContent = notesValid ? '' : '加急转诊请填写特殊注意事项';
-    if (!notesValid && !firstInvalid) firstInvalid = notes;
+
+    const purposes = [...document.querySelectorAll('input[name="referralPurpose"]')];
+    const purposeValid = purposes.some(input => input.checked);
+    const purposeTags = document.getElementById('referralPurposeTags');
+    purposeTags.classList.toggle('invalid', !purposeValid);
+    const purposeError = document.querySelector('[data-error-for="referralPurpose"]');
+    if (purposeError) purposeError.textContent = purposeValid ? '' : '请至少选择一个转诊目的';
+    if (!purposeValid && !firstInvalid) firstInvalid = purposes[0];
+
     firstInvalid?.focus();
+    firstInvalid?.scrollIntoView({ block: 'center', behavior: 'smooth' });
     return !firstInvalid;
+  }
+
+  function addUploadedDocument(file) {
+    const item = document.createElement('div');
+    item.className = 'referral-doc-item';
+    item.innerHTML = '<span class="referral-doc-icon">附</span><div><strong></strong><small>其他附件</small></div><div><button type="button" data-doc-view>查看</button><button type="button" data-doc-remove>移除</button></div>';
+    item.querySelector('strong').textContent = file.name;
+    document.getElementById('referralDocumentList').appendChild(item);
   }
 
   document.addEventListener('click', event => {
@@ -221,13 +307,39 @@
       closeDrawer();
       return;
     }
-    if (event.target.closest('[data-referral-view]')) {
-      event.preventDefault();
-      notify('已打开资料预览');
+    if (event.target.closest('[data-view-all-diagnoses]')) {
+      notify('已打开患者全部诊断');
       return;
     }
-    if (event.target.closest('[data-save-referral-draft]')) {
-      notify(`已保存${activePatient ? ` ${activePatient.name}` : ''}的转诊申请草稿`);
+    if (event.target.closest('[data-link-metric]')) {
+      document.getElementById('referralMetricEmpty').hidden = true;
+      document.getElementById('referralLinkedMetric').hidden = false;
+      notify('已关联近期血压异常记录');
+      return;
+    }
+    if (event.target.closest('[data-remove-metric]')) {
+      resetLinkedMetric();
+      return;
+    }
+    if (event.target.closest('[data-view-metric]')) {
+      notify('已打开血压趋势');
+      return;
+    }
+    if (event.target.closest('[data-doc-view]')) {
+      notify('已打开医疗资料预览');
+      return;
+    }
+    const removeDoc = event.target.closest('[data-doc-remove]');
+    if (removeDoc) {
+      removeDoc.closest('.referral-doc-item')?.remove();
+      return;
+    }
+    if (event.target.closest('[data-select-docs]')) {
+      notify('已打开患者资料选择');
+      return;
+    }
+    if (event.target.closest('[data-upload-other]')) {
+      document.getElementById('referralAttachmentInput')?.click();
       return;
     }
     const confirmButton = event.target.closest('[data-confirm-referral]');
@@ -235,20 +347,29 @@
       if (!validateForm()) return;
       confirmButton.classList.add('loading');
       confirmButton.disabled = true;
-      confirmButton.textContent = '正在提交转诊';
+      confirmButton.textContent = '正在提交申请';
       window.setTimeout(() => {
         confirmButton.classList.remove('loading');
         confirmButton.disabled = false;
-        confirmButton.textContent = '确定转诊';
+        confirmButton.textContent = '提交转诊申请';
         notify(`${activePatient?.name || '患者'}的转诊申请已提交`);
         closeDrawer();
       }, 450);
     }
   }, true);
 
-  document.addEventListener('input', event => {
-    if (event.target.id === 'referralSummary') updateCount('referralSummary', 'referralSummaryCount');
-    if (event.target.id === 'referralNotes') updateCount('referralNotes', 'referralNotesCount');
+  document.addEventListener('change', event => {
+    if (event.target.id === 'referralInstitution') syncInstitution();
+    if (event.target.id === 'referralAttachmentInput' && event.target.files?.[0]) {
+      addUploadedDocument(event.target.files[0]);
+      event.target.value = '';
+    }
+    if (event.target.name === 'referralPurpose') {
+      const tags = document.getElementById('referralPurposeTags');
+      tags.classList.remove('invalid');
+      const error = document.querySelector('[data-error-for="referralPurpose"]');
+      if (error) error.textContent = '';
+    }
     if (event.target.matches('#referralForm .referral-control') && event.target.value) {
       event.target.classList.remove('invalid');
       const error = document.querySelector(`[data-error-for="${event.target.id}"]`);
@@ -256,21 +377,13 @@
     }
   });
 
-  document.addEventListener('change', event => {
-    if (event.target.id === 'referralInstitution') syncReferralDirection();
-    if (event.target.id === 'referralType' && event.target.value === '普通') {
-      document.getElementById('referralNotes')?.classList.remove('invalid');
-      const notesError = document.querySelector('[data-error-for="referralNotes"]');
-      if (notesError) notesError.textContent = '';
-    }
-    if (event.target.id === 'referralSelectAllDocs') {
-      document.querySelectorAll('#referralDocumentList input[type="checkbox"]').forEach(input => { input.checked = event.target.checked; });
-    }
-    if (event.target.matches('#referralDocumentList input[type="checkbox"]')) {
-      const inputs = [...document.querySelectorAll('#referralDocumentList input[type="checkbox"]')];
-      const selectAll = document.getElementById('referralSelectAllDocs');
-      selectAll.checked = inputs.every(input => input.checked);
-      selectAll.indeterminate = !selectAll.checked && inputs.some(input => input.checked);
+  document.addEventListener('input', event => {
+    if (event.target.id === 'referralInstitution') syncInstitution();
+    if (event.target.id === 'referralSituation') updateCount('referralSituation', 'referralSituationCount');
+    if (event.target.matches('#referralForm .referral-control') && event.target.value) {
+      event.target.classList.remove('invalid');
+      const error = document.querySelector(`[data-error-for="${event.target.id}"]`);
+      if (error) error.textContent = '';
     }
   });
 
