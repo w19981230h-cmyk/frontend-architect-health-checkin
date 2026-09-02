@@ -76,7 +76,7 @@
                     <div class="referral-field"><label class="required" for="referralDepartment">转入科室</label><select class="referral-control" id="referralDepartment" required disabled><option value="">请先选择转入机构</option></select><div class="referral-field-hint">科室范围随转入机构自动更新</div><div class="referral-error" data-error-for="referralDepartment"></div></div>
                     <div class="referral-field"><label for="referralDirection">转诊方向</label><input class="referral-control referral-control-derived" id="referralDirection" data-direction="" value="选择转入机构后自动带入" readonly><div class="referral-field-hint">系统根据机构上下级关系自动判断，不可修改</div></div>
                     <div class="referral-field"><label class="required" for="referralType">转诊类型</label><select class="referral-control" id="referralType" required><option value="普通">普通</option><option value="加急">加急</option></select><div class="referral-error" data-error-for="referralType"></div></div>
-                    <div class="referral-field"><label class="required" for="referralReason">转诊原因</label><div class="referral-combo"><textarea class="referral-control referral-reason-input" id="referralReason" rows="2" maxlength="300" required disabled placeholder="请先选择转入机构"></textarea><button type="button" class="referral-combo-trigger" data-toggle-reason-shortcuts aria-label="展开转诊原因快捷文本" aria-expanded="false" disabled>⌄</button><div class="referral-combo-popup referral-reason-shortcuts" id="referralReasonShortcuts" hidden></div></div><div class="referral-field-hint">可手动输入，也可从下拉选项中多选并快速追加</div><div class="referral-error" data-error-for="referralReason"></div></div>
+                    <div class="referral-field"><label class="required" for="referralReason">转诊原因</label><div class="referral-combo"><textarea class="referral-control referral-reason-input" id="referralReason" rows="2" maxlength="300" required placeholder="请输入转诊原因，或展开下拉快捷添加"></textarea><button type="button" class="referral-combo-trigger" data-toggle-reason-shortcuts aria-label="展开转诊原因快捷文本" aria-expanded="false">⌄</button><div class="referral-combo-popup referral-reason-shortcuts" id="referralReasonShortcuts" hidden></div></div><div class="referral-field-hint">无需先选择机构，可手动输入或多选快捷文本</div><div class="referral-error" data-error-for="referralReason"></div></div>
                     <div class="referral-field"><span class="referral-field-label required">转诊目的</span><div class="referral-combo"><button type="button" class="referral-control referral-multi-control" id="referralPurposeControl" data-toggle-purpose aria-expanded="false"><span id="referralPurposeSummary">请选择转诊目的（可多选）</span><i>⌄</i></button><div class="referral-combo-popup referral-purpose-popup" id="referralPurposeDropdown" hidden><div class="referral-purpose-tags" id="referralPurposeTags">
                       <label><input type="checkbox" name="referralPurpose" value="进一步专科评估"><span>进一步专科评估</span></label>
                       <label><input type="checkbox" name="referralPurpose" value="进一步检查"><span>进一步检查</span></label>
@@ -177,15 +177,11 @@
     const input = document.getElementById('referralReason');
     const trigger = document.querySelector('[data-toggle-reason-shortcuts]');
     const popup = document.getElementById('referralReasonShortcuts');
-    const options = reasonOptions[direction] || [];
+    const options = direction ? reasonOptions[direction] : [...new Set([...reasonOptions.up, ...reasonOptions.down])];
     popup.innerHTML = options.map(item => `<button type="button" data-reason-shortcut="${item}"><span>✓</span>${item}</button>`).join('');
-    input.disabled = !direction;
-    input.placeholder = direction ? '请输入转诊原因，或展开下拉快捷添加' : '请先选择转入机构';
-    trigger.disabled = !direction;
-    if (!direction) {
-      popup.hidden = true;
-      trigger.setAttribute('aria-expanded', 'false');
-    }
+    input.disabled = false;
+    input.placeholder = '请输入转诊原因，或展开下拉快捷添加';
+    trigger.disabled = false;
   }
 
   function updateReasonShortcutState() {
@@ -231,9 +227,11 @@
 
     if (previousDirection !== nextDirection) {
       renderReasonOptions(nextDirection);
-      document.getElementById('referralReason').value = '';
+      if (previousDirection && nextDirection) {
+        document.getElementById('referralReason').value = '';
+        notify('转诊方向已变化，请重新选择转诊原因');
+      }
       updateReasonShortcutState();
-      if (previousDirection && nextDirection) notify('转诊方向已变化，请重新选择转诊原因');
     }
 
     ['referralInstitution', 'referralDepartment', 'referralReason'].forEach(id => {
