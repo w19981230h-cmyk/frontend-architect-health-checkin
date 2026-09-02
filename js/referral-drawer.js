@@ -53,7 +53,7 @@
                       <span id="referralPatientPhone">联系电话：--</span>
                     </div>
                     <div class="referral-patient-detail"><span id="referralPatientDisease">当前管理病种：--</span><span id="referralPatientInstitution">当前管理机构：--</span></div>
-                    <div class="referral-patient-detail"><span id="referralPatientTeam">当前管理团队：--</span></div>
+                    <div class="referral-patient-detail"><span id="referralPatientIdCard">身份证号：--</span><span id="referralPatientTeam">当前管理团队：--</span></div>
                   </div>
                 </div>
               </section>
@@ -158,6 +158,12 @@
     return `已管理 ${Number.isFinite(days) && days > 0 ? days : 62} 天`;
   }
 
+  function maskedIdCard(patient) {
+    if (patient.idCard && String(patient.idCard).includes('*')) return patient.idCard;
+    const source = String(patient.idCard || patient.visitNo || '0001');
+    return `320***********${source.slice(-4).padStart(4, '0')}`;
+  }
+
   function renderReasonOptions(direction) {
     const select = document.getElementById('referralReason');
     const options = reasonOptions[direction] || [];
@@ -212,6 +218,7 @@
     setText('referralPatientPhone', `联系电话：${activePatient.phone}`);
     setText('referralPatientDisease', `当前管理病种：${activePatient.disease || activePatient.tags?.[0] || '慢病管理'}`);
     setText('referralPatientInstitution', `当前管理机构：${activePatient.managementInstitution || '青秀区XX社区卫生服务中心'}`);
+    setText('referralPatientIdCard', `身份证号：${maskedIdCard(activePatient)}`);
     setText('referralPatientTeam', `当前管理团队：${activePatient.team || '健康管理团队'}`);
     setText('referralCurrentDiagnosis', (activePatient.diagnosis || activePatient.disease || '原发性高血压').replace(/\.\.\.$/, ''));
     setText('referralCurrentPlan', activePatient.currentPlan || '高血压90天健康管理方案');
