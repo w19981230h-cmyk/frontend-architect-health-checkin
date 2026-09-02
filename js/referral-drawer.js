@@ -15,6 +15,16 @@
     down: ['病情稳定，适合基层继续管理', '阶段性治疗已完成', '转长期随访管理', '转康复管理', '转属地机构继续管理', '其他']
   };
 
+  const patientMaterialOptions = [
+    { id: 'outpatient-0825', icon: '诊', title: '2026-08-25 心血管内科门诊记录', meta: '门诊记录 · 南宁市第二人民医院' },
+    { id: 'discharge-0818', icon: '出', title: '2026-08-18 高血压住院出院记录', meta: '出院记录 · 心血管内科' },
+    { id: 'blood-0828', icon: '检', title: '2026-08-28 血常规检验报告', meta: '检验报告 · 异常项 2 项' },
+    { id: 'kidney-0828', icon: '检', title: '2026-08-28 肝肾功能检验报告', meta: '检验报告 · 异常项 1 项' },
+    { id: 'ultrasound-0829', icon: '查', title: '2026-08-29 心脏彩超检查报告', meta: '检查报告 · 超声医学科' },
+    { id: 'ct-0829', icon: '影', title: '2026-08-29 胸部CT影像报告', meta: '影像报告 · 放射科' },
+    { id: 'blood-pressure-0830', icon: '管', title: '2026-08-30 血压管理记录', meta: '健康管理记录 · 最近30天' }
+  ];
+
   function notify(message) {
     if (typeof window.showToast === 'function') {
       window.showToast(message);
@@ -85,28 +95,27 @@
               </section>
 
               <section class="referral-card">
-                <div class="referral-card-head"><h3>患者当前情况</h3><small>优先从患者档案自动带出</small></div>
+                <div class="referral-card-head"><h3>当前情况</h3><small>优先从患者档案自动带出</small></div>
                 <div class="referral-card-body">
-                  <div class="referral-current-overview">
-                    <div><label>当前主要诊断</label><strong id="referralCurrentDiagnosis">--</strong><button type="button" class="referral-text-action" data-view-all-diagnoses>查看全部诊断</button></div>
-                    <div><label>当前健康管理方案</label><strong id="referralCurrentPlan">--</strong></div>
-                    <div><label>管理时长</label><strong id="referralManagementDuration">--</strong></div>
+                  <div class="referral-diagnosis-row">
+                    <label>诊断信息</label><strong id="referralCurrentDiagnosis">--</strong><button type="button" class="referral-text-action" data-view-all-diagnoses>查看全部诊断</button>
                   </div>
                   <div class="referral-field">
-                    <label class="required" for="referralSituation">当前情况说明</label>
+                    <label class="required" for="referralSituation">情况说明</label>
                     <div class="referral-textarea-wrap"><textarea class="referral-control referral-situation" id="referralSituation" maxlength="500" required placeholder="请简要说明患者近期情况、健康管理效果及主要变化，例如持续管理时间、指标控制情况、症状变化等。"></textarea><span class="referral-count"><b id="referralSituationCount">0</b>/500</span></div>
                     <div class="referral-error" data-error-for="referralSituation"></div>
                   </div>
                   <div class="referral-data-section">
-                    <div class="referral-data-head"><div><h4>近期关键指标/异常</h4><p>非必填，可从患者已有健康数据中关联</p></div><button type="button" class="referral-secondary-btn" data-link-metric>关联指标/异常记录</button></div>
-                    <div class="referral-empty" id="referralMetricEmpty">暂无已关联数据</div>
-                    <div class="referral-linked-metric" id="referralLinkedMetric" hidden>
-                      <div><strong>血压</strong><span id="referralMetricSummary">最近7天：--</span><small>异常记录：5次</small></div>
-                      <div class="referral-linked-actions"><button type="button" data-view-metric>查看趋势 ›</button><button type="button" data-remove-metric>删除</button></div>
+                    <div class="referral-data-head"><div><h4>关键异常</h4><p>来自患者近期健康数据和异常记录</p></div><button type="button" class="referral-secondary-btn" data-link-metric>关联更多异常</button></div>
+                    <div class="referral-abnormal-grid" id="referralAbnormalList">
+                      <article class="referral-abnormal-card"><div><span>血压异常</span><strong id="referralAbnormalBloodPressure">168/102 mmHg</strong><small>最近7天最高值 · 异常5次</small></div><div class="referral-linked-actions"><button type="button" data-view-metric>查看趋势</button><button type="button" data-remove-metric>移除</button></div></article>
+                      <article class="referral-abnormal-card"><div><span>空腹血糖偏高</span><strong>7.2 mmol/L</strong><small>2026-08-30 · 高于目标范围</small></div><div class="referral-linked-actions"><button type="button" data-view-metric>查看记录</button><button type="button" data-remove-metric>移除</button></div></article>
+                      <article class="referral-abnormal-card"><div><span>静息心率偏快</span><strong>108 次/分</strong><small>近3天出现2次</small></div><div class="referral-linked-actions"><button type="button" data-view-metric>查看记录</button><button type="button" data-remove-metric>移除</button></div></article>
+                      <article class="referral-abnormal-card"><div><span>BMI超重</span><strong>28.6 kg/m²</strong><small>近30天体重上升1.8kg</small></div><div class="referral-linked-actions"><button type="button" data-view-metric>查看趋势</button><button type="button" data-remove-metric>移除</button></div></article>
                     </div>
                   </div>
                   <div class="referral-field">
-                    <label for="referralSymptoms">近期症状/异常情况</label>
+                    <label for="referralSymptoms">其他异常</label>
                     <textarea class="referral-control" id="referralSymptoms" maxlength="300" placeholder="如近期出现头晕、胸闷、水肿、疼痛加重等情况，可在此补充。"></textarea>
                   </div>
                 </div>
@@ -117,23 +126,25 @@
                 <div class="referral-card-body">
                   <div class="referral-data-head referral-doc-toolbar"><div class="referral-doc-types">门诊记录 · 住院记录 · 出院记录 · 检查报告 · 检验报告 · 影像报告 · 病理报告 · 健康管理记录</div><div class="referral-toolbar-actions"><button type="button" class="referral-secondary-btn" data-select-docs>选择患者资料</button><button type="button" class="referral-secondary-btn" data-upload-other>上传其他附件</button><input type="file" id="referralAttachmentInput" accept=".pdf,.doc,.docx,.jpg,.jpeg,.png" hidden></div></div>
                   <div class="referral-doc-list" id="referralDocumentList">
-                    <div class="referral-doc-item"><span class="referral-doc-icon">记</span><div><strong>2026-08-25 门诊记录</strong><small>心血管内科</small></div><div><button type="button" data-doc-view>查看</button><button type="button" data-doc-remove>移除</button></div></div>
-                    <div class="referral-doc-item"><span class="referral-doc-icon">检</span><div><strong>2026-08-28 血常规检验报告</strong><small>检验报告</small></div><div><button type="button" data-doc-view>查看</button><button type="button" data-doc-remove>移除</button></div></div>
-                    <div class="referral-doc-item"><span class="referral-doc-icon">管</span><div><strong>2026-08-30 血压管理记录</strong><small>健康管理记录</small></div><div><button type="button" data-doc-view>查看</button><button type="button" data-doc-remove>移除</button></div></div>
+                    <div class="referral-doc-item" data-doc-id="outpatient-0825"><span class="referral-doc-icon">诊</span><div><strong>2026-08-25 心血管内科门诊记录</strong><small>门诊记录 · 南宁市第二人民医院</small></div><div><button type="button" data-doc-view>查看</button><button type="button" data-doc-remove>移除</button></div></div>
+                    <div class="referral-doc-item" data-doc-id="blood-0828"><span class="referral-doc-icon">检</span><div><strong>2026-08-28 血常规检验报告</strong><small>检验报告 · 异常项 2 项</small></div><div><button type="button" data-doc-view>查看</button><button type="button" data-doc-remove>移除</button></div></div>
+                    <div class="referral-doc-item" data-doc-id="blood-pressure-0830"><span class="referral-doc-icon">管</span><div><strong>2026-08-30 血压管理记录</strong><small>健康管理记录 · 最近30天</small></div><div><button type="button" data-doc-view>查看</button><button type="button" data-doc-remove>移除</button></div></div>
                   </div>
                   <div class="referral-upload-help">附件支持 PDF、Word、JPG、PNG 格式</div>
                 </div>
-              </section>
-
-              <section class="referral-card">
-                <div class="referral-card-head"><h3>补充说明</h3><small>非必填</small></div>
-                <div class="referral-card-body"><div class="referral-field"><label for="referralNotes">其他说明</label><textarea class="referral-control" id="referralNotes" maxlength="300" placeholder="如有其他需要接收机构重点关注的信息，请在此补充。"></textarea></div></div>
               </section>
             </form>
           </div>
 
           <footer class="referral-foot"><span><b>*</b> 为必填项</span><div class="referral-foot-actions"><button type="button" class="referral-cancel" data-close-referral>取消</button><button type="button" class="referral-confirm" data-confirm-referral>提交转诊申请</button></div></footer>
         </aside>
+        <div class="referral-material-mask" id="referralMaterialModal" hidden>
+          <section class="referral-material-modal" role="dialog" aria-modal="true" aria-labelledby="referralMaterialTitle">
+            <header><div><h3 id="referralMaterialTitle">选择患者资料</h3><p>支持多选，添加后将在转诊申请中随单提交</p></div><button type="button" data-close-material aria-label="关闭资料选择弹窗">×</button></header>
+            <div class="referral-material-list">${patientMaterialOptions.map(item => `<div class="referral-material-item"><label><input type="checkbox" value="${item.id}" data-material-title="${item.title}" data-material-meta="${item.meta}" data-material-icon="${item.icon}"><span class="referral-material-check">✓</span><span class="referral-doc-icon">${item.icon}</span><span><strong>${item.title}</strong><small>${item.meta}</small></span></label><button type="button" data-doc-view>查看</button></div>`).join('')}</div>
+            <footer><span id="referralMaterialCount">已选择 0 项</span><div><button type="button" class="referral-cancel" data-close-material>取消</button><button type="button" class="referral-confirm" data-add-materials>添加所选资料</button></div></footer>
+          </section>
+        </div>
       </div>`);
   }
 
@@ -232,11 +243,6 @@
     });
   }
 
-  function resetLinkedMetric() {
-    document.getElementById('referralMetricEmpty').hidden = false;
-    document.getElementById('referralLinkedMetric').hidden = true;
-  }
-
   function openDrawer(visitNo, trigger) {
     createDrawer();
     activePatient = findPatient(visitNo);
@@ -253,9 +259,7 @@
     setText('referralPatientIdCard', `身份证号：${maskedIdCard(activePatient)}`);
     setText('referralPatientTeam', `当前管理团队：${activePatient.team || '健康管理团队'}`);
     setText('referralCurrentDiagnosis', (activePatient.diagnosis || activePatient.disease || '原发性高血压').replace(/\.\.\.$/, ''));
-    setText('referralCurrentPlan', activePatient.currentPlan || '高血压90天健康管理方案');
-    setText('referralManagementDuration', managementDuration(activePatient));
-    setText('referralMetricSummary', `最近7天：最高${Math.max(Number(activePatient.systolicBP) || 168, 168)}/${Math.max(Number(activePatient.diastolicBP) || 102, 102)}mmHg`);
+    setText('referralAbnormalBloodPressure', `${Math.max(Number(activePatient.systolicBP) || 168, 168)}/${Math.max(Number(activePatient.diastolicBP) || 102, 102)} mmHg`);
 
     const form = document.getElementById('referralForm');
     form.reset();
@@ -270,10 +274,9 @@
     const duration = managementDuration(activePatient).replace('已管理 ', '').replace(' 天', '');
     document.getElementById('referralSituation').value = `患者已纳入${activePatient.disease || '慢病'}健康管理${duration}天，持续开展指标监测、用药提醒及生活方式管理，近期关键指标仍多次高于目标范围，整体控制效果有待改善。`;
     document.getElementById('referralSymptoms').value = '';
-    document.getElementById('referralNotes').value = '';
     document.querySelectorAll('#referralForm .invalid').forEach(node => node.classList.remove('invalid'));
     document.querySelectorAll('#referralForm .referral-error').forEach(node => { node.textContent = ''; });
-    resetLinkedMetric();
+    document.getElementById('referralMaterialModal').hidden = true;
     updateCount('referralSituation', 'referralSituationCount');
 
     const drawer = document.getElementById('patientReferralDrawer');
@@ -288,6 +291,7 @@
     const drawer = document.getElementById('patientReferralDrawer');
     if (!drawer?.classList.contains('open')) return;
     drawer.classList.remove('open');
+    document.getElementById('referralMaterialModal').hidden = true;
     drawer.setAttribute('aria-hidden', 'true');
     document.body.style.overflow = '';
     window.setTimeout(() => lastTrigger?.focus(), 20);
@@ -299,7 +303,7 @@
       ['referralDepartment', '请选择该机构下的转入科室'],
       ['referralType', '请选择转诊类型'],
       ['referralReason', '请填写转诊原因'],
-      ['referralSituation', '请填写患者当前情况说明']
+      ['referralSituation', '请填写情况说明']
     ];
     let firstInvalid = null;
     requirements.forEach(([id, message]) => {
@@ -332,6 +336,51 @@
     document.getElementById('referralDocumentList').appendChild(item);
   }
 
+  function updateMaterialCount() {
+    const count = document.querySelectorAll('#referralMaterialModal input[type="checkbox"]:checked:not(:disabled)').length;
+    setText('referralMaterialCount', `已选择 ${count} 项`);
+  }
+
+  function openMaterialModal() {
+    const modal = document.getElementById('referralMaterialModal');
+    modal.querySelectorAll('input[type="checkbox"]').forEach(input => {
+      const exists = Boolean(document.querySelector(`#referralDocumentList [data-doc-id="${input.value}"]`));
+      input.checked = exists;
+      input.disabled = exists;
+      input.closest('.referral-material-item')?.classList.toggle('already-added', exists);
+    });
+    updateMaterialCount();
+    modal.hidden = false;
+    window.setTimeout(() => modal.querySelector('input:not(:disabled)')?.focus(), 30);
+  }
+
+  function closeMaterialModal() {
+    const modal = document.getElementById('referralMaterialModal');
+    if (modal) modal.hidden = true;
+  }
+
+  function appendMaterialDocument(input) {
+    if (document.querySelector(`#referralDocumentList [data-doc-id="${input.value}"]`)) return false;
+    const item = document.createElement('div');
+    item.className = 'referral-doc-item';
+    item.dataset.docId = input.value;
+    item.innerHTML = '<span class="referral-doc-icon"></span><div><strong></strong><small></small></div><div><button type="button" data-doc-view>查看</button><button type="button" data-doc-remove>移除</button></div>';
+    item.querySelector('.referral-doc-icon').textContent = input.dataset.materialIcon;
+    item.querySelector('strong').textContent = input.dataset.materialTitle;
+    item.querySelector('small').textContent = input.dataset.materialMeta;
+    document.getElementById('referralDocumentList').appendChild(item);
+    return true;
+  }
+
+  function addSelectedMaterials() {
+    let added = 0;
+    document.querySelectorAll('#referralMaterialModal input[type="checkbox"]:checked:not(:disabled)').forEach(input => {
+      if (appendMaterialDocument(input)) added += 1;
+    });
+    closeMaterialModal();
+    notify(added ? `已添加 ${added} 项患者资料` : '请选择需要添加的患者资料');
+  }
+
   document.addEventListener('click', event => {
     const openButton = event.target.closest('[data-open-referral]');
     if (openButton) {
@@ -344,6 +393,19 @@
       closeDrawer();
       return;
     }
+    if (event.target.closest('[data-close-material]')) {
+      closeMaterialModal();
+      return;
+    }
+    const materialMask = event.target.closest('#referralMaterialModal');
+    if (materialMask && event.target === materialMask) {
+      closeMaterialModal();
+      return;
+    }
+    if (event.target.closest('[data-add-materials]')) {
+      addSelectedMaterials();
+      return;
+    }
     const mask = event.target.closest('#patientReferralDrawer');
     if (mask && event.target === mask) {
       closeDrawer();
@@ -354,13 +416,12 @@
       return;
     }
     if (event.target.closest('[data-link-metric]')) {
-      document.getElementById('referralMetricEmpty').hidden = true;
-      document.getElementById('referralLinkedMetric').hidden = false;
-      notify('已关联近期血压异常记录');
+      notify('已打开患者异常数据选择');
       return;
     }
-    if (event.target.closest('[data-remove-metric]')) {
-      resetLinkedMetric();
+    const removeMetric = event.target.closest('[data-remove-metric]');
+    if (removeMetric) {
+      removeMetric.closest('.referral-abnormal-card')?.remove();
       return;
     }
     if (event.target.closest('[data-view-metric]')) {
@@ -377,7 +438,7 @@
       return;
     }
     if (event.target.closest('[data-select-docs]')) {
-      notify('已打开患者资料选择');
+      openMaterialModal();
       return;
     }
     if (event.target.closest('[data-upload-other]')) {
@@ -444,6 +505,7 @@
       if (error) error.textContent = '';
       updatePurposeSummary();
     }
+    if (event.target.closest('#referralMaterialModal') && event.target.type === 'checkbox') updateMaterialCount();
     if (event.target.matches('#referralForm .referral-control') && event.target.value) {
       event.target.classList.remove('invalid');
       const error = document.querySelector(`[data-error-for="${event.target.id}"]`);
@@ -462,6 +524,10 @@
   });
 
   document.addEventListener('keydown', event => {
+    if (event.key === 'Escape' && !document.getElementById('referralMaterialModal')?.hidden) {
+      closeMaterialModal();
+      return;
+    }
     if (event.key === 'Escape' && document.querySelector('.referral-combo-popup:not([hidden])')) {
       closeComboPopups();
       return;
