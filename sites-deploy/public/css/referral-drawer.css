@@ -142,11 +142,10 @@ textarea.referral-situation { min-height: 120px; }
 .referral-linked-actions button { padding: 0; border: 0; color: var(--referral-blue); background: transparent; font-size: 12px; cursor: pointer; }
 .referral-linked-actions button:last-child { color: #7f8a9a; }
 .referral-abnormal-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-.referral-abnormal-card { min-height: 106px; padding: 14px; border: 1px solid #dfe7f1; border-radius: 7px; display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: 12px; background: #fbfcfe; }
+.referral-abnormal-card { min-height: 106px; padding: 14px; border: 1px solid #dfe7f1; border-radius: 7px; display: grid; grid-template-columns: minmax(0, 1fr); align-items: center; background: #fbfcfe; }
 .referral-abnormal-card > div:first-child span { display: block; color: #65758b; font-size: 11px; }
 .referral-abnormal-card > div:first-child strong { display: block; margin-top: 7px; color: #cf323b; font-size: 15px; }
 .referral-abnormal-card > div:first-child small { display: block; margin-top: 6px; color: #8b97a8; font-size: 11px; }
-.referral-abnormal-card .referral-linked-actions { align-self: end; }
 
 .referral-doc-toolbar { align-items: flex-start; }
 .referral-doc-types { max-width: 700px; margin: 8px 0 0; color: #75849a; font-size: 11px; line-height: 1.8; }

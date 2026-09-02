@@ -106,12 +106,12 @@
                     <div class="referral-error" data-error-for="referralSituation"></div>
                   </div>
                   <div class="referral-data-section">
-                    <div class="referral-data-head"><div><h4>关键异常</h4><p>来自患者近期健康数据和异常记录</p></div><button type="button" class="referral-secondary-btn" data-link-metric>关联更多异常</button></div>
+                    <div class="referral-data-head"><div><h4>关键异常</h4><p>来自患者近期健康数据和异常记录</p></div></div>
                     <div class="referral-abnormal-grid" id="referralAbnormalList">
-                      <article class="referral-abnormal-card"><div><span>血压异常</span><strong id="referralAbnormalBloodPressure">168/102 mmHg</strong><small>最近7天最高值 · 异常5次</small></div><div class="referral-linked-actions"><button type="button" data-view-metric>查看趋势</button><button type="button" data-remove-metric>移除</button></div></article>
-                      <article class="referral-abnormal-card"><div><span>空腹血糖偏高</span><strong>7.2 mmol/L</strong><small>2026-08-30 · 高于目标范围</small></div><div class="referral-linked-actions"><button type="button" data-view-metric>查看记录</button><button type="button" data-remove-metric>移除</button></div></article>
-                      <article class="referral-abnormal-card"><div><span>静息心率偏快</span><strong>108 次/分</strong><small>近3天出现2次</small></div><div class="referral-linked-actions"><button type="button" data-view-metric>查看记录</button><button type="button" data-remove-metric>移除</button></div></article>
-                      <article class="referral-abnormal-card"><div><span>BMI超重</span><strong>28.6 kg/m²</strong><small>近30天体重上升1.8kg</small></div><div class="referral-linked-actions"><button type="button" data-view-metric>查看趋势</button><button type="button" data-remove-metric>移除</button></div></article>
+                      <article class="referral-abnormal-card"><div><span>血压异常</span><strong id="referralAbnormalBloodPressure">168/102 mmHg</strong><small>最近7天最高值 · 异常5次</small></div></article>
+                      <article class="referral-abnormal-card"><div><span>空腹血糖偏高</span><strong>7.2 mmol/L</strong><small>2026-08-30 · 高于目标范围</small></div></article>
+                      <article class="referral-abnormal-card"><div><span>静息心率偏快</span><strong>108 次/分</strong><small>近3天出现2次</small></div></article>
+                      <article class="referral-abnormal-card"><div><span>BMI超重</span><strong>28.6 kg/m²</strong><small>近30天体重上升1.8kg</small></div></article>
                     </div>
                   </div>
                   <div class="referral-field">
@@ -411,19 +411,6 @@
     }
     if (event.target.closest('[data-view-all-diagnoses]')) {
       notify('已打开患者全部诊断');
-      return;
-    }
-    if (event.target.closest('[data-link-metric]')) {
-      notify('已打开患者异常数据选择');
-      return;
-    }
-    const removeMetric = event.target.closest('[data-remove-metric]');
-    if (removeMetric) {
-      removeMetric.closest('.referral-abnormal-card')?.remove();
-      return;
-    }
-    if (event.target.closest('[data-view-metric]')) {
-      notify('已打开血压趋势');
       return;
     }
     if (event.target.closest('[data-doc-view]')) {
