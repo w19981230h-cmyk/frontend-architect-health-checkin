@@ -53,6 +53,7 @@
 .referral-card-head { min-height: 48px; padding: 0 18px; border-bottom: 1px solid #edf1f5; display: flex; align-items: center; justify-content: space-between; gap: 12px; }
 .referral-card-head h3 { margin: 0; color: #273850; font-size: 15px; }
 .referral-card-head small { color: #8a97a9; font-size: 12px; font-weight: 400; }
+.referral-card-head-actions { display: flex; align-items: center; gap: 12px; }
 .referral-required-mark { color: var(--referral-error); }
 .referral-card-body { padding: 18px; }
 

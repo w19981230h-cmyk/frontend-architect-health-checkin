@@ -69,7 +69,7 @@
           <div class="referral-body">
             <form class="referral-form" id="referralForm" novalidate>
               <section class="referral-card">
-                <div class="referral-card-head"><h3>患者信息</h3><small>系统自动带出，不可编辑</small></div>
+                <div class="referral-card-head"><h3>患者信息</h3><div class="referral-card-head-actions"><small>系统自动带出，不可编辑</small><button type="button" class="referral-secondary-btn" data-open-patient-archive>患者档案</button></div></div>
                 <div class="referral-card-body">
                   <div class="referral-patient">
                     <span class="referral-avatar" id="referralAvatar">患</span>
@@ -105,33 +105,6 @@
                       <label><input type="checkbox" name="referralPurpose" value="其他"><span>其他</span></label>
                     </div></div></div><div class="referral-error" data-error-for="referralPurpose"></div></div>
                     <div class="referral-field full referral-date-field"><label for="referralExpectedDate">期望转诊日期</label><input class="referral-control" id="referralExpectedDate" type="date"><div class="referral-field-hint">仅作为期望就诊时间，不代表预约成功。</div></div>
-                  </div>
-                </div>
-              </section>
-
-              <section class="referral-card">
-                <div class="referral-card-head"><h3>当前情况</h3><small>优先从患者档案自动带出</small></div>
-                <div class="referral-card-body">
-                  <div class="referral-diagnosis-row">
-                    <label>诊断信息</label><strong id="referralCurrentDiagnosis">--</strong><button type="button" class="referral-text-action" data-view-all-diagnoses>查看全部诊断</button>
-                  </div>
-                  <div class="referral-field">
-                    <label class="required" for="referralSituation">情况说明</label>
-                    <div class="referral-textarea-wrap"><textarea class="referral-control referral-situation" id="referralSituation" maxlength="500" required placeholder="请简要说明患者近期情况、健康管理效果及主要变化，例如持续管理时间、指标控制情况、症状变化等。"></textarea><span class="referral-count"><b id="referralSituationCount">0</b>/500</span></div>
-                    <div class="referral-error" data-error-for="referralSituation"></div>
-                  </div>
-                  <div class="referral-data-section">
-                    <div class="referral-data-head"><div><h4>关键异常</h4><p>来自患者近期健康数据和异常记录</p></div></div>
-                    <div class="referral-abnormal-grid" id="referralAbnormalList">
-                      <article class="referral-abnormal-card"><div><span>血压异常</span><strong id="referralAbnormalBloodPressure">168/102 mmHg</strong><small>最近7天最高值 · 异常5次</small></div></article>
-                      <article class="referral-abnormal-card"><div><span>空腹血糖偏高</span><strong>7.2 mmol/L</strong><small>2026-08-30 · 高于目标范围</small></div></article>
-                      <article class="referral-abnormal-card"><div><span>静息心率偏快</span><strong>108 次/分</strong><small>近3天出现2次</small></div></article>
-                      <article class="referral-abnormal-card"><div><span>BMI超重</span><strong>28.6 kg/m²</strong><small>近30天体重上升1.8kg</small></div></article>
-                    </div>
-                  </div>
-                  <div class="referral-field">
-                    <label for="referralSymptoms">其他异常</label>
-                    <textarea class="referral-control" id="referralSymptoms" maxlength="300" placeholder="如近期出现头晕、胸闷、水肿、疼痛加重等情况，可在此补充。"></textarea>
                   </div>
                 </div>
               </section>
@@ -178,15 +151,6 @@
   function setText(id, value) {
     const node = document.getElementById(id);
     if (node) node.textContent = value;
-  }
-
-  function updateCount(inputId, countId) {
-    setText(countId, document.getElementById(inputId)?.value.length || 0);
-  }
-
-  function managementDuration(patient) {
-    const days = Number(patient.managementDays);
-    return `已管理 ${Number.isFinite(days) && days > 0 ? days : 62} 天`;
   }
 
   function maskedIdCard(patient) {
@@ -278,9 +242,6 @@
     setText('referralPatientInstitution', `当前管理机构：${activePatient.managementInstitution || '青秀区XX社区卫生服务中心'}`);
     setText('referralPatientIdCard', `身份证号：${maskedIdCard(activePatient)}`);
     setText('referralPatientTeam', `当前管理团队：${activePatient.team || '健康管理团队'}`);
-    setText('referralCurrentDiagnosis', (activePatient.diagnosis || activePatient.disease || '原发性高血压').replace(/\.\.\.$/, ''));
-    setText('referralAbnormalBloodPressure', `${Math.max(Number(activePatient.systolicBP) || 168, 168)}/${Math.max(Number(activePatient.diastolicBP) || 102, 102)} mmHg`);
-
     const form = document.getElementById('referralForm');
     form.reset();
     document.getElementById('referralDepartment').innerHTML = '<option value="">请先选择转入机构</option>';
@@ -291,13 +252,9 @@
     renderReasonOptions('');
     updatePurposeSummary();
     closeComboPopups();
-    const duration = managementDuration(activePatient).replace('已管理 ', '').replace(' 天', '');
-    document.getElementById('referralSituation').value = `患者已纳入${activePatient.disease || '慢病'}健康管理${duration}天，持续开展指标监测、用药提醒及生活方式管理，近期关键指标仍多次高于目标范围，整体控制效果有待改善。`;
-    document.getElementById('referralSymptoms').value = '';
     document.querySelectorAll('#referralForm .invalid').forEach(node => node.classList.remove('invalid'));
     document.querySelectorAll('#referralForm .referral-error').forEach(node => { node.textContent = ''; });
     document.getElementById('referralMaterialModal').hidden = true;
-    updateCount('referralSituation', 'referralSituationCount');
 
     const drawer = document.getElementById('patientReferralDrawer');
     drawer.querySelector('.referral-body').scrollTop = 0;
@@ -322,8 +279,7 @@
       ['referralInstitution', '请选择转入机构'],
       ['referralDepartment', '请选择该机构下的转入科室'],
       ['referralType', '请选择转诊类型'],
-      ['referralReason', '请填写转诊原因'],
-      ['referralSituation', '请填写情况说明']
+      ['referralReason', '请填写转诊原因']
     ];
     let firstInvalid = null;
     requirements.forEach(([id, message]) => {
@@ -412,6 +368,16 @@
       closeDrawer();
       return;
     }
+    if (event.target.closest('[data-open-patient-archive]')) {
+      const visitNo = activePatient?.visitNo;
+      lastTrigger = null;
+      closeDrawer();
+      window.setTimeout(() => {
+        if (typeof window.openPatientArchiveByVisitNo === 'function') window.openPatientArchiveByVisitNo(visitNo);
+        else notify('暂时无法打开患者档案，请从患者列表进入');
+      }, 30);
+      return;
+    }
     if (event.target.closest('[data-close-material]')) {
       closeMaterialModal();
       return;
@@ -428,10 +394,6 @@
     const mask = event.target.closest('#patientReferralDrawer');
     if (mask && event.target === mask) {
       closeDrawer();
-      return;
-    }
-    if (event.target.closest('[data-view-all-diagnoses]')) {
-      notify('已打开患者全部诊断');
       return;
     }
     if (event.target.closest('[data-doc-view]')) {
@@ -521,7 +483,6 @@
 
   document.addEventListener('input', event => {
     if (event.target.id === 'referralReason') updateReasonShortcutState();
-    if (event.target.id === 'referralSituation') updateCount('referralSituation', 'referralSituationCount');
     if (event.target.matches('#referralForm .referral-control') && event.target.value) {
       event.target.classList.remove('invalid');
       const error = document.querySelector(`[data-error-for="${event.target.id}"]`);
