@@ -218,6 +218,8 @@
     .knowledge-file-menu[hidden] { display: none; }
     .knowledge-file-action { height: 32px; padding: 0 10px; border-radius: 4px; color: #263752; background: transparent; font-size: 14px; text-align: left; white-space: nowrap; }
     .knowledge-file-action:hover { color: #1677ff; background: #f5f8ff; }
+    .knowledge-file-action:disabled { color: #bfbfbf; background: transparent; cursor: not-allowed; }
+    .knowledge-file-action:disabled:hover { color: #bfbfbf; background: transparent; }
     .knowledge-file-action.danger { color: #ff4d4f; }
     .knowledge-file-action.danger:hover { color: #d9363e; background: #fff1f0; }
     .knowledge-file-cancel-upload { height: 30px; padding: 0 8px; border-radius: 4px; color: #ff4d4f; background: transparent; font-size: 14px; white-space: nowrap; }
@@ -498,7 +500,7 @@
           <button class="knowledge-upload-add" type="button" data-trigger-knowledge-upload aria-label="选择文件">＋</button>
         </div>
       </div>
-      <footer class="knowledge-upload-foot"><span class="knowledge-upload-count" id="knowledgeUploadCount">已选择 0/20 个文件</span><div class="knowledge-upload-actions"><button class="knowledge-upload-confirm" type="button" data-confirm-knowledge-upload disabled>确认上传</button><button class="knowledge-upload-cancel" type="button" data-close-knowledge-upload>取消</button></div></footer>
+      <footer class="knowledge-upload-foot"><span class="knowledge-upload-count" id="knowledgeUploadCount">已选择 0/20 个文件</span><div class="knowledge-upload-actions"><button class="knowledge-upload-confirm" type="button" data-confirm-knowledge-upload disabled>确定</button><button class="knowledge-upload-cancel" type="button" data-close-knowledge-upload>取消</button></div></footer>
     </section>`;
   document.body.appendChild(uploadMask);
 
@@ -637,7 +639,7 @@
   }
 
   function countTextFor(row) {
-    return `${filesForKnowledge(row).filter(file => file.uploadState !== 'uploading').length} 份`;
+    return `${filesForKnowledge(row).length} 份`;
   }
 
   function currentKnowledgeRow() {
@@ -690,61 +692,64 @@
     document.getElementById('knowledgeFileTotal').textContent = `共 ${filtered.length} 条`;
     document.getElementById('knowledgeFileRows').innerHTML = filtered.length ? filtered.map(file => {
       const index = files.indexOf(file);
-      const uploading = file.uploadState === 'uploading';
+      const parsing = file.uploadState === 'parsing';
       const progress = Math.max(0, Math.min(100, Number(file.progress) || 0));
-      const progressView = uploading ? `<div class="knowledge-upload-progress" role="progressbar" aria-label="${escapeHtml(file.name)}上传进度" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${progress}"><span class="knowledge-upload-progress-track"><span class="knowledge-upload-progress-bar" style="width:${progress}%"></span></span><span class="knowledge-upload-progress-value">${progress}%</span></div>` : '';
-      const statusView = `<button class="knowledge-file-status" type="button" role="switch" aria-checked="${file.enabled !== false}" data-toggle-knowledge-file-status="${index}" aria-label="${file.enabled !== false ? '关闭' : '开启'}${escapeHtml(file.name)}"${uploading ? ' disabled title="文件上传完成后可操作"' : ''}><span class="knowledge-file-status-track" aria-hidden="true"></span></button>`;
-      const operationView = uploading ? `<button class="knowledge-file-cancel-upload" type="button" data-cancel-knowledge-upload="${index}">取消上传</button>` : `<span class="knowledge-file-action-wrap"><button class="knowledge-file-more" type="button" data-toggle-knowledge-file-actions aria-haspopup="menu" aria-expanded="false" aria-label="${escapeHtml(file.name)}的更多操作">•••</button><span class="knowledge-file-menu" role="menu" hidden><button class="knowledge-file-action" role="menuitem" type="button" data-view-knowledge-file="${index}">查看</button><button class="knowledge-file-action" role="menuitem" type="button" data-edit-knowledge-file="${index}">编辑</button><button class="knowledge-file-action" role="menuitem" type="button" data-download-knowledge-file="${index}">下载</button><button class="knowledge-file-action" role="menuitem" type="button" data-replace-knowledge-file="${index}">替换</button><button class="knowledge-file-action danger" role="menuitem" type="button" data-delete-knowledge-file="${index}">删除</button></span></span>`;
-      return `<tr${uploading ? ' class="knowledge-file-uploading"' : ''}><td><div class="knowledge-file-name">${fileIcon(file)}<span class="knowledge-file-copy"><span class="knowledge-file-label" title="${escapeHtml(file.name)}">${escapeHtml(file.name)}</span>${progressView}</span></div></td><td>${file.size}</td><td>${statusView}</td><td>${uploading ? '刚刚' : file.updated}</td><td>${operationView}</td></tr>`;
+      const progressView = parsing ? `<div class="knowledge-upload-progress" data-parse-token="${file.parseToken}" role="progressbar" aria-label="${escapeHtml(file.name)}解析进度" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${progress}"><span class="knowledge-upload-progress-track"><span class="knowledge-upload-progress-bar" style="width:${progress}%"></span></span><span class="knowledge-upload-progress-value">${progress}%</span></div>` : '';
+      const statusView = `<button class="knowledge-file-status" type="button" role="switch" aria-checked="${file.enabled !== false}" data-toggle-knowledge-file-status="${index}" aria-label="${file.enabled !== false ? '关闭' : '开启'}${escapeHtml(file.name)}"${parsing ? ' disabled title="AI 解析完成后可操作"' : ''}><span class="knowledge-file-status-track" aria-hidden="true"></span></button>`;
+      const disabledAction = parsing ? ' disabled title="AI 解析完成后可操作"' : '';
+      const operationView = `<span class="knowledge-file-action-wrap"><button class="knowledge-file-more" type="button" data-toggle-knowledge-file-actions aria-haspopup="menu" aria-expanded="false" aria-label="${escapeHtml(file.name)}的更多操作">•••</button><span class="knowledge-file-menu" role="menu" hidden><button class="knowledge-file-action" role="menuitem" type="button" data-view-knowledge-file="${index}">查看</button><button class="knowledge-file-action" role="menuitem" type="button" data-edit-knowledge-file="${index}"${disabledAction}>编辑</button><button class="knowledge-file-action" role="menuitem" type="button" data-download-knowledge-file="${index}"${disabledAction}>下载</button><button class="knowledge-file-action" role="menuitem" type="button" data-replace-knowledge-file="${index}"${disabledAction}>替换</button><button class="knowledge-file-action danger" role="menuitem" type="button" data-delete-knowledge-file="${index}">删除</button></span></span>`;
+      return `<tr${parsing ? ' class="knowledge-file-uploading"' : ''}><td><div class="knowledge-file-name">${fileIcon(file)}<span class="knowledge-file-copy"><span class="knowledge-file-label" title="${escapeHtml(file.name)}">${escapeHtml(file.name)}</span>${progressView}</span></div></td><td>${file.size}</td><td>${statusView}</td><td>${parsing ? '刚刚' : file.updated}</td><td>${operationView}</td></tr>`;
     }).join('') : '<tr><td class="knowledge-file-empty" colspan="5">暂无符合条件的文件，请调整文件名称或类型</td></tr>';
   }
 
   const uploadState = { files: [] };
   const createFileState = { files: [] };
-  const uploadTimers = new Map();
+  const parseTimers = new Map();
+  let parseSequence = 0;
   let replaceTargetIndex = -1;
   let renameTargetIndex = -1;
   let activePreviewUrl = '';
 
-  function startKnowledgeUploads(row, selectedFiles) {
-    const records = selectedFiles.map(file => ({ ...createKnowledgeFile(file), uploadState: 'uploading', progress: 0 }));
+  function startKnowledgeParsing(row, selectedFiles) {
+    const records = selectedFiles.map(file => ({ ...createKnowledgeFile(file), uploadState: 'parsing', progress: 0, parseToken: `parse-${++parseSequence}` }));
     filesForKnowledge(row).unshift(...records);
+    adjustKnowledgeCount(row);
     records.forEach(record => {
       const timer = window.setInterval(() => {
         record.progress = Math.min(100, (Number(record.progress) || 0) + 4);
         if (record.progress >= 100) {
           window.clearInterval(timer);
-          uploadTimers.delete(record);
+          parseTimers.delete(record);
           delete record.uploadState;
           delete record.progress;
+          delete record.parseToken;
           record.updated = currentTimeText();
           adjustKnowledgeCount(row);
           render();
-          showToast(`“${record.name}”上传完成`);
+          showToast(`“${record.name}”AI 解析完成`);
+          if (detailView.classList.contains('active') && currentKnowledgeRow() === row) renderKnowledgeFiles();
+          return;
         }
-        if (detailView.classList.contains('active') && currentKnowledgeRow() === row) renderKnowledgeFiles();
+        if (detailView.classList.contains('active') && currentKnowledgeRow() === row) {
+          const progressElement = detailView.querySelector(`[data-parse-token="${record.parseToken}"]`);
+          if (progressElement) {
+            progressElement.setAttribute('aria-valuenow', String(record.progress));
+            const bar = progressElement.querySelector('.knowledge-upload-progress-bar');
+            const value = progressElement.querySelector('.knowledge-upload-progress-value');
+            if (bar) bar.style.width = `${record.progress}%`;
+            if (value) value.textContent = `${record.progress}%`;
+          }
+        }
       }, 220);
-      uploadTimers.set(record, timer);
+      parseTimers.set(record, timer);
     });
     renderKnowledgeFiles();
     render();
   }
 
-  function cancelActiveKnowledgeUpload(row, index) {
-    const files = filesForKnowledge(row);
-    const file = files[index];
-    if (!file || file.uploadState !== 'uploading') return;
-    window.clearInterval(uploadTimers.get(file));
-    uploadTimers.delete(file);
-    files.splice(index, 1);
-    renderKnowledgeFiles();
-    render();
-    showToast(`已取消“${file.name}”上传，未保留文件数据`);
-  }
-
   function openKnowledgeRename(index) {
     const file = filesForKnowledge(currentKnowledgeRow())[index];
-    if (!file || file.uploadState === 'uploading') return;
+    if (!file || file.uploadState === 'parsing') return;
     renameTargetIndex = index;
     document.getElementById('knowledgeRenameInput').value = file.name;
     document.getElementById('knowledgeRenameError').textContent = '';
@@ -950,7 +955,7 @@
     modalMask.querySelector('.knowledge-modal-submit').textContent = row ? '保存修改' : '确认创建';
     document.getElementById('knowledgeNameInput').value = row?.name || '';
     document.getElementById('knowledgeIntroInput').value = row?.intro || '';
-    createFileState.files = row ? filesForKnowledge(row).filter(file => file.uploadState !== 'uploading').map(file => ({ ...file })) : [];
+    createFileState.files = row ? filesForKnowledge(row).filter(file => file.uploadState !== 'parsing').map(file => ({ ...file })) : [];
     document.getElementById('knowledgeCreateFileInput').value = '';
     renderCreateFiles();
     modalMask.querySelectorAll('input[name="knowledgeTags"]').forEach(input => { input.checked = Boolean(row?.tags.includes(input.value)); });
@@ -1093,8 +1098,6 @@
       return;
     }
     const files = filesForKnowledge(currentKnowledgeRow());
-    const cancelUpload = event.target.closest('[data-cancel-knowledge-upload]');
-    if (cancelUpload) return cancelActiveKnowledgeUpload(currentKnowledgeRow(), Number(cancelUpload.dataset.cancelKnowledgeUpload));
     const toggleStatus = event.target.closest('[data-toggle-knowledge-file-status]');
     if (toggleStatus) {
       const file = files[Number(toggleStatus.dataset.toggleKnowledgeFileStatus)];
@@ -1138,6 +1141,10 @@
       const index = Number(deleteFile.dataset.deleteKnowledgeFile);
       const file = files[index];
       if (!file || !window.confirm(`确认删除文件“${file.name}”吗？删除后不可恢复。`)) return;
+      if (file.uploadState === 'parsing') {
+        window.clearInterval(parseTimers.get(file));
+        parseTimers.delete(file);
+      }
       files.splice(index, 1);
       adjustKnowledgeCount(currentKnowledgeRow());
       renderKnowledgeFiles();
@@ -1175,8 +1182,8 @@
       const row = currentKnowledgeRow();
       const selectedFiles = [...uploadState.files];
       closeKnowledgeUpload();
-      startKnowledgeUploads(row, selectedFiles);
-      showToast(`已开始上传 ${selectedFiles.length} 个文件`);
+      startKnowledgeParsing(row, selectedFiles);
+      showToast('文件上传成功，正在进行 AI 解析');
     }
   });
   previewBackdrop.addEventListener('click', closeKnowledgePreview);
@@ -1298,13 +1305,13 @@
     const editedFiles = createFileState.files.map(file => typeof file.size === 'string' ? { ...file } : createKnowledgeFile(file));
     if (existing) {
       const oldName = existing.name;
-      const uploadingFiles = filesForKnowledge(existing).filter(file => file.uploadState === 'uploading');
+      const parsingFiles = filesForKnowledge(existing).filter(file => file.uploadState === 'parsing');
       existing.name = result.name;
       existing.intro = result.intro;
       existing.tags = result.tags;
       existing.updated = updated;
       if (oldName !== result.name) delete knowledgeFiles[oldName];
-      knowledgeFiles[result.name] = [...uploadingFiles, ...editedFiles];
+      knowledgeFiles[result.name] = [...parsingFiles, ...editedFiles];
       adjustKnowledgeCount(existing);
       if (detailView.dataset.knowledgeName === oldName) detailView.dataset.knowledgeName = result.name;
       closeKnowledgeModal();

@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="./css/team-management.css">
   <link rel="stylesheet" href="./css/interface-annotations-v3.css?v=20260828-v3-10">
-  <link rel="stylesheet" href="./css/referral-drawer.css?v=20260902-6">
+  <link rel="stylesheet" href="./css/referral-drawer.css?v=20260902-7">
   <title>AI患者管理系统 - 量表设计</title>
   <style>
     :root {
@@ -2794,6 +2794,7 @@
     .checkin-range-meal-meta span { padding: 8px 10px; border-radius: 7px; color: #52617a; background: #f3f7fc; font-size: 12px; font-weight: 700; }
   </style>
   <link rel="stylesheet" href="./css/overlay-stability.css?v=20260831-3">
+  <link rel="stylesheet" href="./css/statistics-report.css?v=20260902-1">
 </head>
 <body>
   <script src="./save-persistence-final.js"></script>
@@ -2809,7 +2810,7 @@
             <div class="menu-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M7 4h10v16H7z"/><path d="M9 8h6M9 12h6M9 16h3"/></svg><span>方案与内容</span><svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="m18 15-6-6-6 6"/></svg></div>
             <div class="submenu"><div class="submenu-item" data-list-view="plans">方案管理</div><div class="submenu-item" data-list-view="scale">量表管理</div><div class="submenu-item">评估报告</div><div class="submenu-item">文章管理</div><div class="submenu-item" data-list-view="knowledge">知识库</div></div>
           </div>
-          <div class="menu-section"><div class="menu-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M4 19V8a3 3 0 0 1 3-3h10a3 3 0 0 1 3 3v11"/><path d="M8 19v-5h8v5"/></svg><span>运营管理</span><svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="m18 15-6-6-6 6"/></svg></div><div class="submenu"><div class="submenu-item">统计报表</div></div></div>
+          <div class="menu-section"><div class="menu-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M4 19V8a3 3 0 0 1 3-3h10a3 3 0 0 1 3 3v11"/><path d="M8 19v-5h8v5"/></svg><span>运营管理</span><svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="m18 15-6-6-6 6"/></svg></div><div class="submenu"><div class="submenu-item" data-list-view="statisticsReport">数据看板</div></div></div>
           <div class="menu-section"><div class="menu-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M12 3 7 21M12 3l5 18M5 9h14M5 15h14"/></svg><span>AI医助</span><svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="m8 10 4 4 4-4"/></svg></div></div>
           <div class="menu-section"><div class="menu-item active"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M12 8a4 4 0 1 0 0 8 4 4 0 0 0 0-8Z"/><path d="M4 12h2m12 0h2M12 4v2m0 12v2"/></svg><span>系统管理</span><svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="m18 15-6-6-6 6"/></svg></div><div class="submenu"><div class="submenu-item active" data-list-view="teams">团队管理</div><div class="submenu-item">科室管理</div><div class="submenu-item">人员管理</div><div class="submenu-item">服务管理</div><div class="submenu-item">系统角色</div><div class="submenu-item">设备管理</div><div class="submenu-item">看板配置</div><div class="submenu-item" data-list-view="indicator">指标模板</div></div></div>
           <div class="menu-section"><div class="menu-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="4" y="5" width="16" height="14" rx="2"/><path d="M8 9h8M8 13h8M8 17h5"/></svg><span>服务管理</span><svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="m18 15-6-6-6 6"/></svg></div><div class="submenu"><div class="submenu-item" data-service-view="packages">服务包管理</div><div class="submenu-item" data-service-view="orders">订单管理</div><div class="submenu-item" data-service-view="transactions">交易记录</div></div></div>
@@ -2818,6 +2819,7 @@
       </aside>
       <main class="list-main">
         <header class="page-title" id="listPageTitle">团队管理</header>
+        <section class="list-panel list-view statistics-report-view" id="statisticsReportView" aria-label="数据看板"></section>
         <section class="list-panel list-view workbench-view" id="workbenchView">
           <div class="workbench-shell">
             <section class="workbench-ai-card">
@@ -4055,7 +4057,7 @@
     </main>
   </section>
 
-  <script src="./js/referral-drawer.js?v=20260902-10"></script>
+  <script src="./js/referral-drawer.js?v=20260902-11"></script>
   <script>
     const scaleRows = [
       ['测试', 0, 0, '第1版', 1, '张媛丽', '2026/06/02 18:23:37', '未发布', false],
@@ -5805,6 +5807,7 @@
       const isHealthTasks = view === 'healthTasks';
       const isCheckinEvaluation = view === 'checkinEvaluation';
       const isKnowledge = view === 'knowledge';
+      const isStatisticsReport = view === 'statisticsReport';
       document.getElementById('workbenchView')?.classList.toggle('active', isWorkbench);
       document.getElementById('planManagementView')?.classList.toggle('active', isPlans);
       document.getElementById('scaleManagementView')?.classList.toggle('active', isScale);
@@ -5815,11 +5818,13 @@
       document.getElementById('healthTaskView')?.classList.toggle('active', isHealthTasks);
       document.getElementById('checkinEvaluationView')?.classList.toggle('active', isCheckinEvaluation);
       document.getElementById('knowledgeBaseView')?.classList.toggle('active', isKnowledge);
+      document.getElementById('statisticsReportView')?.classList.toggle('active', isStatisticsReport);
       document.getElementById('knowledgeDetailView')?.classList.remove('active');
       if (document.getElementById('listPageTitle')) document.getElementById('listPageTitle').textContent = isHealthTasks ? '健康任务' : isCheckinEvaluation ? '评价任务' : isPatients ? '全部患者' : isIndicator ? '指标模板' : isScale ? '量表管理' : '方案管理';
-      const listTitleMap = { workbench: '工作台', healthTasks: '健康任务', checkinEvaluation: '评价任务', patients: '全部患者', indicator: '指标模板', teams: '团队管理', scale: '量表管理', plans: '方案管理', knowledge: '知识库' };
+      const listTitleMap = { workbench: '工作台', healthTasks: '健康任务', checkinEvaluation: '评价任务', patients: '全部患者', indicator: '指标模板', teams: '团队管理', scale: '量表管理', plans: '方案管理', knowledge: '知识库', statisticsReport: '数据看板' };
       if (document.getElementById('listPageTitle')) document.getElementById('listPageTitle').textContent = listTitleMap[view] || '方案管理';
       document.querySelector('.list-main')?.classList.toggle('workbench-main', isWorkbench);
+      document.querySelector('.list-main')?.classList.toggle('statistics-report-main', isStatisticsReport);
       document.querySelector('.list-main')?.classList.remove('knowledge-detail-main');
       document.querySelectorAll('#listPage .menu .menu-item, #listPage .menu .submenu-item').forEach(item => item.classList.remove('active'));
       const activeSubmenuItems = document.querySelectorAll(`#listPage .menu .submenu-item[data-list-view="${view}"]`);
@@ -5842,6 +5847,7 @@
         filterHealthTaskRows(activeTab);
       }
       if (isCheckinEvaluation) applyCheckinEvalFilters();
+      if (isStatisticsReport) window.renderStatisticsReport?.();
     }
 
     function exitPatientArchiveForGlobalNavigation() {
@@ -14551,8 +14557,9 @@
 <script src="./js/service-management.js?v=detail-images-v13"></script>
 <script src="./js/interface-notes-snapshot.js?v=20260828-v3-9"></script>
 <script src="./js/interface-annotations-v3.js?v=overlay-position-v3-11"></script>
-<script src="./js/knowledge-base.js?v=knowledge-v14"></script>
+<script src="./js/knowledge-base.js?v=knowledge-v15"></script>
 <script src="./assets/echarts.min.js"></script>
+<script src="./js/statistics-report.js?v=20260902-2"></script>
 <script src="./js/team-management.js"></script>
 </body>
 </html>
