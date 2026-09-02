@@ -16,14 +16,29 @@
   };
 
   const patientMaterialOptions = [
-    { id: 'outpatient-0825', icon: '诊', title: '2026-08-25 心血管内科门诊记录', meta: '门诊记录 · 南宁市第二人民医院' },
-    { id: 'discharge-0818', icon: '出', title: '2026-08-18 高血压住院出院记录', meta: '出院记录 · 心血管内科' },
-    { id: 'blood-0828', icon: '检', title: '2026-08-28 血常规检验报告', meta: '检验报告 · 异常项 2 项' },
-    { id: 'kidney-0828', icon: '检', title: '2026-08-28 肝肾功能检验报告', meta: '检验报告 · 异常项 1 项' },
-    { id: 'ultrasound-0829', icon: '查', title: '2026-08-29 心脏彩超检查报告', meta: '检查报告 · 超声医学科' },
-    { id: 'ct-0829', icon: '影', title: '2026-08-29 胸部CT影像报告', meta: '影像报告 · 放射科' },
-    { id: 'blood-pressure-0830', icon: '管', title: '2026-08-30 血压管理记录', meta: '健康管理记录 · 最近30天' }
+    { id: 'outpatient-0825', icon: 'document', title: '2026-08-25 心血管内科门诊记录', meta: '门诊记录 · 南宁市第二人民医院' },
+    { id: 'discharge-0818', icon: 'document', title: '2026-08-18 高血压住院出院记录', meta: '出院记录 · 心血管内科' },
+    { id: 'blood-0828', icon: 'document', title: '2026-08-28 血常规检验报告', meta: '检验报告 · 异常项 2 项' },
+    { id: 'kidney-0828', icon: 'document', title: '2026-08-28 肝肾功能检验报告', meta: '检验报告 · 异常项 1 项' },
+    { id: 'ultrasound-0829', icon: 'image', title: '2026-08-29 心脏彩超检查报告', meta: '检查报告 · 超声医学科' },
+    { id: 'ct-0829', icon: 'image', title: '2026-08-29 胸部CT影像报告', meta: '影像报告 · 放射科' },
+    { id: 'blood-pressure-0830', icon: 'document', title: '2026-08-30 血压管理记录', meta: '健康管理记录 · 最近30天' }
   ];
+
+  function fileIconSvg(type = 'document') {
+    if (type === 'image') {
+      return '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="8.5" cy="9" r="1.5"/><path d="m21 15-4.5-4.5L6 20"/></svg>';
+    }
+    if (type === 'attachment') {
+      return '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="m21.4 11.6-8.9 8.9a6 6 0 0 1-8.5-8.5l9.6-9.6a4 4 0 0 1 5.7 5.7l-9.6 9.6a2 2 0 0 1-2.8-2.8l8.9-8.9"/></svg>';
+    }
+    return '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M8 13h8M8 17h6"/></svg>';
+  }
+
+  function uploadedFileIconType(fileName) {
+    const extension = fileName.split('.').pop().toLowerCase();
+    return ['jpg', 'jpeg', 'png'].includes(extension) ? 'image' : 'attachment';
+  }
 
   function notify(message) {
     if (typeof window.showToast === 'function') {
@@ -126,9 +141,9 @@
                 <div class="referral-card-body">
                   <div class="referral-data-head referral-doc-toolbar"><div class="referral-doc-types">门诊记录 · 住院记录 · 出院记录 · 检查报告 · 检验报告 · 影像报告 · 病理报告 · 健康管理记录</div><div class="referral-toolbar-actions"><button type="button" class="referral-secondary-btn" data-select-docs>选择患者资料</button><button type="button" class="referral-secondary-btn" data-upload-other>上传其他附件</button><input type="file" id="referralAttachmentInput" accept=".pdf,.doc,.docx,.jpg,.jpeg,.png" hidden></div></div>
                   <div class="referral-doc-list" id="referralDocumentList">
-                    <div class="referral-doc-item" data-doc-id="outpatient-0825"><span class="referral-doc-icon">诊</span><div><strong>2026-08-25 心血管内科门诊记录</strong><small>门诊记录 · 南宁市第二人民医院</small></div><div><button type="button" data-doc-view>查看</button><button type="button" data-doc-remove>移除</button></div></div>
-                    <div class="referral-doc-item" data-doc-id="blood-0828"><span class="referral-doc-icon">检</span><div><strong>2026-08-28 血常规检验报告</strong><small>检验报告 · 异常项 2 项</small></div><div><button type="button" data-doc-view>查看</button><button type="button" data-doc-remove>移除</button></div></div>
-                    <div class="referral-doc-item" data-doc-id="blood-pressure-0830"><span class="referral-doc-icon">管</span><div><strong>2026-08-30 血压管理记录</strong><small>健康管理记录 · 最近30天</small></div><div><button type="button" data-doc-view>查看</button><button type="button" data-doc-remove>移除</button></div></div>
+                    <div class="referral-doc-item" data-doc-id="outpatient-0825"><span class="referral-doc-icon">${fileIconSvg('document')}</span><div><strong>2026-08-25 心血管内科门诊记录</strong><small>门诊记录 · 南宁市第二人民医院</small></div><div><button type="button" data-doc-view>查看</button><button type="button" data-doc-remove>移除</button></div></div>
+                    <div class="referral-doc-item" data-doc-id="blood-0828"><span class="referral-doc-icon">${fileIconSvg('document')}</span><div><strong>2026-08-28 血常规检验报告</strong><small>检验报告 · 异常项 2 项</small></div><div><button type="button" data-doc-view>查看</button><button type="button" data-doc-remove>移除</button></div></div>
+                    <div class="referral-doc-item" data-doc-id="blood-pressure-0830"><span class="referral-doc-icon">${fileIconSvg('document')}</span><div><strong>2026-08-30 血压管理记录</strong><small>健康管理记录 · 最近30天</small></div><div><button type="button" data-doc-view>查看</button><button type="button" data-doc-remove>移除</button></div></div>
                   </div>
                   <div class="referral-upload-help">附件支持 PDF、Word、JPG、PNG 格式</div>
                 </div>
@@ -141,7 +156,7 @@
         <div class="referral-material-mask" id="referralMaterialModal" hidden>
           <section class="referral-material-modal" role="dialog" aria-modal="true" aria-labelledby="referralMaterialTitle">
             <header><div><h3 id="referralMaterialTitle">选择患者资料</h3><p>支持多选，添加后将在转诊申请中随单提交</p></div><button type="button" data-close-material aria-label="关闭资料选择弹窗">×</button></header>
-            <div class="referral-material-list">${patientMaterialOptions.map(item => `<div class="referral-material-item"><label><input type="checkbox" value="${item.id}" data-material-title="${item.title}" data-material-meta="${item.meta}" data-material-icon="${item.icon}"><span class="referral-material-check">✓</span><span class="referral-doc-icon">${item.icon}</span><span><strong>${item.title}</strong><small>${item.meta}</small></span></label><button type="button" data-doc-view>查看</button></div>`).join('')}</div>
+            <div class="referral-material-list">${patientMaterialOptions.map(item => `<div class="referral-material-item"><label><input type="checkbox" value="${item.id}" data-material-title="${item.title}" data-material-meta="${item.meta}" data-material-icon="${item.icon}"><span class="referral-material-check">✓</span><span class="referral-doc-icon">${fileIconSvg(item.icon)}</span><span><strong>${item.title}</strong><small>${item.meta}</small></span></label><button type="button" data-doc-view>查看</button></div>`).join('')}</div>
             <footer><span id="referralMaterialCount">已选择 0 项</span><div><button type="button" class="referral-cancel" data-close-material>取消</button><button type="button" class="referral-confirm" data-add-materials>添加所选资料</button></div></footer>
           </section>
         </div>
@@ -329,7 +344,7 @@
   function addUploadedDocument(file) {
     const item = document.createElement('div');
     item.className = 'referral-doc-item';
-    item.innerHTML = '<span class="referral-doc-icon">附</span><div><strong></strong><small>其他附件</small></div><div><button type="button" data-doc-view>查看</button><button type="button" data-doc-remove>移除</button></div>';
+    item.innerHTML = `<span class="referral-doc-icon">${fileIconSvg(uploadedFileIconType(file.name))}</span><div><strong></strong><small>其他附件</small></div><div><button type="button" data-doc-view>查看</button><button type="button" data-doc-remove>移除</button></div>`;
     item.querySelector('strong').textContent = file.name;
     document.getElementById('referralDocumentList').appendChild(item);
   }
@@ -363,7 +378,7 @@
     item.className = 'referral-doc-item';
     item.dataset.docId = input.value;
     item.innerHTML = '<span class="referral-doc-icon"></span><div><strong></strong><small></small></div><div><button type="button" data-doc-view>查看</button><button type="button" data-doc-remove>移除</button></div>';
-    item.querySelector('.referral-doc-icon').textContent = input.dataset.materialIcon;
+    item.querySelector('.referral-doc-icon').innerHTML = fileIconSvg(input.dataset.materialIcon);
     item.querySelector('strong').textContent = input.dataset.materialTitle;
     item.querySelector('small').textContent = input.dataset.materialMeta;
     document.getElementById('referralDocumentList').appendChild(item);

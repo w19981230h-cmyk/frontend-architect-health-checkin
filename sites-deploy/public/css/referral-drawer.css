@@ -153,7 +153,8 @@ textarea.referral-situation { min-height: 120px; }
 .referral-doc-list { border: 1px solid #e2e8f0; border-radius: 7px; overflow: hidden; }
 .referral-doc-item { min-height: 62px; padding: 10px 14px; border-bottom: 1px solid #edf1f5; display: grid; grid-template-columns: 34px minmax(0, 1fr) auto; align-items: center; gap: 12px; }
 .referral-doc-item:last-child { border-bottom: 0; }
-.referral-doc-icon { width: 32px; height: 32px; border-radius: 6px; display: grid; place-items: center; color: #1677ff; background: #eaf3ff; font-size: 11px; font-weight: 700; }
+.referral-doc-icon { width: 32px; height: 32px; border-radius: 6px; display: grid; place-items: center; color: #1677ff; background: #eaf3ff; flex: 0 0 auto; }
+.referral-doc-icon svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
 .referral-doc-item strong { display: block; color: #34445b; font-size: 12px; }
 .referral-doc-item span { display: block; margin-top: 4px; color: #8794a7; font-size: 11px; }
 .referral-doc-item > div:last-child { display: flex; align-items: center; gap: 14px; }
