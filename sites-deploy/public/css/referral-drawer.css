@@ -148,49 +148,6 @@ textarea.referral-situation { min-height: 120px; }
 .referral-abnormal-card > div:first-child strong { display: block; margin-top: 7px; color: #cf323b; font-size: 15px; }
 .referral-abnormal-card > div:first-child small { display: block; margin-top: 6px; color: #8b97a8; font-size: 11px; }
 
-.referral-doc-toolbar { align-items: flex-start; }
-.referral-doc-types { max-width: 700px; margin: 8px 0 0; color: #75849a; font-size: 11px; line-height: 1.8; }
-.referral-toolbar-actions { display: flex; gap: 8px; }
-.referral-doc-list { border: 1px solid #e2e8f0; border-radius: 7px; overflow: hidden; }
-.referral-doc-item { min-height: 54px; padding: 10px 14px; border-bottom: 1px solid #edf1f5; display: grid; grid-template-columns: 34px minmax(0, 1fr) auto; align-items: center; gap: 12px; }
-.referral-doc-item:last-child { border-bottom: 0; }
-.referral-doc-icon { width: 32px; height: 32px; border-radius: 6px; display: grid; place-items: center; color: #1677ff; background: #eaf3ff; flex: 0 0 auto; }
-.referral-doc-icon svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
-.referral-doc-item strong { display: block; color: #34445b; font-size: 12px; font-weight: 600; }
-.referral-doc-item span { display: block; margin-top: 4px; color: #8794a7; font-size: 11px; }
-.referral-doc-item > div:last-child { display: flex; align-items: center; gap: 14px; }
-.referral-doc-item button { padding: 0; border: 0; color: var(--referral-blue); background: transparent; font-size: 12px; cursor: pointer; }
-.referral-doc-item button:last-child { color: #7e8999; }
-.referral-upload-help { margin: 9px 0 0; color: #8a97a9; font-size: 11px; }
-.referral-additional-notes { min-height: 108px; resize: vertical; }
-
-.referral-material-mask { position: fixed; inset: 0; z-index: 132; padding: 24px; display: flex; align-items: center; justify-content: center; background: rgba(20, 32, 51, .42); }
-.referral-material-mask[hidden] { display: none; }
-.referral-material-modal { width: min(660px, calc(100vw - 48px)); max-height: min(720px, calc(100dvh - 48px)); border-radius: 9px; display: flex; flex-direction: column; overflow: hidden; background: #fff; box-shadow: 0 18px 54px rgba(20, 32, 51, .24); }
-.referral-material-modal > header { min-height: 64px; padding: 12px 18px; border-bottom: 1px solid #e8edf3; display: flex; align-items: center; justify-content: space-between; gap: 16px; }
-.referral-material-modal h3 { margin: 0; color: #263750; font-size: 16px; }
-.referral-material-modal header p { margin: 4px 0 0; color: #8794a7; font-size: 11px; }
-.referral-material-modal header > button { width: 30px; height: 30px; border: 0; border-radius: 5px; color: #748198; background: transparent; font-size: 21px; cursor: pointer; }
-.referral-material-modal header > button:hover { background: #f2f4f7; }
-.referral-material-list { min-height: 0; padding: 10px 18px; overflow-y: auto; }
-.referral-material-item { min-height: 64px; border-bottom: 1px solid #edf1f5; display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: 14px; }
-.referral-material-item:last-child { border-bottom: 0; }
-.referral-material-item > label { min-width: 0; display: grid; grid-template-columns: 18px 32px minmax(0, 1fr); align-items: center; gap: 11px; cursor: pointer; }
-.referral-material-item input { position: absolute; opacity: 0; pointer-events: none; }
-.referral-material-check { width: 16px; height: 16px; border: 1px solid #c9d3df; border-radius: 3px; display: grid; place-items: center; color: transparent; background: #fff; font-size: 11px; font-weight: 700; }
-.referral-material-item input:checked + .referral-material-check { color: #fff; border-color: var(--referral-blue); background: var(--referral-blue); }
-.referral-material-item input:focus-visible + .referral-material-check { outline: 2px solid rgba(22, 119, 255, .22); outline-offset: 2px; }
-.referral-material-item strong, .referral-material-item small { display: block; }
-.referral-material-item strong { color: #34445b; font-size: 12px; }
-.referral-material-item small { margin-top: 5px; color: #8794a7; font-size: 11px; }
-.referral-material-item > button { border: 0; color: var(--referral-blue); background: transparent; font-size: 12px; cursor: pointer; }
-.referral-material-item.already-added { background: #fafbfc; }
-.referral-material-item.already-added > label { cursor: default; }
-.referral-material-item.already-added strong::after { content: '已添加'; margin-left: 8px; padding: 1px 5px; border-radius: 3px; color: #5f6f85; background: #edf0f4; font-size: 10px; font-weight: 400; }
-.referral-material-modal > footer { min-height: 64px; padding: 12px 18px; border-top: 1px solid #e8edf3; display: flex; align-items: center; justify-content: space-between; gap: 12px; color: #7b8798; font-size: 12px; }
-.referral-material-modal > footer > div { display: flex; gap: 9px; }
-.referral-material-modal > footer button { height: 36px; padding: 0 15px; border-radius: 6px; cursor: pointer; }
-
 .referral-foot { min-height: 68px; flex: 0 0 auto; padding: 12px 24px; border-top: 1px solid #e1e7ef; display: flex; align-items: center; justify-content: space-between; gap: 12px; color: #8995a7; background: #fff; box-shadow: 0 -4px 16px rgba(31, 45, 72, .04); font-size: 12px; }
 .referral-foot-actions { display: flex; align-items: center; gap: 10px; }
 .referral-foot button { height: 38px; padding: 0 18px; border-radius: 6px; font-size: 13px; cursor: pointer; }
@@ -230,13 +187,6 @@ textarea.referral-situation { min-height: 120px; }
   .referral-diagnosis-row { grid-template-columns: 1fr; gap: 7px; }
   .referral-diagnosis-row .referral-text-action { margin-left: 0; text-align: left; }
   .referral-abnormal-grid { grid-template-columns: 1fr; }
-  .referral-material-mask { padding: 12px; }
-  .referral-material-modal { width: 100%; max-height: calc(100dvh - 24px); }
-  .referral-data-head, .referral-doc-toolbar { align-items: stretch; flex-direction: column; }
-  .referral-toolbar-actions { width: 100%; }
-  .referral-toolbar-actions button { flex: 1; }
-  .referral-doc-item { grid-template-columns: 32px minmax(0, 1fr); }
-  .referral-doc-item > div:last-child { grid-column: 2; }
   .referral-foot { align-items: stretch; flex-direction: column; }
   .referral-foot-actions { width: 100%; }
   .referral-foot-actions button { flex: 1; }

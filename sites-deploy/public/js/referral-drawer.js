@@ -15,31 +15,6 @@
     down: ['病情稳定，适合基层继续管理', '阶段性治疗已完成', '转长期随访管理', '转康复管理', '转属地机构继续管理', '其他']
   };
 
-  const patientMaterialOptions = [
-    { id: 'outpatient-0825', icon: 'document', title: '2026-08-25 心血管内科门诊记录', meta: '门诊记录 · 南宁市第二人民医院' },
-    { id: 'discharge-0818', icon: 'document', title: '2026-08-18 高血压住院出院记录', meta: '出院记录 · 心血管内科' },
-    { id: 'blood-0828', icon: 'document', title: '2026-08-28 血常规检验报告', meta: '检验报告 · 异常项 2 项' },
-    { id: 'kidney-0828', icon: 'document', title: '2026-08-28 肝肾功能检验报告', meta: '检验报告 · 异常项 1 项' },
-    { id: 'ultrasound-0829', icon: 'image', title: '2026-08-29 心脏彩超检查报告', meta: '检查报告 · 超声医学科' },
-    { id: 'ct-0829', icon: 'image', title: '2026-08-29 胸部CT影像报告', meta: '影像报告 · 放射科' },
-    { id: 'blood-pressure-0830', icon: 'document', title: '2026-08-30 血压管理记录', meta: '健康管理记录 · 最近30天' }
-  ];
-
-  function fileIconSvg(type = 'document') {
-    if (type === 'image') {
-      return '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="8.5" cy="9" r="1.5"/><path d="m21 15-4.5-4.5L6 20"/></svg>';
-    }
-    if (type === 'attachment') {
-      return '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="m21.4 11.6-8.9 8.9a6 6 0 0 1-8.5-8.5l9.6-9.6a4 4 0 0 1 5.7 5.7l-9.6 9.6a2 2 0 0 1-2.8-2.8l8.9-8.9"/></svg>';
-    }
-    return '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M8 13h8M8 17h6"/></svg>';
-  }
-
-  function uploadedFileIconType(fileName) {
-    const extension = fileName.split('.').pop().toLowerCase();
-    return ['jpg', 'jpeg', 'png'].includes(extension) ? 'image' : 'attachment';
-  }
-
   function notify(message) {
     if (typeof window.showToast === 'function') {
       window.showToast(message);
@@ -109,37 +84,11 @@
                 </div>
               </section>
 
-              <section class="referral-card">
-                <div class="referral-card-head"><div><h3>相关医疗资料</h3><small>可关联患者现有医疗资料，便于接收机构了解患者情况。</small></div></div>
-                <div class="referral-card-body">
-                  <div class="referral-data-head referral-doc-toolbar"><div class="referral-doc-types">门诊记录 · 住院记录 · 出院记录 · 检查报告 · 检验报告 · 影像报告 · 病理报告 · 健康管理记录</div><div class="referral-toolbar-actions"><button type="button" class="referral-secondary-btn" data-select-docs>选择患者资料</button><button type="button" class="referral-secondary-btn" data-upload-other>上传其他附件</button><input type="file" id="referralAttachmentInput" accept=".pdf,.doc,.docx,.jpg,.jpeg,.png" hidden></div></div>
-                  <div class="referral-doc-list" id="referralDocumentList">
-                    <div class="referral-doc-item" data-doc-id="outpatient-0825"><span class="referral-doc-icon">${fileIconSvg('document')}</span><strong>2026-08-25 心血管内科门诊记录</strong><div><button type="button" data-doc-view>查看</button><button type="button" data-doc-remove>移除</button></div></div>
-                    <div class="referral-doc-item" data-doc-id="blood-0828"><span class="referral-doc-icon">${fileIconSvg('document')}</span><strong>2026-08-28 血常规检验报告</strong><div><button type="button" data-doc-view>查看</button><button type="button" data-doc-remove>移除</button></div></div>
-                    <div class="referral-doc-item" data-doc-id="blood-pressure-0830"><span class="referral-doc-icon">${fileIconSvg('document')}</span><strong>2026-08-30 血压管理记录</strong><div><button type="button" data-doc-view>查看</button><button type="button" data-doc-remove>移除</button></div></div>
-                  </div>
-                  <div class="referral-upload-help">附件支持 PDF、Word、JPG、PNG 格式</div>
-                </div>
-              </section>
-
-              <section class="referral-card">
-                <div class="referral-card-head"><h3>补充说明</h3><small>非必填</small></div>
-                <div class="referral-card-body">
-                  <textarea class="referral-control referral-additional-notes" id="referralAdditionalNotes" maxlength="500" aria-label="补充说明" placeholder="如有其他需要接收机构重点关注的信息，请在此补充。"></textarea>
-                </div>
-              </section>
             </form>
           </div>
 
           <footer class="referral-foot"><span><b>*</b> 为必填项</span><div class="referral-foot-actions"><button type="button" class="referral-cancel" data-close-referral>取消</button><button type="button" class="referral-confirm" data-confirm-referral>提交转诊申请</button></div></footer>
         </aside>
-        <div class="referral-material-mask" id="referralMaterialModal" hidden>
-          <section class="referral-material-modal" role="dialog" aria-modal="true" aria-labelledby="referralMaterialTitle">
-            <header><div><h3 id="referralMaterialTitle">选择患者资料</h3><p>支持多选，添加后将在转诊申请中随单提交</p></div><button type="button" data-close-material aria-label="关闭资料选择弹窗">×</button></header>
-            <div class="referral-material-list">${patientMaterialOptions.map(item => `<div class="referral-material-item"><label><input type="checkbox" value="${item.id}" data-material-title="${item.title}" data-material-icon="${item.icon}"><span class="referral-material-check">✓</span><span class="referral-doc-icon">${fileIconSvg(item.icon)}</span><strong>${item.title}</strong></label><button type="button" data-doc-view>查看</button></div>`).join('')}</div>
-            <footer><span id="referralMaterialCount">已选择 0 项</span><div><button type="button" class="referral-cancel" data-close-material>取消</button><button type="button" class="referral-confirm" data-add-materials>添加所选资料</button></div></footer>
-          </section>
-        </div>
       </div>`);
   }
 
@@ -254,8 +203,6 @@
     closeComboPopups();
     document.querySelectorAll('#referralForm .invalid').forEach(node => node.classList.remove('invalid'));
     document.querySelectorAll('#referralForm .referral-error').forEach(node => { node.textContent = ''; });
-    document.getElementById('referralMaterialModal').hidden = true;
-
     const drawer = document.getElementById('patientReferralDrawer');
     drawer.querySelector('.referral-body').scrollTop = 0;
     drawer.classList.add('open');
@@ -268,7 +215,6 @@
     const drawer = document.getElementById('patientReferralDrawer');
     if (!drawer?.classList.contains('open')) return;
     drawer.classList.remove('open');
-    document.getElementById('referralMaterialModal').hidden = true;
     drawer.setAttribute('aria-hidden', 'true');
     document.body.style.overflow = '';
     window.setTimeout(() => lastTrigger?.focus(), 20);
@@ -304,58 +250,6 @@
     return !firstInvalid;
   }
 
-  function addUploadedDocument(file) {
-    const item = document.createElement('div');
-    item.className = 'referral-doc-item';
-    item.innerHTML = `<span class="referral-doc-icon">${fileIconSvg(uploadedFileIconType(file.name))}</span><strong></strong><div><button type="button" data-doc-view>查看</button><button type="button" data-doc-remove>移除</button></div>`;
-    item.querySelector('strong').textContent = `${new Date().toLocaleDateString('zh-CN').replaceAll('/', '-')} ${file.name}`;
-    document.getElementById('referralDocumentList').appendChild(item);
-  }
-
-  function updateMaterialCount() {
-    const count = document.querySelectorAll('#referralMaterialModal input[type="checkbox"]:checked:not(:disabled)').length;
-    setText('referralMaterialCount', `已选择 ${count} 项`);
-  }
-
-  function openMaterialModal() {
-    const modal = document.getElementById('referralMaterialModal');
-    modal.querySelectorAll('input[type="checkbox"]').forEach(input => {
-      const exists = Boolean(document.querySelector(`#referralDocumentList [data-doc-id="${input.value}"]`));
-      input.checked = exists;
-      input.disabled = exists;
-      input.closest('.referral-material-item')?.classList.toggle('already-added', exists);
-    });
-    updateMaterialCount();
-    modal.hidden = false;
-    window.setTimeout(() => modal.querySelector('input:not(:disabled)')?.focus(), 30);
-  }
-
-  function closeMaterialModal() {
-    const modal = document.getElementById('referralMaterialModal');
-    if (modal) modal.hidden = true;
-  }
-
-  function appendMaterialDocument(input) {
-    if (document.querySelector(`#referralDocumentList [data-doc-id="${input.value}"]`)) return false;
-    const item = document.createElement('div');
-    item.className = 'referral-doc-item';
-    item.dataset.docId = input.value;
-    item.innerHTML = '<span class="referral-doc-icon"></span><strong></strong><div><button type="button" data-doc-view>查看</button><button type="button" data-doc-remove>移除</button></div>';
-    item.querySelector('.referral-doc-icon').innerHTML = fileIconSvg(input.dataset.materialIcon);
-    item.querySelector('strong').textContent = input.dataset.materialTitle;
-    document.getElementById('referralDocumentList').appendChild(item);
-    return true;
-  }
-
-  function addSelectedMaterials() {
-    let added = 0;
-    document.querySelectorAll('#referralMaterialModal input[type="checkbox"]:checked:not(:disabled)').forEach(input => {
-      if (appendMaterialDocument(input)) added += 1;
-    });
-    closeMaterialModal();
-    notify(added ? `已添加 ${added} 项患者资料` : '请选择需要添加的患者资料');
-  }
-
   document.addEventListener('click', event => {
     const openButton = event.target.closest('[data-open-referral]');
     if (openButton) {
@@ -378,39 +272,9 @@
       }, 30);
       return;
     }
-    if (event.target.closest('[data-close-material]')) {
-      closeMaterialModal();
-      return;
-    }
-    const materialMask = event.target.closest('#referralMaterialModal');
-    if (materialMask && event.target === materialMask) {
-      closeMaterialModal();
-      return;
-    }
-    if (event.target.closest('[data-add-materials]')) {
-      addSelectedMaterials();
-      return;
-    }
     const mask = event.target.closest('#patientReferralDrawer');
     if (mask && event.target === mask) {
       closeDrawer();
-      return;
-    }
-    if (event.target.closest('[data-doc-view]')) {
-      notify('已打开医疗资料预览');
-      return;
-    }
-    const removeDoc = event.target.closest('[data-doc-remove]');
-    if (removeDoc) {
-      removeDoc.closest('.referral-doc-item')?.remove();
-      return;
-    }
-    if (event.target.closest('[data-select-docs]')) {
-      openMaterialModal();
-      return;
-    }
-    if (event.target.closest('[data-upload-other]')) {
-      document.getElementById('referralAttachmentInput')?.click();
       return;
     }
     const reasonToggle = event.target.closest('[data-toggle-reason-shortcuts]');
@@ -462,10 +326,6 @@
 
   document.addEventListener('change', event => {
     if (event.target.id === 'referralInstitution') syncInstitution();
-    if (event.target.id === 'referralAttachmentInput' && event.target.files?.[0]) {
-      addUploadedDocument(event.target.files[0]);
-      event.target.value = '';
-    }
     if (event.target.name === 'referralPurpose') {
       const control = document.getElementById('referralPurposeControl');
       control.classList.remove('invalid');
@@ -473,7 +333,6 @@
       if (error) error.textContent = '';
       updatePurposeSummary();
     }
-    if (event.target.closest('#referralMaterialModal') && event.target.type === 'checkbox') updateMaterialCount();
     if (event.target.matches('#referralForm .referral-control') && event.target.value) {
       event.target.classList.remove('invalid');
       const error = document.querySelector(`[data-error-for="${event.target.id}"]`);
@@ -491,10 +350,6 @@
   });
 
   document.addEventListener('keydown', event => {
-    if (event.key === 'Escape' && !document.getElementById('referralMaterialModal')?.hidden) {
-      closeMaterialModal();
-      return;
-    }
     if (event.key === 'Escape' && document.querySelector('.referral-combo-popup:not([hidden])')) {
       closeComboPopups();
       return;
