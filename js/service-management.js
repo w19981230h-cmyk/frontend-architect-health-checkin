@@ -604,6 +604,17 @@
       .package-form-textarea { min-height: 80px; padding: 12px 14px; resize: vertical; }
       .package-form-input:focus, .package-form-select:focus, .package-form-textarea:focus { border-color: #174dff; box-shadow: 0 0 0 2px rgba(23,77,255,.1); }
       .package-form-input::placeholder, .package-form-textarea::placeholder { color: #b0bac8; }
+      .package-service-help { position: relative; display: inline-flex; vertical-align: middle; }
+      .package-service-help button { display: inline-grid; place-items: center; width: 16px; height: 16px; padding: 0; border: 1px solid currentColor; border-radius: 50%; background: transparent; color: rgba(0,0,0,.45); font-size: 12px; cursor: pointer; }
+      .package-service-help button:hover { color: #1677ff; }
+      .package-service-help [role="note"] { position: absolute; z-index: 65; top: 26px; left: -100px; width: min(280px, 65vw); padding: 12px; border-radius: 8px; background: #fff; box-shadow: 0 6px 16px rgba(0,0,0,.08), 0 3px 6px -4px rgba(0,0,0,.12); color: rgba(0,0,0,.88); font-size: 14px; font-weight: 400; line-height: 1.6; }
+      .package-field-error { color: #ff4d4f; font-size: 14px; margin-top: 4px; }
+      .package-ant-select-selector[aria-invalid="true"] { border-color: #ff4d4f; }
+      .package-ant-select.multiple .package-ant-select-selector { height: auto; min-height: 40px; padding: 4px 11px; }
+      .package-ant-select.multiple .package-ant-select-value { display: flex; flex-wrap: wrap; gap: 4px; white-space: normal; }
+      .package-select-tag { display: inline-flex; align-items: center; gap: 4px; max-width: 100%; padding: 0 7px; border-radius: 4px; background: rgba(0,0,0,.06); line-height: 24px; overflow-wrap: anywhere; }
+      .package-select-tag [data-package-remove-option] { color: rgba(0,0,0,.45); }
+      .package-ant-select.multiple .package-ant-select-option.selected::after { content: '✓'; margin-left: auto; color: #1677ff; }
       .package-ant-select { position: relative; width: 100%; min-width: 0; }
       .package-ant-select-native { position: absolute !important; width: 1px !important; height: 1px !important; margin: -1px !important; padding: 0 !important; overflow: hidden !important; clip: rect(0 0 0 0) !important; border: 0 !important; opacity: 0 !important; pointer-events: none !important; }
       .package-ant-select-selector { width: 100%; height: 42px; padding: 0 11px; display: flex; align-items: center; justify-content: space-between; gap: 10px; box-sizing: border-box; border: 1px solid #d9d9d9; border-radius: 6px; color: rgba(0,0,0,.88); background: #fff; box-shadow: 0 2px 0 rgba(0,0,0,.02); font-size: 14px; text-align: left; cursor: pointer; transition: border-color .2s, box-shadow .2s; }
@@ -982,12 +993,12 @@
               ${renderBenefitEditor('个性化健康管理计划', '根据健康评估结果制定并动态调整管理计划', [['初始健康评估并制定健康管理计划', '服务期内1次'], ['根据回访及复诊结果动态调整健康管理计划', '服务期内持续'], ['线上健康回访', '每月1次']], '▤')}
               ${renderBenefitEditor('全程健康守护', '持续监测健康指标并提供专业健康支持', [['关键健康指标持续监测与异常提醒', '全年持续'], ['日常健康咨询与用药提醒', '全年持续']], '✚')}
             </div><button class="package-benefit-add" data-add-benefit type="button">＋ 添加服务权益</button></section>
-            <section class="package-config-section" data-config-section="plan"><div class="package-config-head"><span class="package-config-index">4</span><div><div class="package-config-title-row"><div class="package-config-title">服务配置</div><i class="package-config-help" title="配置服务包由哪些机构、科室、团队和人员提供，并可关联管理方案">?</i></div><div class="package-config-subtitle">配置服务提供方及关联的管理方案</div></div></div><div class="package-field-grid">
-              <div class="package-form-group"><label class="package-form-label"><span class="package-required">*</span>服务机构</label><select class="package-form-select" id="packageOrganizationInput" data-package-form-input data-placeholder="请选择服务机构（可多选）" multiple aria-label="服务机构"><option value="健康管理中心">健康管理中心</option><option value="互联网医院">互联网医院</option><option value="第一人民医院">第一人民医院</option><option value="康复医学中心">康复医学中心</option></select></div>
-              <div class="package-form-group"><label class="package-form-label">服务科室 <span class="package-optional">选填</span></label><select class="package-form-select" id="packageDepartmentInput" data-package-form-input data-placeholder="请选择服务科室（可多选）" multiple aria-label="服务科室"><option value="健康管理科">健康管理科</option><option value="内分泌科">内分泌科</option><option value="心血管内科">心血管内科</option><option value="营养科">营养科</option><option value="康复医学科">康复医学科</option></select></div>
-              <div class="package-form-group"><label class="package-form-label">服务团队 <span class="package-optional">选填</span></label><select class="package-form-select" id="packageTeamInput" data-package-form-input data-placeholder="请选择服务团队（可多选）" multiple aria-label="服务团队"><option value="慢病健康管理团队">慢病健康管理团队</option><option value="营养与体重管理团队">营养与体重管理团队</option><option value="心血管专病服务团队">心血管专病服务团队</option><option value="术后康复随访团队">术后康复随访团队</option></select></div>
-              <div class="package-form-group"><label class="package-form-label">服务人员 <span class="package-optional">选填</span></label><select class="package-form-select" id="packagePersonnelInput" data-package-form-input data-placeholder="请选择服务人员（可多选）" multiple aria-label="服务人员"><option value="李敏 医生">李敏 医生</option><option value="王悦 营养师">王悦 营养师</option><option value="周宁 健康管理师">周宁 健康管理师</option><option value="陈宇 康复师">陈宇 康复师</option></select></div>
-              <div class="package-form-group full"><label class="package-form-label">关联方案 <span class="package-optional">选填</span></label><select class="package-form-select" id="packagePlanInput" data-package-form-input><option value="">请选择关联方案</option><option>90天健康减重管理方案</option><option>糖尿病全周期管理方案</option><option>高血压强化管理方案</option><option>心血管健康管理方案</option></select></div>
+            <section class="package-config-section" data-config-section="plan"><div class="package-config-head"><span class="package-config-index">4</span><div><div class="package-config-title">服务配置 <span class="package-service-help"><button type="button" data-service-help aria-label="服务配置说明" aria-expanded="false" aria-controls="packageServiceHelp">?</button><span id="packageServiceHelp" role="note" hidden>配置服务包由哪些机构、科室、团队和人员提供，并可关联管理方案。</span></span></div><div class="package-config-subtitle">配置服务提供方及关联的管理方案</div></div></div><div class="package-field-grid">
+              <div class="package-form-group"><label class="package-form-label" for="packageOrganizationInput"><span class="package-required">*</span>服务机构</label><select class="package-form-select" id="packageOrganizationInput" data-package-form-input data-placeholder="请选择服务机构（可多选）" multiple required aria-label="服务机构"><option value="健康管理中心">健康管理中心</option><option value="互联网医院">互联网医院</option><option value="第一人民医院">第一人民医院</option><option value="康复医学中心">康复医学中心</option><option value="市人民医院">市人民医院</option><option value="社区卫生服务中心">社区卫生服务中心</option></select><div id="packageOrganizationError" class="package-field-error" role="alert" hidden>请选择至少一个服务机构</div></div>
+              <div class="package-form-group"><label class="package-form-label" for="packageDepartmentInput">服务科室 <span class="package-optional">选填</span></label><select class="package-form-select" id="packageDepartmentInput" data-package-form-input data-placeholder="请选择服务科室（可多选）" multiple aria-label="服务科室"><option value="健康管理科">健康管理科</option><option value="内分泌科">内分泌科</option><option value="心血管内科">心血管内科</option><option value="营养科">营养科</option><option value="康复医学科">康复医学科</option><option value="康复科">康复科</option></select></div>
+              <div class="package-form-group"><label class="package-form-label" for="packageTeamInput">服务团队 <span class="package-optional">选填</span></label><select class="package-form-select" id="packageTeamInput" data-package-form-input data-placeholder="请选择服务团队（可多选）" multiple aria-label="服务团队"><option value="慢病健康管理团队">慢病健康管理团队</option><option value="营养与体重管理团队">营养与体重管理团队</option><option value="心血管专病服务团队">心血管专病服务团队</option><option value="术后康复随访团队">术后康复随访团队</option></select></div>
+              <div class="package-form-group"><label class="package-form-label" for="packagePersonnelInput">服务人员 <span class="package-optional">选填</span></label><select class="package-form-select" id="packagePersonnelInput" data-package-form-input data-placeholder="请选择服务人员（可多选）" multiple aria-label="服务人员"><option value="李敏 医生">李敏 医生</option><option value="王悦 营养师">王悦 营养师</option><option value="周宁 健康管理师">周宁 健康管理师</option><option value="陈宇 康复师">陈宇 康复师</option><option value="王医生">王医生</option><option value="李医生">李医生</option><option value="张护士">张护士</option><option value="刘营养师">刘营养师</option></select></div>
+              <div class="package-form-group full"><label class="package-form-label" for="packagePlanInput">关联方案 <span class="package-optional">选填</span></label><select class="package-form-select" id="packagePlanInput" data-package-form-input><option value="">请选择关联方案</option><option>90天健康减重管理方案</option><option>糖尿病全周期管理方案</option><option>高血压强化管理方案</option><option>心血管健康管理方案</option></select></div>
             </div></section>
             <section class="package-config-section" data-config-section="rules"><div class="package-config-head"><span class="package-config-index">5</span><div><div class="package-config-title">服务规则与协议</div><div class="package-config-subtitle">明确服务边界，并配置用户订阅前需要确认的协议</div></div></div>
               <div class="package-form-group"><label class="package-form-label"><span class="package-required">*</span>服务规则</label><div class="package-input-wrap"><textarea class="package-form-textarea package-rules" id="packageRulesInput" data-package-form-input maxlength="500">1. 服务有效期自购买之日计算。&#10;2. 有效期内可按配置频次使用服务权益，超出有效期或次数用完后按正常服务价格收费。&#10;3. 一个订单仅限绑定一名就诊人，服务启用后不可更改。&#10;4. 服务包费用不包含检查、药品、手术及住院等医疗费用。&#10;5. 购买后7天内未启用服务，可联系客服申请退款。&#10;6. 客服电话：020-00000000</textarea><span class="package-counter">218 / 500</span></div></div>
@@ -1730,15 +1741,29 @@
     const value = wrapper.querySelector('.package-ant-select-value');
     const selectedOptions = Array.from(select.selectedOptions || []).filter(option => option.value);
     const selected = select.options[select.selectedIndex];
-    const placeholder = select.dataset.placeholder || selected?.textContent || '请选择';
-    const displayText = select.multiple ? selectedOptions.map(option => option.textContent).join('、') : selected?.textContent || '';
-    wrapper.classList.toggle('placeholder', select.multiple ? selectedOptions.length === 0 : /^请选择/.test(displayText));
+    wrapper.classList.toggle('placeholder', select.multiple ? !select.selectedOptions.length : /^请选择/.test(selected?.textContent || ''));
     wrapper.classList.toggle('multiple', select.multiple);
-    if (value) value.textContent = displayText || placeholder;
+    if (value) {
+      value.replaceChildren();
+      if (!select.multiple) value.textContent = selected?.textContent || '';
+      else {
+        if (!select.selectedOptions.length) value.textContent = select.dataset.placeholder;
+        Array.from(select.selectedOptions).forEach(option => {
+          const tag = document.createElement('span');
+          tag.className = 'package-select-tag';
+          tag.textContent = option.textContent;
+          const remove = document.createElement('span');
+          remove.textContent = '×';
+          remove.dataset.packageRemoveOption = String(option.index);
+          remove.setAttribute('aria-label', '移除' + option.textContent);
+          tag.append(remove);
+          value.append(tag);
+        });
+      }
+    }
     if (trigger) trigger.disabled = select.disabled;
     wrapper.querySelectorAll('[data-package-ant-option]').forEach(option => {
-      const optionIndex = Number(option.dataset.packageAntOption);
-      const isSelected = select.multiple ? Boolean(select.options[optionIndex]?.selected) : optionIndex === select.selectedIndex;
+      const isSelected = select.options[Number(option.dataset.packageAntOption)]?.selected;
       option.classList.toggle('selected', isSelected);
       option.setAttribute('aria-selected', String(isSelected));
     });
@@ -1766,7 +1791,7 @@
     document.querySelectorAll('#packageEditorOverlay select').forEach(select => {
       if (select.closest('.package-ant-select')) return;
       const wrapper = document.createElement('div');
-      wrapper.className = 'package-ant-select';
+      wrapper.className = 'package-ant-select' + (select.multiple ? ' multiple' : '');
       const listboxId = `packageAntSelectList${++packageAntSelectId}`;
       const label = select.getAttribute('aria-label') || select.closest('.package-form-group')?.querySelector('.package-form-label')?.textContent.trim() || select.closest('.package-agreement-item')?.querySelector('strong')?.textContent.trim() || '请选择';
       const trigger = document.createElement('button');
@@ -1784,6 +1809,7 @@
       dropdown.id = listboxId;
       dropdown.dataset.packageAntSelectDropdown = '';
       dropdown.setAttribute('role', 'listbox');
+      if (select.multiple) dropdown.setAttribute('aria-multiselectable', 'true');
       dropdown.setAttribute('aria-label', label);
       if (select.multiple) dropdown.setAttribute('aria-multiselectable', 'true');
       dropdown.hidden = true;
@@ -2945,6 +2971,14 @@
       document.getElementById('packageServiceAgreement').selectedIndex = 1;
       document.querySelectorAll('input[name="packageVerificationMode"]').forEach(input => { input.checked = input.value === '本平台完成'; });
     }
+    ['Organization', 'Department', 'Team', 'Staff'].forEach(key => {
+      const select = document.getElementById('package' + key + 'Input');
+      const saved = item?.[15]?.[key] || [];
+      Array.from(select.options).forEach(option => { option.selected = saved.includes(option.value); });
+    });
+    setPackageOrganizationError(false);
+    document.getElementById('packageServiceHelp').hidden = true;
+    document.querySelector('[data-service-help]').setAttribute('aria-expanded', 'false');
     document.querySelectorAll('#packageEditorOverlay select').forEach(rebuildPackageAntSelect);
     [fields.name, fields.description, fields.intro].forEach(field => {
       const counter = field.closest('.package-input-wrap')?.querySelector('.package-counter');
@@ -2974,7 +3008,23 @@
     document.body.style.overflow = '';
   }
 
+  function setPackageOrganizationError(invalid) {
+    const select = document.getElementById('packageOrganizationInput');
+    const trigger = select.closest('.package-ant-select').querySelector('[data-package-ant-select-trigger]');
+    trigger.setAttribute('aria-required', 'true');
+    trigger.setAttribute('aria-invalid', String(invalid));
+    trigger.setAttribute('aria-describedby', 'packageOrganizationError');
+    document.getElementById('packageOrganizationError').hidden = !invalid;
+  }
+
   function savePackageDraft() {
+    const organization = document.getElementById('packageOrganizationInput');
+    if (!organization.selectedOptions.length) {
+      setPackageOrganizationError(true);
+      organization.closest('.package-form-group').scrollIntoView({ behavior: 'smooth', block: 'center' });
+      organization.closest('.package-ant-select').querySelector('button').focus();
+      return;
+    }
     const overlay = document.getElementById('packageEditorOverlay');
     const code = overlay?.dataset.editCode;
     if (!packageDetailImages.length) {
@@ -3017,6 +3067,7 @@
     item[11] = document.getElementById('packageIntroInput').value.trim();
     item[12] = document.querySelector('input[name="packageVerificationMode"]:checked')?.value || '本平台完成';
     item[13] = packageGalleryImages.map(({ source, name }) => ({ source, name }));
+    item[15] = Object.fromEntries(['Organization', 'Department', 'Team', 'Staff'].map(key => [key, Array.from(document.getElementById('package' + key + 'Input').selectedOptions).map(option => option.value)]));
     item[14] = packageDetailImages.map(({ source, name }) => ({ source, name }));
     item[15] = selectedOrganizations;
     item[16] = Array.from(document.getElementById('packageDepartmentInput').selectedOptions).map(option => option.value).filter(Boolean);
@@ -3067,6 +3118,26 @@
   }, { passive: true });
 
   document.addEventListener('click', event => {
+    const help = document.querySelector('[data-service-help]');
+    const content = document.getElementById('packageServiceHelp');
+    if (event.target.closest('[data-service-help]')) {
+      content.hidden = !content.hidden;
+      help.setAttribute('aria-expanded', String(!content.hidden));
+      return;
+    }
+    if (!event.target.closest('.package-service-help')) {
+      content.hidden = true;
+      help.setAttribute('aria-expanded', 'false');
+    }
+    const remove = event.target.closest('[data-package-remove-option]');
+    if (remove) {
+      const select = remove.closest('.package-ant-select').querySelector('select');
+      if (select.disabled) return;
+      select.options[Number(remove.dataset.packageRemoveOption)].selected = false;
+      syncPackageAntSelect(select);
+      select.dispatchEvent(new Event('change', { bubbles: true }));
+      return;
+    }
     const packageFrequencyOption = event.target.closest('[data-package-frequency-option]');
     if (packageFrequencyOption) {
       event.preventDefault();
@@ -3101,9 +3172,9 @@
       const wrapper = packageSelectOption.closest('.package-ant-select');
       const select = wrapper?.querySelector('select');
       if (!select || packageSelectOption.disabled) return;
-      const optionIndex = Number(packageSelectOption.dataset.packageAntOption);
-      if (select.multiple) select.options[optionIndex].selected = !select.options[optionIndex].selected;
-      else select.selectedIndex = optionIndex;
+      const option = select.options[Number(packageSelectOption.dataset.packageAntOption)];
+      if (select.multiple) option.selected = !option.selected;
+      else select.selectedIndex = option.index;
       syncPackageAntSelect(select);
       select.dispatchEvent(new Event('change', { bubbles: true }));
       if (!select.multiple) {
@@ -3508,6 +3579,7 @@
   });
 
   document.addEventListener('change', event => {
+    if (event.target.id === 'packageOrganizationInput') setPackageOrganizationError(!event.target.selectedOptions.length);
     if (event.target.matches('[data-order-review-decision]')) {
       const panel = event.target.closest('[data-order-review-panel]');
       const form = panel?.querySelector('[data-order-review-reject-form]');

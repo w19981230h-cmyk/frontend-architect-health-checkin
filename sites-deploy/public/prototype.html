@@ -410,7 +410,7 @@
     .patient-condition-summary-label { flex: 0 0 auto; color: #3154ff; font-weight: 700; }
     .patient-condition-summary-text { color: #334f87; font-weight: 500; }
     .patient-condition-row { position: relative; min-height: 54px; padding: 10px 12px; border: 1px solid #e2e7ef; border-radius: 6px; background: #fff; overflow: visible; }
-    .patient-condition-row:has(.patient-condition-line-single.has-data-extract) { height: 54px; box-sizing: border-box; }
+    .patient-condition-row:has(.patient-condition-line-single.has-data-extract) { box-sizing: border-box; }
     .patient-condition-line { min-width: 0; display: grid; align-items: center; gap: 8px; }
     .patient-condition-line-single { width: 100%; min-width: 0; display: flex; align-items: center; }
     .patient-condition-line-single.has-data-extract { height: 32px; display: grid; grid-template-columns: 16px minmax(170px, .95fr) minmax(190px, 1.05fr) minmax(220px, 1.45fr) minmax(170px, 1fr) 28px; grid-template-rows: 32px; grid-auto-flow: column; align-items: center; column-gap: 14px; }
@@ -490,6 +490,20 @@
     .patient-custom-date-range input { width: 100%; min-width: 0; height: 32px; box-sizing: border-box; padding: 0 8px; border: 1px solid #dce2eb; border-radius: 4px; color: #42516a; background: #fff; }
     .patient-custom-date-range span { color: #7b8799; font-size: 12px; text-align: center; }
     .patient-custom-date-range input:focus-visible { outline: 2px solid rgba(49,84,255,.18); outline-offset: 1px; border-color: #5975ff; }
+    .patient-continuity-row { min-height: 34px; margin: 8px 28px 0 30px; padding-top: 8px; border-top: 1px dashed #e7ebf2; display: flex; align-items: center; gap: 10px; color: #536177; font-size: 12px; }
+    .patient-continuity-label { font-weight: 600; white-space: nowrap; }
+    .patient-continuity-switch { position: relative; width: 32px; height: 18px; flex: 0 0 auto; cursor: pointer; }
+    .patient-continuity-switch input { position: absolute; opacity: 0; pointer-events: none; }
+    .patient-continuity-switch span { width: 32px; height: 18px; border-radius: 10px; display: block; position: relative; background: #c5ccd8; transition: background .18s cubic-bezier(.16,1,.3,1); }
+    .patient-continuity-switch span::after { content: ""; position: absolute; left: 2px; top: 2px; width: 14px; height: 14px; border-radius: 50%; background: #fff; box-shadow: 0 1px 3px rgba(31,45,72,.22); transition: transform .18s cubic-bezier(.16,1,.3,1); }
+    .patient-continuity-switch input:checked + span { background: #3154ff; }
+    .patient-continuity-switch input:checked + span::after { transform: translateX(14px); }
+    .patient-continuity-switch input:focus-visible + span { outline: 2px solid rgba(49,84,255,.25); outline-offset: 2px; }
+    .patient-continuity-config { min-width: 0; display: flex; align-items: center; gap: 8px; }
+    .patient-continuity-config select { width: 116px; height: 30px; padding: 0 28px 0 8px; border: 1px solid #dce2eb; border-radius: 4px; color: #42516a; background: #fff; }
+    .patient-continuity-config input { width: 70px; height: 30px; padding: 0 8px; border: 1px solid #dce2eb; border-radius: 4px; color: #42516a; background: #fff; }
+    .patient-continuity-config select:focus-visible, .patient-continuity-config input:focus-visible { outline: 2px solid rgba(49,84,255,.18); outline-offset: 1px; border-color: #5975ff; }
+    .patient-continuity-unit { color: #69768a; white-space: nowrap; }
     .patient-data-extract-tip { margin-top: 10px; padding-top: 10px; border-top: 1px solid #eef1f5; color: #8a95a6; font-size: 12px; line-height: 1.55; }
     .patient-condition-field-wrap { position: relative; min-width: 0; }
     .patient-condition-field { display: flex; align-items: center; justify-content: space-between; gap: 8px; text-align: left; }
@@ -2780,6 +2794,7 @@
     .checkin-range-meal-meta span { padding: 8px 10px; border-radius: 7px; color: #52617a; background: #f3f7fc; font-size: 12px; font-weight: 700; }
   </style>
   <link rel="stylesheet" href="./css/overlay-stability.css?v=20260831-3">
+  <link rel="stylesheet" href="./css/statistics-report.css?v=20260907-28">
   <link rel="stylesheet" href="./css/patient-archive-reference.css?v=20260907-1">
 </head>
 <body>
@@ -2796,7 +2811,7 @@
             <div class="menu-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M7 4h10v16H7z"/><path d="M9 8h6M9 12h6M9 16h3"/></svg><span>方案与内容</span><svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="m18 15-6-6-6 6"/></svg></div>
             <div class="submenu"><div class="submenu-item" data-list-view="plans">方案管理</div><div class="submenu-item" data-list-view="scale">量表管理</div><div class="submenu-item">评估报告</div><div class="submenu-item">文章管理</div><div class="submenu-item" data-list-view="knowledge">知识库</div></div>
           </div>
-          <div class="menu-section"><div class="menu-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M4 19V8a3 3 0 0 1 3-3h10a3 3 0 0 1 3 3v11"/><path d="M8 19v-5h8v5"/></svg><span>运营管理</span><svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="m18 15-6-6-6 6"/></svg></div><div class="submenu"><div class="submenu-item">统计报表</div></div></div>
+          <div class="menu-section"><div class="menu-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M4 19V8a3 3 0 0 1 3-3h10a3 3 0 0 1 3 3v11"/><path d="M8 19v-5h8v5"/></svg><span>运营管理</span><svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="m18 15-6-6-6 6"/></svg></div><div class="submenu"><div class="submenu-item" data-list-view="statisticsReport">数据看板</div></div></div>
           <div class="menu-section"><div class="menu-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M12 3 7 21M12 3l5 18M5 9h14M5 15h14"/></svg><span>AI医助</span><svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="m8 10 4 4 4-4"/></svg></div></div>
           <div class="menu-section"><div class="menu-item active"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M12 8a4 4 0 1 0 0 8 4 4 0 0 0 0-8Z"/><path d="M4 12h2m12 0h2M12 4v2m0 12v2"/></svg><span>系统管理</span><svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="m18 15-6-6-6 6"/></svg></div><div class="submenu"><div class="submenu-item active" data-list-view="teams">团队管理</div><div class="submenu-item">科室管理</div><div class="submenu-item">人员管理</div><div class="submenu-item">服务管理</div><div class="submenu-item">系统角色</div><div class="submenu-item">设备管理</div><div class="submenu-item">看板配置</div><div class="submenu-item" data-list-view="indicator">指标模板</div></div></div>
           <div class="menu-section"><div class="menu-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="4" y="5" width="16" height="14" rx="2"/><path d="M8 9h8M8 13h8M8 17h5"/></svg><span>服务管理</span><svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="m18 15-6-6-6 6"/></svg></div><div class="submenu"><div class="submenu-item" data-service-view="packages">服务包管理</div><div class="submenu-item" data-service-view="orders">订单管理</div><div class="submenu-item" data-service-view="transactions">交易记录</div></div></div>
@@ -2805,6 +2820,7 @@
       </aside>
       <main class="list-main">
         <header class="page-title" id="listPageTitle">团队管理</header>
+        <section class="list-panel list-view statistics-report-view" id="statisticsReportView" tabindex="0" aria-label="数据看板"></section>
         <section class="list-panel list-view workbench-view" id="workbenchView">
           <div class="workbench-shell">
             <section class="workbench-ai-card">
@@ -4162,8 +4178,7 @@
     const patientDateOperators = [['eq', '等于'], ['before', '早于'], ['after', '晚于'], ['between', '介于'], ['overDays', '距今超过'], ['withinDays', '距今以内']];
     const patientMetricScopes = [['latest','最新结果'],['recent','最近一段时间']];
     const patientDataRangePresets = [['latest','最新结果'],['7','最近7天'],['14','最近14天'],['30','最近30天'],['90','最近90天'],['custom','自定义']];
-    const patientCalculationMethods = [['any','任一结果'],['max','最大值'],['min','最小值'],['avg','平均值'],['continuous','连续满足'],['consecutiveDays','连续记录天数']];
-    const patientAccumulationFields = new Set(['exerciseDuration', 'waterIntake']);
+    const patientCalculationMethods = [['any','任一结果'],['max','最大值'],['min','最小值'],['avg','平均值'],['sum','累计值']];
     const patientSmartFieldConfig = {
       age: { group: '基础信息', label: '年龄', type: 'number', unit: '岁', operators: patientNumberOperators },
       gender: { group: '基础信息', label: '性别', type: 'enum', options: ['女', '男'], operators: patientEnumOperators },
@@ -4508,7 +4523,7 @@
 
     function patientSmartCondition(field = 'age', value = '') {
       const config = patientSmartFieldConfig[field] || patientSmartFieldConfig.age;
-      return { id: crypto.randomUUID ? crypto.randomUUID() : `${Date.now()}-${Math.random()}`, logic: 'and', groupId: '', groupLogic: 'and', field, qualifier: config.fixedQualifier || '', scope: config.scopeOptions ? 'latest' : '', scopeValue: '', rangeAmount: '14', rangeUnit: 'day', calculation: '', calculationParameter: '', calculationParameterUnit: '', scopeStart: '', scopeEnd: '', operator: config.operators[0][0], value };
+      return { id: crypto.randomUUID ? crypto.randomUUID() : `${Date.now()}-${Math.random()}`, logic: 'and', groupId: '', groupLogic: 'and', field, qualifier: config.fixedQualifier || '', scope: config.scopeOptions ? 'latest' : '', scopeValue: '', rangeAmount: '14', rangeUnit: 'day', calculation: '', calculationParameter: '', calculationParameterUnit: '', continuityEnabled: false, continuityMode: 'times', continuityValue: '3', scopeStart: '', scopeEnd: '', operator: config.operators[0][0], value };
     }
 
     function persistPatientSmartTags() {
@@ -4540,8 +4555,8 @@
 
     function patientConditionCalculationOptions(condition, config) {
       const supportsNumericAggregation = ['number', 'dynamic'].includes(config.type);
-      const allowed = supportsNumericAggregation ? patientCalculationMethods : patientCalculationMethods.filter(([value]) => ['any', 'continuous', 'consecutiveDays'].includes(value));
-      return patientAccumulationFields.has(condition.field) ? [...allowed, ['sum', '累计值']] : allowed;
+      const allowed = supportsNumericAggregation ? patientCalculationMethods : patientCalculationMethods.filter(([value]) => value === 'any');
+      return allowed;
     }
 
     function normalizePatientTemporalCondition(condition, config) {
@@ -4573,13 +4588,8 @@
         condition.rangeUnit = ['day', 'week', 'month'].includes(condition.rangeUnit) ? condition.rangeUnit : 'day';
         const options = patientConditionCalculationOptions(condition, config);
         if (!options.some(([value]) => value === condition.calculation)) condition.calculation = 'any';
-        if (condition.calculation === 'continuous') {
-          condition.calculationParameter = String(Math.max(1, Number(condition.calculationParameter) || 3));
-          condition.calculationParameterUnit = 'times';
-        } else {
-          condition.calculationParameter = '';
-          condition.calculationParameterUnit = '';
-        }
+        condition.calculationParameter = '';
+        condition.calculationParameterUnit = '';
       } else {
         condition.scopeValue = '';
         condition.calculation = '';
@@ -4600,8 +4610,7 @@
       const calculations = patientConditionCalculationOptions(condition, config);
       const rangeText = patientConditionScopeText(condition, config) || '最新结果';
       const calculationText = patientConditionCalculationText(condition);
-      const parameterText = condition.calculation === 'continuous' ? ` · 连续${condition.calculationParameter || 3}次` : '';
-      const summary = `${rangeText}${calculationText ? ` · ${calculationText}` : ''}${parameterText}`;
+      const summary = `${rangeText}${calculationText ? ` · ${calculationText}` : ''}`;
       const open = activePatientDataExtractId === condition.id;
       return `<div class="patient-condition-cell patient-condition-extract-cell">
         <div class="patient-data-extract-wrap ${open ? 'open' : ''}" data-smart-data-extract="${condition.id}">
@@ -4610,10 +4619,36 @@
             <div class="patient-data-extract-row"><label>数据范围</label><select class="patient-data-range-select" data-smart-condition-data-range="${condition.id}" aria-label="数据范围">${patientDataRangePresets.map(([value, label]) => `<option value="${value}" ${rangeValue === value ? 'selected' : ''}>${label}</option>`).join('')}</select></div>
             ${condition.scope === 'recent' && condition.scopeValue === 'custom' ? `<div class="patient-data-extract-row"><label>时间范围</label><div class="patient-custom-date-range"><input type="date" data-smart-condition-scope-start="${condition.id}" value="${esc(condition.scopeStart || '')}" aria-label="开始日期"><span>至</span><input type="date" data-smart-condition-scope-end="${condition.id}" value="${esc(condition.scopeEnd || '')}" aria-label="结束日期"></div></div>` : ''}
             ${condition.scope === 'recent' ? `<div class="patient-data-extract-row"><label>计算方式</label><select class="patient-calculation-select" data-smart-condition-calculation="${condition.id}" aria-label="计算方式">${calculations.map(([value, label]) => `<option value="${value}" ${condition.calculation === value ? 'selected' : ''}>${label}</option>`).join('')}</select></div>` : ''}
-            ${condition.scope === 'recent' && condition.calculation === 'continuous' ? `<div class="patient-data-extract-row"><label>连续次数</label><div class="patient-data-extract-parameter"><span>连续</span><input type="number" min="1" step="1" data-smart-condition-calculation-parameter="${condition.id}" value="${esc(condition.calculationParameter || '3')}" aria-label="连续次数"><span>次</span></div></div>` : ''}
             <div class="patient-data-extract-tip">数据提取方式仅作用于当前选项，不会改变其他查询条件。</div>
           </div>
         </div>
+      </div>`;
+    }
+
+    function normalizePatientContinuity(condition) {
+      condition.continuityEnabled = condition.continuityEnabled === true || condition.continuityEnabled === 'true';
+      condition.continuityMode = ['times', 'days'].includes(condition.continuityMode) ? condition.continuityMode : 'times';
+      const fallback = condition.continuityMode === 'days' ? 7 : 3;
+      condition.continuityValue = String(Math.max(1, Number(condition.continuityValue) || fallback));
+    }
+
+    function patientContinuityRuleControl(condition) {
+      normalizePatientContinuity(condition);
+      const unit = condition.continuityMode === 'days' ? '天' : '次';
+      return `<div class="patient-continuity-row">
+        <span class="patient-continuity-label">连续规则</span>
+        <label class="patient-continuity-switch" title="${condition.continuityEnabled ? '关闭连续规则' : '开启连续规则'}">
+          <input type="checkbox" data-smart-condition-continuity-enabled="${condition.id}" ${condition.continuityEnabled ? 'checked' : ''} aria-label="连续规则">
+          <span aria-hidden="true"></span>
+        </label>
+        ${condition.continuityEnabled ? `<div class="patient-continuity-config">
+          <select data-smart-condition-continuity-mode="${condition.id}" aria-label="连续规则类型">
+            <option value="times" ${condition.continuityMode === 'times' ? 'selected' : ''}>连续次数</option>
+            <option value="days" ${condition.continuityMode === 'days' ? 'selected' : ''}>连续天数</option>
+          </select>
+          <input type="number" min="1" step="1" data-smart-condition-continuity-value="${condition.id}" value="${esc(condition.continuityValue)}" aria-label="连续${unit}数">
+          <span class="patient-continuity-unit">${unit}</span>
+        </div>` : ''}
       </div>`;
     }
 
@@ -4699,6 +4734,7 @@
           <div class="patient-condition-cell patient-condition-value-cell"><span class="patient-condition-line-label">值</span>${operatorReady ? patientConditionValueControl(condition) : '<span class="patient-condition-step-placeholder">选择规则后填写值</span>'}</div>
           <button class="patient-condition-remove" data-remove-smart-condition="${condition.id}" aria-label="删除${config?.label || '当前'}条件">×</button>
         </div>
+        ${hasDataExtract ? patientContinuityRuleControl(condition) : ''}
         </div>
       </div>`;
     }
@@ -4832,9 +4868,8 @@
       if (condition.scope === 'recent') {
         if (!condition.scopeValue || !condition.calculation) return false;
         if (condition.scopeValue === 'custom' && (!condition.scopeStart || !condition.scopeEnd || condition.scopeStart > condition.scopeEnd)) return false;
-        if (condition.calculation === 'continuous' && !(Number(condition.calculationParameter) > 0)) return false;
-        if (condition.calculation === 'sum' && !patientAccumulationFields.has(condition.field)) return false;
       }
+      if (condition.continuityEnabled && !(Number(condition.continuityValue) > 0)) return false;
       if (['isEmpty','notEmpty'].includes(condition.operator)) return true;
       if (condition.operator === 'between') {
         const [start = '', end = ''] = String(condition.value ?? '').split('~');
@@ -5010,7 +5045,7 @@
 
     function patientConditionCalculationText(condition) {
       if (condition.scope !== 'recent') return '';
-      const label = [...patientCalculationMethods, ['sum','累计值']].find(item => item[0] === condition.calculation)?.[1] || '';
+      const label = patientCalculationMethods.find(item => item[0] === condition.calculation)?.[1] || '';
       return label;
     }
 
@@ -5020,9 +5055,9 @@
       const scope = patientConditionScopeText(condition, field);
       const calculation = patientConditionCalculationText(condition);
       const qualifier = condition.qualifier || field?.fixedQualifier || '';
-      const parameter = condition.calculation === 'continuous' ? `连续${condition.calculationParameter || 3}次 ` : '';
-      const resultUnit = condition.calculation === 'consecutiveDays' ? '天' : (field?.unit || '');
-      return `${scope ? `${scope} ` : ''}${calculation ? `${calculation} ` : ''}${parameter}${field?.label || condition.field}${qualifier ? `（${qualifier}）` : ''}${operator}${condition.value}${['withinDays','overDays'].includes(condition.operator) ? '天' : resultUnit}`;
+      const resultUnit = field?.unit || '';
+      const continuity = condition.continuityEnabled ? `连续${condition.continuityValue || (condition.continuityMode === 'days' ? 7 : 3)}${condition.continuityMode === 'days' ? '天' : '次'} ` : '';
+      return `${scope ? `${scope} ` : ''}${field?.label || condition.field}${qualifier ? `（${qualifier}）` : ''} ${continuity}${condition.continuityEnabled ? '' : (calculation ? `${calculation} ` : '')}${operator}${condition.value}${['withinDays','overDays'].includes(condition.operator) ? '天' : resultUnit}`;
     }
 
     function patientSmartExpression(conditions) {
@@ -5054,8 +5089,6 @@
           max: `${fieldLabel} 最高值`,
           min: `${fieldLabel} 最低值`,
           avg: `${fieldLabel} 平均值`,
-          continuous: `${fieldLabel} 连续 ${condition.calculationParameter || 3} 次满足条件的结果`,
-          consecutiveDays: `${fieldLabel} 连续记录天数`,
           sum: `${fieldLabel} 累计值`
         }[calculation] || fieldLabel;
         return `${scope}内 ${calculationText}`;
@@ -5070,8 +5103,14 @@
         if (['isEmpty','notEmpty'].includes(condition.operator)) return `${fieldLabel}${condition.operator === 'isEmpty' ? '没有填写' : '已填写'}`;
         if (['number','dynamic'].includes(config.type)) {
           const numberOperators = { gte: '大于或等于', gt: '大于', lte: '小于或等于', lt: '小于', eq: '等于', neq: '不等于', between: '介于' };
-          const resultUnit = condition.calculation === 'consecutiveDays' ? '天' : (config.unit || '');
+          const resultUnit = config.unit || '';
           const readableNumber = condition.operator === 'between' ? value.split('~').join(' 至 ') : value;
+          if (condition.continuityEnabled) {
+            const scope = humanScopeText(condition);
+            const amount = condition.continuityValue || (condition.continuityMode === 'days' ? 7 : 3);
+            const unit = condition.continuityMode === 'days' ? '天' : '次';
+            return `${scope ? `${scope}内，` : ''}${fieldLabel}连续 ${amount} ${unit}${numberOperators[condition.operator] || '等于'} ${valueWithUnit(readableNumber, resultUnit)}`;
+          }
           return `${scopedFieldText(condition, config, fieldLabel)}${numberOperators[condition.operator] || '等于'} ${valueWithUnit(readableNumber, resultUnit)}`;
         }
         if (config.type === 'date' && condition.operator === 'withinDays') return `${fieldLabel}在最近 ${value} 天内`;
@@ -5159,6 +5198,9 @@
         condition.calculation = row.querySelector('[data-smart-condition-calculation]')?.value ?? condition.calculation;
         condition.calculationParameter = row.querySelector('[data-smart-condition-calculation-parameter]')?.value ?? condition.calculationParameter;
         condition.calculationParameterUnit = row.querySelector('[data-smart-condition-calculation-parameter-unit]')?.value ?? condition.calculationParameterUnit;
+        condition.continuityEnabled = row.querySelector('[data-smart-condition-continuity-enabled]')?.checked ?? condition.continuityEnabled;
+        condition.continuityMode = row.querySelector('[data-smart-condition-continuity-mode]')?.value ?? condition.continuityMode;
+        condition.continuityValue = row.querySelector('[data-smart-condition-continuity-value]')?.value ?? condition.continuityValue;
         condition.operator = row.querySelector('[data-smart-condition-operator]')?.value || condition.operator;
         condition.value = row.querySelector('[data-smart-condition-value]')?.value ?? condition.value;
       });
@@ -5170,9 +5212,9 @@
       patientListState.smartConditions = JSON.parse(JSON.stringify(patientSmartDraft));
       const conditionSignature = conditions => {
         const groupNumbers = new Map();
-        return JSON.stringify(conditions.map(({ field, qualifier = '', scope = '', scopeValue = '', rangeAmount = '', rangeUnit = '', scopeStart = '', scopeEnd = '', calculation = '', calculationParameter = '', calculationParameterUnit = '', operator, value, logic = 'and', groupId = '', groupLogic = 'and' }) => {
+        return JSON.stringify(conditions.map(({ field, qualifier = '', scope = '', scopeValue = '', rangeAmount = '', rangeUnit = '', scopeStart = '', scopeEnd = '', calculation = '', calculationParameter = '', calculationParameterUnit = '', continuityEnabled = false, continuityMode = 'times', continuityValue = '3', operator, value, logic = 'and', groupId = '', groupLogic = 'and' }) => {
           if (groupId && !groupNumbers.has(groupId)) groupNumbers.set(groupId, groupNumbers.size + 1);
-          return { field, qualifier, scope, scopeValue, rangeAmount, rangeUnit, scopeStart, scopeEnd, calculation, calculationParameter, calculationParameterUnit, operator, value, logic, group: groupId ? groupNumbers.get(groupId) : 0, groupLogic };
+          return { field, qualifier, scope, scopeValue, rangeAmount, rangeUnit, scopeStart, scopeEnd, calculation, calculationParameter, calculationParameterUnit, continuityEnabled, continuityMode, continuityValue, operator, value, logic, group: groupId ? groupNumbers.get(groupId) : 0, groupLogic };
         }));
       };
       const matchingTag = patientAllRuleTemplates().find(tag => conditionSignature(tag.conditions) === conditionSignature(patientListState.smartConditions));
@@ -5766,6 +5808,7 @@
       const isHealthTasks = view === 'healthTasks';
       const isCheckinEvaluation = view === 'checkinEvaluation';
       const isKnowledge = view === 'knowledge';
+      const isStatisticsReport = view === 'statisticsReport';
       document.getElementById('workbenchView')?.classList.toggle('active', isWorkbench);
       document.getElementById('planManagementView')?.classList.toggle('active', isPlans);
       document.getElementById('scaleManagementView')?.classList.toggle('active', isScale);
@@ -5776,11 +5819,13 @@
       document.getElementById('healthTaskView')?.classList.toggle('active', isHealthTasks);
       document.getElementById('checkinEvaluationView')?.classList.toggle('active', isCheckinEvaluation);
       document.getElementById('knowledgeBaseView')?.classList.toggle('active', isKnowledge);
+      document.getElementById('statisticsReportView')?.classList.toggle('active', isStatisticsReport);
       document.getElementById('knowledgeDetailView')?.classList.remove('active');
       if (document.getElementById('listPageTitle')) document.getElementById('listPageTitle').textContent = isHealthTasks ? '健康任务' : isCheckinEvaluation ? '评价任务' : isPatients ? '全部患者' : isIndicator ? '指标模板' : isScale ? '量表管理' : '方案管理';
-      const listTitleMap = { workbench: '工作台', healthTasks: '健康任务', checkinEvaluation: '评价任务', patients: '全部患者', indicator: '指标模板', teams: '团队管理', scale: '量表管理', plans: '方案管理', knowledge: '知识库' };
+      const listTitleMap = { workbench: '工作台', healthTasks: '健康任务', checkinEvaluation: '评价任务', patients: '全部患者', indicator: '指标模板', teams: '团队管理', scale: '量表管理', plans: '方案管理', knowledge: '知识库', statisticsReport: '数据看板' };
       if (document.getElementById('listPageTitle')) document.getElementById('listPageTitle').textContent = listTitleMap[view] || '方案管理';
       document.querySelector('.list-main')?.classList.toggle('workbench-main', isWorkbench);
+      document.querySelector('.list-main')?.classList.toggle('statistics-report-main', isStatisticsReport);
       document.querySelector('.list-main')?.classList.remove('knowledge-detail-main');
       document.querySelectorAll('#listPage .menu .menu-item, #listPage .menu .submenu-item').forEach(item => item.classList.remove('active'));
       const activeSubmenuItems = document.querySelectorAll(`#listPage .menu .submenu-item[data-list-view="${view}"]`);
@@ -5803,6 +5848,7 @@
         filterHealthTaskRows(activeTab);
       }
       if (isCheckinEvaluation) applyCheckinEvalFilters();
+      if (isStatisticsReport) window.renderStatisticsReport?.();
     }
 
     function exitPatientArchiveForGlobalNavigation() {
@@ -9703,12 +9749,13 @@
         if (condition && options) options.innerHTML = patientFieldOptionsMarkup(condition.field, e.target.value, condition.qualifier || patientSmartFieldConfig[condition.field]?.fixedQualifier || '');
         return;
       }
-      if (e.target.matches('[data-smart-condition-range-amount], [data-smart-condition-calculation-parameter]')) {
-        const id = e.target.dataset.smartConditionRangeAmount || e.target.dataset.smartConditionCalculationParameter;
+      if (e.target.matches('[data-smart-condition-range-amount], [data-smart-condition-calculation-parameter], [data-smart-condition-continuity-value]')) {
+        const id = e.target.dataset.smartConditionRangeAmount || e.target.dataset.smartConditionCalculationParameter || e.target.dataset.smartConditionContinuityValue;
         const condition = patientSmartDraft.find(item => item.id === id);
         if (condition) {
           if (e.target.dataset.smartConditionRangeAmount) condition.rangeAmount = e.target.value;
           if (e.target.dataset.smartConditionCalculationParameter) condition.calculationParameter = e.target.value;
+          if (e.target.dataset.smartConditionContinuityValue) condition.continuityValue = e.target.value;
         }
         renderPatientSmartDraftSummary();
         const hasValid = patientSmartDraft.length > 0 && patientSmartDraft.every(patientConditionIsComplete);
@@ -9918,6 +9965,9 @@
           condition.calculation = '';
           condition.calculationParameter = '';
           condition.calculationParameterUnit = '';
+          condition.continuityEnabled = false;
+          condition.continuityMode = 'times';
+          condition.continuityValue = '3';
           condition.operator = '';
           condition.value = '';
           renderPatientSmartConditions();
@@ -9954,6 +10004,7 @@
           if (value === 'latest') {
             condition.calculationParameter = '';
             condition.calculationParameterUnit = '';
+            condition.continuityEnabled = false;
           }
           activePatientDataExtractId = condition.id;
           patientListState.activeSmartTagId = '';
@@ -9977,14 +10028,39 @@
         const condition = patientSmartDraft.find(item => item.id === e.target.dataset.smartConditionCalculation);
         if (condition) {
           condition.calculation = e.target.value;
-          if (condition.calculation === 'continuous') {
-            condition.calculationParameter = condition.calculationParameter || '3';
-            condition.calculationParameterUnit = 'times';
-          } else {
-            condition.calculationParameter = '';
-            condition.calculationParameterUnit = '';
-          }
+          condition.calculationParameter = '';
+          condition.calculationParameterUnit = '';
           activePatientDataExtractId = condition.id;
+          patientListState.activeSmartTagId = '';
+          renderPatientSmartConditions();
+          renderPatientSmartTags();
+        }
+        return;
+      }
+      if (e.target.matches('[data-smart-condition-continuity-enabled]')) {
+        const condition = patientSmartDraft.find(item => item.id === e.target.dataset.smartConditionContinuityEnabled);
+        if (condition) {
+          condition.continuityEnabled = e.target.checked;
+          normalizePatientContinuity(condition);
+          if (condition.continuityEnabled && condition.scope === 'latest') {
+            condition.scope = 'recent';
+            condition.scopeValue = '7';
+            condition.rangeAmount = '7';
+            condition.rangeUnit = 'day';
+            condition.calculation = 'any';
+          }
+          patientListState.activeSmartTagId = '';
+          renderPatientSmartConditions();
+          renderPatientSmartTags();
+        }
+        return;
+      }
+      if (e.target.matches('[data-smart-condition-continuity-mode]')) {
+        const condition = patientSmartDraft.find(item => item.id === e.target.dataset.smartConditionContinuityMode);
+        if (condition) {
+          const previousMode = condition.continuityMode;
+          condition.continuityMode = e.target.value;
+          if (condition.continuityMode !== previousMode) condition.continuityValue = condition.continuityMode === 'days' ? '7' : '3';
           patientListState.activeSmartTagId = '';
           renderPatientSmartConditions();
           renderPatientSmartTags();
@@ -10022,6 +10098,9 @@
           condition.calculation = '';
           condition.calculationParameter = '';
           condition.calculationParameterUnit = '';
+          condition.continuityEnabled = false;
+          condition.continuityMode = 'times';
+          condition.continuityValue = '3';
           condition.operator = '';
           condition.value = '';
           renderPatientSmartConditions();
@@ -14476,11 +14555,14 @@
 })();
 </script>
 
-<script src="./js/service-management.js?v=service-config-v14"></script>
+<script src="./js/service-management.js?v=detail-images-v13"></script>
 <script src="./js/interface-notes-snapshot.js?v=20260828-v3-9"></script>
 <script src="./js/interface-annotations-v3.js?v=overlay-position-v3-11"></script>
-<script src="./js/knowledge-base.js?v=knowledge-v14"></script>
+<script src="./js/knowledge-base.js?v=knowledge-v15"></script>
 <script src="./assets/echarts.min.js"></script>
+<script src="./js/statistics-data.js?v=20260907-28"></script>
+<script src="./js/statistics-filters.js?v=20260907-28"></script>
+<script src="./js/statistics-report.js?v=20260907-28"></script>
 <script src="./js/team-management.js"></script>
 </body>
 </html>

@@ -694,8 +694,10 @@
     document.querySelectorAll(".ui-note-surface-active").forEach(function clearSurface(node) {
       node.classList.remove("ui-note-surface-active");
     });
-    /* Preserve fixed/absolute overlay positioning. Only static surfaces need
-       the relative positioning helper used by the annotation layer. */
+    /* A fixed/absolute drawer already establishes the positioning context for
+       its annotation layer. Forcing it to `position: relative` moves the
+       overlay into document flow; context polling then alternates between the
+       drawer and page, which looks like the overlay is opening and closing. */
     if (window.getComputedStyle(surface).position === "static") {
       surface.classList.add("ui-note-surface-active");
     }

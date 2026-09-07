@@ -16,3 +16,7 @@ _write_test.txt
 builder-preview.html
 Frontend Architect/
 %SystemDrive%/
+
+# Local generated build files
+.next/
+next-env.d.ts
