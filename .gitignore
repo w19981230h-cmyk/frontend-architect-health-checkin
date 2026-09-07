@@ -6,6 +6,8 @@ dist/
 !assets/service-package/followup-detail-reference.png
 !assets/service-package/weight-management-reference.png
 !assets/service-package/weight-management-clean.png
+!assets/patient-archive-portrait.png
+!sites-deploy/public/assets/patient-archive-portrait.png
 *.log
 .ui-annotations.json
 .ui-annotations.tmp.json
