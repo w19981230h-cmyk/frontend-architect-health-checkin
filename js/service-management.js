@@ -583,6 +583,8 @@
       .package-config-head { margin-bottom: 28px; padding-bottom: 20px; display: flex; align-items: center; gap: 12px; border-bottom: 1px solid #edf1f6; }
       .package-config-index { width: 30px; height: 30px; flex: 0 0 30px; display: grid; place-items: center; border-radius: 8px; color: #174dff; background: #edf2ff; font-size: 14px; font-weight: 800; }
       .package-config-title { color: #1e2e49; font-size: 18px; font-weight: 800; }
+      .package-config-title-row { display: flex; align-items: center; gap: 7px; }
+      .package-config-help { width: 16px; height: 16px; display: inline-grid; place-items: center; border: 1px solid #9aa6b6; border-radius: 50%; color: #7e8a9c; font-size: 11px; font-style: normal; font-weight: 600; cursor: help; }
       .package-config-subtitle { margin-top: 2px; color: #97a2b2; font-size: 12px; }
       .package-config-count { margin-left: auto; color: #7d899b; font-size: 13px; }
       .package-field-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0 24px; }
@@ -617,6 +619,7 @@
       .package-ant-select-option { width: 100%; min-height: 32px; padding: 5px 12px; display: flex; align-items: center; border: 0; border-radius: 4px; color: rgba(0,0,0,.88); background: transparent; font-size: 14px; text-align: left; cursor: pointer; transition: background .2s; }
       .package-ant-select-option:hover, .package-ant-select-option:focus-visible { outline: 0; background: rgba(0,0,0,.04); }
       .package-ant-select-option.selected { background: #e6f4ff; font-weight: 600; }
+      .package-ant-select.multiple .package-ant-select-option.selected::after { content: '✓'; margin-left: auto; color: #1677ff; font-weight: 700; }
       .package-ant-select-option:disabled { color: rgba(0,0,0,.25); background: transparent; cursor: not-allowed; }
       .package-counter { position: absolute; right: 12px; bottom: 11px; color: #a7b1c0; font-size: 12px; }
       .package-upload { position: relative; width: 144px; height: 88px; display: grid; place-items: center; align-content: center; gap: 8px; box-sizing: border-box; border: 1px dashed #d8e0eb; border-radius: 6px; overflow: hidden; color: #98a5b7; background: #fbfcfe; cursor: pointer; }
@@ -979,9 +982,12 @@
               ${renderBenefitEditor('个性化健康管理计划', '根据健康评估结果制定并动态调整管理计划', [['初始健康评估并制定健康管理计划', '服务期内1次'], ['根据回访及复诊结果动态调整健康管理计划', '服务期内持续'], ['线上健康回访', '每月1次']], '▤')}
               ${renderBenefitEditor('全程健康守护', '持续监测健康指标并提供专业健康支持', [['关键健康指标持续监测与异常提醒', '全年持续'], ['日常健康咨询与用药提醒', '全年持续']], '✚')}
             </div><button class="package-benefit-add" data-add-benefit type="button">＋ 添加服务权益</button></section>
-            <section class="package-config-section" data-config-section="plan"><div class="package-config-head"><span class="package-config-index">4</span><div><div class="package-config-title">关联方案</div><div class="package-config-subtitle">选择服务执行所使用的方案内容和服务团队</div></div></div><div class="package-field-grid">
-              <div class="package-form-group"><label class="package-form-label">方案内容 <span class="package-optional">选填</span></label><select class="package-form-select" id="packagePlanInput" data-package-form-input><option value="">请选择方案内容</option><option>90天健康减重管理方案</option><option>糖尿病全周期管理方案</option><option>高血压强化管理方案</option><option>心血管健康管理方案</option></select></div>
-              <div class="package-form-group"><label class="package-form-label">服务团队 <span class="package-optional">选填</span></label><select class="package-form-select" id="packageTeamInput" data-package-form-input><option value="">请选择服务团队</option><option>慢病健康管理团队</option><option>营养与体重管理团队</option><option>心血管专病服务团队</option><option>术后康复随访团队</option></select></div>
+            <section class="package-config-section" data-config-section="plan"><div class="package-config-head"><span class="package-config-index">4</span><div><div class="package-config-title-row"><div class="package-config-title">服务配置</div><i class="package-config-help" title="配置服务包由哪些机构、科室、团队和人员提供，并可关联管理方案">?</i></div><div class="package-config-subtitle">配置服务提供方及关联的管理方案</div></div></div><div class="package-field-grid">
+              <div class="package-form-group"><label class="package-form-label"><span class="package-required">*</span>服务机构</label><select class="package-form-select" id="packageOrganizationInput" data-package-form-input data-placeholder="请选择服务机构（可多选）" multiple aria-label="服务机构"><option value="健康管理中心">健康管理中心</option><option value="互联网医院">互联网医院</option><option value="第一人民医院">第一人民医院</option><option value="康复医学中心">康复医学中心</option></select></div>
+              <div class="package-form-group"><label class="package-form-label">服务科室 <span class="package-optional">选填</span></label><select class="package-form-select" id="packageDepartmentInput" data-package-form-input data-placeholder="请选择服务科室（可多选）" multiple aria-label="服务科室"><option value="健康管理科">健康管理科</option><option value="内分泌科">内分泌科</option><option value="心血管内科">心血管内科</option><option value="营养科">营养科</option><option value="康复医学科">康复医学科</option></select></div>
+              <div class="package-form-group"><label class="package-form-label">服务团队 <span class="package-optional">选填</span></label><select class="package-form-select" id="packageTeamInput" data-package-form-input data-placeholder="请选择服务团队（可多选）" multiple aria-label="服务团队"><option value="慢病健康管理团队">慢病健康管理团队</option><option value="营养与体重管理团队">营养与体重管理团队</option><option value="心血管专病服务团队">心血管专病服务团队</option><option value="术后康复随访团队">术后康复随访团队</option></select></div>
+              <div class="package-form-group"><label class="package-form-label">服务人员 <span class="package-optional">选填</span></label><select class="package-form-select" id="packagePersonnelInput" data-package-form-input data-placeholder="请选择服务人员（可多选）" multiple aria-label="服务人员"><option value="李敏 医生">李敏 医生</option><option value="王悦 营养师">王悦 营养师</option><option value="周宁 健康管理师">周宁 健康管理师</option><option value="陈宇 康复师">陈宇 康复师</option></select></div>
+              <div class="package-form-group full"><label class="package-form-label">关联方案 <span class="package-optional">选填</span></label><select class="package-form-select" id="packagePlanInput" data-package-form-input><option value="">请选择关联方案</option><option>90天健康减重管理方案</option><option>糖尿病全周期管理方案</option><option>高血压强化管理方案</option><option>心血管健康管理方案</option></select></div>
             </div></section>
             <section class="package-config-section" data-config-section="rules"><div class="package-config-head"><span class="package-config-index">5</span><div><div class="package-config-title">服务规则与协议</div><div class="package-config-subtitle">明确服务边界，并配置用户订阅前需要确认的协议</div></div></div>
               <div class="package-form-group"><label class="package-form-label"><span class="package-required">*</span>服务规则</label><div class="package-input-wrap"><textarea class="package-form-textarea package-rules" id="packageRulesInput" data-package-form-input maxlength="500">1. 服务有效期自购买之日计算。&#10;2. 有效期内可按配置频次使用服务权益，超出有效期或次数用完后按正常服务价格收费。&#10;3. 一个订单仅限绑定一名就诊人，服务启用后不可更改。&#10;4. 服务包费用不包含检查、药品、手术及住院等医疗费用。&#10;5. 购买后7天内未启用服务，可联系客服申请退款。&#10;6. 客服电话：020-00000000</textarea><span class="package-counter">218 / 500</span></div></div>
@@ -1722,12 +1728,17 @@
     if (!wrapper) return;
     const trigger = wrapper.querySelector('[data-package-ant-select-trigger]');
     const value = wrapper.querySelector('.package-ant-select-value');
+    const selectedOptions = Array.from(select.selectedOptions || []).filter(option => option.value);
     const selected = select.options[select.selectedIndex];
-    wrapper.classList.toggle('placeholder', /^请选择/.test(selected?.textContent || ''));
-    if (value) value.textContent = selected?.textContent || '';
+    const placeholder = select.dataset.placeholder || selected?.textContent || '请选择';
+    const displayText = select.multiple ? selectedOptions.map(option => option.textContent).join('、') : selected?.textContent || '';
+    wrapper.classList.toggle('placeholder', select.multiple ? selectedOptions.length === 0 : /^请选择/.test(displayText));
+    wrapper.classList.toggle('multiple', select.multiple);
+    if (value) value.textContent = displayText || placeholder;
     if (trigger) trigger.disabled = select.disabled;
     wrapper.querySelectorAll('[data-package-ant-option]').forEach(option => {
-      const isSelected = Number(option.dataset.packageAntOption) === select.selectedIndex;
+      const optionIndex = Number(option.dataset.packageAntOption);
+      const isSelected = select.multiple ? Boolean(select.options[optionIndex]?.selected) : optionIndex === select.selectedIndex;
       option.classList.toggle('selected', isSelected);
       option.setAttribute('aria-selected', String(isSelected));
     });
@@ -1774,6 +1785,7 @@
       dropdown.dataset.packageAntSelectDropdown = '';
       dropdown.setAttribute('role', 'listbox');
       dropdown.setAttribute('aria-label', label);
+      if (select.multiple) dropdown.setAttribute('aria-multiselectable', 'true');
       dropdown.hidden = true;
       select.parentNode.insertBefore(wrapper, select);
       select.classList.add('package-ant-select-native');
@@ -2860,7 +2872,8 @@
     if (previewIntro) previewIntro.textContent = intro || '填写服务介绍后，将在这里展示服务内容、服务方式及用户能够获得的健康价值。';
     if (previewPlan) previewPlan.textContent = plan;
     const teamSelect = document.getElementById('packageTeamInput');
-    if (previewTeam) previewTeam.textContent = teamSelect && teamSelect.selectedIndex > 0 ? teamSelect.value : '暂未配置';
+    const selectedTeams = teamSelect ? Array.from(teamSelect.selectedOptions).map(option => option.value).filter(Boolean) : [];
+    if (previewTeam) previewTeam.textContent = selectedTeams.join('、') || '暂未配置';
     if (previewTags) {
       previewTags.replaceChildren();
       [...(activeTags.length ? activeTags : ['健康服务']), period].forEach(text => {
@@ -2881,8 +2894,15 @@
       description: document.getElementById('packageDescriptionInput'),
       price: document.getElementById('packagePriceInput'),
       plan: document.getElementById('packagePlanInput'),
+      organization: document.getElementById('packageOrganizationInput'),
+      department: document.getElementById('packageDepartmentInput'),
       team: document.getElementById('packageTeamInput'),
+      personnel: document.getElementById('packagePersonnelInput'),
       intro: document.getElementById('packageIntroInput')
+    };
+    const setMultipleValues = (select, values = []) => {
+      const selectedValues = new Set(Array.isArray(values) ? values : [values].filter(Boolean));
+      Array.from(select.options).forEach(option => { option.selected = selectedValues.has(option.value); });
     };
     overlay.dataset.editCode = item?.[0] || '';
     overlay.dataset.noteMode = item ? 'edit' : 'create';
@@ -2907,11 +2927,17 @@
       const customMatch = String(period || '').match(/(\d+)\s*(天|个月|月|年)/);
       customValue.value = durationLabel ? '' : String(customMatch?.[1] || parseInt(period, 10) || 30);
       customUnit.value = durationLabel ? '天' : (customMatch?.[2] === '个月' ? '月' : customMatch?.[2] || '天');
-      fields.team.selectedIndex = 0;
+      setMultipleValues(fields.organization, item[15] || ['健康管理中心']);
+      setMultipleValues(fields.department, item[16] || []);
+      setMultipleValues(fields.team, item[17] || []);
+      setMultipleValues(fields.personnel, item[18] || []);
     } else {
       [fields.name, fields.description, fields.price, fields.intro].forEach(field => { field.value = ''; });
       fields.plan.selectedIndex = 0;
-      fields.team.selectedIndex = 0;
+      setMultipleValues(fields.organization, []);
+      setMultipleValues(fields.department, []);
+      setMultipleValues(fields.team, []);
+      setMultipleValues(fields.personnel, []);
       document.querySelectorAll('.package-duration [data-package-duration]').forEach((button, index) => button.classList.toggle('active', index === 0));
       document.querySelector('[data-manual-period]')?.classList.remove('active');
       document.getElementById('packageCustomDurationValue').value = '';
@@ -2958,6 +2984,15 @@
       imageSection?.querySelector('[data-add-package-detail-image]')?.focus();
       return;
     }
+    const organizationSelect = document.getElementById('packageOrganizationInput');
+    const selectedOrganizations = organizationSelect ? Array.from(organizationSelect.selectedOptions).map(option => option.value).filter(Boolean) : [];
+    if (!selectedOrganizations.length) {
+      showPackageToast('请选择至少一个服务机构');
+      const configSection = document.querySelector('[data-config-section="plan"]');
+      configSection?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      document.querySelector('#packageOrganizationInput + [data-package-ant-select-trigger]')?.focus();
+      return;
+    }
     if (!code) {
       showPackageToast('服务包草稿已保存');
       return;
@@ -2983,6 +3018,10 @@
     item[12] = document.querySelector('input[name="packageVerificationMode"]:checked')?.value || '本平台完成';
     item[13] = packageGalleryImages.map(({ source, name }) => ({ source, name }));
     item[14] = packageDetailImages.map(({ source, name }) => ({ source, name }));
+    item[15] = selectedOrganizations;
+    item[16] = Array.from(document.getElementById('packageDepartmentInput').selectedOptions).map(option => option.value).filter(Boolean);
+    item[17] = Array.from(document.getElementById('packageTeamInput').selectedOptions).map(option => option.value).filter(Boolean);
+    item[18] = Array.from(document.getElementById('packagePersonnelInput').selectedOptions).map(option => option.value).filter(Boolean);
     row.children[1].innerHTML = packageCoverIcon(item[1], item[9]);
     row.children[2].textContent = name;
     row.children[2].title = name;
@@ -3062,11 +3101,15 @@
       const wrapper = packageSelectOption.closest('.package-ant-select');
       const select = wrapper?.querySelector('select');
       if (!select || packageSelectOption.disabled) return;
-      select.selectedIndex = Number(packageSelectOption.dataset.packageAntOption);
+      const optionIndex = Number(packageSelectOption.dataset.packageAntOption);
+      if (select.multiple) select.options[optionIndex].selected = !select.options[optionIndex].selected;
+      else select.selectedIndex = optionIndex;
       syncPackageAntSelect(select);
-      closePackageAntSelects();
       select.dispatchEvent(new Event('change', { bubbles: true }));
-      wrapper.querySelector('[data-package-ant-select-trigger]')?.focus();
+      if (!select.multiple) {
+        closePackageAntSelects();
+        wrapper.querySelector('[data-package-ant-select-trigger]')?.focus();
+      }
       return;
     }
     const packageSelectTrigger = event.target.closest('[data-package-ant-select-trigger]');
