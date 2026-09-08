@@ -195,6 +195,7 @@
 #patientArchivePage .archive-dashboard-head h2 { font-size: 18px; }
 #patientArchivePage .archive-board-select { margin-left: auto; }
 #patientArchivePage .archive-board-count { display: none; }
+#patientArchivePage .archive-metric-strip { display: none; }
 
 @media (max-width: 1440px) {
   #patientArchivePage .archive-shell { grid-template-columns: 276px minmax(0, 1fr); }
