@@ -2794,8 +2794,9 @@
     .checkin-range-meal-meta span { padding: 8px 10px; border-radius: 7px; color: #52617a; background: #f3f7fc; font-size: 12px; font-weight: 700; }
   </style>
   <link rel="stylesheet" href="./css/overlay-stability.css?v=20260831-3">
-  <link rel="stylesheet" href="./css/statistics-report.css?v=20260908-45">
+  <link rel="stylesheet" href="./css/statistics-report.css?v=20260908-47">
   <link rel="stylesheet" href="./css/patient-archive-reference.css?v=20260907-1">
+  <link rel="stylesheet" href="./css/health-portrait.css?v=20260909-4">
 </head>
 <body>
   <script src="./save-persistence-final.js"></script>
@@ -3751,9 +3752,30 @@
                 </div>
               </div>
             </section>
-            <section class="archive-health-band">
-              <div class="archive-band-label"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M3 7h7l2 2h9v10H3z"/><path d="M3 7V5h7l2 2"/></svg>健康画像</div>
-              <div class="archive-portrait-grid"><div class="archive-portrait-item">疾病诊断：<span>--</span><div class="archive-portrait-count">共 0 条</div></div><div class="archive-portrait-item">异常指标：<span>--</span><div class="archive-portrait-count">共 0 条</div></div><div class="archive-portrait-item">风险提示：<span>--</span><div class="archive-portrait-count">共 0 条</div></div></div>
+            <section class="archive-health-band archive-health-profile">
+              <header class="archive-health-profile-head">
+                <div class="archive-health-profile-title">
+                  <span class="archive-health-profile-title-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M6 4h12a2 2 0 0 1 2 2v14H4V6a2 2 0 0 1 2-2Z"/><path d="M9 4V2h6v2M8 10h8M8 14h5"/></svg></span>
+                  <h2>健康画像</h2>
+                  <span class="archive-health-profile-time">2026-09-08 15:45</span>
+                </div>
+                <div class="archive-health-profile-actions"><button type="button" data-health-portrait-open>查看完整画像</button></div>
+              </header>
+              <div class="archive-health-assessment"><strong>综合健康评估</strong><span>当前主要关注心脏与血管健康、血液免疫与感染及内分泌代谢健康，建议结合持续监测数据进行管理。</span></div>
+              <div class="archive-health-focus-grid">
+                <article class="archive-health-focus-card critical">
+                  <span class="archive-health-focus-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M20.8 5.7c-2.1-2.3-5.5-1.8-7.1.5L12 8.4l-1.7-2.2C8.7 3.9 5.3 3.4 3.2 5.7 1 8.2 1.6 12 4 14.2L12 21l8-6.8c2.4-2.2 3-6 0.8-8.5Z"/><path d="m7 12 2.2-2 2.1 4 2-4 1.7 2h3"/></svg></span>
+                  <div class="archive-health-focus-content"><div class="archive-health-focus-title"><strong>心脏与血管健康</strong></div><div class="archive-health-focus-meta"><strong>3项</strong><span class="critical">重点关注</span></div><p class="archive-health-focus-summary">存在心血管风险因素，近期血压波动需持续监测并加强日常管理。</p></div>
+                </article>
+                <article class="archive-health-focus-card strengthen">
+                  <span class="archive-health-focus-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 3 4.5 6v5.6c0 4.8 3.2 7.7 7.5 9.4 4.3-1.7 7.5-4.6 7.5-9.4V6L12 3Z"/><path d="M12 7v9M8.5 11.5h7"/></svg></span>
+                  <div class="archive-health-focus-content"><div class="archive-health-focus-title"><strong>血液、免疫与感染</strong></div><div class="archive-health-focus-meta"><strong>2项</strong><span class="strengthen">加强关注</span></div><p class="archive-health-focus-summary">存在多项药物及食物过敏记录，诊疗与用药前需加强信息核对。</p></div>
+                </article>
+                <article class="archive-health-focus-card attention">
+                  <span class="archive-health-focus-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 3c3.7 4.2 6 7.1 6 10a6 6 0 0 1-12 0c0-2.9 2.3-5.8 6-10Z"/></svg></span>
+                  <div class="archive-health-focus-content"><div class="archive-health-focus-title"><strong>内分泌、代谢与营养</strong></div><div class="archive-health-focus-meta"><strong>1项</strong><span class="attention">需关注</span></div><p class="archive-health-focus-summary">当前血糖处于临界关注范围，建议结合家族史持续观察代谢变化。</p></div>
+                </article>
+              </div>
             </section>
           </section>
           <section class="archive-dashboard">
@@ -3916,6 +3938,48 @@
     </div>
   </section>
 
+  <div class="health-portrait-mask" id="healthPortraitModal" aria-hidden="true">
+    <section class="health-portrait-dialog" role="dialog" aria-modal="true" aria-labelledby="healthPortraitTitle">
+      <header class="health-portrait-head">
+        <div class="health-portrait-heading">
+          <h2 id="healthPortraitTitle">完整健康画像</h2><i></i>
+          <strong data-health-patient-name>黄尚忠</strong><span data-health-patient-gender>男</span><span data-health-patient-age>73岁</span>
+          <b>综合状态：需关注</b>
+        </div>
+        <div class="health-portrait-head-actions"><span>画像更新时间：2026-09-08 15:45</span><button type="button" data-health-portrait-close aria-label="关闭完整健康画像">×</button></div>
+      </header>
+      <div class="health-portrait-body">
+        <nav class="health-system-list" aria-label="健康系统分类">
+          <button class="overview active" data-health-system="overview"><span class="health-system-icon">▣</span><strong>综合健康评估</strong></button>
+          <button class="normal" data-health-system="mind"><span class="health-system-icon">✾</span><strong>神经、心理与睡眠健康</strong><em>正常</em></button>
+          <button class="normal" data-health-system="vision"><span class="health-system-icon">◉</span><strong>眼与视觉健康</strong><em>正常</em></button>
+          <button class="attention" data-health-system="oral"><span class="health-system-icon">◔</span><strong>耳鼻咽与口腔健康</strong><em>日常关注</em></button>
+          <button class="critical" data-health-system="heart"><span class="health-system-icon">♡</span><strong>心脏与血管健康</strong><em>重点关注</em></button>
+          <button class="normal" data-health-system="breath"><span class="health-system-icon">♧</span><strong>呼吸系统健康</strong><em>正常</em></button>
+          <button class="attention" data-health-system="blood"><span class="health-system-icon">✧</span><strong>血液、免疫与感染</strong><em>日常关注</em></button>
+          <button class="normal" data-health-system="digest"><span class="health-system-icon">◡</span><strong>消化系统健康</strong><em>正常</em></button>
+          <button class="attention" data-health-system="metabolism"><span class="health-system-icon">♢</span><strong>内分泌、代谢与营养</strong><em>日常关注</em></button>
+          <button class="normal" data-health-system="kidney"><span class="health-system-icon">♮</span><strong>肾脏与泌尿健康</strong><em>正常</em></button>
+          <button class="empty" data-health-system="reproductive"><span class="health-system-icon">⚥</span><strong>生殖、乳腺与孕产健康</strong><em>暂无结论</em></button>
+          <button class="normal" data-health-system="bone"><span class="health-system-icon">⌁</span><strong>骨骼、肌肉与运动健康</strong><em>正常</em></button>
+          <button class="empty" data-health-system="skin"><span class="health-system-icon">⌂</span><strong>皮肤与体表健康</strong><em>暂无结论</em></button>
+        </nav>
+        <section class="health-human-panel" aria-label="人体健康画像">
+          <div class="health-human-rings"></div>
+          <img src="./assets/patient-archive-portrait.png" alt="患者人体健康画像">
+          <div class="health-organ-glow" aria-hidden="true"><span></span></div>
+          <div class="health-human-hotspot"><i></i><b data-health-hotspot-label>心脏与血管健康｜重点关注</b></div>
+          <div class="health-state-legend"><span class="empty">暂无结论</span><span class="normal">正常</span><span class="attention">日常关注</span><span class="critical">重点关注</span><span class="severe">严重关注</span></div>
+        </section>
+        <section class="health-detail-panel">
+          <header><h3 data-health-detail-title>综合分析</h3><span data-health-detail-status hidden></span></header>
+          <div class="health-detail-tabs" data-health-detail-tabs hidden></div>
+          <div class="health-detail-content" data-health-detail-content></div>
+          <footer><div><strong>数据依据：</strong><span>健康档案1项</span><i></i><span>指标记录0项</span><i></i><span>相关报告0份</span></div><button type="button" data-toast="相关数据已打开">查看相关数据</button><p>本画像由系统基于现有健康数据辅助生成，仅供健康管理参考，不能替代医师诊断。</p></footer>
+        </section>
+      </div>
+    </section>
+  </div>
   <div class="toast" id="toast"></div>
   <div class="archive-report-dialog-mask" id="archiveReportDialog" aria-hidden="true">
     <section class="archive-report-dialog" role="dialog" aria-modal="true" aria-labelledby="archiveReportDialogTitle">
@@ -14562,7 +14626,8 @@
 <script src="./assets/echarts.min.js"></script>
 <script src="./js/statistics-data.js?v=20260907-28"></script>
 <script src="./js/statistics-filters.js?v=20260908-34"></script>
-<script src="./js/statistics-report.js?v=20260908-44"></script>
+<script src="./js/statistics-report.js?v=20260908-47"></script>
 <script src="./js/team-management.js"></script>
+<script src="./js/health-portrait.js?v=20260909-4"></script>
 </body>
 </html>

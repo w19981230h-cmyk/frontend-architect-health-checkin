@@ -205,9 +205,9 @@
   function renderFunnels(data) {
     addChart('srPatientFunnel', funnelOption(data.patient, ['筛查人数','筛查异常人数','符合入组人数','成功入组人数','有效在管人数'], ['#2f79df','#4f91e9','#6fa7e7','#54b5c0','#34aa89']));
     addRates('srPatientFunnel', data.patient, ['筛查异常率','入组适配率','入组转化率','有效在管率'], '全链路转化率');
-    addChart('srUpFunnel', funnelOption(data.up, ['转出人数','上级机构接收人数','实际到院人数','诊疗完成人数'], ['#2f79df','#4e91ec','#71ace4','#48a5c9']));
+    addChart('srUpFunnel', funnelOption(data.up, ['转出人数','上级机构接收人数','实际到院人数','确定入组人数'], ['#2f79df','#4e91ec','#71ace4','#48a5c9']));
     addRates('srUpFunnel', data.up, ['上级机构接收率','实际到院率','诊疗完成率']);
-    addChart('srDownFunnel', funnelOption(data.down, ['转出人数','基层接收人数','管理交接人数','首次随访完成人数'], ['#389bb5','#51afbd','#6cbbb0','#35a889']));
+    addChart('srDownFunnel', funnelOption(data.down, ['转出人数','基层接收人数','管理交接人数','确定入组人数'], ['#389bb5','#51afbd','#6cbbb0','#35a889']));
     addRates('srDownFunnel', data.down, ['基层接收率','管理交接率','首次随访完成率']);
     $('srUpClosed').textContent = `${percent(data.up[3],data.up[0]).toFixed(1)}%`;
     $('srUpAverageHours').textContent = `${(2.4 + (data.factor < 1 ? .1 : 0)).toFixed(1)}小时`;
@@ -292,13 +292,46 @@
     personalDetail.hidden = true;
     personalDetail.innerHTML = '';
     $('srRankingNameHead').textContent = ranking.dimension;
-    $('srRankingBody').innerHTML = ranking.rows.map((row,index) => `<tr><td><span class="sr-rank ${index < 3 ? 'top' : ''}">${index+1}</span></td><td>${row.name}</td><td>${n(row.active)}</td><td>${row.standard}%</td><td>${row.target}%</td><td>${row.closed}%</td><td>${row.lost}%</td><td><button class="sr-table-link" type="button">查看</button></td></tr>`).join('');
+    $('srRankingBody').innerHTML = ranking.rows.map((row,index) => `<tr><td><span class="sr-rank ${index < 3 ? 'top' : ''}">${index+1}</span></td><td>${row.name}</td><td>${n(row.active)}</td><td>${row.standard}%</td><td>${row.target}%</td><td>${row.closed}%</td><td>${row.lost}%</td><td><button class="sr-table-link" type="button" data-sr-detail>查看</button></td></tr>`).join('');
   }
+
+  function markDetailTriggers() {
+    report.querySelectorAll('.sr-overview-metric,.sr-flow-row .sr-chart,.sr-referral-result>div,.sr-disease-table tbody tr,.sr-metric-grid.safety .sr-metric-card,[data-sr-detail]').forEach(element => {
+      element.dataset.srDetail = '';
+      element.classList.add('sr-detail-trigger');
+      if (!element.matches('button')) element.setAttribute('role','button');
+      if (!element.hasAttribute('tabindex')) element.tabIndex = 0;
+      if (!element.hasAttribute('aria-label')) element.setAttribute('aria-label','查看具体明细');
+    });
+  }
+
+  function showDetailNotice() {
+    if (typeof window.showToast === 'function') {
+      window.showToast('具体明细功能建设中');
+      return;
+    }
+    const toast = document.getElementById('toast');
+    if (!toast) return;
+    toast.textContent = '具体明细功能建设中';
+    toast.classList.add('show');
+    clearTimeout(showDetailNotice.timer);
+    showDetailNotice.timer = setTimeout(() => toast.classList.remove('show'), 1500);
+  }
+
+  report.addEventListener('click', event => {
+    if (event.target.closest('[data-sr-detail]')) showDetailNotice();
+  });
+  report.addEventListener('keydown', event => {
+    if ((event.key === 'Enter' || event.key === ' ') && event.target.matches('[data-sr-detail]')) {
+      event.preventDefault();
+      showDetailNotice();
+    }
+  });
 
   function refresh() {
     const data = buildData();
     report.querySelector('[data-sr-summary]').textContent = `${filterState.org || '全部集团'} · ${filterState.dept || '全部科室'} · ${filterState.person || '全部人员'} · ${filterState.disease ? (filterState.disease === 'CKD' ? '慢性肾病（CKD）' : filterState.disease) : '全部病种'}｜${filterState.start} 至 ${filterState.end}`;
-    renderOverview(data); renderFunnels(data); renderMetricCards('srQualityMetrics', data.quality); renderDisease(data); renderMetricCards('srSafetyMetrics', data.safety); renderMetricCards('srResourceMetrics', data.resources); renderRanking(data);
+    renderOverview(data); renderFunnels(data); renderMetricCards('srQualityMetrics', data.quality); renderDisease(data); renderMetricCards('srSafetyMetrics', data.safety); renderMetricCards('srResourceMetrics', data.resources); renderRanking(data); markDetailTriggers();
     requestAnimationFrame(() => {
       charts.forEach(chart => chart.resize());
       requestAnimationFrame(() => charts.forEach(chart => chart.resize()));

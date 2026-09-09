@@ -190,6 +190,144 @@
 }
 
 #patientArchivePage .archive-portrait-count { margin-top: 4px; color: #6b8cff; line-height: 20px; }
+
+#patientArchivePage .archive-health-profile {
+  padding: 18px 20px 14px;
+  color: #273752;
+  background: rgba(255, 255, 255, .94);
+}
+
+#patientArchivePage .archive-health-profile-head {
+  min-height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+#patientArchivePage .archive-health-profile-title,
+#patientArchivePage .archive-health-profile-actions,
+#patientArchivePage .archive-health-focus-title,
+#patientArchivePage .archive-health-profile-foot {
+  display: flex;
+  align-items: center;
+}
+
+#patientArchivePage .archive-health-profile-title { gap: 10px; }
+#patientArchivePage .archive-health-profile-title-icon {
+  width: 28px;
+  height: 28px;
+  display: grid;
+  place-items: center;
+  border-radius: 5px;
+  color: #fff;
+  background: #315cff;
+  box-shadow: 0 4px 10px rgba(49, 92, 255, .2);
+}
+
+#patientArchivePage .archive-health-profile-title-icon svg,
+#patientArchivePage .archive-health-focus-icon svg {
+  width: 18px;
+  height: 18px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+#patientArchivePage .archive-health-profile-title h2 {
+  margin: 0;
+  font-size: 18px;
+  line-height: 28px;
+}
+
+#patientArchivePage .archive-health-profile-time { color: #8390a3; font-size: 12px; font-weight: 400; }
+
+#patientArchivePage .archive-health-profile-actions { gap: 24px; color: #8390a3; font-size: 12px; }
+#patientArchivePage .archive-health-profile-actions button {
+  height: 32px;
+  padding: 0 15px;
+  border: 1px solid #315cff;
+  border-radius: 5px;
+  color: #315cff;
+  background: #fff;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+#patientArchivePage .archive-health-profile-actions button:hover,
+#patientArchivePage .archive-health-profile-actions button:focus-visible {
+  color: #fff;
+  background: #315cff;
+  outline: none;
+}
+
+#patientArchivePage .archive-health-assessment {
+  min-height: 54px;
+  margin-top: 12px;
+  padding: 0 18px;
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  border-left: 4px solid #82baff;
+  border-radius: 8px;
+  background: linear-gradient(90deg, #e7f2ff, #f1f7ff);
+}
+
+#patientArchivePage .archive-health-assessment strong { flex: 0 0 auto; color: #2454df; font-size: 14px; }
+#patientArchivePage .archive-health-assessment span { color: #50617a; font-size: 13px; line-height: 20px; }
+
+#patientArchivePage .archive-health-focus-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; margin-top: 12px; }
+
+#patientArchivePage .archive-health-focus-card {
+  position: relative;
+  min-width: 0;
+  min-height: 126px;
+  padding: 14px 20px 14px 78px;
+  display: flex;
+  align-items: center;
+  border: 1px solid #e2e8f2;
+  border-left: 5px solid #ff5e42;
+  border-radius: 8px;
+  background: #fff;
+  box-shadow: 0 5px 16px rgba(39, 55, 82, .035);
+}
+
+#patientArchivePage .archive-health-focus-card.strengthen { border-left-color: #ff8a16; }
+#patientArchivePage .archive-health-focus-card.attention { border-left-color: #ffbe00; }
+#patientArchivePage .archive-health-focus-icon {
+  position: absolute;
+  left: 22px;
+  top: 17px;
+  width: 42px;
+  height: 42px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  color: #ff5e42;
+  background: #fff0eb;
+}
+
+#patientArchivePage .archive-health-focus-card.strengthen .archive-health-focus-icon { color: #ff8a16; background: #fff4e8; }
+#patientArchivePage .archive-health-focus-card.attention .archive-health-focus-icon { color: #e5a500; background: #fff8df; }
+#patientArchivePage .archive-health-focus-content { min-width: 0; width: 100%; }
+#patientArchivePage .archive-health-focus-title { min-width: 0; gap: 10px; margin-bottom: 8px; }
+#patientArchivePage .archive-health-focus-title strong { overflow: hidden; color: #243550; font-size: 15px; text-overflow: ellipsis; white-space: nowrap; }
+#patientArchivePage .archive-health-focus-meta { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
+#patientArchivePage .archive-health-focus-meta > strong { color: #ff5e42; font-size: 12px; }
+#patientArchivePage .archive-health-focus-meta > span {
+  flex: 0 0 auto;
+  padding: 2px 8px;
+  border-radius: 12px;
+  font-size: 11px;
+  font-weight: 700;
+}
+#patientArchivePage .archive-health-focus-meta > span.critical { color: #ff5e42; background: #fff0eb; }
+#patientArchivePage .archive-health-focus-meta > span.strengthen { color: #e57600; background: #fff4e8; }
+#patientArchivePage .archive-health-focus-meta > span.attention { color: #d69700; background: #fff8df; }
+#patientArchivePage .archive-health-focus-summary { margin: 0; overflow: hidden; color: #66758b; font-size: 12px; line-height: 18px; text-overflow: ellipsis; white-space: nowrap; }
+
 #patientArchivePage .archive-dashboard { border-color: rgba(224, 231, 241, .9); border-radius: 14px; }
 #patientArchivePage .archive-dashboard-head { min-height: 70px; padding: 0 24px; }
 #patientArchivePage .archive-dashboard-head h2 { font-size: 18px; }
@@ -209,6 +347,9 @@
   #patientArchivePage .archive-info-card { margin-left: 28%; }
   #patientArchivePage .archive-person-art { width: 31%; }
   #patientArchivePage .archive-info-columns { gap: 24px; }
+  #patientArchivePage .archive-health-focus-grid { grid-template-columns: 1fr; }
+  #patientArchivePage .archive-health-profile-head { align-items: flex-start; }
+  #patientArchivePage .archive-health-profile-actions { align-items: flex-end; flex-direction: column; gap: 8px; }
 }
 
 @media (prefers-reduced-motion: reduce) {
