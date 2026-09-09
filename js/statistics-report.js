@@ -46,7 +46,7 @@
         <article class="sr-overview-metric" title="规定时间内完成全部到期必做节点的患者数÷可评价患者数×100%"><span>规范管理率</span><strong id="srStandardRate">92.4<small>%</small></strong><div class="sr-overview-compare" data-sr-compare="4"></div></article>
         <article class="sr-overview-metric" title="达到本病种管理目标的病例数÷具有有效评价数据的病例数×100%"><span>核心目标达成率</span><strong id="srCoreTargetRate">58.2<small>%</small></strong><div class="sr-overview-compare" data-sr-compare="5"></div></article>
         <article class="sr-overview-metric is-danger" title="截至结束日期，存在高危预警且预警状态未关闭的患者ID去重数"><span>高危未闭环患者数</span><strong id="srHighRiskOpen">8<small>人</small></strong><div class="sr-overview-compare" data-sr-compare="6"></div></article>
-        <article class="sr-overview-metric" title="AI独立完成且未转人工的有效任务数÷AI应执行任务数×100%"><span>AI独立闭环率</span><strong id="srAiClosedRate">83.3<small>%</small></strong><div class="sr-overview-compare" data-sr-compare="7"></div></article>
+        <article class="sr-overview-metric" title="AI独立闭环任务数÷已完成AI任务数×100%"><span>AI独立闭环率</span><strong id="srAiClosedRate">83.6<small>%</small></strong><div class="sr-overview-compare" data-sr-compare="7"></div></article>
       </section>
 
       <section class="sr-flow-row">
@@ -62,9 +62,21 @@
         <article class="sr-panel"><h2 class="sr-panel-title">风险与安全</h2><div id="srSafetyMetrics" class="sr-metric-grid safety"></div></article>
       </section>
 
-      <section class="sr-panel sr-section-panel"><h2 class="sr-panel-title">管理执行质量</h2><div id="srQualityMetrics" class="sr-metric-grid quality"></div></section>
+      <section class="sr-panel sr-section-panel"><h2 class="sr-panel-title">管理执行质量</h2><div id="srQualityChart" class="sr-chart sr-quality-chart" aria-label="管理执行质量目标对比图"></div></section>
 
-      <section class="sr-panel sr-section-panel"><h2 class="sr-panel-title">AI应用情况</h2><div id="srResourceMetrics" class="sr-metric-grid resources"></div></section>
+      <section class="sr-panel sr-section-panel">
+        <h2 class="sr-panel-title">AI应用情况</h2>
+        <div class="sr-ai-layout">
+          <article class="sr-ai-block sr-ai-flow-block">
+            <h3>AI执行漏斗</h3>
+            <div id="srAiFunnel" class="sr-chart sr-ai-funnel" aria-label="AI执行漏斗图"></div>
+            <div class="sr-ai-inline-values">
+              <h3>AI价值指标</h3>
+              <div id="srAiValueMetrics" class="sr-ai-card-grid"></div>
+            </div>
+          </article>
+        </div>
+      </section>
 
       <section id="srRankingPanel" class="sr-panel sr-section-panel"><div class="sr-panel-heading"><h2 id="srRankingTitle" class="sr-panel-title">机构排名</h2><span id="srRankingDimension" class="sr-dimension-tag">当前维度：机构</span></div><div id="srRankingTableWrap" class="sr-table-wrap"><table class="sr-table sr-ranking-table"><thead><tr><th>排名</th><th id="srRankingNameHead">机构</th><th>在管人数</th><th>规范管理率</th><th>目标达成率</th><th>预警闭环率</th><th>失访率</th><th>操作</th></tr></thead><tbody id="srRankingBody"></tbody></table></div><div id="srPersonalDetail" class="sr-person-detail" hidden></div></section>
       <footer class="sr-footer">当前为业务原型模拟数据 · 数量与比例按筛选范围和统一统计口径联动计算</footer>
@@ -95,12 +107,17 @@
     const task = { total: scaled(18306, factor), pending: scaled(3055, factor), overdue: scaled(2540, factor), done: scaled(15251, factor), revisit: scaled(3732, factor) };
     const warnings = [218, 126, 55].map(value => scaled(value, factor));
     const lost = scaled(143, factor);
-    const messagesSent = scaled(12787, factor);
-    const messagesReached = scaled(11721, factor);
-    const aiTasks = scaled(13943, factor);
-    const aiTasksCompleted = scaled(11613, factor);
+    const aiExpected = scaled(13943, factor);
+    const aiStarted = scaled(12088, factor);
+    const aiReached = scaled(11121, factor);
+    const aiCompleted = scaled(9264, factor);
+    const aiIndependentClosed = scaled(7745, factor);
     const manualTakeoverTasks = scaled(1784, factor);
-    const aiClosedRate = 83.3 + ratioShift;
+    const aiClosedRate = percent(aiIndependentClosed, aiCompleted);
+    const onTimeTasks = Math.round(task.done * (76.1 + ratioShift) / 100);
+    const managementCycles = task.revisit;
+    const completedCycles = Math.round(managementCycles * (82.9 + ratioShift) / 100);
+    const onTimeCycles = Math.round(completedCycles * (75.8 + ratioShift) / 100);
     return {
       factor, ratioShift, patient, task, warnings,
       comparisons: [[8.4,2.1],[10.2,3.4],[12.6,4.8],[1.7,.6],[2.4,.8],[3.6,1.2],[-18.5,-6.7],[9.8,3.1]],
@@ -109,8 +126,11 @@
       up: [304,273,256,246].map(value => scaled(value, factor)),
       down: [146,142,138,129].map(value => scaled(value, factor)),
       quality: [
-        ['健康任务数', task.total, '项'], ['任务完成率', percent(task.done, task.total), '%'], ['按时完成率', 76.1 + ratioShift, '%'],
-        ['随访完成率', 82.9 + ratioShift, '%'], ['按时随访率', 75.8 + ratioShift, '%'], ['失访率', percent(lost, patient[3]), '%']
+        { name:'任务完成率', actual:percent(task.done, task.total), target:90, numeratorLabel:'已完成任务数', numerator:task.done, denominatorLabel:'任务总数', denominator:task.total, unit:'项' },
+        { name:'按时完成率', actual:percent(onTimeTasks, task.done), target:85, numeratorLabel:'按时完成任务数', numerator:onTimeTasks, denominatorLabel:'已完成任务数', denominator:task.done, unit:'项' },
+        { name:'管理周期完成率', actual:percent(completedCycles, managementCycles), target:90, numeratorLabel:'已完成管理周期数', numerator:completedCycles, denominatorLabel:'应完成管理周期数', denominator:managementCycles, unit:'次' },
+        { name:'周期按期完成率', actual:percent(onTimeCycles, completedCycles), target:85, numeratorLabel:'按期完成周期数', numerator:onTimeCycles, denominatorLabel:'已完成管理周期数', denominator:completedCycles, unit:'次' },
+        { name:'患者失管率', actual:percent(lost, patient[3]), target:5, lowerBetter:true, numeratorLabel:'失管患者数', numerator:lost, denominatorLabel:'成功入组患者数', denominator:patient[3], unit:'人' }
       ],
       disease: [
         ['慢性肾病（CKD）',1184,639,96], ['高血压',1089,652,101], ['糖尿病',1267,737,126], ['乳腺结节',770,425,76]
@@ -119,11 +139,12 @@
         ['高危预警患者数', warnings[2], '人'], ['未处置预警数', scaled(84, factor), '次'], ['超时未处置数', scaled(27, factor), '次'],
         ['预警及时处置率', 90.5 + ratioShift, '%'], ['预警闭环率', 93.0 + ratioShift, '%'], ['重复预警患者数', scaled(61, factor), '人'], ['持续恶化患者数', scaled(34, factor), '人']
       ],
-      resources: [
-        ['AI管理覆盖率',86.4 + ratioShift,'%'], ['AI有效触达率',percent(messagesReached,messagesSent),'%'], ['AI任务完成率',percent(aiTasksCompleted,aiTasks),'%'],
-        ['AI独立闭环率',aiClosedRate,'%'], ['人工接管任务数',manualTakeoverTasks,'项'], ['人工接管率',percent(manualTakeoverTasks,aiTasks),'%'],
-        ['AI有效预警数',scaled(356,factor),'次'], ['高危识别有效率',88.6 + ratioShift,'%'], ['AI漏识别数',scaled(14,factor),'次'],
-        ['异常输出数',scaled(23,factor),'次'], ['人工复核问题数',scaled(31,factor),'次']
+      aiFlow: [aiExpected, aiStarted, aiReached, aiCompleted, aiIndependentClosed],
+      aiValue: [
+        ['AI管理覆盖率', percent(aiStarted, aiExpected), '%', `AI发起任务 ${n(aiStarted)} 项`],
+        ['AI有效触达率', percent(aiReached, aiStarted), '%', `有效触达 ${n(aiReached)} 项`],
+        ['AI独立闭环率', aiClosedRate, '%', `AI独立闭环 ${n(aiIndependentClosed)} 项`],
+        ['人工接管率', percent(manualTakeoverTasks, aiExpected), '%', `人工接管任务 ${n(manualTakeoverTasks)} 项`]
       ]
     };
   }
@@ -147,6 +168,44 @@
       const favorableDown = index === 6;
       const item = (label,value,type) => `<span class="compare-${type} ${(value >= 0) !== favorableDown ? 'is-up' : 'is-down'}">${label} ${value >= 0 ? '↑' : '↓'}${Math.abs(value).toFixed(1)}%</span>`;
       element.innerHTML = item('同比',yearOnYear,'yoy') + item('环比',monthOnMonth,'mom');
+    });
+  }
+
+  function renderAiCards(targetId, items, risk = false) {
+    $(targetId).innerHTML = items.map(([label,value,unit,meta]) => `<article class="sr-ai-metric-card${risk ? ' is-risk' : ''}" title="${label}"><span>${label}</span><strong>${unit === '%' ? Number(value).toFixed(1) : n(value)}<small>${unit}</small></strong><em>${meta}</em></article>`).join('');
+  }
+
+  function renderAiApplications(data) {
+    addChart('srAiFunnel', funnelOption(data.aiFlow, ['应执行任务','AI发起任务','有效触达','完成任务','AI独立闭环'], ['#2f79df','#4f91e9','#6fa7e7','#54b5c0','#34aa89'], data.aiFlow.map(value => `${n(value)} 项`)));
+    addRates('srAiFunnel', data.aiFlow, ['AI覆盖率','有效触达率','任务完成率','独立闭环率']);
+    renderAiCards('srAiValueMetrics', data.aiValue);
+  }
+
+  function renderQuality(data) {
+    const items = data.quality.map(item => ({ ...item, actual:+Number(item.actual).toFixed(1) }));
+    const statusText = item => {
+      const reached = item.lowerBetter ? item.actual <= item.target : item.actual >= item.target;
+      if (reached) return item.lowerBetter ? `目标≤${item.target}%  已达标` : `目标${item.target}%  已达标`;
+      const gap = Math.abs(item.target - item.actual).toFixed(1);
+      return item.lowerBetter ? `目标≤${item.target}%  超出${gap}%` : `目标${item.target}%  差${gap}%`;
+    };
+    addChart('srQualityChart', {
+      animationDuration:500,
+      aria:{enabled:true,description:'展示五项管理执行质量指标的实际值、目标值和达标状态'},
+      grid:{left:150,right:90,top:8,bottom:8,containLabel:false},
+      tooltip:{trigger:'item',triggerOn:'mousemove|click',confine:true,formatter:params => {
+        const item = params.data?.item;
+        return item ? `${item.name}<br>${item.numeratorLabel} <b>${n(item.numerator)} ${item.unit}</b><br>${item.denominatorLabel} <b>${n(item.denominator)} ${item.unit}</b><br>${item.name} <b>${item.actual.toFixed(1)}%</b>` : '';
+      }},
+      xAxis:{type:'value',min:0,max:100,show:false},
+      yAxis:{type:'category',inverse:true,data:items.map(item => item.name),axisLine:{show:false},axisTick:{show:false},axisLabel:{color:'#29476d',fontSize:14,fontWeight:600,margin:18}},
+      series:[
+        {name:'实际值',type:'bar',barWidth:16,showBackground:true,backgroundStyle:{color:'#e9eef5',borderRadius:8},itemStyle:{color:'#397fdc',borderRadius:8},data:items.map(item => ({value:item.actual,item})),z:2},
+        {name:'结果',type:'scatter',symbolSize:0,silent:true,clip:false,data:items.map((item,index) => {
+          const reached = item.lowerBetter ? item.actual <= item.target : item.actual >= item.target;
+          return {value:[100,index],item,label:{color:reached ? '#15956f' : '#d94d5b'}};
+        }),label:{show:true,position:'right',distance:16,fontSize:13,fontWeight:700,formatter:params => `${params.data.item.actual.toFixed(1)}%`},z:5}
+      ]
     });
   }
 
@@ -296,7 +355,7 @@
   }
 
   function markDetailTriggers() {
-    report.querySelectorAll('.sr-overview-metric,.sr-flow-row .sr-chart,.sr-referral-result>div,.sr-disease-table tbody tr,.sr-metric-grid.safety .sr-metric-card,[data-sr-detail]').forEach(element => {
+    report.querySelectorAll('.sr-overview-metric,.sr-flow-row .sr-chart,.sr-referral-result>div,.sr-disease-table tbody tr,.sr-metric-grid.safety .sr-metric-card,.sr-quality-chart,.sr-ai-layout .sr-chart,.sr-ai-metric-card,[data-sr-detail]').forEach(element => {
       element.dataset.srDetail = '';
       element.classList.add('sr-detail-trigger');
       if (!element.matches('button')) element.setAttribute('role','button');
@@ -331,7 +390,7 @@
   function refresh() {
     const data = buildData();
     report.querySelector('[data-sr-summary]').textContent = `${filterState.org || '全部集团'} · ${filterState.dept || '全部科室'} · ${filterState.person || '全部人员'} · ${filterState.disease ? (filterState.disease === 'CKD' ? '慢性肾病（CKD）' : filterState.disease) : '全部病种'}｜${filterState.start} 至 ${filterState.end}`;
-    renderOverview(data); renderFunnels(data); renderMetricCards('srQualityMetrics', data.quality); renderDisease(data); renderMetricCards('srSafetyMetrics', data.safety); renderMetricCards('srResourceMetrics', data.resources); renderRanking(data); markDetailTriggers();
+    renderOverview(data); renderFunnels(data); renderQuality(data); renderDisease(data); renderMetricCards('srSafetyMetrics', data.safety); renderAiApplications(data); renderRanking(data); markDetailTriggers();
     requestAnimationFrame(() => {
       charts.forEach(chart => chart.resize());
       requestAnimationFrame(() => charts.forEach(chart => chart.resize()));

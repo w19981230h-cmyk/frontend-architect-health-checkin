@@ -24,10 +24,17 @@ assert.match(source, /向下转诊/);
 assert.match(source, /通用管理成效/);
 assert.match(source, /风险与安全/);
 assert.match(source, /管理执行质量/);
+assert.match(source, /srQualityChart/);
+assert.match(source, /renderQuality/);
 assert.match(source, /AI应用情况/);
+assert.match(source, /srAiFunnel/);
+assert.match(source, /AI执行漏斗/);
+assert.match(source, /AI价值指标/);
+assert.match(source, /aiIndependentClosed/);
+assert.match(source, /renderAiApplications/);
 assert.match(source, /机构排名/);
 assert.match(source, /type:'funnel'/);
 assert.match(source, /graphic:graphics/);
 assert.match(source, /window\.renderStatisticsReport = refresh/);
 
-console.log('PASS: Ant Design statistics filters, reset, funnels, quality, disease, safety, resources, ranking, and refresh hook');
+console.log('PASS: Ant Design filters, ECharts funnels and quality target chart, AI value metrics, disease, safety, ranking, and refresh hook');
