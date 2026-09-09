@@ -48,6 +48,18 @@
     }
   };
 
+  const secondaryMetricSamples = {
+    '脑与中枢神经': ['神经系统查体 未见明显异常', '头部影像 无新增异常'],
+    '周围神经': ['肢体感觉 左右对称', '肌力评估 5级'],
+    '认知功能': ['简易认知评估 28分', '定向力 正常'],
+    '心理健康': ['情绪筛查 低风险', '焦虑筛查 低风险'],
+    '睡眠与昼夜节律': ['平均睡眠时长 7.2小时', '睡眠质量 良好'],
+    '意识与神经安全': ['意识状态 清醒', '跌倒风险 低风险'],
+    '眼表与眼前节': ['眼表检查 未见明显异常', '眼压 18 mmHg'],
+    '眼底与视神经': ['眼底检查 未见明显异常', '视神经评估 正常'],
+    '视觉功能': ['矫正视力 左眼1.0', '矫正视力 右眼1.0']
+  };
+
   const query = selector => modal.querySelector(selector);
   let returnFocus = null;
   let activeProfileKey = 'overview';
@@ -67,31 +79,52 @@
       <article class="health-detail-card advice"><h4><i>◇</i>健康建议</h4><ol>${profile.advice.map(item => `<li>${item}</li>`).join('')}</ol></article>`;
   }
 
-  function renderSecondary(key, profile) {
-    const secondary = secondaryTaxonomy[key] || [];
-    if (!secondary.length) return '<div class="health-secondary-empty">暂无二级分类数据</div>';
-    return `
-      <div class="health-secondary-classification-note">已按规则表归入 ${secondary.length} 个二级分类</div>
-      <div class="health-secondary-category-list">
-        ${secondary.map(name => {
-          const detail = secondaryDetails[key]?.[name] || {
-            status: '暂无结论',
-            state: 'empty',
-            summary: `当前暂无可用于判断“${name}”的有效数据。`,
-            metrics: [],
-            advice: '补充相关健康记录后再进行评估。'
-          };
-          return `<section class="health-secondary-category-card">
-            <header><strong>${name}</strong><em class="${detail.state}">${detail.status}</em></header>
-            <div class="health-secondary-category-grid">
-              <article><h4>总结</h4><p>${detail.summary}</p></article>
-              <article><h4>健康数据</h4><div class="health-secondary-data${detail.metrics.length ? '' : ' is-empty'}">${detail.metrics.length ? detail.metrics.map(item => `<span>${item}</span>`).join('') : '<span>暂无提取指标</span>'}</div></article>
-              <article><h4>健康建议</h4><p>${detail.advice}</p></article>
-            </div>
-          </section>`;
-        }).join('')}
-      </div>
-    `;
+  function getSecondaryDetail(key, name, profile) {
+    const explicitDetail = secondaryDetails[key]?.[name];
+    if (explicitDetail) return explicitDetail;
+    const isNormal = profile.state === 'normal';
+    return {
+      status: isNormal ? '正常' : profile.status,
+      state: isNormal ? 'normal' : profile.state,
+      summary: isNormal
+        ? `现有健康档案未提示“${name}”存在明确异常，当前评估结果平稳。`
+        : `“${name}”与当前${profile.title}综合结论一致，建议结合后续记录持续观察。`,
+      metrics: secondaryMetricSamples[name] || [`${name}评估 已完成`, '最近评估 2026-09-08'],
+      advice: isNormal
+        ? [`保持当前健康管理方式`, `定期更新${name}相关记录`]
+        : [`持续记录${name}相关指标`, '如出现明显变化，及时咨询专业人员']
+    };
+  }
+
+  function getSecondaryItems(key, profile) {
+    return (secondaryTaxonomy[key] || []).map(name => ({ name, detail: getSecondaryDetail(key, name, profile) }))
+      .filter(item => item.detail.state !== 'empty' && item.detail.status !== '暂无结论');
+  }
+
+  function splitMetric(metric) {
+    const divider = metric.indexOf(' ');
+    return divider === -1 ? [metric, '已记录'] : [metric.slice(0, divider), metric.slice(divider + 1)];
+  }
+
+  function renderSecondary(name, detail) {
+    const advice = Array.isArray(detail.advice) ? detail.advice : [detail.advice];
+    return `<section class="health-secondary-detail" aria-label="${name}健康详情">
+      <section class="health-secondary-block summary">
+        <h4><i>▤</i>总结</h4>
+        <p>${detail.summary}</p>
+      </section>
+      <section class="health-secondary-block data">
+        <header><h4><i>⌁</i>健康数据</h4><span>共 ${detail.metrics.length} 条数据</span></header>
+        <div class="health-secondary-records">${detail.metrics.map((metric, index) => {
+          const [label, value] = splitMetric(metric);
+          return `<article><div><span>健康档案</span><time>2026-09-0${8 - index}</time></div><strong>${label}</strong><p>${value}</p></article>`;
+        }).join('')}</div>
+      </section>
+      <section class="health-secondary-block advice">
+        <h4><i>◇</i>健康建议</h4>
+        <div class="health-secondary-advice-list">${advice.map(item => `<article><span></span><p>${item}</p></article>`).join('')}</div>
+      </section>
+    </section>`;
   }
 
   function renderDetail() {
@@ -105,22 +138,34 @@
 
     const tabs = query('[data-health-detail-tabs]');
     tabs.hidden = isOverview;
+    const secondaryItems = isOverview ? [] : getSecondaryItems(activeProfileKey, profile);
     tabs.innerHTML = isOverview ? '' : `
       <button type="button" role="tab" aria-selected="${activeDetailTab === 'summary'}" class="${activeDetailTab === 'summary' ? 'active' : ''}" data-health-detail-tab="summary">综合</button>
-      <button type="button" role="tab" aria-selected="${activeDetailTab === 'secondary'}" class="${activeDetailTab === 'secondary' ? 'active' : ''}" data-health-detail-tab="secondary">二级分类</button>`;
+      ${secondaryItems.map((item, index) => `<button type="button" role="tab" aria-selected="${activeDetailTab === `secondary-${index}`}" class="${activeDetailTab === `secondary-${index}` ? 'active' : ''}" data-health-detail-tab="secondary-${index}"><span class="${item.detail.state}"></span>${item.name}</button>`).join('')}`;
 
-    query('[data-health-detail-content]').innerHTML = activeDetailTab === 'secondary' && !isOverview
-      ? renderSecondary(activeProfileKey, profile)
+    const activeSecondaryIndex = activeDetailTab.startsWith('secondary-') ? Number(activeDetailTab.replace('secondary-', '')) : -1;
+    const activeSecondary = secondaryItems[activeSecondaryIndex];
+    query('[data-health-detail-content]').innerHTML = activeSecondary && !isOverview
+      ? renderSecondary(activeSecondary.name, activeSecondary.detail)
       : renderSummary(profile);
     setText('[data-health-hotspot-label]', isOverview ? '综合健康分析' : `${profile.title}｜${profile.status}`);
   }
 
   function showProfile(key) {
-    activeProfileKey = profiles[key] ? key : 'overview';
+    const requestedProfile = profiles[key];
+    const hasConclusion = requestedProfile && requestedProfile.state !== 'empty' && requestedProfile.status !== '暂无结论';
+    activeProfileKey = hasConclusion ? key : 'overview';
     activeDetailTab = 'summary';
-    modal.querySelectorAll('[data-health-system]').forEach(button => button.classList.toggle('active', button.dataset.healthSystem === key));
-    modal.classList.toggle('is-overview', key === 'overview');
+    modal.querySelectorAll('[data-health-system]').forEach(button => button.classList.toggle('active', button.dataset.healthSystem === activeProfileKey));
+    modal.classList.toggle('is-overview', activeProfileKey === 'overview');
     renderDetail();
+  }
+
+  function hideInconclusiveSystems() {
+    modal.querySelectorAll('[data-health-system]').forEach(button => {
+      const profile = profiles[button.dataset.healthSystem];
+      button.hidden = Boolean(profile && (profile.state === 'empty' || profile.status === '暂无结论'));
+    });
   }
 
   function copyPatientInfo() {
@@ -173,4 +218,6 @@
   document.addEventListener('keydown', event => {
     if (event.key === 'Escape' && modal.classList.contains('is-open')) closeModal();
   });
+
+  hideInconclusiveSystems();
 })();

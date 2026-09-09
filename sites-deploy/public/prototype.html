@@ -2796,7 +2796,7 @@
   <link rel="stylesheet" href="./css/overlay-stability.css?v=20260831-3">
   <link rel="stylesheet" href="./css/statistics-report.css?v=20260909-07">
   <link rel="stylesheet" href="./css/patient-archive-reference.css?v=20260907-1">
-  <link rel="stylesheet" href="./css/health-portrait.css?v=20260909-4">
+  <link rel="stylesheet" href="./css/health-portrait.css?v=20260909-6">
 </head>
 <body>
   <script src="./save-persistence-final.js"></script>
@@ -3944,7 +3944,7 @@
         <div class="health-portrait-heading">
           <h2 id="healthPortraitTitle">完整健康画像</h2><i></i>
           <strong data-health-patient-name>黄尚忠</strong><span data-health-patient-gender>男</span><span data-health-patient-age>73岁</span>
-          <b>综合状态：需关注</b>
+          <b class="is-average" data-health-overall-status>综合状态：一般</b>
         </div>
         <div class="health-portrait-head-actions"><span>画像更新时间：2026-09-08 15:45</span><button type="button" data-health-portrait-close aria-label="关闭完整健康画像">×</button></div>
       </header>
@@ -3960,22 +3960,19 @@
           <button class="normal" data-health-system="digest"><span class="health-system-icon">◡</span><strong>消化系统健康</strong><em>正常</em></button>
           <button class="attention" data-health-system="metabolism"><span class="health-system-icon">♢</span><strong>内分泌、代谢与营养</strong><em>日常关注</em></button>
           <button class="normal" data-health-system="kidney"><span class="health-system-icon">♮</span><strong>肾脏与泌尿健康</strong><em>正常</em></button>
-          <button class="empty" data-health-system="reproductive"><span class="health-system-icon">⚥</span><strong>生殖、乳腺与孕产健康</strong><em>暂无结论</em></button>
           <button class="normal" data-health-system="bone"><span class="health-system-icon">⌁</span><strong>骨骼、肌肉与运动健康</strong><em>正常</em></button>
-          <button class="empty" data-health-system="skin"><span class="health-system-icon">⌂</span><strong>皮肤与体表健康</strong><em>暂无结论</em></button>
         </nav>
         <section class="health-human-panel" aria-label="人体健康画像">
           <div class="health-human-rings"></div>
           <img src="./assets/patient-archive-portrait.png" alt="患者人体健康画像">
           <div class="health-organ-glow" aria-hidden="true"><span></span></div>
           <div class="health-human-hotspot"><i></i><b data-health-hotspot-label>心脏与血管健康｜重点关注</b></div>
-          <div class="health-state-legend"><span class="empty">暂无结论</span><span class="normal">正常</span><span class="attention">日常关注</span><span class="critical">重点关注</span><span class="severe">严重关注</span></div>
+          <div class="health-state-legend"><span class="normal">正常</span><span class="attention">日常关注</span><span class="critical">重点关注</span><span class="severe">严重关注</span></div>
         </section>
         <section class="health-detail-panel">
           <header><h3 data-health-detail-title>综合分析</h3><span data-health-detail-status hidden></span></header>
           <div class="health-detail-tabs" data-health-detail-tabs hidden></div>
           <div class="health-detail-content" data-health-detail-content></div>
-          <footer><div><strong>数据依据：</strong><span>健康档案1项</span><i></i><span>指标记录0项</span><i></i><span>相关报告0份</span></div><button type="button" data-toast="相关数据已打开">查看相关数据</button><p>本画像由系统基于现有健康数据辅助生成，仅供健康管理参考，不能替代医师诊断。</p></footer>
         </section>
       </div>
     </section>
@@ -14628,6 +14625,6 @@
 <script src="./js/statistics-filters.js?v=20260908-34"></script>
 <script src="./js/statistics-report.js?v=20260909-07"></script>
 <script src="./js/team-management.js"></script>
-<script src="./js/health-portrait.js?v=20260909-4"></script>
+  <script src="./js/health-portrait.js?v=20260909-7"></script>
 </body>
 </html>
