@@ -2971,11 +2971,6 @@
       document.getElementById('packageServiceAgreement').selectedIndex = 1;
       document.querySelectorAll('input[name="packageVerificationMode"]').forEach(input => { input.checked = input.value === '本平台完成'; });
     }
-    ['Organization', 'Department', 'Team', 'Staff'].forEach(key => {
-      const select = document.getElementById('package' + key + 'Input');
-      const saved = item?.[15]?.[key] || [];
-      Array.from(select.options).forEach(option => { option.selected = saved.includes(option.value); });
-    });
     setPackageOrganizationError(false);
     document.getElementById('packageServiceHelp').hidden = true;
     document.querySelector('[data-service-help]').setAttribute('aria-expanded', 'false');
@@ -3067,7 +3062,6 @@
     item[11] = document.getElementById('packageIntroInput').value.trim();
     item[12] = document.querySelector('input[name="packageVerificationMode"]:checked')?.value || '本平台完成';
     item[13] = packageGalleryImages.map(({ source, name }) => ({ source, name }));
-    item[15] = Object.fromEntries(['Organization', 'Department', 'Team', 'Staff'].map(key => [key, Array.from(document.getElementById('package' + key + 'Input').selectedOptions).map(option => option.value)]));
     item[14] = packageDetailImages.map(({ source, name }) => ({ source, name }));
     item[15] = selectedOrganizations;
     item[16] = Array.from(document.getElementById('packageDepartmentInput').selectedOptions).map(option => option.value).filter(Boolean);
