@@ -33,10 +33,10 @@
   report.innerHTML = `
     <div class="sr-dashboard">
       <header class="sr-hero">
-        <div><h1>数据看板</h1><p data-sr-summary>全部集团 · 全部科室 · 全部人员 · 全部病种｜${defaultStartDate} 至 ${defaultEndDate}</p></div>
+        <div><h1>数据报表</h1><p data-sr-summary>全部集团 · 全部科室 · 全部人员 · 全部病种｜${defaultStartDate} 至 ${defaultEndDate}</p></div>
         <span class="sr-health">数据运行正常</span>
       </header>
-      <div id="srFilterHost" class="sr-filter-host" role="search" aria-label="数据看板筛选条件"></div>
+      <div id="srFilterHost" class="sr-filter-host" role="search" aria-label="数据报表筛选条件"></div>
 
       <section class="sr-overview" aria-label="运营概览">
         <article class="sr-overview-metric" title="截至结束日期，管理状态为管理中的患者ID去重数"><span>期末在管患者数</span><strong id="srPeriodEndActive">4,021<small>人</small></strong><div class="sr-overview-compare" data-sr-compare="0"></div></article>
@@ -64,7 +64,7 @@
 
       <section class="sr-panel sr-section-panel"><h2 class="sr-panel-title">管理执行质量</h2><div id="srQualityChart" class="sr-chart sr-quality-chart" aria-label="管理执行质量目标对比图"></div></section>
 
-      <section class="sr-panel sr-section-panel">
+      <section class="sr-panel sr-section-panel" hidden aria-hidden="true">
         <h2 class="sr-panel-title">AI应用情况</h2>
         <div class="sr-ai-layout">
           <article class="sr-ai-block sr-ai-flow-block">

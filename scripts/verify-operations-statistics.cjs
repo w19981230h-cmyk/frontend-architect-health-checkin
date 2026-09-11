@@ -1,0 +1,22 @@
+const fs=require('fs');
+const vm=require('vm');
+const assert=require('assert/strict');
+const html=fs.readFileSync('index.html','utf8');
+const source=fs.readFileSync('js/operations-statistics.js','utf8');
+const css=fs.readFileSync('css/operations-statistics.css','utf8');
+const responsiveCss=fs.readFileSync('css/operations-statistics-responsive.css','utf8');
+
+assert.doesNotThrow(()=>new vm.Script(source),'统计报表脚本应能正常解析');
+for(const text of ['data-list-view="statisticsReport">数据报表','data-list-view="operationsStatistics">统计报表','id="operationsStatisticsView"','operations-statistics.css','operations-statistics.js'])assert.ok(html.includes(text),`页面应包含 ${text}`);
+for(const text of ['AI患者运营管理看板','科室管理质量对比','分病种管理成效','AI应用价值','双向转诊协同'])assert.ok(source.includes(text),`统计报表应包含 ${text}`);
+assert.ok(!source.includes('院级重点关注'),'统计报表不应再展示院级重点关注');
+for(const id of ['osTrendChart','osCohortChart','osAiChart','osUpReferralChart','osDownReferralChart'])assert.ok(source.includes(id),`统计报表应包含图表 ${id}`);
+assert.match(source,/type:'funnel'/);
+assert.match(source,/StatisticsFilters\.mount/);
+assert.match(source,/renderOperationsStatistics/);
+assert.match(css,/grid-template-columns:repeat\(6/);
+assert.match(css,/prefers-reduced-motion/);
+assert.match(responsiveCss,/container-type:inline-size/);
+assert.match(responsiveCss,/operations-statistics-layout\{min-width:0/);
+assert.match(responsiveCss,/@container \(max-width:1320px\)/);
+console.log('PASS: 统计报表菜单、核心模块、Ant Design 查询组件、ECharts 图表与样式资源完整');

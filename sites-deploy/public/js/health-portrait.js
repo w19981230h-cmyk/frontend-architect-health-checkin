@@ -70,9 +70,9 @@
     if (node) node.textContent = value;
   }
 
-  function renderSummary(profile) {
+  function renderSummary(profile, showStatus = true) {
     return `
-      <article class="health-detail-summary"><h4><i>▤</i>总结</h4><p>${profile.summary}</p></article>
+      <article class="health-detail-summary"><h4><i>▤</i>总结${showStatus && profile.state !== 'empty' ? `<em class="health-summary-status ${profile.state}">${profile.status}</em>` : ''}</h4><p>${profile.summary}</p></article>
       <article class="health-detail-card critical"><h4><i>!</i>优先关注</h4><div><strong>${profile.focus}</strong><p>${profile.focusCopy}</p></div></article>
       <article class="health-detail-card attention"><h4><i>−</i>日常关注</h4><p>${profile.daily}</p></article>
       <article class="health-detail-card positive"><h4><i>✓</i>积极情况</h4><p>${profile.positive}</p></article>
@@ -132,9 +132,9 @@
     const isOverview = activeProfileKey === 'overview';
     setText('[data-health-detail-title]', isOverview ? '综合分析' : profile.title);
     const status = query('[data-health-detail-status]');
-    status.hidden = isOverview;
-    status.textContent = isOverview ? '' : profile.status;
-    status.className = isOverview ? '' : profile.state;
+    status.hidden = true;
+    status.textContent = '';
+    status.className = '';
 
     const tabs = query('[data-health-detail-tabs]');
     tabs.hidden = isOverview;
@@ -147,7 +147,7 @@
     const activeSecondary = secondaryItems[activeSecondaryIndex];
     query('[data-health-detail-content]').innerHTML = activeSecondary && !isOverview
       ? renderSecondary(activeSecondary.name, activeSecondary.detail)
-      : renderSummary(profile);
+      : renderSummary(profile, !isOverview);
     setText('[data-health-hotspot-label]', isOverview ? '综合健康分析' : `${profile.title}｜${profile.status}`);
   }
 

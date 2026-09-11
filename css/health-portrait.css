@@ -234,6 +234,11 @@ body.health-portrait-open { overflow: hidden; }
 .health-detail-panel h4 i { width: 30px; height: 30px; display: inline-grid; place-items: center; border-radius: 50%; color: #fff; background: #4785f4; font-style: normal; }
 .health-detail-panel p { margin: 0; color: #405373; font-size: 13px; line-height: 1.6; }
 .health-detail-summary { background: linear-gradient(90deg, #edf5ff, #f7fbff); }
+.health-summary-status { margin-left: 2px; padding: 4px 12px; border-radius: 14px; color: #fff; background: #ff721d; font-size: 12px; font-style: normal; font-weight: 700; line-height: 1.2; }
+.health-summary-status.normal { background: #34b875; }
+.health-summary-status.attention { background: #f2b515; }
+.health-summary-status.critical { background: #ff721d; }
+.health-summary-status.severe { background: #ef405a; }
 .health-detail-card.critical { background: linear-gradient(90deg, #fff1eb, #fff8f4); }
 .health-detail-card.critical h4 i { background: #ff661b; }
 .health-detail-card.critical > div { padding: 10px 14px; border: 1px solid #ffc4aa; border-radius: 6px; }
