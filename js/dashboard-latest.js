@@ -27,15 +27,22 @@
   const arrow=(label,n,total)=>`<div class="dv-arrow"><span>${label}</span><b>${rate(n,total)}</b><i></i></div>`;
   const levelRows=d.levels.map(r=>[dot(r.color)+r.name,f(r.due),f(r.active),`<span class="dl-red">${f(r.due-r.active)}</span>`,rate(r.active,r.due),r.evaluable===null?'—':f(r.evaluable),r.standard===null?'—':f(r.standard),r.standard===null?'—':rate(r.standard,r.evaluable)]);
   levelRows.push(['合计',f(t.managedDue),f(t.active),`<span class="dl-red">${f(t.managedDue-t.active)}</span>`,rate(t.active,t.managedDue),f(sum(d.levels,'evaluable')),f(sum(d.levels,'standard')),rate(sum(d.levels,'standard'),sum(d.levels,'evaluable'))]);
-  const distributionBar=(n,total,label,color,background='#e8edf5')=>'<div class="dv-distribution-bar"><div class="dv-chart" data-compact="true" data-color="'+color+'" data-background="'+background+'" data-value="'+percent(n,total)+'" role="img" aria-label="'+rate(n,total)+'"></div><small>'+label+'</small></div>';
-  const institutionDistribution='<div class="dv-institution-distribution" aria-label="按机构分布">'+table(['机构','本期筛查入组','全部来源 · 期末管理','三色分层 · 应管理人群','规范管理','主要缺口 / 追查方向'],d.organizations.map(r=>[
+  const orgMetrics=r=>({
+    enrollment:{title:'本期筛查入组',total:r.eligible,parts:[['已入组',r.enrolled,'#58aa98'],['未入组',r.eligible-r.enrolled,'#e8edf5']],details:[['符合入组',r.eligible],['其中超期未入组',r.overdueEnrollment]]},
+    management:{title:'全部来源 · 期末管理',total:r.managedDue,parts:[['在管',r.active,'#487cf6'],['未在管',r.managedDue-r.active,'#f0c69f']],details:[['应管理',r.managedDue]]},
+    tiers:{title:'三色分层 · 应管理人群',total:r.managedDue,parts:r.levels.map(l=>[l.name,l.due,l.color]),details:[['应管理',r.managedDue]]},
+    standard:{title:'规范管理',total:r.evaluable,parts:[['规范管理',r.standard,'#58aa98'],['未达规范',r.evaluable-r.standard,'#e8edf5']],details:[['可评价',r.evaluable]]},
+    gaps:{title:'筛查与入组缺口',total:r.due,parts:[['已筛查',r.screened,'#9bb4ce'],['未筛查',r.due-r.screened,'#e99a4d']],details:[['应筛查',r.due],['符合条件未入组',r.eligible-r.enrolled],['其中超期未入组',r.overdueEnrollment]]}
+  });
+  const orgChart=(r,key)=>{
+    const m=orgMetrics(r)[key];
+    const description=r.name+' · '+m.title+'；'+m.parts.map(([label,n])=>label+' '+f(n)+' 人，占比 '+rate(n,m.total)).concat(m.details.map(([label,n])=>label+' '+f(n)+' 人')).join('；');
+    return '<div class="dv-org-visible-values">'+m.parts.map(([name,n,color])=>'<span><i style="background:'+color+'"></i>'+name+' <b>'+f(n)+'</b></span>').join('')+'</div><div class="dv-org-metric" data-metric-org="'+r.name+'" data-metric="'+key+'" tabindex="0" role="img" aria-label="'+description+'"></div>';
+  };
+  const institutionDistribution='<div class="dv-institution-distribution" aria-label="按机构分布">'+table(['机构','本期筛查入组','全部来源 · 期末管理','三色分层 · 应管理人群','规范管理','筛查与入组缺口'],d.organizations.map(r=>[
     '<button class="dl-org-link" data-org="'+r.name+'">'+r.name+' ›</button>',
-    '入组 '+f(r.enrolled)+' / 符合 '+f(r.eligible)+distributionBar(r.enrolled,r.eligible,'未入组 '+f(r.eligible-r.enrolled),'#58aa98'),
-    '在管 '+f(r.active)+' / 应管 '+f(r.managedDue)+distributionBar(r.active,r.managedDue,'未在管 '+f(r.managedDue-r.active),'#487cf6','#f0c69f'),
-    '<div class="dv-org-tier-chart" data-tier-org="'+r.name+'" role="img" aria-label="'+r.levels.map(l=>l.name+' '+l.due+'人').join('，')+'"></div><small>'+r.levels.map(l=>l.name+' '+f(l.due)).join(' / ')+'</small>',
-    '<span class="teal">'+rate(r.standard,r.evaluable)+'</span><small>'+f(r.standard)+' / '+f(r.evaluable)+' 可评价</small>',
-    '<span class="dl-red">未筛 '+f(r.due-r.screened)+' 人</span><small>符合条件未入组 '+f(r.eligible-r.enrolled)+' 人 · 超期 '+r.overdueEnrollment+' 人</small>'
-  ]))+note('按唯一主责机构汇总模拟明细；三色分层包含未分级。点击机构查看管理概览。')+'</div>';
+    ...['enrollment','management','tiers','standard','gaps'].map(key=>orgChart(r,key))
+  ]))+note('悬停或点按图条查看人数与占比；键盘聚焦也可查看。按唯一主责机构汇总模拟数据，三色包含未分级。')+'</div>';
   const referralRow=r=>[r.name,f(r.up),f(r.up-r.upClosed),rate(r.upClosed,r.up),f(r.down),f(r.down-r.downClosed),rate(r.downClosed,r.down)];
   const referralTotal={name:'区域合计',...Object.fromEntries(['up','upClosed','down','downClosed'].map(k=>[k,sum(d.referrals,k)]))};
   const flow=(down)=>{const a=d.referralStages[down?'down':'up'];return `<div class="dv-referral ${down?'down':''}"><h3>${icon('up',down?'#14c8ad':'#168cff')}向${down?'下':'上'}转诊</h3>${['申请','已接收',down?'管理交接':'已到院',down?'首次服务完成':'诊疗反馈完成'].map((x,i)=>`<div>${x}<b>${a[i]} 单</b></div>${i<3?'<em>→</em>':''}`).join('')}<strong>${down?'下':'上'}转闭环率<b>${rate(a[3],a[0])}</b></strong></div>`;};
@@ -57,7 +64,14 @@
     const funnelData=[['总体人数',t.due,'#487ae8'],['已筛查',t.screened,'#6494e5'],['筛查异常',t.abnormal,'#7aaad8'],['符合入组',t.eligible,'#6cabb8'],['已入组',t.enrolled,'#59aa96'],['当前在管（本期入组）',d.cohortActive,'#28ab91']];
     const transitionNames=['筛查覆盖率','异常率','入组适配率','入组转化率','入组后管理率'];
     chart(document.getElementById('dvCombinedFunnel'),{tooltip:{trigger:'item',confine:true,formatter:p=>p.name+'：'+f(p.value)+' 人<br>占总体人数 '+rate(p.value,t.due)},graphic:transitionNames.map((name,i)=>({type:'text',x:document.getElementById('dvCombinedFunnel').clientWidth*.375,top:61+i*76,z:100,style:{text:name+' '+rate(funnelData[i+1][1],funnelData[i][1]),align:'center',fill:'#4285ef',font:'12px Microsoft YaHei',backgroundColor:'#f2f7ff',padding:[4,12],borderRadius:8}})),series:[{type:'funnel',left:'5%',top:8,bottom:8,width:'65%',min:0,max:t.due,minSize:'0%',maxSize:'100%',sort:'none',gap:28,label:{show:true,position:'right',color:'#405777',fontSize:12,formatter:p=>p.name+' '+f(p.value)+' 人'},labelLine:{length:14,lineStyle:{color:'#bdcce0'}},itemStyle:{borderColor:'#fff',borderWidth:1},data:funnelData.map(([name,value,color])=>({name,value,itemStyle:{color}}))}]});
-    root.querySelectorAll('[data-tier-org]').forEach(el=>{const r=d.organizations.find(o=>o.name===el.dataset.tierOrg);chart(el,{grid:{left:0,right:0,top:0,bottom:0},tooltip:{trigger:'item',confine:true,formatter:p=>p.seriesName+' '+p.value+' 人'},xAxis:{type:'value',max:r.managedDue,show:false},yAxis:{type:'category',show:false},series:r.levels.map(l=>({name:l.name,type:'bar',stack:'population',barWidth:7,data:[l.due],itemStyle:{color:l.color}}))});});
+    root.querySelectorAll('[data-metric-org]').forEach(el=>{
+      const r=d.organizations.find(o=>o.name===el.dataset.metricOrg),m=orgMetrics(r)[el.dataset.metric];
+      const formatter=()=>'<strong>'+r.name+' · '+m.title+'</strong><br>'+m.parts.map(([label,n,color])=>'<span style="color:'+color+'">●</span> '+label+'：'+f(n)+' 人（'+rate(n,m.total)+'）').concat(m.details.map(([label,n])=>label+'：'+f(n)+' 人')).join('<br>');
+      chart(el,{grid:{left:0,right:0,top:0,bottom:0},tooltip:{trigger:'axis',triggerOn:'mousemove|click',appendToBody:true,confine:false,axisPointer:{type:'none'},formatter},xAxis:{type:'value',max:Math.max(m.total,1),show:false},yAxis:{type:'category',data:[''],show:false},series:m.parts.map(([name,n,color])=>({name,type:'bar',stack:'population',barWidth:8,label:{show:false},data:[n],itemStyle:{color}}))});
+      const show=()=>echarts.getInstanceByDom(el)?.dispatchAction({type:'showTip',seriesIndex:0,dataIndex:0});
+      const hide=()=>echarts.getInstanceByDom(el)?.dispatchAction({type:'hideTip'});
+      el.onfocus=show;el.onblur=hide;el.onclick=show;el.onkeydown=e=>{if(e.key==='Escape')hide();if(e.key==='Enter'||e.key===' '){e.preventDefault();show();}};
+    });
     chart(document.getElementById('dlPie'),{tooltip:{trigger:'item',confine:true,formatter:p=>p.name+'<br>'+f(p.value)+' 人（'+rate(p.value,t.managedDue)+'）'},series:[{type:'pie',radius:'94%',center:['50%','50%'],startAngle:90,itemStyle:{borderWidth:1,borderColor:'#fff'},label:{show:false},labelLine:{show:false},data:d.levels.map(r=>({name:r.name,value:r.due,itemStyle:{color:r.color}}))}]});
     root.querySelectorAll('.dv-chart').forEach(el=>chart(el,{grid:{left:0,right:0,top:0,bottom:0},tooltip:{trigger:'item',confine:true,formatter:()=>el.dataset.value+'%'},xAxis:{type:'value',max:100,show:false},yAxis:{type:'category',show:false},series:[{type:'bar',data:[Number(el.dataset.value)],barWidth:el.dataset.compact?4:12,showBackground:true,backgroundStyle:{color:el.dataset.background||'#dbe3eb',borderRadius:2},itemStyle:{borderRadius:2,color:el.dataset.color||new echarts.graphic.LinearGradient(0,0,1,0,[{offset:0,color:'#52b4fa'},{offset:1,color:'#258ffc'}])}}]}));instances.forEach(c=>c.resize());});}
   window.renderDashboardLatest=render;
