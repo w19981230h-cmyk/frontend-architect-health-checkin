@@ -38,3 +38,6 @@
 #dvCombinedFunnel{height:390px}
 
 #dvCombinedFunnel{height:444px}
+
+.dv-overview-pair{display:grid;grid-template-columns:minmax(0,1.65fr) minmax(0,1fr);gap:16px;align-items:stretch}.dv-overview-pair>.dl-card{min-width:0;margin:0}.dv-overview-pair .dv-funnel-risk-grid{display:block;margin-top:10px}.dv-overview-pair>.dv-risk-panel{border:1px solid #dceafa;border-radius:8px;padding:18px;background:#fff}.dv-overview-pair>.dv-risk-panel>h3{border-left:4px solid #4089ff;padding-left:10px;margin-bottom:16px}.dv-overview-pair .dl-included{position:static;display:block;text-align:right;margin:4px 0 8px}@media(max-width:1000px){.dv-overview-pair{grid-template-columns:minmax(0,1fr)} }
+.dv-overview-pair{margin-bottom:16px}
