@@ -59,3 +59,8 @@ assert.equal(sum(d.cohortExits,'count'),t.enrolled-d.cohortActive);
 records.patients.forEach(p=>{if(p.exitReason)assert.ok(p.enrolled&&!p.active);});
 assert.equal(records.patients.filter(p=>p.exitReason).length,80);
 console.log('PASS: cohort exit reasons reconcile with enrolled and remaining active populations.');
+for(const o of d.organizations){assert.equal(sum(o.levels,'due'),o.managedDue);assert.ok(o.standard<=o.evaluable);}
+for(let i=0;i<d.levels.length;i++)assert.equal(d.organizations.reduce((n,o)=>n+o.levels[i].due,0),d.levels[i].due);
+assert.equal(sum(d.organizations,'evaluable'),sum(d.levels,'evaluable'));
+assert.equal(sum(d.organizations,'standard'),sum(d.levels,'standard'));
+console.log('PASS: institution tier distributions and standard-management denominators reconcile with regional totals.');
