@@ -1,11 +1,11 @@
 const assert=require('node:assert/strict');
 const {data:d,totals:t,sum,percent}=require('../js/dashboard-latest-data.js');
-assert.deepEqual(t,{due:10000,screened:6000,abnormal:1200,eligible:1000,enrolled:800,managedDue:2560,active:2200});
-assert.equal(t.due-t.screened,4000);
+assert.deepEqual(t,{due:12000,screened:6000,abnormal:1200,eligible:1000,enrolled:800,managedDue:2560,active:2200});
+assert.equal(t.due-t.screened,6000);
 assert.equal(t.screened-t.abnormal,4800);
 assert.equal(t.abnormal,t.eligible+d.pendingAssessment+d.ineligible);
 assert.equal(t.eligible-t.enrolled,200);
-assert.deepEqual([percent(t.screened,t.due),percent(t.abnormal,t.screened),percent(t.eligible,t.abnormal),percent(t.enrolled,t.eligible)],['60.0','20.0','83.3','80.0']);
+assert.deepEqual([percent(t.screened,t.due),percent(t.abnormal,t.screened),percent(t.eligible,t.abnormal),percent(t.enrolled,t.eligible)],['50.0','20.0','83.3','80.0']);
 assert.equal(sum(d.levels,'due'),t.managedDue);
 assert.equal(sum(d.levels,'active'),t.active);
 assert.deepEqual(d.levels.map(r=>r.due-r.active),[28,112,204,16]);
@@ -24,8 +24,33 @@ assert.deepEqual(['up','upClosed','down','downClosed'].map(k=>sum(d.referrals,k)
 assert.deepEqual(d.referrals.map(r=>r.up-r.upClosed),[12,16,8]);
 assert.deepEqual(d.referrals.map(r=>r.down-r.downClosed),[12,18,6]);
 assert.equal(percent(204,240),'85.0');assert.equal(percent(144,180),'80.0');
-console.log('PASS: screenshot totals, screening conservation, institution sums, tier coverage, standard management denominators, evaluation, alert counts, referral closures and rounding.');
+console.log('PASS: synthetic record totals, screening conservation, institution sums, tier coverage, standard management denominators, evaluation, alert counts, referral closures and rounding.');
 assert.deepEqual(d.organizations.map(r=>percent(r.screened,t.screened)),['50.0','33.3','16.7']);
 assert.deepEqual(d.organizations.map(r=>percent(r.enrolled,t.enrolled)),['50.0','30.0','20.0']);
 assert.deepEqual(d.organizations.map(r=>percent(r.active,t.active)),['45.5','31.8','22.7']);
 console.log('PASS: institution pie percentages use the matching regional population denominator.');
+const {records}=require('../js/dashboard-latest-data.js');
+const people=new Map(records.patients.map(p=>[p.id,p]));
+assert.equal(people.size,12000);assert.equal(t.due,d.population);
+for(const p of records.patients){
+  assert.ok(!p.abnormal||p.screened);assert.ok(!p.eligible||p.abnormal);
+  assert.ok(!p.enrolled||p.eligible);assert.ok(!p.active||p.managedDue);
+  assert.ok(!p.evaluable||(p.active&&p.level!=='未分级'));
+  assert.ok(!p.standard||p.evaluable);
+  assert.ok(!p.overdueEnrollment||(p.eligible&&!p.enrolled));
+}
+for(const rows of [records.cases,records.cycles,records.alerts,records.referrals]){
+  assert.equal(new Set(rows.map(r=>r.id)).size,rows.length);
+  rows.forEach(r=>assert.ok(people.has(r.patientId)));
+}
+records.cases.forEach(c=>{assert.ok(!c.achieved||c.evaluable);assert.ok(people.get(c.patientId).active);});
+records.cycles.forEach(c=>assert.ok(!c.completed||c.due));
+records.referrals.forEach(r=>{assert.ok(!r.closed||r.progressed);assert.ok(!r.progressed||r.accepted);assert.equal(people.get(r.patientId).org,r.org);});
+records.alerts.forEach(a=>{assert.equal(people.get(a.patientId).org,a.org);assert.ok(!a.overdue||(a.due&&a.status==='unhandled'));assert.ok(!a.timely||(a.due&&a.status!=='unhandled'));});
+for(const r of d.risks){assert.equal(r.events,r.closedCount+r.handledOpen+r.unhandled);assert.equal(r.timely,Number(percent(r.timelyCount,r.due)));assert.equal(r.closed,Number(percent(r.closedCount,r.due)));}
+assert.equal(d.riskTotals.events,114);assert.equal(d.riskTotals.due,80);assert.equal(d.riskTotals.timelyCount,72);assert.equal(d.riskTotals.closedCount,68);
+assert.equal(d.riskTotals.events,d.riskTotals.closedCount+d.riskTotals.handledOpen+d.riskTotals.unhandled);
+assert.deepEqual(d.referralStages,{up:[240,228,216,204],down:[180,168,152,144]});
+assert.equal(d.ineligible,200);assert.equal(d.pendingAssessment,0);
+assert.equal(d.cohortActive,720);assert.equal(d.overdueEnrollment,60);
+console.log('PASS: all unique record IDs, patient references, nested status constraints, cohort membership, weighted alert denominators and referral stages.');
