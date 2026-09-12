@@ -28,15 +28,14 @@
   const levelRows=d.levels.map(r=>[dot(r.color)+r.name,f(r.due),f(r.active),`<span class="dl-red">${f(r.due-r.active)}</span>`,rate(r.active,r.due),r.evaluable===null?'—':f(r.evaluable),r.standard===null?'—':f(r.standard),r.standard===null?'—':rate(r.standard,r.evaluable)]);
   levelRows.push(['合计',f(t.managedDue),f(t.active),`<span class="dl-red">${f(t.managedDue-t.active)}</span>`,rate(t.active,t.managedDue),f(sum(d.levels,'evaluable')),f(sum(d.levels,'standard')),rate(sum(d.levels,'standard'),sum(d.levels,'evaluable'))]);
   const distributionBar=(n,total,label,color,background='#e8edf5')=>'<div class="dv-distribution-bar"><div class="dv-chart" data-compact="true" data-color="'+color+'" data-background="'+background+'" data-value="'+percent(n,total)+'" role="img" aria-label="'+rate(n,total)+'"></div><small>'+label+'</small></div>';
-  const institutionDistribution='<div class="dv-institution-distribution" aria-label="按机构分布">'+table(['机构','本期筛查','本期筛查入组','全部来源 · 期末管理','三色分层 · 应管理人群','规范管理','主要缺口 / 追查方向'],d.organizations.map(r=>[
+  const institutionDistribution='<div class="dv-institution-distribution" aria-label="按机构分布">'+table(['机构','本期筛查入组','全部来源 · 期末管理','三色分层 · 应管理人群','规范管理','主要缺口 / 追查方向'],d.organizations.map(r=>[
     '<button class="dl-org-link" data-org="'+r.name+'">'+r.name+' ›</button>',
-    '已筛 '+f(r.screened)+' / 总体 '+f(r.due)+distributionBar(r.screened,r.due,'异常 '+f(r.abnormal),'#487cf6'),
     '入组 '+f(r.enrolled)+' / 符合 '+f(r.eligible)+distributionBar(r.enrolled,r.eligible,'未入组 '+f(r.eligible-r.enrolled),'#58aa98'),
     '在管 '+f(r.active)+' / 应管 '+f(r.managedDue)+distributionBar(r.active,r.managedDue,'未在管 '+f(r.managedDue-r.active),'#487cf6','#f0c69f'),
     '<div class="dv-org-tier-chart" data-tier-org="'+r.name+'" role="img" aria-label="'+r.levels.map(l=>l.name+' '+l.due+'人').join('，')+'"></div><small>'+r.levels.map(l=>l.name+' '+f(l.due)).join(' / ')+'</small>',
     '<span class="teal">'+rate(r.standard,r.evaluable)+'</span><small>'+f(r.standard)+' / '+f(r.evaluable)+' 可评价</small>',
     '<span class="dl-red">未筛 '+f(r.due-r.screened)+' 人</span><small>符合条件未入组 '+f(r.eligible-r.enrolled)+' 人 · 超期 '+r.overdueEnrollment+' 人</small>'
-  ]))+note('按唯一主责机构汇总模拟明细；三色分层包含未分级。机构列已隐藏，各行依次对应 A、B、C 机构。')+'</div>';
+  ]))+note('按唯一主责机构汇总模拟明细；三色分层包含未分级。点击机构查看管理概览。')+'</div>';
   const referralRow=r=>[r.name,f(r.up),f(r.up-r.upClosed),rate(r.upClosed,r.up),f(r.down),f(r.down-r.downClosed),rate(r.downClosed,r.down)];
   const referralTotal={name:'区域合计',...Object.fromEntries(['up','upClosed','down','downClosed'].map(k=>[k,sum(d.referrals,k)]))};
   const flow=(down)=>{const a=d.referralStages[down?'down':'up'];return `<div class="dv-referral ${down?'down':''}"><h3>${icon('up',down?'#14c8ad':'#168cff')}向${down?'下':'上'}转诊</h3>${['申请','已接收',down?'管理交接':'已到院',down?'首次服务完成':'诊疗反馈完成'].map((x,i)=>`<div>${x}<b>${a[i]} 单</b></div>${i<3?'<em>→</em>':''}`).join('')}<strong>${down?'下':'上'}转闭环率<b>${rate(a[3],a[0])}</b></strong></div>`;};
