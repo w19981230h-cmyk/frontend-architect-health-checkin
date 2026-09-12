@@ -37,11 +37,11 @@
     <div id="dlFilters" class="dl-filters"></div><div class="dl-scope"><span>当前范围： 区域总览 / 全部机构</span></div><div id="dlMessage" role="status" hidden></div>
     <section class="dl-card dv-overview">${title(1,'人群与管理总览')}<span class="dl-included">纳入统计人群 <b>${f(d.population)}</b> 人</span>
     <div class="dv-pipeline">
-      ${step('01','本期应筛',t.due,'group',branch('未筛查',t.due-t.screened,'person'))}
+      ${step('01','总体人数',t.due,'group',branch('未筛查',t.due-t.screened,'person'))}
       ${arrow('筛查覆盖率',t.screened,t.due)}
       ${step('02','已筛查',t.screened,'clipboard',branch('未见异常',t.screened-t.abnormal,'person','gray'))}
       ${arrow('异常率',t.abnormal,t.screened)}
-      ${step('03','筛查异常',t.abnormal,'fileAlert',`<div class="dv-branch dv-split"><div>${icon('clock','#ff7900')}<span>待评估<b>${d.pendingAssessment} <small>人</small></b></span></div><div>${icon('person','#8699b7')}<span>不符合入组<b>${d.ineligible} <small>人</small></b></span></div></div>`)}
+      ${step('03','筛查异常',t.abnormal,'fileAlert',branch('不符合入组',d.ineligible,'person','gray'))}
       ${arrow('入组适配率',t.eligible,t.abnormal)}
       ${step('04','符合入组',t.eligible,'group',branch('符合条件未入组',t.eligible-t.enrolled,'person','orange',`<p>其中超期 <b>${d.overdueEnrollment}</b> 人</p>`))}
       ${arrow('入组转化率',t.enrolled,t.eligible)}
