@@ -54,3 +54,8 @@ assert.deepEqual(d.referralStages,{up:[240,228,216,204],down:[180,168,152,144]})
 assert.equal(d.ineligible,200);assert.equal(d.pendingAssessment,0);
 assert.equal(d.cohortActive,720);assert.equal(d.overdueEnrollment,60);
 console.log('PASS: all unique record IDs, patient references, nested status constraints, cohort membership, weighted alert denominators and referral stages.');
+assert.deepEqual(d.cohortExits.map(r=>r.count),[40,20,20]);
+assert.equal(sum(d.cohortExits,'count'),t.enrolled-d.cohortActive);
+records.patients.forEach(p=>{if(p.exitReason)assert.ok(p.enrolled&&!p.active);});
+assert.equal(records.patients.filter(p=>p.exitReason).length,80);
+console.log('PASS: cohort exit reasons reconcile with enrolled and remaining active populations.');
