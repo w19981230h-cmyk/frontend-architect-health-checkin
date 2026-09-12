@@ -25,3 +25,7 @@ assert.deepEqual(d.referrals.map(r=>r.up-r.upClosed),[12,16,8]);
 assert.deepEqual(d.referrals.map(r=>r.down-r.downClosed),[12,18,6]);
 assert.equal(percent(204,240),'85.0');assert.equal(percent(144,180),'80.0');
 console.log('PASS: screenshot totals, screening conservation, institution sums, tier coverage, standard management denominators, evaluation, alert counts, referral closures and rounding.');
+assert.deepEqual(d.organizations.map(r=>percent(r.screened,t.screened)),['50.0','33.3','16.7']);
+assert.deepEqual(d.organizations.map(r=>percent(r.enrolled,t.enrolled)),['50.0','30.0','20.0']);
+assert.deepEqual(d.organizations.map(r=>percent(r.active,t.active)),['45.5','31.8','22.7']);
+console.log('PASS: institution pie percentages use the matching regional population denominator.');
