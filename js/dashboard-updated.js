@@ -1,6 +1,6 @@
 /* Latest dashboard: screenshot-aligned demonstration, isolated from existing reports. */
 (() => {
-  const root = document.getElementById('dashboardLatestView');
+  const root = document.getElementById('dashboardUpdatedView');
   if (!root) return;
   const dot = (color) => `<i class="dl-dot" style="background:${color}"></i>`;
   const colors = ['#ff506b','#ffd647','#14c8ad','#9bb4ce'];
@@ -58,7 +58,7 @@
       colors:up?['#4479da','#5b8fe5','#7faadd','#60a5bf']:['#539bb2','#69adbb','#80b8b0','#59a78f'],
       stats:[['转诊闭环率',r.closureRate==='—'?'—':r.closureRate+'%'],...(up?[['平均接收时长',r.averageAcceptanceHours==='—'?'—':r.averageAcceptanceHours+'小时']]:[]),[up?'已接收未到院':'已接收未交接',r.awaitingProgress+'人']]}];
   }));
-  const referralPanel=key=>{const r=referralDisplay[key];return '<article class="dv-referral-panel"><h3>'+r.title+'</h3><div id="dvReferral-'+key+'" class="dv-referral-funnel" role="img" aria-label="'+r.title+'，'+(key==='up'?'从下往上阅读，':'从上往下阅读，')+r.stages.map(([label,n])=>label+' '+n+' 人').join('，')+'"></div><div class="dv-referral-metrics">'+r.stats.map(([label,value])=>'<div><span>'+label+'</span><strong>'+value+'</strong></div>').join('')+'</div></article>';};
+  const referralPanel=key=>{const r=referralDisplay[key];return '<article class="dv-referral-panel"><h3>'+r.title+'</h3><div id="updated-dvReferral-'+key+'" class="dv-referral-funnel" role="img" aria-label="'+r.title+'，'+(key==='up'?'从下往上阅读，':'从上往下阅读，')+r.stages.map(([label,n])=>label+' '+n+' 人').join('，')+'"></div><div class="dv-referral-metrics">'+r.stats.map(([label,value])=>'<div><span>'+label+'</span><strong>'+value+'</strong></div>').join('')+'</div></article>';};
   const riskPanel=`<aside class="dl-card dv-risk-panel dv-risk-updated"><h3>预警风险与安全</h3><p>统计截至 ${d.end} · 模拟数据</p>
     <div class="dv-risk-kpi-scroll"><div class="dv-risk-kpi-row dv-risk-two-cards">
       <div><div class="dv-risk-card-icon">${icon('person','#487cf6')}</div><div class="dv-risk-card-body"><span>高危预警未闭环</span><strong>${f(d.riskOverview.highOpen)} <em>人</em></strong><small>仍有预警事项待完成闭环</small></div></div>
@@ -70,16 +70,16 @@
   </aside>`;
   root.innerHTML=`<div class="dl-dashboard dv-dashboard">
     <header class="dl-header"><h1>AI患者运营管理驾驶舱</h1><span class="dl-subtitle">${view.scopeName} · 人群覆盖 · ${view.comparison}分布</span><span class="dl-badge">模拟数据</span><span>统计截至 ${d.end}</span></header>
-    <div id="dlFilters" class="dl-filters"></div><div class="dl-scope"><span>当前范围： ${view.scopeName}${view.filters.disease?" / "+view.filters.disease:""} · 下方对比：${view.personal?"病种、等级、状态":view.comparison}</span>${view.filters.org?'<button type="button" class="dl-org-link" id="dlScopeBack">返回上一级</button>':''}</div><div id="dlMessage" role="status" ${view.message?'':'hidden'}>${view.message}</div>
+    <div id="updated-dlFilters" class="dl-filters"></div><div class="dl-scope"><span>当前范围： ${view.scopeName}${view.filters.disease?" / "+view.filters.disease:""} · 下方对比：${view.personal?"病种、等级、状态":view.comparison}</span>${view.filters.org?'<button type="button" class="dl-org-link" id="updated-dlScopeBack">返回上一级</button>':''}</div><div id="updated-dlMessage" role="status" ${view.message?'':'hidden'}>${view.message}</div>
     <div class="dv-overview-pair"><section class="dl-card dv-overview">${title(1,'人群与管理总览')}<span class="dl-included">纳入统计人群 <b>${f(d.population)}</b> 人</span>
-    <div class="dv-funnel-risk-grid"><div class="dv-funnel-main"><p class="dv-overview-caption">本期筛查人群 · 向下转化</p><div id="dvCombinedFunnel" role="img" aria-label="总体人数${t.due}，已筛查${t.screened}，筛查异常${t.abnormal}，符合入组${t.eligible}，已入组${t.enrolled}，当前在管${d.cohortActive}（本期入组人群），入组后管理率${rate(d.cohortActive,t.enrolled)}"></div><div class="dv-funnel-notes"><span>未筛查 ${f(t.due-t.screened)} 人</span><span>未见异常 ${f(t.screened-t.abnormal)} 人</span><span>不符合入组 ${d.ineligible} 人</span><span>未入组 ${t.eligible-t.enrolled} 人（超期 ${d.overdueEnrollment} 人）</span></div>${''}</div></div></section>${riskPanel}</div>
-    <section class="dl-card dv-levels dv-levels-compact"><div class="dv-levels-heading">${title(2,'三色管理')}<span>${d.organizations.length} 个${view.comparison} · 模拟数据</span></div><div class="dv-levels-strip"><div class="dv-levels-population"><h3>当前应管理人群 · 三色覆盖</h3><div class="dv-levels-population-body"><div id="dlPie" class="dl-pie" role="img" aria-label="应管理人群 ${f(t.managedDue)} 人的等级分布"></div><div><strong>应管理 ${f(t.managedDue)} 人</strong><p>红 ${f(d.levels[0].due)} / 黄 ${f(d.levels[1].due)}</p><p>绿 ${f(d.levels[2].due)} / 未分级 ${f(d.levels[3].due)}</p></div></div></div>${d.levels.slice(0,3).map((r,i)=>`<article class="dv-level-mini dv-level-visual"><header><span style="color:${['#eb6371','#b69931','#4dac9c'][i]}">${r.name}管理人群</span></header><div class="dv-level-rings" data-level-index="${i}" tabindex="0" role="img" aria-label="${r.name}覆盖率${rate(r.active,r.due)}，规范管理率${rate(r.standard,r.evaluable)}；聚焦查看人数，左右方向键切换指标"></div></article>`).join('')}</div>${view.personal?personalDistribution:institutionDistribution}${note('全部来源在管 '+f(t.active)+' 人 = 本期入组在管 '+f(d.managementSources.cohortActive)+' 人 + 历史及其他来源在管 '+f(d.managementSources.otherActive)+' 人；应管理 '+f(t.managedDue)+' 人 = 在管 '+f(t.active)+' 人 + 未在管 '+f(d.managementSources.inactive)+' 人。')}</section>
-    <section class="dl-card dv-outcomes">${title(3,'健康管理成效','按'+view.comparison+'查看')}<div id="dvOutcomeChart" tabindex="0" role="img" aria-label="各${view.comparison}健康管理成效：目标达成数、改善数、稳定数、恶化数。左右方向键切换对比对象查看数量和比例。"></div>${note('悬停或点按柱状图查看数量与比例，点击图例可切换显示。比例＝该类病例数 / 对应比较对象的可评价病例数；待评价病例不计入分母。同一患者不同病种按病例计数。模拟数据中四类结果互斥，先判断目标达成，未达成再分为改善、稳定、恶化。')}</section>
+    <div class="dv-funnel-risk-grid"><div class="dv-funnel-main"><p class="dv-overview-caption">本期筛查人群 · 向下转化</p><div id="updated-dvCombinedFunnel" role="img" aria-label="总体人数${t.due}，已筛查${t.screened}，筛查异常${t.abnormal}，符合入组${t.eligible}，已入组${t.enrolled}，当前在管${d.cohortActive}（本期入组人群），入组后管理率${rate(d.cohortActive,t.enrolled)}"></div><div class="dv-funnel-notes"><span>未筛查 ${f(t.due-t.screened)} 人</span><span>未见异常 ${f(t.screened-t.abnormal)} 人</span><span>不符合入组 ${d.ineligible} 人</span><span>未入组 ${t.eligible-t.enrolled} 人（超期 ${d.overdueEnrollment} 人）</span></div>${''}</div></div></section>${riskPanel}</div>
+    <section class="dl-card dv-levels dv-levels-compact"><div class="dv-levels-heading">${title(2,'三色管理')}<span>${d.organizations.length} 个${view.comparison} · 模拟数据</span></div><div class="dv-levels-strip"><div class="dv-levels-population"><h3>当前应管理人群 · 三色覆盖</h3><div class="dv-levels-population-body"><div id="updated-dlPie" class="dl-pie" role="img" aria-label="应管理人群 ${f(t.managedDue)} 人的等级分布"></div><div><strong>应管理 ${f(t.managedDue)} 人</strong><p>红 ${f(d.levels[0].due)} / 黄 ${f(d.levels[1].due)}</p><p>绿 ${f(d.levels[2].due)} / 未分级 ${f(d.levels[3].due)}</p></div></div></div>${d.levels.slice(0,3).map((r,i)=>`<article class="dv-level-mini dv-level-visual"><header><span style="color:${['#eb6371','#b69931','#4dac9c'][i]}">${r.name}管理人群</span></header><div class="dv-level-rings" data-level-index="${i}" tabindex="0" role="img" aria-label="${r.name}覆盖率${rate(r.active,r.due)}，规范管理率${rate(r.standard,r.evaluable)}；聚焦查看人数，左右方向键切换指标"></div></article>`).join('')}</div>${view.personal?personalDistribution:institutionDistribution}${note('全部来源在管 '+f(t.active)+' 人 = 本期入组在管 '+f(d.managementSources.cohortActive)+' 人 + 历史及其他来源在管 '+f(d.managementSources.otherActive)+' 人；应管理 '+f(t.managedDue)+' 人 = 在管 '+f(t.active)+' 人 + 未在管 '+f(d.managementSources.inactive)+' 人。')}</section>
+    <section class="dl-card dv-outcomes">${title(3,'健康管理成效','按'+view.comparison+'查看')}<div id="updated-dvOutcomeChart" tabindex="0" role="img" aria-label="各${view.comparison}健康管理成效：目标达成数、改善数、稳定数、恶化数。左右方向键切换对比对象查看数量和比例。"></div>${note('悬停或点按柱状图查看数量与比例，点击图例可切换显示。比例＝该类病例数 / 对应比较对象的可评价病例数；待评价病例不计入分母。同一患者不同病种按病例计数。模拟数据中四类结果互斥，先判断目标达成，未达成再分为改善、稳定、恶化。')}</section>
     <section class="dl-card dv-referrals">${title(4,'双向转诊')}<div class="dv-referral-panels">${referralPanel('up')}${referralPanel('down')}</div>${note('按本期发起转诊人群跟踪至统计截止日，各方向内按患者去重。接收、到院／交接、反馈／随访逐级计算比例；闭环率以转出人数为分母。上转反馈完成不等同于本期筛查入组。')}</section>
     <footer class="dl-footer">科室、团队、人员归属为模拟分配 · 模拟数据 · 按患者、病例、周期、预警及转诊明细统一汇总 · 不含真实患者信息</footer>
-    <dialog id="dlDialog"><h2>机构管理概览</h2><p id="dlDialogText"></p><button id="dlClose" type="button">关闭</button></dialog>
+    <dialog id="updated-dlDialog"><h2>机构管理概览</h2><p id="updated-dlDialogText"></p><button id="updated-dlClose" type="button">关闭</button></dialog>
   </div>`;
-  const placeholder=document.getElementById('dlFilters');
+  const placeholder=document.getElementById('updated-dlFilters');
   if(filterHost)placeholder.replaceWith(filterHost);else filterHost=placeholder;
   const instances=[];let disposed=false;
   function chart(el,option){if(!window.echarts)return;const c=echarts.getInstanceByDom(el)||echarts.init(el);c.setOption({animation:false,textStyle:{fontFamily:'Microsoft YaHei',fontSize:14},...option},true);if(!instances.includes(c))instances.push(c);}
@@ -87,7 +87,7 @@
   function render(){if(!root.classList.contains('active'))return;requestAnimationFrame(()=>{if(disposed)return;
     const outcomeRows=d.organizationOutcomes;
     const outcomeSeries=[['achieved','目标达成数'],['improved','改善数'],['stable','稳定数'],['worsened','恶化数']];
-    const outcomeEl=document.getElementById('dvOutcomeChart');
+    const outcomeEl=document.getElementById('updated-dvOutcomeChart');
     chart(outcomeEl,{
       color:['#5470c6','#91cc75','#fac858','#ee6666'],
       legend:{top:0,type:'scroll'},
@@ -108,15 +108,15 @@
     outcomeEl.onkeydown=e=>{if(['ArrowLeft','ArrowRight'].includes(e.key)&&outcomeRows.length){e.preventDefault();outcomeIndex=(outcomeIndex+(e.key==='ArrowRight'?1:-1)+outcomeRows.length)%outcomeRows.length;showOutcome();}if(e.key==='Escape')outcomeEl.onblur();};
     const funnelData=[['总体人数',t.due,'#487ae8'],['已筛查',t.screened,'#6494e5'],['筛查异常',t.abnormal,'#7aaad8'],['符合入组',t.eligible,'#6cabb8'],['已入组',t.enrolled,'#59aa96'],['当前在管（本期入组）',d.cohortActive,'#28ab91']];
     const transitionNames=['筛查覆盖率','异常率','入组适配率','入组转化率','入组后管理率'];
-    const funnelEl=document.getElementById('dvCombinedFunnel');
+    const funnelEl=document.getElementById('updated-dvCombinedFunnel');
     const funnelGap=Math.min(28,Math.max(22,funnelEl.clientHeight*.055));
     const funnelStageHeight=(funnelEl.clientHeight-16-5*funnelGap)/6;
-    chart(document.getElementById('dvCombinedFunnel'),{tooltip:{trigger:'item',confine:true,formatter:p=>p.name+'：'+f(p.value)+' 人<br>占总体人数 '+rate(p.value,t.due)},graphic:transitionNames.map((name,i)=>({type:'text',x:document.getElementById('dvCombinedFunnel').clientWidth*.375,top:8+(i+1)*funnelStageHeight+i*funnelGap+(funnelGap-22)/2,z:100,style:{text:name+' '+rate(funnelData[i+1][1],funnelData[i][1]),align:'center',fill:'#4285ef',font:'12px Microsoft YaHei',backgroundColor:'#f2f7ff',padding:[4,12],borderRadius:8}})),series:[{type:'funnel',left:'5%',top:8,bottom:8,width:'65%',min:0,max:Math.max(t.due,1),minSize:'0%',maxSize:'100%',sort:'none',gap:funnelGap,label:{show:true,position:'right',color:'#405777',fontSize:12,formatter:p=>p.name+' '+f(p.value)+' 人'},labelLine:{length:14,lineStyle:{color:'#bdcce0'}},itemStyle:{borderColor:'#fff',borderWidth:1},data:funnelData.map(([name,value,color])=>({name,value,itemStyle:{color}}))}]});
+    chart(document.getElementById('updated-dvCombinedFunnel'),{tooltip:{trigger:'item',confine:true,formatter:p=>p.name+'：'+f(p.value)+' 人<br>占总体人数 '+rate(p.value,t.due)},graphic:transitionNames.map((name,i)=>({type:'text',x:document.getElementById('updated-dvCombinedFunnel').clientWidth*.375,top:8+(i+1)*funnelStageHeight+i*funnelGap+(funnelGap-22)/2,z:100,style:{text:name+' '+rate(funnelData[i+1][1],funnelData[i][1]),align:'center',fill:'#4285ef',font:'12px Microsoft YaHei',backgroundColor:'#f2f7ff',padding:[4,12],borderRadius:8}})),series:[{type:'funnel',left:'5%',top:8,bottom:8,width:'65%',min:0,max:Math.max(t.due,1),minSize:'0%',maxSize:'100%',sort:'none',gap:funnelGap,label:{show:true,position:'right',color:'#405777',fontSize:12,formatter:p=>p.name+' '+f(p.value)+' 人'},labelLine:{length:14,lineStyle:{color:'#bdcce0'}},itemStyle:{borderColor:'#fff',borderWidth:1},data:funnelData.map(([name,value,color])=>({name,value,itemStyle:{color}}))}]});
     ['up','down'].forEach(key=>{
       const r=referralDisplay[key],up=key==='up';
       const data=r.stages.map(([name,value],i)=>({name,value,itemStyle:{color:r.colors[i]}}));
       const rates=up?[...r.rates].reverse():r.rates;
-      chart(document.getElementById('dvReferral-'+key),{
+      chart(document.getElementById('updated-dvReferral-'+key),{
         tooltip:{trigger:'item',confine:true,textStyle:{fontSize:14},formatter:p=>p.name+'：'+p.value+' 人'},
         graphic:rates.map((text,i)=>({type:'text',left:'center',top:(23+i*27)+'%',style:{text,fill:'#587197',fontSize:14,fontWeight:600}})),
         series:[{type:'funnel',left:'6%',width:'88%',top:12,bottom:12,min:0,max:Math.max(r.stages[0][1],1),minSize:'42%',maxSize:'100%',sort:up?'ascending':'descending',gap:42,funnelAlign:'center',label:{show:true,position:'inside',fontSize:14,fontWeight:600,color:'#fff',formatter:p=>p.name+'  '+p.value+' 人'},labelLine:{show:false},itemStyle:{borderWidth:0},data:up?data.reverse():data}]
@@ -143,33 +143,33 @@
       el.onfocus=show;el.onblur=()=>echarts.getInstanceByDom(el)?.dispatchAction({type:'hideTip'});
       el.onkeydown=e=>{if(['ArrowLeft','ArrowRight'].includes(e.key)){e.preventDefault();metricIndex=1-metricIndex;show();}if(e.key==='Escape')el.onblur();};
     });
-    chart(document.getElementById('dlPie'),{tooltip:{trigger:'item',confine:true,formatter:p=>p.name+'<br>'+f(p.value)+' 人（'+rate(p.value,t.managedDue)+'）'},series:[{type:'pie',radius:'94%',center:['50%','50%'],startAngle:90,itemStyle:{borderWidth:1,borderColor:'#fff'},label:{show:false},labelLine:{show:false},data:d.levels.map(r=>({name:r.name,value:r.due,itemStyle:{color:r.color}}))}]});
+    chart(document.getElementById('updated-dlPie'),{tooltip:{trigger:'item',confine:true,formatter:p=>p.name+'<br>'+f(p.value)+' 人（'+rate(p.value,t.managedDue)+'）'},series:[{type:'pie',radius:'94%',center:['50%','50%'],startAngle:90,itemStyle:{borderWidth:1,borderColor:'#fff'},label:{show:false},labelLine:{show:false},data:d.levels.map(r=>({name:r.name,value:r.due,itemStyle:{color:r.color}}))}]});
     root.querySelectorAll('.dv-chart').forEach(el=>chart(el,{grid:{left:0,right:0,top:0,bottom:0},tooltip:{trigger:'item',confine:true,formatter:()=>el.dataset.value+'%'},xAxis:{type:'value',max:100,show:false},yAxis:{type:'category',show:false},series:[{type:'bar',data:[Number(el.dataset.value)],barWidth:el.dataset.compact?4:12,showBackground:true,backgroundStyle:{color:el.dataset.background||'#dbe3eb',borderRadius:2},itemStyle:{borderRadius:2,color:el.dataset.color||new echarts.graphic.LinearGradient(0,0,1,0,[{offset:0,color:'#52b4fa'},{offset:1,color:'#258ffc'}])}}]}));instances.forEach(c=>c.resize());});}
-  window.renderDashboardLatest=render;
-  const funnelObserver=new ResizeObserver(()=>render());funnelObserver.observe(document.getElementById('dvCombinedFunnel'));
+  window.renderDashboardUpdated=render;
+  const funnelObserver=new ResizeObserver(()=>render());funnelObserver.observe(document.getElementById('updated-dvCombinedFunnel'));
   const rootObserver=new ResizeObserver(()=>{if(root.classList.contains('active'))instances.forEach(c=>c.resize());});rootObserver.observe(root);
   cleanup=()=>{disposed=true;funnelObserver.disconnect();rootObserver.disconnect();instances.forEach(c=>c.dispose());};
-  const dialog=document.getElementById('dlDialog');document.getElementById('dlClose').onclick=()=>dialog.close();
+  const dialog=document.getElementById('updated-dlDialog');document.getElementById('updated-dlClose').onclick=()=>dialog.close();
   const riskDialog=document.createElement('dialog');
-  riskDialog.id='dvRiskDialog';riskDialog.setAttribute('aria-labelledby','dvRiskDialogTitle');root.querySelector('.dl-dashboard').appendChild(riskDialog);
+  riskDialog.id='updated-dvRiskDialog';riskDialog.setAttribute('aria-labelledby','updated-dvRiskDialogTitle');root.querySelector('.dl-dashboard').appendChild(riskDialog);
   root.querySelectorAll('[data-risk-detail]').forEach(button=>button.onclick=()=>{
     const scope=button.dataset.riskDetail,regional=scope==='due';
     const rows=view.records.alerts.filter(a=>a.status!=='closed'&&(regional?a.due:view.groups.find(g=>g.name===scope)?.patientIds.has(a.patientId)));
-    riskDialog.innerHTML='<h2 id="dvRiskDialogTitle">'+(regional?'到期预警 · 未闭环原因':scope+' · 风险处置详情')+'</h2>'+note(regional?`到期预警 ${d.riskTotals.due} 项，已闭环 ${d.riskTotals.closedCount} 项，未闭环 ${rows.length} 项。以下为模拟明细。`:'以下为全部未闭环预警的模拟明细，含未到期预警；时长、责任团队和原因均为演示数据。')+
+    riskDialog.innerHTML='<h2 id="updated-dvRiskDialogTitle">'+(regional?'到期预警 · 未闭环原因':scope+' · 风险处置详情')+'</h2>'+note(regional?`到期预警 ${d.riskTotals.due} 项，已闭环 ${d.riskTotals.closedCount} 项，未闭环 ${rows.length} 项。以下为模拟明细。`:'以下为全部未闭环预警的模拟明细，含未到期预警；时长、责任团队和原因均为演示数据。')+
       (rows.length?table(['预警 / 患者编号','机构 / 风险类型','持续时间','责任团队','当前进展 / 承接情况','未闭环原因'],rows.map(a=>[a.id+'<br>'+a.patientId,a.org+'<br>'+a.riskType,a.durationHours+' 小时'+(a.overdue?' · 已超时':''),a.responsibleTeam,a.progress+'<br>'+a.acceptance,a.openReason])):'<p>暂无未闭环预警</p>')+'<button type="button" data-risk-close>关闭</button>';
     riskDialog.querySelector('[data-risk-close]').onclick=()=>riskDialog.close();riskDialog.showModal();
   });
   function showPatients(kind,value){
     const rows=view.records.patients.filter(p=>kind==='病种'?p.diseases.includes(value):kind==='等级'?(p.level||'未分级')===value:view.status(p)===value);let page=0;
-    function update(){riskDialog.innerHTML='<h2 id="dvRiskDialogTitle">'+value+' · 患者明细</h2>'+note('共 '+rows.length+' 人 · 模拟患者编号')+table(['患者编号','病种','等级','状态'],rows.slice(page*20,(page+1)*20).map(p=>[p.id,p.diseases.join('、'),p.level||'未分级',view.status(p)]))+'<div class="dv-detail-actions"><button data-prev '+(!page?'disabled':'')+'>上一页</button><span>第 '+(page+1)+' / '+Math.max(1,Math.ceil(rows.length/20))+' 页</span><button data-next '+((page+1)*20>=rows.length?'disabled':'')+'>下一页</button><button data-close>关闭</button></div>';riskDialog.querySelector('[data-prev]').onclick=()=>{page--;update();};riskDialog.querySelector('[data-next]').onclick=()=>{page++;update();};riskDialog.querySelector('[data-close]').onclick=()=>riskDialog.close();}
+    function update(){riskDialog.innerHTML='<h2 id="updated-dvRiskDialogTitle">'+value+' · 患者明细</h2>'+note('共 '+rows.length+' 人 · 模拟患者编号')+table(['患者编号','病种','等级','状态'],rows.slice(page*20,(page+1)*20).map(p=>[p.id,p.diseases.join('、'),p.level||'未分级',view.status(p)]))+'<div class="dv-detail-actions"><button data-prev '+(!page?'disabled':'')+'>上一页</button><span>第 '+(page+1)+' / '+Math.max(1,Math.ceil(rows.length/20))+' 页</span><button data-next '+((page+1)*20>=rows.length?'disabled':'')+'>下一页</button><button data-close>关闭</button></div>';riskDialog.querySelector('[data-prev]').onclick=()=>{page--;update();};riskDialog.querySelector('[data-next]').onclick=()=>{page++;update();};riskDialog.querySelector('[data-close]').onclick=()=>riskDialog.close();}
     update();riskDialog.showModal();
   }
   root.querySelectorAll('[data-breakdown]').forEach(b=>b.onclick=()=>showPatients(b.dataset.breakdown,b.dataset.value));
   root.querySelectorAll('[data-org]').forEach(btn=>btn.onclick=()=>{const group=view.groups.find(g=>g.name===btn.dataset.org);if(group?.child)apply(group.child);});
-  const back=root.querySelector('#dlScopeBack');if(back)back.onclick=()=>{const next={...view.filters},keys=['org','dept','team','person'];const last=keys.findLastIndex(k=>next[k]);keys.slice(last).forEach(k=>next[k]='');apply(next);};
+  const back=root.querySelector('#updated-dlScopeBack');if(back)back.onclick=()=>{const next={...view.filters},keys=['org','dept','team','person'];const last=keys.findLastIndex(k=>next[k]);keys.slice(last).forEach(k=>next[k]='');apply(next);};
   if(!controls)controls=StatisticsFilters.mount(filterHost,apply,api.filterEngine,defaults,{variant:'operations',orgLabel:'全部机构',applyOnChange:false,hierarchical:true});
   render();
   }
   apply(defaults);
-  if(new URLSearchParams(location.search).get('view')==='dashboardLatest')showListView('dashboardLatest');
+  if(new URLSearchParams(location.search).get('view')==='dashboardUpdated')showListView('dashboardUpdated');
 })();

@@ -1,66 +1,77 @@
 const assert=require('node:assert/strict');
-const {data:d,totals:t,sum,percent}=require('../js/dashboard-latest-data.js');
-assert.deepEqual(t,{due:12000,screened:6000,abnormal:1200,eligible:1000,enrolled:800,managedDue:2560,active:2200});
-assert.equal(t.due-t.screened,6000);
-assert.equal(t.screened-t.abnormal,4800);
-assert.equal(t.abnormal,t.eligible+d.pendingAssessment+d.ineligible);
-assert.equal(t.eligible-t.enrolled,200);
-assert.deepEqual([percent(t.screened,t.due),percent(t.abnormal,t.screened),percent(t.eligible,t.abnormal),percent(t.enrolled,t.eligible)],['50.0','20.0','83.3','80.0']);
-assert.equal(sum(d.levels,'due'),t.managedDue);
-assert.equal(sum(d.levels,'active'),t.active);
-assert.deepEqual(d.levels.map(r=>r.due-r.active),[28,112,204,16]);
-assert.deepEqual(d.levels.map(r=>percent(r.active,r.due)),['82.5','82.5','88.0','73.3']);
-assert.equal(sum(d.levels,'evaluable'),1960);
-assert.equal(sum(d.levels,'standard'),1740);
-assert.equal(sum(d.levels.slice(0,3),'active'),2156);
-assert.equal(2156-1960,196);
-assert.equal(percent(1740,1960),'88.8');
-assert.equal(percent(d.cycles.completed,d.cycles.due),'87.3');
-assert.equal(sum(d.outcomes,'evaluable'),1700);
-assert.equal(d.evaluationDue-sum(d.outcomes,'evaluable'),300);
-assert.deepEqual(d.outcomes.map(r=>percent(r.achieved,r.evaluable)),['80.0','75.0','70.0']);
-assert.deepEqual(['high','unhandled','overdue'].map(k=>sum(d.risks,k)),[18,30,8]);
-assert.deepEqual(['up','upClosed','down','downClosed'].map(k=>sum(d.referrals,k)),[240,204,180,144]);
-assert.deepEqual(d.referrals.map(r=>r.up-r.upClosed),[12,16,8]);
-assert.deepEqual(d.referrals.map(r=>r.down-r.downClosed),[12,18,6]);
-assert.equal(percent(204,240),'85.0');assert.equal(percent(144,180),'80.0');
-console.log('PASS: synthetic record totals, screening conservation, institution sums, tier coverage, standard management denominators, evaluation, alert counts, referral closures and rounding.');
-assert.deepEqual(d.organizations.map(r=>percent(r.screened,t.screened)),['50.0','33.3','16.7']);
-assert.deepEqual(d.organizations.map(r=>percent(r.enrolled,t.enrolled)),['50.0','30.0','20.0']);
-assert.deepEqual(d.organizations.map(r=>percent(r.active,t.active)),['45.5','31.8','22.7']);
-console.log('PASS: institution pie percentages use the matching regional population denominator.');
-const {records}=require('../js/dashboard-latest-data.js');
-const people=new Map(records.patients.map(p=>[p.id,p]));
-assert.equal(people.size,12000);assert.equal(t.due,d.population);
-for(const p of records.patients){
-  assert.ok(!p.abnormal||p.screened);assert.ok(!p.eligible||p.abnormal);
-  assert.ok(!p.enrolled||p.eligible);assert.ok(!p.active||p.managedDue);
-  assert.ok(!p.evaluable||(p.active&&p.level!=='未分级'));
-  assert.ok(!p.standard||p.evaluable);
-  assert.ok(!p.overdueEnrollment||(p.eligible&&!p.enrolled));
+const {data:d,totals:t,records:r,sum,percent}=require('../js/dashboard-latest-data.js');
+const people=new Map(r.patients.map(p=>[p.id,p]));
+assert.equal(people.size,100000);assert.equal(d.population,100000);
+assert.deepEqual(t,{due:100000,screened:60000,abnormal:13720,eligible:11100,enrolled:9590,managedDue:24000,active:21000});
+for(const rows of Object.values(r)){assert.equal(new Set(rows.map(x=>x.id)).size,rows.length);}
+for(const p of r.patients){
+ assert.ok(!p.abnormal||p.screened);assert.ok(!p.eligible||p.abnormal);assert.ok(!p.enrolled||p.eligible);
+ assert.ok(!p.active||p.managedDue);assert.ok(!p.standard||p.evaluable);assert.ok(!p.evaluable||(p.active&&p.level!=='未分级'));
+ assert.ok(!p.managedDue||d.levels.some(l=>l.name===p.level));
+ assert.ok(!p.overdueEnrollment||(p.eligible&&!p.enrolled));
+ assert.equal(Boolean(p.exitReason),p.enrolled&&!p.active);
 }
-for(const rows of [records.cases,records.cycles,records.alerts,records.referrals]){
-  assert.equal(new Set(rows.map(r=>r.id)).size,rows.length);
-  rows.forEach(r=>assert.ok(people.has(r.patientId)));
+for(const o of d.organizations){
+ const ps=r.patients.filter(p=>p.org===o.name);
+ assert.equal(o.due,ps.length);
+ for(const k of ['screened','abnormal','eligible','enrolled','managedDue','active','evaluable','standard','overdueEnrollment'])assert.equal(o[k],ps.filter(p=>p[k]).length);
+ assert.equal(sum(o.levels,'due'),o.managedDue);assert.equal(sum(o.enrolledLevels,'count'),o.enrolled);
 }
-records.cases.forEach(c=>{assert.ok(!c.achieved||c.evaluable);assert.ok(people.get(c.patientId).active);});
-records.cycles.forEach(c=>assert.ok(!c.completed||c.due));
-records.referrals.forEach(r=>{assert.ok(!r.closed||r.progressed);assert.ok(!r.progressed||r.accepted);assert.equal(people.get(r.patientId).org,r.org);});
-records.alerts.forEach(a=>{assert.equal(people.get(a.patientId).org,a.org);assert.ok(!a.overdue||(a.due&&a.status==='unhandled'));assert.ok(!a.timely||(a.due&&a.status!=='unhandled'));});
-for(const r of d.risks){assert.equal(r.events,r.closedCount+r.handledOpen+r.unhandled);assert.equal(r.timely,Number(percent(r.timelyCount,r.due)));assert.equal(r.closed,Number(percent(r.closedCount,r.due)));}
-assert.equal(d.riskTotals.events,114);assert.equal(d.riskTotals.due,80);assert.equal(d.riskTotals.timelyCount,72);assert.equal(d.riskTotals.closedCount,68);
-assert.equal(d.riskTotals.events,d.riskTotals.closedCount+d.riskTotals.handledOpen+d.riskTotals.unhandled);
-assert.deepEqual(d.referralStages,{up:[240,228,216,204],down:[180,168,152,144]});
-assert.equal(d.ineligible,200);assert.equal(d.pendingAssessment,0);
-assert.equal(d.cohortActive,720);assert.equal(d.overdueEnrollment,60);
-console.log('PASS: all unique record IDs, patient references, nested status constraints, cohort membership, weighted alert denominators and referral stages.');
-assert.deepEqual(d.cohortExits.map(r=>r.count),[40,20,20]);
-assert.equal(sum(d.cohortExits,'count'),t.enrolled-d.cohortActive);
-records.patients.forEach(p=>{if(p.exitReason)assert.ok(p.enrolled&&!p.active);});
-assert.equal(records.patients.filter(p=>p.exitReason).length,80);
-console.log('PASS: cohort exit reasons reconcile with enrolled and remaining active populations.');
-for(const o of d.organizations){assert.equal(sum(o.levels,'due'),o.managedDue);assert.ok(o.standard<=o.evaluable);}
-for(let i=0;i<d.levels.length;i++)assert.equal(d.organizations.reduce((n,o)=>n+o.levels[i].due,0),d.levels[i].due);
-assert.equal(sum(d.organizations,'evaluable'),sum(d.levels,'evaluable'));
-assert.equal(sum(d.organizations,'standard'),sum(d.levels,'standard'));
-console.log('PASS: institution tier distributions and standard-management denominators reconcile with regional totals.');
+for(const k of Object.keys(t))assert.equal(sum(d.organizations,k),t[k]);
+for(const l of d.levels){
+ const ps=r.patients.filter(p=>p.managedDue&&p.level===l.name);
+ assert.equal(l.due,ps.length);assert.equal(l.active,ps.filter(p=>p.active).length);
+ for(const k of ['evaluable','standard'])assert.equal(l[k]||0,ps.filter(p=>p[k]).length);
+ assert.equal(d.organizations.reduce((n,o)=>n+o.levels.find(x=>x.name===l.name).due,0),l.due);
+}
+assert.equal(sum(d.levels,'due'),t.managedDue);assert.equal(sum(d.levels,'active'),t.active);
+assert.equal(sum(d.levels,'standard'),sum(d.organizations,'standard'));
+assert.equal(sum(d.levels,'evaluable'),sum(d.organizations,'evaluable'));
+assert.equal(t.abnormal,t.eligible+d.ineligible+d.pendingAssessment);
+assert.equal(d.cohortActive,r.patients.filter(p=>p.enrolled&&p.active).length);
+assert.equal(d.managementSources.cohortActive+d.managementSources.otherActive,t.active);
+assert.equal(d.managementSources.inactive+t.active,t.managedDue);
+assert.equal(d.cohortActive+sum(d.cohortExits,'count'),t.enrolled);
+for(const key of ['cases','cycles','alerts','referrals'])for(const row of r[key])assert.ok(people.has(row.patientId));
+assert.equal(new Set(r.cases.map(c=>c.patientId+'|'+c.disease)).size,r.cases.length);
+for(const c of r.cases){assert.ok(people.get(c.patientId).active);assert.equal(c.org,people.get(c.patientId).org);assert.equal(c.evaluable,c.result!==null);assert.equal(c.achieved,c.result==='achieved');}
+for(const o of d.organizationOutcomes){
+ const cs=r.cases.filter(c=>c.org===o.name);assert.equal(o.due,cs.length);assert.equal(o.evaluable,cs.filter(c=>c.evaluable).length);
+ assert.equal(o.achieved+o.improved+o.stable+o.worsened,o.evaluable);
+ for(const k of ['achieved','improved','stable','worsened'])assert.equal(o[k],cs.filter(c=>c.result===k).length);
+}
+for(const o of d.outcomes){const cs=r.cases.filter(c=>c.disease===o.name);for(const k of ['evaluable','achieved'])assert.equal(o[k],cs.filter(c=>c[k]).length);}
+assert.equal(d.evaluationDue,r.cases.length);assert.equal(sum(d.organizationOutcomes,'due'),d.evaluationDue);
+for(const k of ['evaluable','achieved'])assert.equal(sum(d.organizationOutcomes,k),sum(d.outcomes,k));
+assert.equal(d.cycles.due,r.cycles.length);assert.equal(d.cycles.completed,r.cycles.filter(c=>c.completed).length);
+for(const a of r.alerts){assert.equal(people.get(a.patientId).org,a.org);assert.equal(people.get(a.patientId).level,'红色');assert.ok(!a.overdue||(a.due&&a.status==='unhandled'));assert.ok(!a.timely||(a.due&&a.status!=='unhandled'));}
+for(const o of [...d.risks,{...d.riskTotals,name:null}]){
+ const rows=r.alerts.filter(a=>!o.name||a.org===o.name),count=fn=>rows.filter(fn).length;
+ assert.equal(o.events,rows.length);assert.equal(o.events,o.closedCount+o.handledOpen+o.unhandled);
+ assert.equal(o.due,count(a=>a.due));assert.equal(o.closedCount,count(a=>a.due&&a.status==='closed'));
+ assert.equal(o.timelyCount,count(a=>a.due&&a.timely));assert.equal(o.unhandled,count(a=>a.status==='unhandled'));
+ assert.equal(o.timely,Number(percent(o.timelyCount,o.due)));assert.equal(o.closed,Number(percent(o.closedCount,o.due)));
+}
+for(const o of [...d.riskAttention,{...d.riskOverview,name:null}]){
+ const rows=r.alerts.filter(a=>!o.name||a.org===o.name),count=fn=>rows.filter(fn).length,persons=fn=>new Set(rows.filter(fn).map(a=>a.patientId)).size;
+ assert.equal(o.high,persons(a=>a.highRisk));assert.equal(o.highOpen,persons(a=>a.highRisk&&a.status!=='closed'));
+ assert.equal(o.highOverdue,persons(a=>a.highRisk&&a.overdue));assert.equal(o.pending,count(a=>a.status==='unhandled'));
+ assert.equal(o.affected,persons(a=>a.status==='unhandled'));assert.equal(o.overdue,count(a=>a.overdue));assert.equal(o.dueOpen,count(a=>a.due&&a.status!=='closed'));
+}
+for(const dir of ['up','down']){
+ const rows=r.referrals.filter(x=>x.direction===dir),m=d.referralMetrics[dir];
+ assert.equal(new Set(rows.map(x=>x.patientId)).size,rows.length);
+ const stages=[rows.length,...['accepted','progressed','closed'].map(k=>rows.filter(x=>x[k]).length)];
+ assert.deepEqual(m.stages,stages);assert.deepEqual(d.referralStages[dir],stages);
+ assert.deepEqual(m.transitionRates,stages.slice(1).map((n,i)=>percent(n,stages[i])));assert.equal(m.closureRate,percent(stages[3],stages[0]));
+ assert.equal(m.awaitingProgress,stages[1]-stages[2]);assert.equal(m.awaitingAcceptance,stages[0]-stages[1]);assert.equal(m.awaitingClosure,stages[0]-stages[3]);
+ const accepted=rows.filter(x=>x.accepted);assert.equal(m.averageAcceptanceHours,(accepted.reduce((n,x)=>n+(Date.parse(x.acceptedAt)-Date.parse(x.appliedAt))/3600000,0)/accepted.length).toFixed(1));
+ for(const x of rows){
+  assert.equal(people.get(x.patientId).org,x.org);assert.ok(!x.closed||x.progressed);assert.ok(!x.progressed||x.accepted);
+  let last=Date.parse(x.appliedAt);assert.ok(last>=Date.parse(d.start));
+  for(const [k,time] of [['accepted','acceptedAt'],['progressed','progressedAt'],['closed','closedAt']]){assert.equal(Boolean(x[time]),x[k]);if(x[time]){const next=Date.parse(x[time]);assert.ok(next>=last&&next<Date.parse(d.end)+86400000);last=next;}}
+ }
+ assert.equal(sum(d.referrals,dir),stages[0]);assert.equal(sum(d.referrals,dir+'Closed'),stages[3]);
+}
+assert.equal(percent(1,0),'—');assert.equal(percent(0,100),'0.0');assert.equal(percent(100,100),'100.0');
+console.log('PASS: 100,000 unique people; screening flow, organization/tier/source totals, case outcomes, risk summaries/detail counts, referral timelines/rates and weighted durations reconcile.');
