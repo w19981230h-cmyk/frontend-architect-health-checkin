@@ -20,3 +20,6 @@ Frontend Architect/
 # Local generated build files
 .next/
 next-env.d.ts
+
+!assets/organization-reference.png
+!sites-deploy/public/assets/organization-reference.png

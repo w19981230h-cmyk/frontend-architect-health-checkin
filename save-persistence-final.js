@@ -58,7 +58,7 @@
   document.addEventListener('click', (event) => {
     const source = event.target instanceof Element ? event.target.closest('button, a, [role="button"]') : null;
     if (!source) return;
-    if (source.closest('#interfaceNoteEditor')) return;
+    if (source.closest('#interfaceNoteEditor, [data-persistence-ignore], .organization-editor, .personnel-editor')) return;
     const label = `${source.textContent || ''} ${source.getAttribute('aria-label') || ''}`.replace(/\s/g, '');
     if (!label.includes('保存')) return;
     setTimeout(() => notice(save() ? '保存成功，刷新后仍会保留' : '保存失败，请检查浏览器权限', false), 100);
