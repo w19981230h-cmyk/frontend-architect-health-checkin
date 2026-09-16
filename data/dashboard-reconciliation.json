@@ -1,0 +1,328 @@
+{
+  "period": [
+    "2026-07-01",
+    "2026-07-31"
+  ],
+  "provenance": {
+    "population": "用户确认：区域总人数100000人",
+    "flows": "基于业务流转规则生成，尚未接入真实业务明细",
+    "scenario": "regional-100k-v1"
+  },
+  "recordCounts": {
+    "patients": 100000,
+    "cases": 20900,
+    "cycles": 15000,
+    "alerts": 1095,
+    "referrals": 2740
+  },
+  "totals": {
+    "due": 100000,
+    "screened": 60000,
+    "abnormal": 13720,
+    "eligible": 11100,
+    "enrolled": 9590,
+    "managedDue": 24000,
+    "active": 21000
+  },
+  "managementSources": {
+    "cohortActive": 8958,
+    "otherActive": 12042,
+    "inactive": 3000
+  },
+  "levels": [
+    {
+      "name": "红色",
+      "color": "#ff506b",
+      "due": 1600,
+      "active": 1400,
+      "evaluable": 1280,
+      "standard": 1126
+    },
+    {
+      "name": "黄色",
+      "color": "#ffd647",
+      "due": 6400,
+      "active": 5600,
+      "evaluable": 5200,
+      "standard": 4420
+    },
+    {
+      "name": "绿色",
+      "color": "#14c8ad",
+      "due": 15400,
+      "active": 13500,
+      "evaluable": 12400,
+      "standard": 11408
+    },
+    {
+      "name": "未分级",
+      "color": "#99abc3",
+      "due": 600,
+      "active": 500,
+      "evaluable": null,
+      "standard": null
+    }
+  ],
+  "organizations": [
+    {
+      "name": "A机构",
+      "due": 40000,
+      "screened": 26000,
+      "abnormal": 6500,
+      "eligible": 5200,
+      "enrolled": 4680,
+      "managedDue": 11000,
+      "active": 9900,
+      "levels": [
+        {
+          "name": "红色",
+          "color": "#ff506b",
+          "due": 1029
+        },
+        {
+          "name": "黄色",
+          "color": "#ffd647",
+          "due": 3315
+        },
+        {
+          "name": "绿色",
+          "color": "#14c8ad",
+          "due": 6381
+        },
+        {
+          "name": "未分级",
+          "color": "#99abc3",
+          "due": 275
+        }
+      ],
+      "evaluable": 8899,
+      "standard": 7983,
+      "overdueEnrollment": 156,
+      "enrolledLevels": [
+        {
+          "name": "红色",
+          "color": "#ff506b",
+          "count": 582
+        },
+        {
+          "name": "黄色",
+          "color": "#ffd647",
+          "count": 1307
+        },
+        {
+          "name": "绿色",
+          "color": "#14c8ad",
+          "count": 2683
+        },
+        {
+          "name": "未分级",
+          "color": "#99abc3",
+          "count": 108
+        }
+      ]
+    },
+    {
+      "name": "B机构",
+      "due": 35000,
+      "screened": 21000,
+      "abnormal": 4620,
+      "eligible": 3800,
+      "enrolled": 3230,
+      "managedDue": 8000,
+      "active": 7000,
+      "levels": [
+        {
+          "name": "红色",
+          "color": "#ff506b",
+          "due": 349
+        },
+        {
+          "name": "黄色",
+          "color": "#ffd647",
+          "due": 2061
+        },
+        {
+          "name": "绿色",
+          "color": "#14c8ad",
+          "due": 5377
+        },
+        {
+          "name": "未分级",
+          "color": "#99abc3",
+          "due": 213
+        }
+      ],
+      "evaluable": 6308,
+      "standard": 5687,
+      "overdueEnrollment": 171,
+      "enrolledLevels": [
+        {
+          "name": "红色",
+          "color": "#ff506b",
+          "count": 160
+        },
+        {
+          "name": "黄色",
+          "color": "#ffd647",
+          "count": 888
+        },
+        {
+          "name": "绿色",
+          "color": "#14c8ad",
+          "count": 2097
+        },
+        {
+          "name": "未分级",
+          "color": "#99abc3",
+          "count": 85
+        }
+      ]
+    },
+    {
+      "name": "C机构",
+      "due": 25000,
+      "screened": 13000,
+      "abnormal": 2600,
+      "eligible": 2100,
+      "enrolled": 1680,
+      "managedDue": 5000,
+      "active": 4100,
+      "levels": [
+        {
+          "name": "红色",
+          "color": "#ff506b",
+          "due": 222
+        },
+        {
+          "name": "黄色",
+          "color": "#ffd647",
+          "due": 1024
+        },
+        {
+          "name": "绿色",
+          "color": "#14c8ad",
+          "due": 3642
+        },
+        {
+          "name": "未分级",
+          "color": "#99abc3",
+          "due": 112
+        }
+      ],
+      "evaluable": 3673,
+      "standard": 3284,
+      "overdueEnrollment": 126,
+      "enrolledLevels": [
+        {
+          "name": "红色",
+          "color": "#ff506b",
+          "count": 77
+        },
+        {
+          "name": "黄色",
+          "color": "#ffd647",
+          "count": 366
+        },
+        {
+          "name": "绿色",
+          "color": "#14c8ad",
+          "count": 1203
+        },
+        {
+          "name": "未分级",
+          "color": "#99abc3",
+          "count": 34
+        }
+      ]
+    }
+  ],
+  "outcomes": [
+    {
+      "name": "A机构",
+      "due": 9838,
+      "evaluable": 8776,
+      "achieved": 6455,
+      "improved": 916,
+      "stable": 1217,
+      "worsened": 188
+    },
+    {
+      "name": "B机构",
+      "due": 7266,
+      "evaluable": 6356,
+      "achieved": 4461,
+      "improved": 772,
+      "stable": 903,
+      "worsened": 220
+    },
+    {
+      "name": "C机构",
+      "due": 3796,
+      "evaluable": 3318,
+      "achieved": 2300,
+      "improved": 402,
+      "stable": 500,
+      "worsened": 116
+    }
+  ],
+  "risks": {
+    "high": 400,
+    "unhandled": 195,
+    "overdue": 54,
+    "handledOpen": 120,
+    "events": 1095,
+    "due": 920,
+    "timelyCount": 866,
+    "closedCount": 780,
+    "timely": 94.1,
+    "closed": 84.8
+  },
+  "riskOverview": {
+    "high": 400,
+    "highOpen": 315,
+    "highOverdue": 54,
+    "pending": 195,
+    "affected": 195,
+    "overdue": 54,
+    "open": 315,
+    "dueOpen": 140
+  },
+  "referrals": {
+    "up": {
+      "stages": [
+        1550,
+        1454,
+        1341,
+        1264
+      ],
+      "transitionRates": [
+        "93.8",
+        "92.2",
+        "94.3"
+      ],
+      "closureRate": "81.5",
+      "averageAcceptanceHours": "2.5",
+      "awaitingProgress": 113,
+      "awaitingAcceptance": 96,
+      "awaitingClosure": 286
+    },
+    "down": {
+      "stages": [
+        1190,
+        1098,
+        1004,
+        942
+      ],
+      "transitionRates": [
+        "92.3",
+        "91.4",
+        "93.8"
+      ],
+      "closureRate": "79.2",
+      "averageAcceptanceHours": "2.5",
+      "awaitingProgress": 94,
+      "awaitingAcceptance": 92,
+      "awaitingClosure": 248
+    }
+  }
+}
