@@ -77,11 +77,13 @@ function renderProps() {
   if (!item) return;
   const option = currentOption(item);
   const showOptionTab = !!option;
-  const activeTab = showOptionTab ? state.activePropTab : 'question';
-  document.getElementById('propsTabs').innerHTML = showOptionTab
-    ? `<button class="prop-tab ${activeTab === 'question' ? 'active' : ''}" data-prop-tab="question">题目设置</button><button class="prop-tab ${activeTab === 'option' ? 'active' : ''}" data-prop-tab="option">选项设置</button>`
-    : `<button class="prop-tab active" data-prop-tab="question">题目设置</button>`;
+  const activeTab = state.activePropTab === 'workbook' ? 'workbook' : (showOptionTab ? state.activePropTab : 'question');
+  document.getElementById('propsTabs').innerHTML = `<button class="prop-tab ${activeTab === 'workbook' ? 'active' : ''}" data-prop-tab="workbook">整卷设置</button><button class="prop-tab ${activeTab === 'question' ? 'active' : ''}" data-prop-tab="question">题目设置</button>${showOptionTab ? `<button class="prop-tab ${activeTab === 'option' ? 'active' : ''}" data-prop-tab="option">选项设置</button>` : ''}`;
   let html = '';
+  if (activeTab === 'workbook') {
+    document.getElementById('props').innerHTML = workbookSettingsProps();
+    return;
+  }
   if (activeTab === 'option') {
     html += optionProps(item, option);
     document.getElementById('props').innerHTML = html;
@@ -98,6 +100,32 @@ function renderProps() {
   if (item.type === 'matrixCustom') html += matrixCustomProps(item);
   document.getElementById('props').innerHTML = html;
 }
+
+function workbookSettingsProps() {
+  const settings = state.workbook;
+  const errors = state.workbookErrors || {};
+  return `<div class="field"><label class="required-label" for="workbookName">名称</label><input class="input ${errors.name ? 'invalid' : ''}" id="workbookName" data-workbook-field="name" value="${esc(settings.name)}" maxlength="50" placeholder="请输入整卷名称">${errors.name ? `<div class="field-error">${errors.name}</div>` : ''}</div>
+    <div class="field"><div class="field-label-row"><label for="workbookDescription">描述</label><span class="field-optional">选填</span></div><textarea class="textarea workbook-description" id="workbookDescription" data-workbook-field="description" maxlength="500" placeholder="请输入整卷用途或填写说明">${esc(settings.description)}</textarea><div class="hint">最多 500 个字</div></div>
+    <div class="field"><label class="required-label" for="workbookScope">适用范围</label><select class="select ${errors.scope ? 'invalid' : ''}" id="workbookScope" data-workbook-field="scope"><option value="">请选择适用范围</option><option value="hospital" ${settings.scope === 'hospital' ? 'selected' : ''}>全院通用</option><option value="department" ${settings.scope === 'department' ? 'selected' : ''}>指定科室</option></select>${errors.scope ? `<div class="field-error">${errors.scope}</div>` : ''}<div class="hint">全院通用可供所有科室使用；指定科室仅对所选科室开放</div></div>
+    ${settings.scope === 'department' ? `<div class="field"><label class="required-label" for="workbookDepartment">适用科室</label><select class="select ${errors.department ? 'invalid' : ''}" id="workbookDepartment" data-workbook-field="department"><option value="">请选择具体科室</option>${['呼吸与危重症医学科','内分泌科','胃肠外科','肿瘤科','临床营养科','心血管内科','泌尿外科','妇科','儿科','康复医学科'].map(department => `<option value="${department}" ${settings.department === department ? 'selected' : ''}>${department}</option>`).join('')}</select>${errors.department ? `<div class="field-error">${errors.department}</div>` : ''}</div>` : ''}
+    <div class="field"><div class="workbook-switch-row"><span class="required-label">是否启用</span><button type="button" class="mini-switch ${settings.enabled ? 'on' : ''}" data-toggle-workbook-enabled role="switch" aria-checked="${settings.enabled}" aria-label="是否启用整卷"></button></div><div class="workbook-status-hint">${settings.enabled ? '已启用，可在适用范围内使用' : '未启用，暂不可被使用'}</div></div>`;
+}
+
+function validateWorkbookSettings() {
+  const errors = {};
+  if (!state.workbook.name.trim()) errors.name = '请输入整卷名称';
+  if (!state.workbook.scope) errors.scope = '请选择适用范围';
+  if (state.workbook.scope === 'department' && !state.workbook.department) errors.department = '请选择具体科室';
+  state.workbookErrors = errors;
+  if (Object.keys(errors).length) {
+    state.activePropTab = 'workbook';
+    renderProps();
+    showToast('请完善整卷必填信息');
+    return false;
+  }
+  return true;
+}
+window.canPersistWorkbookSettings = () => Boolean(state.workbook.name.trim() && state.workbook.scope && (state.workbook.scope !== 'department' || state.workbook.department));
 
 function optionProps(item, option) {
   const isMatrixOption = state.selectedOption?.source === 'matrix';
@@ -271,7 +299,9 @@ function setSelectedOptionLabel(item, value) {
 function renderAll() { renderPalette(); renderCanvas(); renderProps(); }
 
 function openBuilder(name) {
-  document.getElementById('builderName').textContent = name || '测试';
+  state.workbook.name = state.workbook.name || name || '测试';
+  state.workbookErrors = {};
+  document.getElementById('builderName').textContent = state.workbook.name;
   document.getElementById('listPage').classList.remove('active');
   document.getElementById('builderPage').classList.add('active');
   renderAll();

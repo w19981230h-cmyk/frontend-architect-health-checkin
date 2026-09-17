@@ -533,6 +533,19 @@ document.addEventListener('input', e => {
     document.querySelector('[data-generate-plan]')?.classList.toggle('ready', Boolean(e.target.value.trim()));
     return;
   }
+  const workbookEnabled = e.target.closest('[data-toggle-workbook-enabled]');
+  if (workbookEnabled) {
+    state.workbook.enabled = !state.workbook.enabled;
+    renderProps();
+    return;
+  }
+  const builderAction = e.target.closest('[data-builder-action]');
+  if (builderAction) {
+    if (!validateWorkbookSettings()) return;
+    try { localStorage.setItem('frontend-architect:workbook-settings:v1', JSON.stringify(state.workbook)); } catch (_) {}
+    showToast(builderAction.dataset.builderAction === 'publish' ? '已发布' : '已保存');
+    return;
+  }
   if (e.target.id === 'patientListSearch') {
     patientListState.keyword = e.target.value;
     renderPatientList();
@@ -578,6 +591,18 @@ document.addEventListener('input', e => {
   }
   const item = selected();
   if (!item) return;
+  if (e.target.matches('[data-workbook-field]')) {
+    const field = e.target.dataset.workbookField;
+    state.workbook[field] = e.target.value;
+    delete state.workbookErrors[field];
+    if (field === 'name') document.getElementById('builderName').textContent = e.target.value.trim() || '未命名整卷';
+    if (field === 'scope') {
+      if (e.target.value !== 'department') state.workbook.department = '';
+      delete state.workbookErrors.department;
+      renderProps();
+    }
+    return;
+  }
   if (e.target.matches('[data-title]')) { const q = state.questions.find(q => q.id === e.target.dataset.title); q.title = e.target.value; }
   if (e.target.matches('[data-desc]')) { const q = state.questions.find(q => q.id === e.target.dataset.desc); q.desc = e.target.value; }
   if (e.target.matches('[data-prop]')) { item[e.target.dataset.prop] = e.target.value; renderAll(); }

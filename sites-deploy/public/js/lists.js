@@ -2,7 +2,7 @@ function renderList() {
   document.getElementById('scaleRows').innerHTML = scaleRows.map((r, i) => {
     const statusClass = r[7] === '已发布' ? 'published' : 'unpublished';
     return `<tr data-open-editor class="${r[9] ? 'child' : ''}">
-      <td><span class="name-cell"><i class="triangle ${r[9] ? 'right' : (i < 4 ? 'down' : 'right')}"></i><span>${r[0]}</span></span></td>
+      <td><span class="name-cell"><i class="triangle ${r[9] ? 'right' : (i < 4 ? 'down' : 'right')}"></i><span class="scale-name-text" title="${r[0]}">${r[0]}</span><span class="scale-scope-tag">通用</span></span></td>
       <td>${r[1]}</td><td>${r[2]}</td><td>${r[3]}</td><td>${r[4]}</td><td>${r[5]}</td><td>${r[6]}</td>
       <td><span class="status ${statusClass}"><i class="dot"></i>${r[7]}</span></td><td><span class="switch ${r[8] ? 'on' : ''}"></span></td>
       <td><span class="actions"><span class="link">编辑</span><span class="more">...</span></span></td>

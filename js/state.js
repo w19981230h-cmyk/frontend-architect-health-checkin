@@ -1,14 +1,14 @@
 const scaleRows = [
-  ['测试', 0, 0, '第1版', 1, '张媛丽', '2026/06/02 18:23:37', '未发布', false],
-  ['测试', '', 0, '第1版', '--', '张媛丽', '2026/06/02 18:23:37', '未发布', false, true],
-  ['12334', 0, 0, '第1版', 1, '平台技术人员', '2026/05/25 22:48:09', '未发布', false],
-  ['12334', '', 0, '第1版', '--', '平台技术人员', '2026/05/25 22:48:09', '未发布', false, true],
-  ['营养风险筛查2002（NRS-2002）', 1, 0, '第1版', 1, '--', '2026/05/21 15:45:09', '已发布', true],
-  ['胃癌慢病管理随访路径', 1, 0, '第1版', 1, '--', '2026/05/21 15:44:46', '已发布', true],
-  ['营养风险筛查2002', 1, 0, '第1版', 1, '--', '2026/05/21 15:43:20', '已发布', true],
-  ['胃癌慢病管理随访路径', 1, 0, '第1版', 1, '--', '2026/05/21 15:42:57', '已发布', true],
-  ['客户信息收集表', 0, 0, '第1版', 1, '平台技术人员', '2026/05/21 13:57:14', '未发布', false],
-  ['测试量表2', 3, 6, '第1版', 1, '--', '2026/05/15 15:57:25', '已发布', true]
+  ['NRS-2002 营养风险筛查', 4, 86, '第3版', 3, '刘营养师', '2026/09/12 09:18:26', '已发布', true],
+  ['NRS-2002 营养风险筛查', 4, 86, '第3版', 1, '刘营养师', '2026/09/12 09:18:26', '已发布', true, true],
+  ['PHQ-9 患者健康问卷', 2, 43, '第2版', 2, '陈慧敏', '2026/09/08 14:36:12', '已发布', true],
+  ['PHQ-9 患者健康问卷', 2, 43, '第2版', 1, '陈慧敏', '2026/09/08 14:36:12', '已发布', true, true],
+  ['糖尿病患者自我管理评估', 5, 128, '第4版', 4, '王建华', '2026/09/05 11:20:45', '已发布', true],
+  ['高血压患者随访评估表', 3, 97, '第2版', 2, '周晓峰', '2026/08/28 16:42:08', '已发布', true],
+  ['肿瘤患者症状评估量表', 2, 61, '第2版', 2, '赵文博', '2026/08/21 10:05:33', '已发布', true],
+  ['出院患者满意度调查', 6, 214, '第3版', 3, '李文娟', '2026/08/15 15:27:19', '已发布', true],
+  ['术后康复随访问卷', 1, 12, '第1版', 1, '林志强', '2026/08/09 09:52:41', '未发布', false],
+  ['老年人跌倒风险评估', 3, 75, '第2版', 2, '许静怡', '2026/07/30 13:16:54', '已发布', true]
 ];
 
 let indicatorTemplates = [
@@ -79,10 +79,24 @@ const typeMeta = {
   matrixCustom: { label: '矩阵题', icon: matrixIcon(), section: '矩阵' }
 };
 
+function initialWorkbookSettings() {
+  const defaults = { name: '测试', description: '', scope: 'hospital', department: '', enabled: true };
+  try {
+    const saved = JSON.parse(localStorage.getItem('frontend-architect:workbook-settings:v1') || 'null');
+    if (!saved || typeof saved !== 'object') return defaults;
+    const settings = { ...defaults, ...saved };
+    if (settings.scope === '全部患者') settings.scope = 'hospital';
+    if (settings.scope === '指定科室') settings.scope = 'department';
+    return settings;
+  } catch (_) { return defaults; }
+}
+
 const state = {
   selectedId: 11,
   selectedOption: null,
   activePropTab: 'question',
+  workbook: initialWorkbookSettings(),
+  workbookErrors: {},
   questions: [
     q('single', 1), q('multiple', 2), q('single', 3), q('single', 4), q('multiple', 5),
     q('text', 6), q('rating', 7), q('date', 8), q('matrixSingle', 9), q('matrixMultiple', 10), q('matrixRating', 11)

@@ -6,6 +6,7 @@
   <link rel="stylesheet" href="./css/team-management.css">
   <link rel="stylesheet" href="./css/interface-annotations-v3.css?v=20260828-v3-10">
   <link rel="stylesheet" href="./css/referral-drawer.css?v=20260902-8">
+  <link rel="stylesheet" href="./css/scale-create.css?v=20260916-3">
   <title>AI患者管理系统 - 量表设计</title>
   <style>
     :root {
@@ -113,6 +114,8 @@
     .col-switch { width: 8%; }
     .col-actions { width: 10%; }
     .name-cell { display: flex; align-items: center; gap: 8px; min-width: 0; cursor: pointer; }
+    .scale-name-text { flex: 1 1 auto; min-width: 0; overflow: hidden; text-overflow: ellipsis; }
+    .scale-scope-tag { flex: 0 0 auto; height: 22px; padding: 0 8px; border: 1px solid #91caff; border-radius: 4px; background: #e6f4ff; color: #1677ff; display: inline-flex; align-items: center; font-size: 12px; line-height: 20px; font-weight: 500; }
     .triangle { width: 0; height: 0; flex: 0 0 auto; border-style: solid; opacity: .88; }
     .triangle.right { border-width: 5px 0 5px 6px; border-color: transparent transparent transparent #8792a3; }
     .triangle.down { border-width: 6px 5px 0 5px; border-color: #8792a3 transparent transparent transparent; }
@@ -2221,14 +2224,24 @@
     .float-tools button:last-child { border-right: 0; }
     .props-wrap { padding: 16px 12px 18px 0; background: #f0f3f8; }
     .props { width: 260px; height: calc(100vh - 92px); background: #fff; border-radius: 6px; box-shadow: 0 10px 24px rgba(31,45,80,.08); overflow: auto; position: relative; }
-    .props-title { min-height: 50px; display: flex; align-items: stretch; padding: 0 18px; border-bottom: 1px solid #edf0f5; position: sticky; top: 0; background: #fff; z-index: 2; gap: 18px; }
-    .props-title .prop-tab { min-width: 64px; }
+    .props-title { min-height: 50px; display: flex; align-items: stretch; padding: 0 12px; border-bottom: 1px solid #edf0f5; position: sticky; top: 0; background: #fff; z-index: 2; gap: 8px; }
+    .props-title .prop-tab { min-width: 70px; }
     .prop-body { padding: 16px 18px 26px; }
     .prop-tab { position: relative; color: #60708a; font-weight: 800; display: inline-flex; align-items: center; justify-content: center; height: 50px; }
     .prop-tab.active { color: var(--blue); }
     .prop-tab.active::after { content: ""; position: absolute; left: 0; right: 0; bottom: -1px; height: 3px; border-radius: 999px 999px 0 0; background: var(--blue); }
     .field { margin-bottom: 18px; }
     .field label { display: block; margin-bottom: 9px; font-weight: 800; color: #303d56; }
+    .field-label-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 9px; }
+    .field-label-row label { margin: 0; }
+    .field-optional { color: #98a3b5; font-size: 12px; }
+    .required-label::before { content: "*"; margin-right: 4px; color: #ff4d4f; }
+    .field-error { margin-top: 6px; color: #ff4d4f; font-size: 12px; line-height: 1.5; }
+    .input.invalid, .select.invalid { border-color: #ff4d4f; box-shadow: 0 0 0 2px rgba(255,77,79,.08); }
+    .workbook-description { min-height: 92px; background: #fff; }
+    .workbook-switch-row { display: flex; align-items: center; justify-content: space-between; min-height: 38px; }
+    .workbook-switch-row .required-label { font-weight: 800; color: #303d56; }
+    .workbook-status-hint { margin-top: -10px; color: #98a3b5; font-size: 12px; line-height: 1.6; }
     .select, .input, .textarea { width: 100%; border: 1px solid #edf0f5; border-radius: 4px; background: #fff; color: #556176; }
     .select, .input { height: 34px; padding: 0 10px; }
     .textarea { min-height: 128px; padding: 12px; resize: vertical; line-height: 1.6; background: #f7f8fb; }
@@ -2801,8 +2814,11 @@
   <link rel="stylesheet" href="./css/health-portrait.css?v=20260910-1">
 <link rel="stylesheet" href="./css/personnel-management.css?v=20260916-1">
 <link rel="stylesheet" href="./css/organization-management.css?v=20260916-1">
+<link rel="stylesheet" href="./css/system-role.css?v=20260916-1">
 <link rel="stylesheet" href="./css/dashboard-latest.css?v=20260913-40">
 <link rel="stylesheet" href="./css/dashboard-updated.css?v=20260913-2">
+<link rel="stylesheet" href="./css/evaluation-report.css?v=20260916-1">
+<link rel="stylesheet" href="./css/article-management.css?v=20260916-1">
 </head>
 <body>
   <script src="./save-persistence-final.js"></script>
@@ -2816,18 +2832,65 @@
           <div class="menu-section"><div class="menu-item" data-list-view="patients"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8Z"/><path d="M4 21a8 8 0 0 1 16 0"/></svg><span>患者管理</span><svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="m18 15-6-6-6 6"/></svg></div><div class="submenu"><div class="submenu-item" data-list-view="patients">全部患者</div><div class="submenu-item" data-patient-team-list>团队患者</div></div></div>
           <div class="menu-section">
             <div class="menu-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M7 4h10v16H7z"/><path d="M9 8h6M9 12h6M9 16h3"/></svg><span>方案与内容</span><svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="m18 15-6-6-6 6"/></svg></div>
-            <div class="submenu"><div class="submenu-item" data-list-view="plans">方案管理</div><div class="submenu-item" data-list-view="scale">量表管理</div><div class="submenu-item">评估报告</div><div class="submenu-item">文章管理</div><div class="submenu-item" data-list-view="knowledge">知识库</div></div>
+            <div class="submenu"><div class="submenu-item" data-list-view="plans">方案管理</div><div class="submenu-item" data-list-view="scale">量表管理</div><div class="submenu-item" data-list-view="evaluationReports">评估报告</div><div class="submenu-item" data-list-view="articles">文章管理</div><div class="submenu-item" data-list-view="knowledge">知识库</div></div>
           </div>
           <div class="menu-section"><div class="menu-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M4 19V8a3 3 0 0 1 3-3h10a3 3 0 0 1 3 3v11"/><path d="M8 19v-5h8v5"/></svg><span>运营管理</span><svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="m18 15-6-6-6 6"/></svg></div><div class="submenu"><div class="submenu-item" data-list-view="statisticsReport">数据报表</div><div class="submenu-item" data-list-view="operationsStatistics">统计报表</div><div class="submenu-item" data-list-view="dashboardLatest">数据看板（最新稿）</div><div class="submenu-item" data-list-view="dashboardUpdated">数据看板更新版</div></div></div>
           <div class="menu-section"><div class="menu-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M12 3 7 21M12 3l5 18M5 9h14M5 15h14"/></svg><span>AI医助</span><svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="m8 10 4 4 4-4"/></svg></div></div>
-          <div class="menu-section"><div class="menu-item active"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M12 8a4 4 0 1 0 0 8 4 4 0 0 0 0-8Z"/><path d="M4 12h2m12 0h2M12 4v2m0 12v2"/></svg><span>系统管理</span><svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="m18 15-6-6-6 6"/></svg></div><div class="submenu"><div class="submenu-item" data-list-view="organization">组织管理</div><div class="submenu-item active" data-list-view="teams">团队管理</div><div class="submenu-item" data-list-view="personnel">人员管理</div><div class="submenu-item">服务管理</div><div class="submenu-item">系统角色</div><div class="submenu-item">设备管理</div><div class="submenu-item">看板配置</div><div class="submenu-item" data-list-view="indicator">指标模板</div></div></div>
+          <div class="menu-section"><div class="menu-item active"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M12 8a4 4 0 1 0 0 8 4 4 0 0 0 0-8Z"/><path d="M4 12h2m12 0h2M12 4v2m0 12v2"/></svg><span>系统管理</span><svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="m18 15-6-6-6 6"/></svg></div><div class="submenu"><div class="submenu-item" data-list-view="organization">组织管理</div><div class="submenu-item active" data-list-view="teams">团队管理</div><div class="submenu-item" data-list-view="personnel">人员管理</div><div class="submenu-item">服务管理</div><div class="submenu-item" data-list-view="systemRoles">系统角色</div><div class="submenu-item">设备管理</div><div class="submenu-item">看板配置</div><div class="submenu-item" data-list-view="indicator">指标模板</div></div></div>
           <div class="menu-section"><div class="menu-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="4" y="5" width="16" height="14" rx="2"/><path d="M8 9h8M8 13h8M8 17h5"/></svg><span>服务管理</span><svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="m18 15-6-6-6 6"/></svg></div><div class="submenu"><div class="submenu-item" data-service-view="packages">服务包管理</div><div class="submenu-item" data-service-view="orders">订单管理</div><div class="submenu-item" data-service-view="transactions">交易记录</div></div></div>
         </nav>
         <div class="sidebar-bottom"><div class="bottom-line"></div><div class="notice"><div class="notice-left"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M18 8a6 6 0 1 0-12 0c0 7-3 6-3 9h18c0-3-3-2-3-9"/><path d="M10 21h4"/></svg><span>消息通知</span></div><span class="badge">99+</span></div><div class="user-card"><div class="avatar"></div><strong>平台技术人员</strong><svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="m9 18 6-6-6-6"/></svg></div><div class="collapse"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M4 7h14M4 12h10M4 17h14"/></svg></div></div>
       </aside>
       <main class="list-main">
         <header class="page-title" id="listPageTitle">团队管理</header><section class="list-panel list-view personnel-management-view" id="personnelManagementView" data-persistence-ignore aria-label="人员管理"></section><section class="list-panel list-view organization-management-view" id="organizationManagementView" data-persistence-ignore aria-label="组织管理"></section>
+        <section class="list-panel list-view system-role-view" id="systemRoleView" data-persistence-ignore aria-label="系统角色">
+          <div class="system-role-shell">
+            <div class="system-role-toolbar">
+              <button type="button" class="system-role-tool" data-role-refresh title="刷新角色数据" aria-label="刷新角色数据"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M5 3h10l4 4v14H5z"/><path d="M9 3v6h6V3M9 14h6M9 18h4"/><circle cx="17.5" cy="17.5" r="3.5" fill="#fff"/><path d="M17.5 15.8v3.4M15.8 17.5h3.4"/></svg></button>
+              <button type="button" class="system-role-add" data-role-add><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M12 5v14M5 12h14"/></svg><span>添加角色</span></button>
+            </div>
+            <div class="system-role-total" id="systemRoleTotal">总数：4</div>
+            <div class="system-role-table-wrap">
+              <table class="system-role-table">
+                <thead><tr><th class="system-role-col-index">序号</th><th class="system-role-col-name">角色名称</th><th class="system-role-col-description">描述</th><th class="system-role-col-users">用户</th><th class="system-role-col-created">创建时间</th><th class="system-role-col-actions">操作</th></tr></thead>
+                <tbody id="systemRoleTableBody"></tbody>
+              </table>
+              <div class="system-role-empty" id="systemRoleEmpty" hidden>暂无角色数据</div>
+            </div>
+            <div class="system-role-pagination" aria-label="系统角色分页"><span id="systemRolePageTotal">共 4 条</span><button type="button" class="system-role-page-button" disabled aria-label="上一页">‹</button><button type="button" class="system-role-page-button current" aria-current="page">1</button><button type="button" class="system-role-page-button" disabled aria-label="下一页">›</button><select class="system-role-page-size" aria-label="每页条数"><option>10 条/页</option><option>20 条/页</option><option>50 条/页</option></select></div>
+          </div>
+        </section>
+        <div class="system-role-menu" id="systemRoleMenu" hidden role="menu"><button type="button" data-role-menu-action="duplicate" role="menuitem">复制角色</button><button type="button" class="danger" data-role-menu-action="delete" role="menuitem">删除角色</button></div>
+        <div class="system-role-dialog" id="systemRoleDialog" hidden role="dialog" aria-modal="true" aria-labelledby="systemRoleDialogTitle">
+          <div class="system-role-editor-shell">
+            <header class="system-role-editor-title"><button type="button" data-role-dialog-close aria-label="返回系统角色列表">‹</button><strong id="systemRoleDialogTitle">添加角色</strong></header>
+            <section class="system-role-editor-card">
+              <div class="system-role-editor-head"><strong id="systemRoleEditorHeading">添加系统角色</strong><button type="button" class="system-role-editor-save" data-role-dialog-submit>保存</button></div>
+              <div class="system-role-editor-body">
+                <label class="system-role-editor-field required"><span>角色名称</span><input id="systemRoleName" maxlength="20" placeholder="请输入角色名称"><em id="systemRoleNameError"></em></label>
+                <label class="system-role-editor-field"><span>角色描述</span><span class="system-role-textarea-wrap"><textarea id="systemRoleDescription" maxlength="100" placeholder="请输入角色描述"></textarea><small><b id="systemRoleDescriptionCount">0</b> / 100</small></span></label>
+                <input id="systemRoleUsers" type="hidden">
+                <div class="system-role-editor-tabs" role="tablist" aria-label="角色设置"><button type="button" class="active" role="tab" aria-selected="true" data-role-editor-tab="permissions">权限配置</button><button type="button" role="tab" aria-selected="false" data-role-editor-tab="people">绑定人员</button></div>
+                <div class="system-role-editor-panel active" data-role-editor-panel="permissions">
+                  <section class="system-role-permission-section">
+                    <h3>权限配置</h3>
+                    <div class="system-role-permission-tree" id="systemRolePermissionTree"></div>
+                  </section>
+                  <section class="system-role-permission-section data-scope-section">
+                    <h3>数据权限</h3>
+                    <label><input type="radio" name="systemRoleDataScope" value="all" checked><span>允许查看全院数据</span></label>
+                    <label><input type="radio" name="systemRoleDataScope" value="department"><span>只允许查看本科室数据</span></label>
+                  </section>
+                </div>
+                <div class="system-role-editor-panel" data-role-editor-panel="people" hidden><div class="system-role-people-empty">保存角色后，可在人员管理中绑定该角色</div></div>
+              </div>
+            </section>
+          </div>
+        </div>
+        <div class="system-role-toast" id="systemRoleToast" hidden role="status" aria-live="polite"></div>
         <section class="list-panel list-view statistics-report-view" id="statisticsReportView" tabindex="0" aria-label="数据报表"></section>
+        <section class="list-panel list-view evaluation-report-view" id="evaluationReportView" tabindex="0" aria-label="评估报告"></section>
+        <section class="list-panel list-view article-management-view" id="articleManagementView" tabindex="0" aria-label="文章管理"></section>
         <section class="list-panel list-view dashboard-latest-view" id="dashboardLatestView" tabindex="0" aria-label="数据看板（最新稿）"></section>
 <section class="list-panel list-view dashboard-latest-view" id="dashboardUpdatedView" tabindex="0" aria-label="数据看板更新版"></section>
         <section class="list-panel list-view operations-statistics-view" id="operationsStatisticsView" tabindex="0" aria-label="统计报表"></section>
@@ -3180,9 +3243,9 @@
         </section>
         <section class="list-panel list-view" id="scaleManagementView">
           <div class="toolbar">
-            <label class="search"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="11" cy="11" r="7"/><path d="m16.5 16.5 4 4"/></svg><input placeholder="搜索名称"></label>
+            <label class="search" data-persistence-ignore><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="11" cy="11" r="7"/><path d="m16.5 16.5 4 4"/></svg><input placeholder="搜索量表名称"></label>
             <button class="icon-button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M4 5h5v14H4zM15 5h5v14h-5zM9 12h6"/><circle cx="16.5" cy="17.5" r="3.5"/></svg></button>
-            <button class="primary" data-open-editor><svg viewBox="0 0 24 24" fill="currentColor"><path d="m12 2 1.5 6.1L20 10l-6.5 1.9L12 18l-1.5-6.1L4 10l6.5-1.9L12 2Z"/></svg><span>新建量表</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="m7 10 5 5 5-5"/></svg></button>
+            <button class="primary" data-create-scale><svg viewBox="0 0 24 24" fill="currentColor"><path d="m12 2 1.5 6.1L20 10l-6.5 1.9L12 18l-1.5-6.1L4 10l6.5-1.9L12 2Z"/></svg><span>新建量表</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="m7 10 5 5 5-5"/></svg></button>
           </div>
           <div class="table-wrap">
             <table>
@@ -3204,7 +3267,7 @@
               <button type="button" class="team-create" data-team-create><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M12 5v14M5 12h14"/></svg><span>新建团队</span></button>
             </div>
             <div class="team-table-wrap" id="teamTableWrap">
-              <table class="team-table"><thead><tr><th class="team-col-index">序号</th><th class="team-col-name">团队名称</th><th class="team-col-dept">关联科室</th><th class="team-col-desc">团队介绍</th><th class="team-col-admin">团队管理员</th><th class="team-col-count">团队成员数</th><th class="team-col-patient">在组患者数</th><th class="team-col-action">操作</th></tr></thead><tbody id="teamTableBody"></tbody></table>
+              <table class="team-table"><thead><tr><th class="team-col-index">序号</th><th class="team-col-name">团队名称</th><th class="team-col-institution">所属机构</th><th class="team-col-dept">关联科室</th><th class="team-col-desc">团队介绍</th><th class="team-col-admin">团队管理员</th><th class="team-col-count">团队成员数</th><th class="team-col-patient">在组患者数</th><th class="team-col-action">操作</th></tr></thead><tbody id="teamTableBody"></tbody></table>
             </div>
             <div class="team-pagination" id="teamPagination" aria-label="团队列表分页"></div>
           </div>
@@ -3220,7 +3283,7 @@
                     <button type="button" class="team-profile-icon-action" title="团队二维码" aria-label="团队二维码"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="4" y="4" width="6" height="6"/><rect x="14" y="4" width="6" height="6"/><rect x="4" y="14" width="6" height="6"/><path d="M14 14h2v2h-2zM18 14h2v6h-6v-2h4"/></svg></button>
                     <button type="button" class="team-profile-more">更多</button>
                   </div>
-                  <div class="team-profile-meta"><span>管理员：<b id="teamHomeAdmin">--</b></span><span>关联科室：<b id="teamHomeDepartment">测试科室</b></span></div>
+                  <div class="team-profile-meta"><span>管理员：<b id="teamHomeAdmin">--</b></span><span>所属机构：<b id="teamHomeInstitution">--</b></span><span>关联科室：<b id="teamHomeDepartment">测试科室</b></span></div>
                 </div>
                 <div class="team-profile-body">
                   <strong>团队介绍：</strong><p id="teamHomeDescription">--</p>
@@ -3930,8 +3993,8 @@
         <div class="builder-title" id="builderName">测试</div>
         <div class="top-actions">
           <button class="top-btn" data-toast="预览已打开"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M2 12s4-6 10-6 10 6 10 6-4 6-10 6S2 12 2 12Z"/><circle cx="12" cy="12" r="3"/></svg>预览</button>
-          <button class="top-btn primary-action" data-toast="已保存"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M5 4h12l2 2v14H5z"/><path d="M8 4v6h8V4"/></svg>保存</button>
-          <button class="top-btn primary-action" data-toast="已发布"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="m22 2-7 20-4-9-9-4Z"/><path d="M22 2 11 13"/></svg>发布</button>
+          <button class="top-btn primary-action" data-builder-action="save"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M5 4h12l2 2v14H5z"/><path d="M8 4v6h8V4"/></svg>保存</button>
+          <button class="top-btn primary-action" data-builder-action="publish"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="m22 2-7 20-4-9-9-4Z"/><path d="M22 2 11 13"/></svg>发布</button>
         </div>
       </header>
       <main class="builder-body">
@@ -4131,16 +4194,16 @@
   <script src="./js/referral-drawer.js?v=20260902-12"></script>
   <script>
     const scaleRows = [
-      ['测试', 0, 0, '第1版', 1, '张媛丽', '2026/06/02 18:23:37', '未发布', false],
-      ['测试', '', 0, '第1版', '--', '张媛丽', '2026/06/02 18:23:37', '未发布', false, true],
-      ['12334', 0, 0, '第1版', 1, '平台技术人员', '2026/05/25 22:48:09', '未发布', false],
-      ['12334', '', 0, '第1版', '--', '平台技术人员', '2026/05/25 22:48:09', '未发布', false, true],
-      ['营养风险筛查2002（NRS-2002）', 1, 0, '第1版', 1, '--', '2026/05/21 15:45:09', '已发布', true],
-      ['胃癌慢病管理随访路径', 1, 0, '第1版', 1, '--', '2026/05/21 15:44:46', '已发布', true],
-      ['营养风险筛查2002', 1, 0, '第1版', 1, '--', '2026/05/21 15:43:20', '已发布', true],
-      ['胃癌慢病管理随访路径', 1, 0, '第1版', 1, '--', '2026/05/21 15:42:57', '已发布', true],
-      ['客户信息收集表', 0, 0, '第1版', 1, '平台技术人员', '2026/05/21 13:57:14', '未发布', false],
-      ['测试量表2', 3, 6, '第1版', 1, '--', '2026/05/15 15:57:25', '已发布', true]
+      ['NRS-2002 营养风险筛查', 4, 86, '第3版', 3, '刘营养师', '2026/09/12 09:18:26', '已发布', true],
+      ['NRS-2002 营养风险筛查', 4, 86, '第3版', 1, '刘营养师', '2026/09/12 09:18:26', '已发布', true, true],
+      ['PHQ-9 患者健康问卷', 2, 43, '第2版', 2, '陈慧敏', '2026/09/08 14:36:12', '已发布', true],
+      ['PHQ-9 患者健康问卷', 2, 43, '第2版', 1, '陈慧敏', '2026/09/08 14:36:12', '已发布', true, true],
+      ['糖尿病患者自我管理评估', 5, 128, '第4版', 4, '王建华', '2026/09/05 11:20:45', '已发布', true],
+      ['高血压患者随访评估表', 3, 97, '第2版', 2, '周晓峰', '2026/08/28 16:42:08', '已发布', true],
+      ['肿瘤患者症状评估量表', 2, 61, '第2版', 2, '赵文博', '2026/08/21 10:05:33', '已发布', true],
+      ['出院患者满意度调查', 6, 214, '第3版', 3, '李文娟', '2026/08/15 15:27:19', '已发布', true],
+      ['术后康复随访问卷', 1, 12, '第1版', 1, '林志强', '2026/08/09 09:52:41', '未发布', false],
+      ['老年人跌倒风险评估', 3, 75, '第2版', 2, '许静怡', '2026/07/30 13:16:54', '已发布', true]
     ];
 
     let indicatorTemplates = [
@@ -5430,10 +5493,24 @@
       matrixCustom: { label: '矩阵题', icon: matrixIcon(), section: '矩阵' }
     };
 
+    function initialWorkbookSettings() {
+      const defaults = { name: '测试', description: '', scope: 'hospital', department: '', enabled: true };
+      try {
+        const saved = JSON.parse(localStorage.getItem('frontend-architect:workbook-settings:v1') || 'null');
+        if (!saved || typeof saved !== 'object') return defaults;
+        const settings = { ...defaults, ...saved };
+        if (settings.scope === '全部患者') settings.scope = 'hospital';
+        if (settings.scope === '指定科室') settings.scope = 'department';
+        return settings;
+      } catch (_) { return defaults; }
+    }
+
     const state = {
       selectedId: 11,
       selectedOption: null,
       activePropTab: 'question',
+      workbook: initialWorkbookSettings(),
+      workbookErrors: {},
       questions: [
         q('single', 1), q('multiple', 2), q('single', 3), q('single', 4), q('multiple', 5),
         q('text', 6), q('rating', 7), q('date', 8), q('matrixSingle', 9), q('matrixMultiple', 10), q('matrixRating', 11)
@@ -5491,7 +5568,7 @@
       document.getElementById('scaleRows').innerHTML = scaleRows.map((r, i) => {
         const statusClass = r[7] === '已发布' ? 'published' : 'unpublished';
         return `<tr data-open-editor class="${r[9] ? 'child' : ''}">
-          <td><span class="name-cell"><i class="triangle ${r[9] ? 'right' : (i < 4 ? 'down' : 'right')}"></i><span>${r[0]}</span></span></td>
+          <td><span class="name-cell"><i class="triangle ${r[9] ? 'right' : (i < 4 ? 'down' : 'right')}"></i><span class="scale-name-text" title="${r[0]}">${r[0]}</span><span class="scale-scope-tag">通用</span></span></td>
           <td>${r[1]}</td><td>${r[2]}</td><td>${r[3]}</td><td>${r[4]}</td><td>${r[5]}</td><td>${r[6]}</td>
           <td><span class="status ${statusClass}"><i class="dot"></i>${r[7]}</span></td><td><span class="switch ${r[8] ? 'on' : ''}"></span></td>
           <td><span class="actions"><span class="link">编辑</span><span class="more">...</span></span></td>
@@ -5874,6 +5951,7 @@
       const isScale = view === 'scale';
       const isIndicator = view === 'indicator';
       const isTeams = view === 'teams';
+      const isSystemRoles = view === 'systemRoles';
       if (view === 'personnel') window.mountPersonnelPage?.();
       document.getElementById('personnelManagementView')?.classList.toggle('active', view === 'personnel');
       if (view === 'organization') window.mountOrganizationPage?.();
@@ -5886,6 +5964,12 @@
       const isOperationsStatistics = view === 'operationsStatistics';
       const isDashboardLatest = view === 'dashboardLatest';
       const isDashboardUpdated = view === 'dashboardUpdated';
+      const isEvaluationReports = view === 'evaluationReports';
+      const isArticles = view === 'articles';
+      if (isEvaluationReports) window.mountEvaluationReports?.();
+      if (isArticles) window.mountArticleManagement?.();
+      document.getElementById('evaluationReportView')?.classList.toggle('active', isEvaluationReports);
+      document.getElementById('articleManagementView')?.classList.toggle('active', isArticles);
       document.getElementById('dashboardUpdatedView')?.classList.toggle('active', isDashboardUpdated);
       if(isDashboardUpdated)window.renderDashboardUpdated?.();
       document.getElementById('dashboardLatestView')?.classList.toggle('active', isDashboardLatest);
@@ -5896,6 +5980,7 @@
       document.getElementById('scaleManagementView')?.classList.toggle('active', isScale);
       document.getElementById('indicatorTemplateView')?.classList.toggle('active', isIndicator);
       document.getElementById('teamManagementView')?.classList.toggle('active', isTeams);
+      document.getElementById('systemRoleView')?.classList.toggle('active', isSystemRoles);
       document.getElementById('teamHomeView')?.classList.remove('active');
       document.getElementById('patientListView')?.classList.toggle('active', isPatients);
       document.getElementById('healthTaskView')?.classList.toggle('active', isHealthTasks);
@@ -5905,7 +5990,7 @@
       document.getElementById('operationsStatisticsView')?.classList.toggle('active', isOperationsStatistics);
       document.getElementById('knowledgeDetailView')?.classList.remove('active');
       if (document.getElementById('listPageTitle')) document.getElementById('listPageTitle').textContent = isHealthTasks ? '健康任务' : isCheckinEvaluation ? '评价任务' : isPatients ? '全部患者' : isIndicator ? '指标模板' : isScale ? '量表管理' : '方案管理';
-      const listTitleMap = { personnel: '人员管理', organization: '组织管理', workbench: '工作台', healthTasks: '健康任务', checkinEvaluation: '评价任务', patients: '全部患者', indicator: '指标模板', teams: '团队管理', scale: '量表管理', plans: '方案管理', knowledge: '知识库', statisticsReport: '数据报表', operationsStatistics: '统计报表', dashboardLatest: '数据看板（最新稿）', dashboardUpdated: '数据看板更新版' };
+      const listTitleMap = { personnel: '人员管理', organization: '组织管理', systemRoles: '系统角色', workbench: '工作台', healthTasks: '健康任务', checkinEvaluation: '评价任务', patients: '全部患者', indicator: '指标模板', teams: '团队管理', scale: '量表管理', plans: '方案管理', evaluationReports: '评估报告', articles: '文章管理', knowledge: '知识库', statisticsReport: '数据报表', operationsStatistics: '统计报表', dashboardLatest: '数据看板（最新稿）', dashboardUpdated: '数据看板更新版' };
       if (document.getElementById('listPageTitle')) document.getElementById('listPageTitle').textContent = listTitleMap[view] || '方案管理';
       document.querySelector('.list-main')?.classList.toggle('workbench-main', isWorkbench);
       document.querySelector('.list-main')?.classList.toggle('statistics-report-main', isStatisticsReport || isOperationsStatistics);
@@ -5927,6 +6012,7 @@
       }
       if (isIndicator) renderIndicatorList();
       if (isTeams) window.renderTeamList?.();
+      if (isSystemRoles) window.renderSystemRoles?.();
       if (isPatients) renderPatientList();
       if (isHealthTasks) {
         ensureHealthTaskCheckinTypeRows();
@@ -7808,11 +7894,13 @@
       if (!item) return;
       const option = currentOption(item);
       const showOptionTab = !!option;
-      const activeTab = showOptionTab ? state.activePropTab : 'question';
-      document.getElementById('propsTabs').innerHTML = showOptionTab
-        ? `<button class="prop-tab ${activeTab === 'question' ? 'active' : ''}" data-prop-tab="question">题目设置</button><button class="prop-tab ${activeTab === 'option' ? 'active' : ''}" data-prop-tab="option">选项设置</button>`
-        : `<button class="prop-tab active" data-prop-tab="question">题目设置</button>`;
+      const activeTab = state.activePropTab === 'workbook' ? 'workbook' : (showOptionTab ? state.activePropTab : 'question');
+      document.getElementById('propsTabs').innerHTML = `<button class="prop-tab ${activeTab === 'workbook' ? 'active' : ''}" data-prop-tab="workbook">整卷设置</button><button class="prop-tab ${activeTab === 'question' ? 'active' : ''}" data-prop-tab="question">题目设置</button>${showOptionTab ? `<button class="prop-tab ${activeTab === 'option' ? 'active' : ''}" data-prop-tab="option">选项设置</button>` : ''}`;
       let html = '';
+      if (activeTab === 'workbook') {
+        document.getElementById('props').innerHTML = workbookSettingsProps();
+        return;
+      }
       if (activeTab === 'option') {
         html += optionProps(item, option);
         document.getElementById('props').innerHTML = html;
@@ -7829,6 +7917,32 @@
       if (item.type === 'matrixCustom') html += matrixCustomProps(item);
       document.getElementById('props').innerHTML = html;
     }
+
+    function workbookSettingsProps() {
+      const settings = state.workbook;
+      const errors = state.workbookErrors || {};
+      return `<div class="field"><label class="required-label" for="workbookName">名称</label><input class="input ${errors.name ? 'invalid' : ''}" id="workbookName" data-workbook-field="name" value="${esc(settings.name)}" maxlength="50" placeholder="请输入整卷名称">${errors.name ? `<div class="field-error">${errors.name}</div>` : ''}</div>
+        <div class="field"><div class="field-label-row"><label for="workbookDescription">描述</label><span class="field-optional">选填</span></div><textarea class="textarea workbook-description" id="workbookDescription" data-workbook-field="description" maxlength="500" placeholder="请输入整卷用途或填写说明">${esc(settings.description)}</textarea><div class="hint">最多 500 个字</div></div>
+        <div class="field"><label class="required-label" for="workbookScope">适用范围</label><select class="select ${errors.scope ? 'invalid' : ''}" id="workbookScope" data-workbook-field="scope"><option value="">请选择适用范围</option><option value="hospital" ${settings.scope === 'hospital' ? 'selected' : ''}>全院通用</option><option value="department" ${settings.scope === 'department' ? 'selected' : ''}>指定科室</option></select>${errors.scope ? `<div class="field-error">${errors.scope}</div>` : ''}<div class="hint">全院通用可供所有科室使用；指定科室仅对所选科室开放</div></div>
+        ${settings.scope === 'department' ? `<div class="field"><label class="required-label" for="workbookDepartment">适用科室</label><select class="select ${errors.department ? 'invalid' : ''}" id="workbookDepartment" data-workbook-field="department"><option value="">请选择具体科室</option>${['呼吸与危重症医学科','内分泌科','胃肠外科','肿瘤科','临床营养科','心血管内科','泌尿外科','妇科','儿科','康复医学科'].map(department => `<option value="${department}" ${settings.department === department ? 'selected' : ''}>${department}</option>`).join('')}</select>${errors.department ? `<div class="field-error">${errors.department}</div>` : ''}</div>` : ''}
+        <div class="field"><div class="workbook-switch-row"><span class="required-label">是否启用</span><button type="button" class="mini-switch ${settings.enabled ? 'on' : ''}" data-toggle-workbook-enabled role="switch" aria-checked="${settings.enabled}" aria-label="是否启用整卷"></button></div><div class="workbook-status-hint">${settings.enabled ? '已启用，可在适用范围内使用' : '未启用，暂不可被使用'}</div></div>`;
+    }
+
+    function validateWorkbookSettings() {
+      const errors = {};
+      if (!state.workbook.name.trim()) errors.name = '请输入整卷名称';
+      if (!state.workbook.scope) errors.scope = '请选择适用范围';
+      if (state.workbook.scope === 'department' && !state.workbook.department) errors.department = '请选择具体科室';
+      state.workbookErrors = errors;
+      if (Object.keys(errors).length) {
+        state.activePropTab = 'workbook';
+        renderProps();
+        showToast('请完善整卷必填信息');
+        return false;
+      }
+      return true;
+    }
+    window.canPersistWorkbookSettings = () => Boolean(state.workbook.name.trim() && state.workbook.scope && (state.workbook.scope !== 'department' || state.workbook.department));
 
     function optionProps(item, option) {
       const isMatrixOption = state.selectedOption?.source === 'matrix';
@@ -9683,6 +9797,19 @@
         renderProps();
         return;
       }
+      const workbookEnabled = e.target.closest('[data-toggle-workbook-enabled]');
+      if (workbookEnabled) {
+        state.workbook.enabled = !state.workbook.enabled;
+        renderProps();
+        return;
+      }
+      const builderAction = e.target.closest('[data-builder-action]');
+      if (builderAction) {
+        if (!validateWorkbookSettings()) return;
+        try { localStorage.setItem('frontend-architect:workbook-settings:v1', JSON.stringify(state.workbook)); } catch (_) {}
+        showToast(builderAction.dataset.builderAction === 'publish' ? '已发布' : '已保存');
+        return;
+      }
       const card = e.target.closest('.q-card');
       if (card && !e.target.closest('input, textarea, select, button')) { state.selectedId = card.dataset.qid; state.selectedOption = null; state.activePropTab = 'question'; renderAll(); }
       const req = e.target.closest('[data-toggle-required]');
@@ -9939,6 +10066,18 @@
       }
       const item = selected();
       if (!item) return;
+      if (e.target.matches('[data-workbook-field]')) {
+        const field = e.target.dataset.workbookField;
+        state.workbook[field] = e.target.value;
+        delete state.workbookErrors[field];
+        if (field === 'name') document.getElementById('builderName').textContent = e.target.value.trim() || '未命名整卷';
+        if (field === 'scope') {
+          if (e.target.value !== 'department') state.workbook.department = '';
+          delete state.workbookErrors.department;
+          renderProps();
+        }
+        return;
+      }
       if (e.target.matches('[data-title]')) { const q = state.questions.find(q => q.id === e.target.dataset.title); q.title = e.target.value; }
       if (e.target.matches('[data-desc]')) { const q = state.questions.find(q => q.id === e.target.dataset.desc); q.desc = e.target.value; }
       if (e.target.matches('[data-prop]')) { item[e.target.dataset.prop] = e.target.value; renderAll(); }
@@ -10304,7 +10443,9 @@
     });
 
     function openBuilder(name) {
-      document.getElementById('builderName').textContent = name || '测试';
+      state.workbook.name = state.workbook.name || name || '测试';
+      state.workbookErrors = {};
+      document.getElementById('builderName').textContent = state.workbook.name;
       document.getElementById('listPage').classList.remove('active');
       document.getElementById('builderPage').classList.add('active');
       renderAll();
@@ -14654,9 +14795,13 @@
   <script src="./js/health-portrait.js?v=20260910-1"></script>
 <script src="./js/personnel-management.js?v=20260915-1"></script>
 <script src="./js/organization-management.js?v=20260915-1"></script>
+<script src="./js/system-role.js?v=20260916-1"></script>
+<script src="./js/scale-create.js?v=20260916-3"></script>
 <script src="./js/dashboard-latest-data.js?v=20260913-31"></script>
 <script src="./js/dashboard-latest-scope.js?v=20260913-40"></script>
 <script src="./js/dashboard-latest.js?v=20260913-40"></script>
 <script src="./js/dashboard-updated-content.js?v=20260913-2"></script>
+<script src="./js/evaluation-report.js?v=20260916-1"></script>
+<script src="./js/article-management.js?v=20260916-1"></script>
 </body>
 </html>

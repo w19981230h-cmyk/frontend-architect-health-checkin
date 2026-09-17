@@ -13,13 +13,15 @@
   ];
   const topics = ['高血压随访', '糖尿病专病', '慢性肾病管理', '术后康复', '孕产全周期', '儿童保健', '心脑血管风险', '肿瘤营养', '睡眠健康'];
   const departments = ['全科医学科', '内分泌科', '心血管内科', '肿瘤科', '呼吸与危重症医学科', '健康管理中心'];
-  const teamRows = seedTeams.map((item, index) => ({ id: index + 1, name: item[0], department: item[1], description: item[2], administrator: item[3], members: item[4], patients: item[5] }));
+  const institutions = ['南宁市第二人民医院', '南宁市第五人民医院', '南宁市妇幼保健院', '南宁中医医院', '南宁第一人民医院', '柳州市人民医院', '桂林市人民医院'];
+  const teamRows = seedTeams.map((item, index) => ({ id: index + 1, name: item[0], institution: institutions[index % institutions.length], department: item[1], description: item[2], administrator: item[3], members: item[4], patients: item[5] }));
   for (let i = teamRows.length; i < 64; i += 1) {
     const topic = topics[(i - 10) % topics.length];
     const department = departments[(i - 10) % departments.length];
     teamRows.push({
       id: i + 1,
       name: `${topic}团队${String(i - 9).padStart(2, '0')}`,
+      institution: institutions[i % institutions.length],
       department,
       description: `由${department}负责，为目标患者提供评估、干预、随访和健康教育服务。`,
       administrator: i % 4 === 0 ? '王医生' : '--',
@@ -86,7 +88,7 @@
     if (state.loading) {
       tableWrap.innerHTML = '<div class="team-loading-state"><span class="team-loading-dot"></span><span>正在加载团队数据...</span></div>';
     } else {
-      tableWrap.innerHTML = `<table class="team-table"><thead><tr><th class="team-col-index">序号</th><th class="team-col-name">团队名称</th><th class="team-col-dept">关联科室</th><th class="team-col-desc">团队介绍</th><th class="team-col-admin">团队管理员</th><th class="team-col-count">团队成员数</th><th class="team-col-patient">在组患者数</th><th class="team-col-action">操作</th></tr></thead><tbody id="teamTableBody">${visibleRows.map(row => `<tr><td>${row.id}</td><td title="${escapeHtml(row.name)}">${escapeHtml(row.name)}</td><td title="${escapeHtml(row.department)}">${escapeHtml(row.department)}</td><td title="${escapeHtml(row.description)}">${escapeHtml(row.description)}</td><td>${escapeHtml(row.administrator)}</td><td>${row.members}</td><td>${row.patients}</td><td><button type="button" class="team-home-link" data-team-home="${row.id}">团队主页</button></td></tr>`).join('')}</tbody></table>${visibleRows.length ? '' : '<div class="team-empty"><span class="team-empty-icon"></span><span>暂无符合条件的团队</span></div>'}`;
+      tableWrap.innerHTML = `<table class="team-table"><thead><tr><th class="team-col-index">序号</th><th class="team-col-name">团队名称</th><th class="team-col-institution">所属机构</th><th class="team-col-dept">关联科室</th><th class="team-col-desc">团队介绍</th><th class="team-col-admin">团队管理员</th><th class="team-col-count">团队成员数</th><th class="team-col-patient">在组患者数</th><th class="team-col-action">操作</th></tr></thead><tbody id="teamTableBody">${visibleRows.map(row => `<tr><td>${row.id}</td><td title="${escapeHtml(row.name)}">${escapeHtml(row.name)}</td><td title="${escapeHtml(row.institution)}">${escapeHtml(row.institution)}</td><td title="${escapeHtml(row.department)}">${escapeHtml(row.department)}</td><td title="${escapeHtml(row.description)}">${escapeHtml(row.description)}</td><td>${escapeHtml(row.administrator)}</td><td>${row.members}</td><td>${row.patients}</td><td><button type="button" class="team-home-link" data-team-home="${row.id}">团队主页</button></td></tr>`).join('')}</tbody></table>${visibleRows.length ? '' : '<div class="team-empty"><span class="team-empty-icon"></span><span>暂无符合条件的团队</span></div>'}`;
     }
     pagination.innerHTML = `<span class="team-total">共 ${rows.length} 条</span><button type="button" class="team-page-btn" data-team-page="prev" ${state.page === 1 ? 'disabled' : ''} aria-label="上一页">‹</button>${pageItems(totalPages).map(item => typeof item === 'number' ? `<button type="button" class="team-page-btn${item === state.page ? ' active' : ''}" data-team-page="${item}">${item}</button>` : '<span>•••</span>').join('')}<button type="button" class="team-page-btn" data-team-page="next" ${state.page === totalPages ? 'disabled' : ''} aria-label="下一页">›</button><select class="team-page-size" id="teamPageSize" aria-label="每页条数"><option value="10" ${state.pageSize === 10 ? 'selected' : ''}>10 条/页</option><option value="20" ${state.pageSize === 20 ? 'selected' : ''}>20 条/页</option><option value="50" ${state.pageSize === 50 ? 'selected' : ''}>50 条/页</option></select><span>跳至</span><input class="team-page-jump" id="teamPageJump" inputmode="numeric" aria-label="跳转页码"><span>页</span>`;
   }
@@ -188,6 +190,7 @@
     const profile = isPrimaryTeam ? primaryTeamProfile : { receivedCriteria: '符合该团队专病管理范围并已完成知情同意。', planCount: 0, warningRuleCount: 1, plans: [] };
     setText('teamHomeName', team.name);
     setText('teamHomeAdmin', team.administrator || '--');
+    setText('teamHomeInstitution', team.institution || '--');
     setText('teamHomeDepartment', team.department || '--');
     setText('teamHomeDescription', team.description || '--');
     setText('teamHomeReceived', profile.receivedCriteria);
@@ -237,12 +240,118 @@
     }
   }
 
+  function availableOrganizations() {
+    try {
+      const saved = JSON.parse(localStorage.getItem('organization-management-v2'));
+      if (Array.isArray(saved?.orgs) && saved.orgs.length) return saved.orgs.filter(org => org.enabled !== false);
+    } catch {}
+    return institutions.map((name, index) => ({ id: `team-org-${index}`, name, departments: [] }));
+  }
+
+  function departmentOptions(organizationName) {
+    if (!organizationName) return [];
+    const organization = availableOrganizations().find(item => item.name === organizationName);
+    const organizationDepartments = (organization?.departments || []).filter(item => item.enabled !== false).map(item => item.name);
+    return organizationDepartments.length ? organizationDepartments : departments;
+  }
+
+  function renderDepartmentOptions(organizationName) {
+    const select = document.getElementById('teamCreateDepartment');
+    if (!select) return;
+    select.innerHTML = `<option value="">${organizationName ? '请选择' : '请先选择所属机构'}</option>${departmentOptions(organizationName).map(name => `<option value="${escapeHtml(name)}">${escapeHtml(name)}</option>`).join('')}`;
+    select.value = '';
+  }
+
+  function ensureTeamCreatePage() {
+    let page = document.getElementById('teamCreatePage');
+    if (page) return page;
+    page = document.createElement('section');
+    page.id = 'teamCreatePage';
+    page.className = 'team-create-page';
+    page.hidden = true;
+    page.innerHTML = `
+      <header class="team-create-header">
+        <button type="button" class="team-create-exit" data-team-create-close aria-label="退出新建团队">× <span>退出</span></button>
+        <strong>新建团队</strong>
+        <button type="button" class="team-create-save" data-team-create-save>保存</button>
+      </header>
+      <main class="team-create-canvas">
+        <form class="team-create-form" id="teamCreateForm" novalidate>
+          <label class="team-create-field required"><span>团队名称</span><span class="team-create-control"><input id="teamCreateName" maxlength="20" placeholder="请输入" autocomplete="off" required><em><b data-team-count-for="teamCreateName">0</b> / 20</em></span><small class="team-create-error">请输入团队名称</small></label>
+          <label class="team-create-field"><span>团队简介</span><span class="team-create-control"><textarea id="teamCreateDescription" maxlength="200" rows="4" placeholder="请输入"></textarea><em><b data-team-count-for="teamCreateDescription">0</b> / 200</em></span></label>
+          <label class="team-create-field required"><span>所属机构</span><select id="teamCreateInstitution" required><option value="">请选择</option></select><small class="team-create-error">请选择所属机构</small></label>
+          <label class="team-create-field required"><span>关联科室</span><select id="teamCreateDepartment" required><option value="">请先选择所属机构</option></select><small class="team-create-error">请选择关联科室</small></label>
+          <div class="team-create-field"><span>团队成员 <i title="可在团队主页继续维护成员">ⓘ</i></span><button type="button" class="team-create-add-member" data-team-add-member>＋ 添加成员</button></div>
+          <label class="team-create-field required"><span class="team-create-label-row">分组规则 <i title="用于定义患者加入团队的条件">ⓘ</i><button type="button" data-team-rule-optimize>✦ 一键优化</button></span><span class="team-create-control"><textarea id="teamCreateRule" maxlength="300" rows="4" placeholder="例如：分配到本团队的患者需要满足出院天数、年龄范围、科室、主诊断等条件"></textarea><em><b data-team-count-for="teamCreateRule">0</b> / 300</em></span><small class="team-create-error">请输入分组规则</small></label>
+          <fieldset class="team-create-field required"><legend>患者入组审核 <i title="开启后患者需审核才能进入团队">ⓘ</i></legend><div class="team-create-radio-group"><label><input type="radio" name="teamCreateAudit" value="是" checked>是</label><label><input type="radio" name="teamCreateAudit" value="否">否</label></div></fieldset>
+          <label class="team-create-field required"><span>默认健康负责人 <i title="可在团队主页调整">ⓘ</i></span><select id="teamCreateOwner"><option value="">暂不指定</option><option>张明远</option><option>陈慧敏</option><option>赵文博</option><option>王建华</option></select></label>
+          <fieldset class="team-create-field required"><legend>是否启用智能外呼 <i title="启用后按设置时段执行智能外呼">ⓘ</i></legend><div class="team-create-radio-group"><label><input type="radio" name="teamCreateCall" value="是" checked>是</label><label><input type="radio" name="teamCreateCall" value="否">否</label></div></fieldset>
+          <div class="team-create-field required"><span>外呼时间段 <small>医院智能外呼建议设置在 09:30–12:00、14:00–22:15</small></span><div class="team-create-time"><input id="teamCreateStartTime" type="time" value="09:30" aria-label="外呼开始时间"><span>→</span><input id="teamCreateEndTime" type="time" value="22:15" aria-label="外呼结束时间"></div></div>
+        </form>
+      </main>`;
+    document.body.appendChild(page);
+    return page;
+  }
+
+  function openTeamCreate() {
+    const page = ensureTeamCreatePage();
+    const form = document.getElementById('teamCreateForm');
+    form?.reset();
+    page.querySelectorAll('.invalid').forEach(element => element.classList.remove('invalid'));
+    page.querySelectorAll('[data-team-count-for]').forEach(counter => { counter.textContent = '0'; });
+    const institutionSelect = document.getElementById('teamCreateInstitution');
+    institutionSelect.innerHTML = `<option value="">请选择</option>${availableOrganizations().map(org => `<option value="${escapeHtml(org.name)}">${escapeHtml(org.name)}</option>`).join('')}`;
+    renderDepartmentOptions('');
+    page.hidden = false;
+    document.body.classList.add('team-create-open');
+    document.getElementById('teamCreateName')?.focus();
+  }
+
+  function closeTeamCreate() {
+    const page = document.getElementById('teamCreatePage');
+    if (page) page.hidden = true;
+    document.body.classList.remove('team-create-open');
+  }
+
+  function saveTeamCreate() {
+    const requiredIds = ['teamCreateName', 'teamCreateInstitution', 'teamCreateDepartment', 'teamCreateRule'];
+    let firstInvalid = null;
+    requiredIds.forEach(id => {
+      const field = document.getElementById(id);
+      const invalid = !field?.value.trim();
+      field?.closest('.team-create-field')?.classList.toggle('invalid', invalid);
+      if (invalid && !firstInvalid) firstInvalid = field;
+    });
+    if (firstInvalid) { firstInvalid.focus(); return; }
+    const row = {
+      id: Math.max(0, ...teamRows.map(item => item.id)) + 1,
+      name: document.getElementById('teamCreateName').value.trim(),
+      institution: document.getElementById('teamCreateInstitution').value,
+      department: document.getElementById('teamCreateDepartment').value,
+      description: document.getElementById('teamCreateDescription').value.trim() || '--',
+      administrator: document.getElementById('teamCreateOwner').value || '--',
+      members: 0,
+      patients: 0
+    };
+    teamRows.unshift(row);
+    state.page = 1;
+    state.keyword = '';
+    const search = document.getElementById('teamSearchInput');
+    if (search) search.value = '';
+    renderTeamList();
+    closeTeamCreate();
+    window.showToast?.('团队创建成功');
+  }
+
   document.addEventListener('input', event => {
     if (event.target.id === 'teamSearchInput') setKeyword(event.target.value);
     if (event.target.id === 'teamPeopleSearch') {
       homeState.keyword = event.target.value;
       renderPeopleTable();
     }
+    const counter = document.querySelector(`[data-team-count-for="${event.target.id}"]`);
+    if (counter) counter.textContent = String(event.target.value.length);
+    if (event.target.closest('.team-create-field')) event.target.closest('.team-create-field').classList.remove('invalid');
   });
   document.addEventListener('change', event => {
     if (event.target.id === 'teamPageSize') {
@@ -250,6 +359,11 @@
       state.page = 1;
       renderTeamList();
     }
+    if (event.target.id === 'teamCreateInstitution') {
+      event.target.closest('.team-create-field')?.classList.remove('invalid');
+      renderDepartmentOptions(event.target.value);
+    }
+    if (event.target.id === 'teamCreateDepartment') event.target.closest('.team-create-field')?.classList.remove('invalid');
   });
   document.addEventListener('keydown', event => {
     if (event.target.id === 'teamPageJump' && event.key === 'Enter') {
@@ -308,7 +422,17 @@
       adminSwitch.classList.toggle('on');
       return;
     }
-    if (event.target.closest('[data-team-create]')) window.showToast?.('新建团队功能已就绪');
+    if (event.target.closest('[data-team-create]')) { openTeamCreate(); return; }
+    if (event.target.closest('[data-team-create-close]')) { closeTeamCreate(); return; }
+    if (event.target.closest('[data-team-create-save]')) { saveTeamCreate(); return; }
+    if (event.target.closest('[data-team-add-member]')) window.showToast?.('可在团队创建后进入团队主页添加成员');
+    if (event.target.closest('[data-team-rule-optimize]')) {
+      const rule = document.getElementById('teamCreateRule');
+      if (rule && !rule.value.trim()) {
+        rule.value = '面向符合当前机构及关联科室管理范围、已完成知情同意且需要持续健康管理的患者。';
+        rule.dispatchEvent(new Event('input', { bubbles: true }));
+      }
+    }
   });
 
   window.renderTeamList = renderTeamList;
