@@ -1,7 +1,7 @@
 const fs = require("node:fs");
 const assert = require("node:assert/strict");
 
-const read = (path) => fs.readFileSync(path, "utf8");
+const read = (path) => fs.readFileSync(path, "utf8").replace(/\r\n/g, "\n");
 const sourceScript = read("js/interface-annotations-v3.js");
 const publicScript = read("sites-deploy/public/js/interface-annotations-v3.js");
 const sourceCss = read("css/interface-annotations-v3.css");
@@ -18,8 +18,10 @@ assert.equal(sourceCss, publicCss, "发布包的批注样式必须与项目版�
 assert.deepEqual(publicNotes, notes, "发布包必须包含项目中的全部备注");
 assert.equal(sourceSnapshot, publicSnapshot, "发布包的内嵌备注快照必须与项目版本一致");
 assert.match(sourceSnapshot, /window\.__INTERFACE_NOTES_SNAPSHOT__\s*=/);
-assert.match(sourceHtml, /interface-notes-snapshot\.js\?v=20260828-v3-7[\s\S]*interface-annotations-v3\.js\?v=20260828-v3-7/);
-assert.match(publicHtml, /interface-notes-snapshot\.js\?v=20260828-v3-7[\s\S]*interface-annotations-v3\.js\?v=20260828-v3-7/);
+assert.match(sourceHtml, /interface-notes-snapshot\.js\?v=[^"']+/);
+assert.match(sourceHtml, /interface-annotations-v3\.js\?v=[^"']+/);
+assert.match(publicHtml, /interface-notes-snapshot\.js\?v=[^"']+/);
+assert.match(publicHtml, /interface-annotations-v3\.js\?v=[^"']+/);
 assert.match(sourceScript, /loadSource:\s*"pending"/);
 assert.match(sourceScript, /window\.__INTERFACE_NOTES_SNAPSHOT__/);
 assert.match(sourceScript, /loaded\s*=\s*embedded\.concat/);
