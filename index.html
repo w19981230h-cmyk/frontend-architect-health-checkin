@@ -588,7 +588,7 @@
     }
     @media (hover: none) { .patient-template-delete { opacity: 1; pointer-events: auto; transform: none; } }
     .patient-list-table-wrap { flex: 1; min-height: 0; overflow: auto; }
-    .patient-list-table { min-width: 1860px; table-layout: fixed; }
+    .patient-list-table { min-width: 2050px; table-layout: fixed; }
     .patient-list-table thead { position: sticky; top: 0; z-index: 2; }
     .patient-list-table thead tr { height: 52px; }
     .patient-list-table tbody tr { height: 68px; cursor: pointer; transition: background-color .16s ease; }
@@ -604,6 +604,7 @@
     .patient-list-table .age-col { width: 82px; }
     .patient-list-table .gender-col { width: 72px; }
     .patient-list-table .phone-col { width: 170px; }
+    .patient-list-table .institution-col { width: 190px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
     .patient-list-table .dept-col { width: 170px; }
     .patient-list-table .diagnosis-col { width: 255px; }
     .patient-list-table .date-col { width: 145px; }
@@ -3313,7 +3314,7 @@
             <div class="patient-filter-summary-actions"><span class="patient-filter-result-count" id="patientFilterResultCount"></span><button class="patient-filter-summary-clear" data-clear-smart-filter>清除查询</button></div>
           </section>
           <div class="patient-advanced-panel" id="patientAdvancedPanel" data-persistence-ignore><div class="patient-advanced-grid"><label>性别<select><option>全部</option><option>男</option><option>女</option></select></label><label>年龄<select><option>全部</option><option>0-18岁</option><option>19-60岁</option><option>60岁以上</option></select></label><label>最近科室<select><option>全部科室</option><option>肿瘤科</option><option>妇科</option><option>泌尿外科</option></select></label><label>最近日期<select><option>全部时间</option><option>近7天</option><option>近30天</option></select></label></div><div class="patient-advanced-actions"><button class="reset" data-reset-patient-filter>重置</button><button class="apply" data-apply-patient-filter>确定</button></div></div>
-          <div class="patient-list-table-wrap"><table class="patient-list-table"><thead><tr><th class="patient-select-col"><input class="patient-row-check" id="patientSelectAll" type="checkbox" aria-label="全选当前列表患者"></th><th class="patient-name-col">姓名</th><th class="visit-col">就诊卡号</th><th class="age-col">年龄</th><th class="gender-col">性别</th><th class="phone-col">手机号码</th><th class="dept-col">最近就诊科室</th><th class="diagnosis-col">最近诊断</th><th class="date-col">最近就诊日期</th><th class="team-col">已加入团队</th><th class="patient-action-col">操作</th></tr></thead><tbody id="patientListRows"></tbody></table></div>
+          <div class="patient-list-table-wrap"><table class="patient-list-table"><thead><tr><th class="patient-select-col"><input class="patient-row-check" id="patientSelectAll" type="checkbox" aria-label="全选当前列表患者"></th><th class="patient-name-col">姓名</th><th class="visit-col">就诊卡号</th><th class="age-col">年龄</th><th class="gender-col">性别</th><th class="phone-col">手机号码</th><th class="institution-col">机构</th><th class="dept-col">最近就诊科室</th><th class="diagnosis-col">最近诊断</th><th class="date-col">最近就诊日期</th><th class="team-col">已加入团队</th><th class="patient-action-col">操作</th></tr></thead><tbody id="patientListRows"></tbody></table></div>
           <div class="pager patient-list-pager"><span class="total">共 78593 条</span><button class="page-btn disabled">‹</button><button class="page-btn active" data-patient-page="1">1</button><button class="page-btn" data-patient-page="2">2</button><button class="page-btn" data-patient-page="3">3</button><button class="page-btn" data-patient-page="4">4</button><button class="page-btn" data-patient-page="5">5</button><span class="ellipsis">...</span><button class="page-btn" data-patient-page="7860">7860</button><button class="page-btn" data-patient-page="next">›</button><button class="page-select">10 条/页⌄</button><span>跳至</span><span class="jump-input" contenteditable="true"></span><span>页</span></div>
         </section>
       </main>
@@ -5585,10 +5586,10 @@
       document.getElementById('patientListRows').innerHTML = rows.length ? rows.map(patient => `<tr class="${patientBatchSelection.has(patient.visitNo) ? 'selected' : ''}" data-patient-row="${esc(patient.visitNo)}" tabindex="0" role="link" aria-label="查看${esc(patient.name)}的患者档案">
         <td class="patient-select-col"><input class="patient-row-check" type="checkbox" data-patient-select="${esc(patient.visitNo)}" aria-label="选择患者${esc(patient.name)}" ${patientBatchSelection.has(patient.visitNo) ? 'checked' : ''}></td>
         <td class="patient-name-col"><div class="patient-name-with-tags"><button type="button" class="patient-name-link" data-open-patient-record="${esc(patient.visitNo)}" aria-label="查看${esc(patient.name)}的患者档案">${esc(patient.name)}</button>${renderPatientTags(patient.tags)}</div></td><td>${esc(patient.visitNo)}</td><td>${esc(patient.age)}岁</td><td>${esc(patient.gender)}</td>
-        <td><span class="patient-phone-mask">${esc(patient.phone)} <span class="patient-phone-eye">⌁</span></span></td><td>${esc(patient.department)}</td>
+        <td><span class="patient-phone-mask">${esc(patient.phone)} <span class="patient-phone-eye">⌁</span></span></td><td class="institution-col" title="${esc(patient.managementInstitution || '--')}">${esc(patient.managementInstitution || '--')}</td><td>${esc(patient.department)}</td>
         <td class="patient-diagnosis" title="${esc(patient.diagnosis)}">${esc(patient.diagnosis)}</td><td>${esc(patient.visitDate)}</td><td title="${esc(patient.team)}">${esc(patient.team)}</td>
         <td><span class="patient-row-actions"><button data-open-patient-record="${esc(patient.visitNo)}">档案</button><button data-select-patient-group="${esc(patient.visitNo)}">选择分组</button><button type="button" class="patient-referral-action" data-open-referral="${esc(patient.visitNo)}">转诊申请</button></span></td>
-      </tr>`).join('') : `<tr><td colspan="11" style="height:220px;text-align:center;color:#9aa5b4">暂无符合条件的患者<br><button data-clear-smart-filter style="margin-top:10px;color:#3154ff">清除智能条件</button></td></tr>`;
+      </tr>`).join('') : `<tr><td colspan="12" style="height:220px;text-align:center;color:#9aa5b4">暂无符合条件的患者<br><button data-clear-smart-filter style="margin-top:10px;color:#3154ff">清除智能条件</button></td></tr>`;
       const summary = document.getElementById('patientFilterSummary');
       summary.hidden = !patientListState.smartConditions.length;
       if (patientListState.smartConditions.length) {
