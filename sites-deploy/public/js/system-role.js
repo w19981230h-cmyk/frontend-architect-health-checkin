@@ -86,10 +86,16 @@
     });
   }
 
-  function ensurePlatformDataScope() {
+  function ensureExtendedDataScopes() {
     const section = document.querySelector('.data-scope-section');
-    if (!section || section.querySelector('input[value="platform"]')) return;
-    section.querySelector('h3')?.insertAdjacentHTML('afterend', '<label><input type="radio" name="systemRoleDataScope" value="platform"><span>允许查看全平台数据</span></label>');
+    if (!section) return;
+    if (!section.querySelector('input[value="platform"]')) {
+      section.querySelector('h3')?.insertAdjacentHTML('afterend', '<label><input type="radio" name="systemRoleDataScope" value="platform"><span>全部平台数据</span></label>');
+    }
+    const platformOption = section.querySelector('input[value="platform"]')?.closest('label');
+    if (!section.querySelector('input[value="medicalConsortium"]')) {
+      platformOption?.insertAdjacentHTML('afterend', '<label><input type="radio" name="systemRoleDataScope" value="medicalConsortium"><span>所属医共体数据</span></label>');
+    }
   }
 
   function openDialog(role) {
@@ -103,7 +109,7 @@
     document.getElementById('systemRoleDescriptionCount').textContent = String((role?.description || '').length);
     document.getElementById('systemRoleNameError').textContent = '';
     renderPermissionTree(role?.permissions || []);
-    ensurePlatformDataScope();
+    ensureExtendedDataScopes();
     const scope = role?.dataScope || 'all';
     const scopeInput = document.querySelector(`input[name="systemRoleDataScope"][value="${scope}"]`);
     if (scopeInput) scopeInput.checked = true;

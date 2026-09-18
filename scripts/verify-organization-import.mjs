@@ -5,9 +5,12 @@ assert.equal(validateImport(parseCsv(templateCsv(org)),org,[]).departments.lengt
 const rows=parseCsv('\uFEFF科室名称,科室类型,科室简介,科室成员,管理员\r\n测试科,门诊科室,"含逗号,与\n换行",张医生;李医生,张医生');
 const result=validateImport(rows,org,['张医生','李医生']);
 assert.equal(result.errors.length,0);assert.equal(result.departments[0].members.length,2);assert.equal(result.departments[0].owner,'张医生');assert.match(result.departments[0].description,/\n/);
+assert.equal(result.departments[0].type,'门诊');
 assert.equal(validateImport(rows,org,['张医生','李医生'],[{name:'测试科'}]).errors.length,1);
 assert.equal(validateImport(rows,org,[]).errors.length,1);
 assert.throws(()=>parseCsv('a,"未闭合'));
 assert.throws(()=>validateImport([['其他字段'],['内容']],org,[]));
+const fallback=validateImport([['科室名称','科室类型'],['护理站','护理单元'],['未知科室','无法识别']],org,[]);
+assert.equal(fallback.errors.length,0);assert.deepEqual(fallback.departments.map(item=>item.type),['其他','其他']);
 assert.equal(validateImport([['科室名称','科室类型','管理员'],['科室','无效','非成员']],org,[]).errors.length,1);
 console.log('科室导入校验通过：模板、中文、换行、成员、重复及错误文件');

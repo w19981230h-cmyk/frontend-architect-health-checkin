@@ -1,9 +1,16 @@
 import assert from 'node:assert/strict';
-import {departmentMembers,validDepartmentOwner} from '../sites-deploy/ui/organization-department.mjs';
+import {departmentMembers,departmentTypes,normalizeDepartmentType,validDepartmentOwner} from '../sites-deploy/ui/organization-department.mjs';
+assert.deepEqual(departmentTypes,['门诊','住院','医技','其他']);
+assert.equal(normalizeDepartmentType('门诊临床科室'),'门诊');
+assert.equal(normalizeDepartmentType('住院科室'),'住院');
+assert.equal(normalizeDepartmentType('医技科室'),'医技');
+assert.equal(normalizeDepartmentType('护理单元'),'其他');
+assert.equal(normalizeDepartmentType('未分类科室'),'其他');
+assert.equal(normalizeDepartmentType(undefined),'其他');
 assert.deepEqual(departmentMembers({owner:'张医生'}),['张医生']);
 assert.deepEqual(departmentMembers({members:['张医生','李医生','张医生'],owner:'张医生'}),['张医生','李医生']);
 assert.equal(validDepartmentOwner(['张医生','李医生'],'李医生'),true);
 assert.equal(validDepartmentOwner(['张医生'],'李医生'),false);
 assert.equal(validDepartmentOwner(['张医生','李医生'],['张医生','李医生']),false);
 assert.equal(validDepartmentOwner([],undefined),true);
-console.log('科室人员兼容、去重和唯一负责人校验通过');
+console.log('科室四分类归一化、人员兼容、去重和唯一负责人校验通过');

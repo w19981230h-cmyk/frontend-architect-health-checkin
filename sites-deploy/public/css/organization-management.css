@@ -82,3 +82,21 @@ body:has(.organization-department-drawer.ant-drawer-open) .ui-note-toolbar:not(.
 .organization-management-view .ant-tree .ant-tree-node-content-wrapper:has(.organization-region-title){display:flex;align-items:center;min-width:0}.organization-management-view .ant-tree-title:has(.organization-region-title){flex:1;min-width:0;width:auto}.organization-management-view .ant-tree-treenode:hover .organization-region-actions{visibility:visible}
 
 .organization-editor,.organization-editor *{font-size:14px!important}.organization-editor input::placeholder,.organization-editor textarea::placeholder,.organization-editor .ant-input-textarea-show-count::after{font-size:14px!important}
+
+.organization-type-cards{flex-wrap:wrap}.organization-type-cards .ant-space-item{display:flex}
+
+#listPageTitle.page-title{height:auto;min-height:44px;align-items:center;justify-content:space-between;gap:16px;flex:none}
+#listPageTitleText{font-size:16px;font-weight:800;white-space:nowrap}
+#globalOrganizationScope{margin-left:auto;min-width:0}
+.global-organization-scope{display:flex;align-items:center;justify-content:flex-end;gap:12px;font-size:14px;font-weight:400}
+.global-organization-scope label{display:flex;align-items:center;gap:6px;color:#64728a;font-size:14px;font-weight:400;min-width:0}
+.global-organization-scope label>span{white-space:nowrap;font-size:14px}
+.global-organization-scope label:first-child .ant-select{width:210px}
+.global-organization-scope label:last-child .ant-select{width:250px}
+.global-organization-scope .ant-select-selection-item,.global-organization-scope .ant-select-selection-placeholder{font-size:14px;font-weight:400}
+.global-organization-scope .ant-select-content{flex-wrap:nowrap!important;overflow:hidden}
+.global-organization-scope .ant-select-content-item{flex:none;min-width:0}
+.global-organization-scope .ant-select-content-item-prefix{overflow:hidden}
+.global-organization-scope .ant-select-selection-item{max-width:100%;white-space:nowrap}
+@media(max-width:1100px){.global-organization-scope{gap:8px}.global-organization-scope label>span{display:none}.global-organization-scope label:first-child .ant-select{width:170px}.global-organization-scope label:last-child .ant-select{width:190px}}
+@media(max-width:720px){#listPageTitle.page-title{align-items:flex-start;flex-direction:column;padding-bottom:8px}#globalOrganizationScope{width:100%;margin-left:0}.global-organization-scope{width:100%}.global-organization-scope label{flex:1}.global-organization-scope label .ant-select{width:100%!important}}

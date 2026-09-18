@@ -1,0 +1,11 @@
+import assert from 'node:assert/strict';
+import {sourceRegions,sourceOrganizations} from '../sites-deploy/ui/organization-source-data.mjs';
+assert.equal(sourceRegions.length,13);
+assert.equal(sourceOrganizations.length,20);
+assert.equal(new Set(sourceRegions.map(item=>item.code)).size,sourceRegions.length);
+assert.equal(new Set(sourceOrganizations.map(item=>item.code)).size,sourceOrganizations.length);
+assert.ok(sourceOrganizations.every(item=>sourceRegions.some(region=>region.name===item.region)));
+assert.ok(sourceOrganizations.every(item=>item.departments.length>0));
+assert.equal(sourceOrganizations.reduce((sum,item)=>sum+item.departments.length,0),1499);
+assert.ok(sourceOrganizations.flatMap(item=>item.departments).every(item=>item.code&&item.name&&item.type));
+console.log('组织架构校验通过：13个医共体、20家机构、1499条科室明细');
