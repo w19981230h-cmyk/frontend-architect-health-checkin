@@ -90,9 +90,7 @@ function Page(){
  <Form.Item name="owner" hidden><Input/></Form.Item>
  <div className="organization-member-heading"><span>已添加人员（{selectedMembers.length} 人）</span>{selectedOwner&&<Button type="link" size="small" onClick={()=>form.setFieldValue('owner',undefined)}>清除负责人</Button>}</div>
  <Table className="organization-members-table" size="small" rowKey="name" pagination={false} dataSource={selectedMembers.map(name=>({name}))} locale={{emptyText:'请先添加科室人员'}} columns={[{title:'人员姓名',dataIndex:'name'},{title:'科室负责人',width:160,render:(_,person)=><Radio aria-label={`设置${person.name}为科室负责人`} checked={selectedOwner===person.name} onChange={()=>form.setFieldValue('owner',person.name)}>设为负责人</Radio>},{title:'操作',width:90,render:(_,person)=><Button type="link" onClick={()=>{form.setFieldValue('members',selectedMembers.filter(name=>name!==person.name));if(selectedOwner===person.name)form.setFieldValue('owner',undefined);}}>移除</Button>}]}/>
- </>:<Form.Item name="owner" label={editor?.kind==='region'?'医共体负责人':'机构负责人'}><Select showSearch allowClear placeholder="从已有人员中选择（选填）" options={people.map(name=>({value:name,label:name}))} notFoundContent="暂无可选人员"/></Form.Item>}
-
- {editor?.kind!=='region'&&<Form.Item name="phone" label="联系电话" rules={[{pattern:/^[\d+()\-\s]{6,20}$/,message:'请输入有效的联系电话'}]}><Input maxLength={20} placeholder="请输入联系电话（选填）"/></Form.Item>}
+ </>:null}
  {editor?.kind==='org'&&<Form.Item name="address" label="机构地址"><Input maxLength={200} placeholder="请输入机构地址（选填）"/></Form.Item>}
  <Form.Item name="enabled" label="状态" rules={[{required:true,message:'请选择状态'}]}><Select options={[{value:true,label:'启用'},{value:false,label:'停用'}]}/></Form.Item>
  <Form.Item name="remarks" label="备注" className="organization-remark-field"><Input.TextArea maxLength={500} showCount rows={3} placeholder={editor?.kind==='region'?'请输入医共体说明（选填）':'请输入备注（选填）'}/></Form.Item>

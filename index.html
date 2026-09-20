@@ -2811,7 +2811,7 @@
   <link rel="stylesheet" href="./css/statistics-report.css?v=20260911-05">
   <link rel="stylesheet" href="./css/operations-statistics.css?v=20260910-01">
   <link rel="stylesheet" href="./css/operations-statistics-responsive.css?v=20260910-02">
-  <link rel="stylesheet" href="./css/patient-archive-reference.css?v=20260907-1">
+  <link rel="stylesheet" href="./css/patient-archive-reference.css?v=20260920-2">
   <link rel="stylesheet" href="./css/health-portrait.css?v=20260910-1">
 <link rel="stylesheet" href="./css/personnel-management.css?v=20260916-1">
 <link rel="stylesheet" href="./css/organization-management.css?v=20260918-3">
@@ -3786,14 +3786,39 @@
             <section class="archive-info-card">
               <div class="archive-info-head"><strong data-archive-text="name">黄尚忠</strong><span data-archive-text="gender">男</span><span><i data-archive-text="age">73</i>岁</span><span>就诊号：<i data-archive-text="visitNo">22071025959</i></span></div>
               <div class="archive-info-columns">
-                <div>
-                  <h2 class="archive-info-section-title">基本信息 <button class="archive-more-link" data-archive-more="basic">更多信息</button></h2>
-                  <dl class="archive-details"><dt>出生年月:</dt><dd data-archive-text="birthDate">1952年07月</dd><dt>民　族:</dt><dd data-archive-text="ethnicity">汉族</dd><dt>职　业:</dt><dd data-archive-text="occupation">退休</dd><dt>地　区:</dt><dd data-archive-text="region">--</dd><dt>手机号码:</dt><dd><span data-archive-text="phone">166****5580</span>　⌁</dd></dl>
-                </div>
-                <div>
-                  <h2 class="archive-info-section-title">健康史/生活习惯 <button class="archive-more-link" data-archive-more="health">更多信息</button></h2>
-                  <dl class="archive-details"><dt>既 往 史:</dt><dd>--</dd><dt>个 人 史:</dt><dd>--</dd><dt>过 敏 史:</dt><dd>--</dd><dt>家 族 史:</dt><dd>--</dd><dt>饮　酒:</dt><dd>--</dd><dt>吸　烟:</dt><dd>--</dd></dl>
-                </div>
+                <section class="archive-info-section archive-info-section-basic">
+                  <div class="archive-info-section-head">
+                    <h2 class="archive-info-section-title">基本信息</h2>
+                    <button class="archive-edit-link" type="button" data-archive-edit="basic" aria-label="编辑基本信息"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m4 16.5-.5 4 4-.5L19 8.5 15.5 5 4 16.5Z"/><path d="m13.8 6.7 3.5 3.5"/></svg>编辑</button>
+                  </div>
+                  <dl class="archive-details archive-details-basic">
+                    <div><dt>姓名</dt><dd data-archive-text="name">黄尚忠</dd></div>
+                    <div><dt>性别</dt><dd data-archive-text="gender">男</dd></div>
+                    <div><dt>年龄</dt><dd><span data-archive-text="age">73</span>岁</dd></div>
+                    <div><dt>出生日期</dt><dd data-archive-text="birthDate">1952年07月</dd></div>
+                    <div><dt>手机号</dt><dd data-archive-text="phone">166****5580</dd></div>
+                    <div><dt>证件类型</dt><dd data-archive-text="idType">--</dd></div>
+                    <div><dt>证件号</dt><dd data-archive-text="idNumber">--</dd></div>
+                    <div><dt>民族</dt><dd data-archive-text="ethnicity">汉族</dd></div>
+                    <div><dt>婚姻状况</dt><dd data-archive-text="maritalStatus">--</dd></div>
+                    <div><dt>职业</dt><dd data-archive-text="occupation">退休</dd></div>
+                    <div class="archive-detail-wide"><dt>常住地址</dt><dd data-archive-text="region">--</dd></div>
+                  </dl>
+                </section>
+                <section class="archive-info-section archive-info-section-health">
+                  <div class="archive-info-section-head">
+                    <h2 class="archive-info-section-title">健康史</h2>
+                    <button class="archive-edit-link" type="button" data-archive-edit="health" aria-label="编辑健康史"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m4 16.5-.5 4 4-.5L19 8.5 15.5 5 4 16.5Z"/><path d="m13.8 6.7 3.5 3.5"/></svg>编辑</button>
+                  </div>
+                  <dl class="archive-details archive-details-health">
+                    <div class="archive-detail-wide"><dt>既往疾病</dt><dd data-archive-text="pastHistory" title="甲状腺结节、子宫肌瘤">甲状腺结节、子宫肌瘤</dd></div>
+                    <div><dt>手术史</dt><dd class="archive-pending" data-archive-text="surgeryHistory">待补充</dd></div>
+                    <div><dt>过敏史</dt><dd data-archive-text="allergyHistory">青霉素过敏</dd></div>
+                    <div><dt>家族史</dt><dd data-archive-text="familyHistory">父亲高血压</dd></div>
+                    <div><dt>吸烟史</dt><dd data-archive-text="smoking">偶尔</dd></div>
+                    <div><dt>饮酒史</dt><dd data-archive-text="drinking">经常</dd></div>
+                  </dl>
+                </section>
               </div>
             </section>
             <section class="archive-health-band archive-health-profile">
@@ -4140,24 +4165,27 @@
   <section class="page patient-editor" id="patientEditor" aria-hidden="true">
     <header class="editor-header"><button class="editor-back" data-cancel-patient-edit aria-label="返回"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="m15 18-6-6 6-6"/></svg></button><div class="editor-heading"><h1>编辑患者档案</h1><div class="editor-patient-meta"><span id="editorPatientMeta">林嘉慧 · 女 · 19岁 · 就诊号 22071523287</span></div></div><div class="editor-actions"><button class="editor-cancel" data-cancel-patient-edit>取消</button><button class="editor-save" data-save-patient>保存</button></div></header>
     <main class="editor-body"><div class="editor-error-banner" id="patientEditorError">保存失败，请检查必填字段后重试。</div>
-      <section class="editor-section"><div class="editor-section-head"><h2>基本信息</h2><button class="section-toggle" data-section-toggle aria-label="折叠"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="m6 9 6 6 6-6"/></svg></button></div><div class="editor-section-body"><div class="form-grid">
+      <section class="editor-section" data-editor-section="basic"><div class="editor-section-head"><h2>基本信息</h2><button class="section-toggle" data-section-toggle aria-label="折叠"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="m6 9 6 6 6-6"/></svg></button></div><div class="editor-section-body"><div class="form-grid">
         <div class="archive-field required"><label>姓名</label><input class="archive-input" data-patient-field="name" placeholder="请输入姓名"><div class="field-error" data-error-for="name"></div></div>
         <div class="archive-field required"><label>性别</label><select class="archive-select" data-patient-field="gender"><option value="">请选择</option><option>女</option><option>男</option><option>未知</option></select><div class="field-error" data-error-for="gender"></div></div>
         <div class="archive-field required"><label>出生年月</label><input class="archive-input" type="month" data-patient-field="birthDate"><div class="field-error" data-error-for="birthDate"></div></div>
         <div class="archive-field"><label>年龄</label><input class="archive-input" data-patient-field="age" placeholder="请输入年龄"></div>
         <div class="archive-field"><label>民族</label><select class="archive-select" data-patient-field="ethnicity"><option>汉族</option><option>壮族</option><option>回族</option><option>满族</option><option>其他</option></select></div>
+        <div class="archive-field"><label>婚姻状况</label><select class="archive-select" data-patient-field="maritalStatus"><option value="">请选择</option><option>未婚</option><option>已婚</option><option>离异</option><option>丧偶</option><option>其他</option></select></div>
         <div class="archive-field"><label>职业</label><input class="archive-input" data-patient-field="occupation" placeholder="请输入职业"></div>
-        <div class="archive-field"><label>地区</label><input class="archive-input" data-patient-field="region" placeholder="请输入省市区"></div>
+        <div class="archive-field"><label>常住地址</label><input class="archive-input" data-patient-field="region" placeholder="请输入常住地址"></div>
         <div class="archive-field required"><label>手机号码</label><input class="archive-input" data-patient-field="phone" placeholder="请输入手机号码"><div class="field-error" data-error-for="phone"></div></div>
+        <div class="archive-field"><label>证件类型</label><select class="archive-select" data-patient-field="idType"><option value="">请选择</option><option>居民身份证</option><option>护照</option><option>港澳居民来往内地通行证</option><option>台湾居民来往大陆通行证</option><option>其他</option></select></div>
+        <div class="archive-field"><label>证件号</label><input class="archive-input" data-patient-field="idNumber" placeholder="请输入证件号码"></div>
         <div class="archive-field"><label>就诊号</label><input class="archive-input" data-patient-field="visitNo" readonly></div>
       </div></div></section>
-      <section class="editor-section"><div class="editor-section-head"><h2>健康史 / 生活习惯</h2><button class="section-toggle" data-section-toggle aria-label="折叠"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="m6 9 6 6 6-6"/></svg></button></div><div class="editor-section-body"><div class="form-grid">
-        <div class="archive-field span-2"><label>既往史</label><textarea class="archive-textarea" data-patient-field="pastHistory" placeholder="请输入既往疾病、手术或住院史"></textarea></div>
-        <div class="archive-field"><label>个人史</label><textarea class="archive-textarea" data-patient-field="personalHistory" placeholder="请输入个人史"></textarea></div>
+      <section class="editor-section" data-editor-section="health"><div class="editor-section-head"><h2>健康史</h2><button class="section-toggle" data-section-toggle aria-label="折叠"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="m6 9 6 6 6-6"/></svg></button></div><div class="editor-section-body"><div class="form-grid">
+        <div class="archive-field span-2"><label>既往疾病</label><textarea class="archive-textarea" data-patient-field="pastHistory" placeholder="请输入既往疾病"></textarea></div>
+        <div class="archive-field span-2"><label>手术史</label><textarea class="archive-textarea" data-patient-field="surgeryHistory" placeholder="请输入手术或住院史"></textarea></div>
         <div class="archive-field"><label>过敏史</label><textarea class="archive-textarea" data-patient-field="allergyHistory" placeholder="请输入药物或食物过敏史"></textarea></div>
-        <div class="archive-field span-2"><label>家族史</label><textarea class="archive-textarea" data-patient-field="familyHistory" placeholder="请输入家族疾病史"></textarea></div>
-        <div class="archive-field"><label>饮酒</label><div class="habit-options" data-habit="drinking"><button class="habit-option" data-habit-value="否">否</button><button class="habit-option" data-habit-value="是">是</button><button class="habit-option" data-habit-value="已戒">已戒</button></div></div>
-        <div class="archive-field"><label>吸烟</label><div class="habit-options" data-habit="smoking"><button class="habit-option" data-habit-value="否">否</button><button class="habit-option" data-habit-value="是">是</button><button class="habit-option" data-habit-value="已戒">已戒</button></div></div>
+        <div class="archive-field"><label>家族史</label><textarea class="archive-textarea" data-patient-field="familyHistory" placeholder="请输入家族疾病史"></textarea></div>
+        <div class="archive-field"><label>吸烟史</label><div class="habit-options" data-habit="smoking"><button class="habit-option" data-habit-value="从不">从不</button><button class="habit-option" data-habit-value="偶尔">偶尔</button><button class="habit-option" data-habit-value="经常">经常</button><button class="habit-option" data-habit-value="已戒">已戒</button></div></div>
+        <div class="archive-field"><label>饮酒史</label><div class="habit-options" data-habit="drinking"><button class="habit-option" data-habit-value="从不">从不</button><button class="habit-option" data-habit-value="偶尔">偶尔</button><button class="habit-option" data-habit-value="经常">经常</button><button class="habit-option" data-habit-value="已戒">已戒</button></div></div>
       </div></div></section>
       <section class="editor-section"><div class="editor-section-head"><h2>健康画像</h2><button class="section-toggle" data-section-toggle aria-label="折叠"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="m6 9 6 6 6-6"/></svg></button></div><div class="editor-section-body"><div class="portrait-editor-list" id="portraitEditorRows"></div><button class="portrait-add" data-add-portrait>+ 新增画像条目</button></div></section>
     </main>
@@ -4204,13 +4232,13 @@
     };
 
     const patientRecord = {
-      name: '林嘉慧', gender: '女', birthDate: '2007-06', age: '19', ethnicity: '汉族', occupation: '学生',
-      region: '浙江省杭州市', phone: '13812345628', visitNo: '22071523287', pastHistory: '', personalHistory: '',
-      allergyHistory: '', familyHistory: '', drinking: '否', smoking: '否',
+      name: '林嘉慧', gender: '女', birthDate: '2007-06', age: '19', ethnicity: '汉族', maritalStatus: '未婚', occupation: '学生',
+      region: '浙江省杭州市', phone: '13812345628', idType: '居民身份证', idNumber: '', visitNo: '22071523287', pastHistory: '', surgeryHistory: '', personalHistory: '',
+      allergyHistory: '', familyHistory: '', drinking: '从不', smoking: '从不',
       portraits: []
     };
     const allPatients = [
-      { name: '黄尚忠', visitNo: '22071025959', age: '73', gender: '男', phone: '166****5580', department: '呼吸与危重症医学科', diagnosis: '1.重症肺炎 2.脓毒症 脓毒性休克 3.急性肾功...', tags: ['高血压', '慢性肾病', '高风险'], visitDate: '2026/06/12', team: '呼吸内科随访团队' },
+      { name: '黄尚忠', visitNo: '22071025959', age: '73', gender: '男', birthDate: '1952-07', phone: '166****5580', idType: '', idNumber: '', ethnicity: '汉族', maritalStatus: '', occupation: '退休', region: '--', pastHistory: '甲状腺结节、子宫肌瘤', surgeryHistory: '待补充', allergyHistory: '青霉素过敏', familyHistory: '父亲高血压', smoking: '偶尔', drinking: '经常', department: '呼吸与危重症医学科', diagnosis: '1.重症肺炎 2.脓毒症 脓毒性休克 3.急性肾功...', tags: ['高血压', '慢性肾病', '高风险'], visitDate: '2026/06/12', team: '呼吸内科随访团队', portraits: [] },
       { name: '黄可睿', visitNo: '25052234005', age: '2', gender: '男', phone: '191****2319', department: '小儿科', diagnosis: '出院诊断：上呼吸道感染', tags: ['儿童', '重点随访'], visitDate: '2026/06/12', team: '小儿科随访团队' },
       { name: '冯金柳', visitNo: '11338105', age: '38', gender: '女', phone: '137****8802', department: '妇科', diagnosis: '子宫肌瘤', tags: ['高血压', '妇科随访'], visitDate: '2026/06/12', team: '妇科随访团队' },
       { name: '农业宝', visitNo: '452126195009101818', age: '75', gender: '男', phone: '188****6540', department: '泌尿外科', diagnosis: '慢性肾功能不全', tags: ['糖尿病', '高血压', '慢性肾病'], visitDate: '2026/06/12', team: '泌尿外科随访团队' },
@@ -4240,7 +4268,7 @@
     };
     allPatients.forEach((patient, index) => Object.assign(patient, {
       source: patientDemoProfiles.sources[index % patientDemoProfiles.sources.length],
-      region: ['杭州市', '宁波市', '温州市', '绍兴市'][index % 4],
+      region: patient.region || ['杭州市', '宁波市', '温州市', '绍兴市'][index % 4],
       disease: patient.tags[0],
       chronicDiseases: patient.tags.filter(tag => /糖尿病|高血压|慢性肾病|冠心病|高血脂/.test(tag)).join('、') || '无明确慢性病',
       complications: index % 3 === 0 ? '微血管并发症' : index % 3 === 1 ? '暂无并发症' : '心血管并发症风险',
@@ -5404,7 +5432,7 @@
       advancedPanel?.classList.remove('open');
       renderPatientSmartTags();
     }
-    const patientEditState = { dirty: false, draft: null };
+    const patientEditState = { dirty: false, draft: null, target: null, returnPage: 'patientPage' };
     const patientPageState = { dirty: false, saving: false, publishing: false, editingId: null, creating: false, returnView: 'indicator' };
     const patientIndicatorState = { items: [] };
     let archiveCurrentPatient = allPatients[0];
@@ -6868,16 +6896,26 @@
       if (!archiveCurrentPatient) return;
       const patient = archiveCurrentPatient;
       const archiveValues = {
-        ...patient,
-        birthDate: `${2026 - Number(patient.age) - 1}年07月`,
         ethnicity: '汉族',
+        maritalStatus: '--',
         occupation: Number(patient.age) >= 60 ? '退休' : '--',
-        region: '--'
+        region: '--',
+        pastHistory: '--',
+        surgeryHistory: '待补充',
+        allergyHistory: '--',
+        familyHistory: '--',
+        smoking: '--',
+        drinking: '--',
+        ...patient,
+        birthDate: patient.birthDate ? formatBirthDate(patient.birthDate) : `${2026 - Number(patient.age) - 1}年07月`
       };
       document.querySelectorAll('[data-archive-text]').forEach(node => {
         const value = archiveValues[node.dataset.archiveText];
         node.textContent = value || '--';
+        if (node.matches('.archive-details dd')) node.title = value || '--';
       });
+      document.querySelectorAll('[data-archive-text="region"]').forEach(node => { node.title = archiveValues.region || '--'; });
+      document.querySelectorAll('[data-archive-text="surgeryHistory"]').forEach(node => { node.classList.toggle('archive-pending', !patient.surgeryHistory || patient.surgeryHistory === '待补充'); });
     }
 
     function archiveMetricData(metric) {
@@ -7724,8 +7762,11 @@
       document.getElementById('editorPatientMeta').textContent = `${draft.name || '未填写姓名'} · ${draft.gender || '未选择性别'} · ${draft.age ? `${draft.age}岁` : '年龄未知'} · 就诊号 ${draft.visitNo}`;
     }
 
-    function openPatientEditor() {
-      patientEditState.draft = JSON.parse(JSON.stringify(patientRecord));
+    function openPatientEditor(source = patientRecord, returnPage = 'patientPage', focusSection = '') {
+      patientEditState.target = source;
+      patientEditState.returnPage = returnPage;
+      patientEditState.draft = JSON.parse(JSON.stringify(source));
+      patientEditState.draft.portraits = patientEditState.draft.portraits || [];
       patientEditState.dirty = false;
       document.querySelectorAll('[data-patient-field]').forEach(input => {
         input.value = patientEditState.draft[input.dataset.patientField] || '';
@@ -7743,6 +7784,7 @@
       document.querySelectorAll('.page').forEach(page => page.classList.remove('active'));
       editor.classList.add('active');
       editor.setAttribute('aria-hidden', 'false');
+      if (focusSection) requestAnimationFrame(() => document.querySelector(`[data-editor-section="${focusSection}"]`)?.scrollIntoView({ behavior: 'smooth', block: 'start' }));
     }
 
     function closePatientEditor(force = false) {
@@ -7752,8 +7794,17 @@
       editor.setAttribute('aria-hidden', 'true');
       patientEditState.dirty = false;
       patientEditState.draft = null;
-      document.getElementById('patientPage').classList.add('active');
-      renderPatientDetail();
+      if (patientEditState.returnPage === 'archive') {
+        document.getElementById('listPage').classList.add('active');
+        const archivePage = document.getElementById('patientArchivePage');
+        archivePage.classList.add('active');
+        archivePage.setAttribute('aria-hidden', 'false');
+        document.body.classList.add('patient-archive-open');
+        renderPatientArchive();
+      } else {
+        document.getElementById('patientPage').classList.add('active');
+        renderPatientDetail();
+      }
     }
 
     function validatePatientDraft() {
@@ -7762,7 +7813,7 @@
       if (!draft.name.trim()) errors.name = '请输入姓名';
       if (!draft.gender) errors.gender = '请选择性别';
       if (!draft.birthDate) errors.birthDate = '请选择出生年月';
-      if (!/^1\d{10}$/.test(draft.phone)) errors.phone = '请输入正确的 11 位手机号码';
+      if (!/^1(?:\d{10}|\d{2}\*{4}\d{4})$/.test(draft.phone)) errors.phone = '请输入正确的 11 位手机号码';
       document.querySelectorAll('[data-error-for]').forEach(node => node.textContent = errors[node.dataset.errorFor] || '');
       return Object.keys(errors).length === 0;
     }
@@ -7778,8 +7829,9 @@
       button.classList.add('loading');
       button.textContent = '保存中...';
       setTimeout(() => {
-        Object.assign(patientRecord, JSON.parse(JSON.stringify(patientEditState.draft)));
-        renderPatientDetail();
+        Object.assign(patientEditState.target || patientRecord, JSON.parse(JSON.stringify(patientEditState.draft)));
+        if (patientEditState.returnPage === 'archive') renderPatientArchive();
+        else renderPatientDetail();
         button.classList.remove('loading');
         button.textContent = '保存';
         closePatientEditor(true);
@@ -9318,9 +9370,9 @@
         if (archiveTab.dataset.archiveTab !== 'basic') showToast(`${archiveTab.textContent.trim()}模块已切换`);
         return;
       }
-      const archiveMore = e.target.closest('[data-archive-more]');
-      if (archiveMore) {
-        showToast(archiveMore.dataset.archiveMore === 'basic' ? '更多基本信息已打开' : '更多健康史信息已打开');
+      const archiveEdit = e.target.closest('[data-archive-edit]');
+      if (archiveEdit) {
+        openPatientEditor(archiveCurrentPatient, 'archive', archiveEdit.dataset.archiveEdit);
         return;
       }
       const patientPageButton = e.target.closest('[data-patient-page]');
@@ -14765,8 +14817,8 @@
 <script src="./js/operations-statistics.js?v=20260910-01"></script>
 <script src="./js/team-management.js"></script>
   <script src="./js/health-portrait.js?v=20260910-1"></script>
-<script src="./js/personnel-management.js?v=20260915-1"></script>
-<script src="./js/organization-management.js?v=20260918-5"></script>
+<script src="./js/personnel-management.js?v=20260920-2"></script>
+<script src="./js/organization-management.js?v=20260920-2"></script>
 <script src="./js/workbench.js?v=20260918-3"></script>
 <script src="./js/system-role.js?v=20260918-2"></script>
 <script src="./js/scale-create.js?v=20260916-3"></script>
