@@ -8,7 +8,7 @@
   const API_PATH = "/api/ui-notes";
   const LEGACY_LOCAL_KEY = PROJECT_ID + ":interface-notes:v1";
   const STATIC_DATA_URL = "/data/interface-notes.json";
-  const STATIC_DATA_VERSION = "20260828-v3-10";
+  const STATIC_DATA_VERSION = "20260920-v3-12";
   const TOOL_STATE_KEY = PROJECT_ID + ":ui-note-tool:v3";
   const MAX_ATTACHMENTS_PER_FIELD = 5;
   const MAX_SOURCE_IMAGE_BYTES = 8 * 1024 * 1024;

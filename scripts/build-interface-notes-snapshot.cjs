@@ -3,12 +3,14 @@ const path = require("node:path");
 
 const root = path.resolve(__dirname, "..");
 const sourcePath = path.join(root, "data", "interface-notes.json");
+const publicDataPath = path.join(root, "sites-deploy", "public", "data", "interface-notes.json");
 const outputPaths = [
   path.join(root, "js", "interface-notes-snapshot.js"),
   path.join(root, "sites-deploy", "public", "js", "interface-notes-snapshot.js")
 ];
 
-const notes = JSON.parse(fs.readFileSync(sourcePath, "utf8"));
+const sourceContent = fs.readFileSync(sourcePath, "utf8");
+const notes = JSON.parse(sourceContent);
 if (!Array.isArray(notes)) throw new Error("interface-notes.json 必须是备注数组");
 
 const content = [
@@ -21,5 +23,8 @@ for (const outputPath of outputPaths) {
   fs.mkdirSync(path.dirname(outputPath), { recursive: true });
   fs.writeFileSync(outputPath, content, "utf8");
 }
+
+fs.mkdirSync(path.dirname(publicDataPath), { recursive: true });
+fs.writeFileSync(publicDataPath, sourceContent, "utf8");
 
 console.log(`Built ${notes.length} interface notes into the published snapshot.`);
