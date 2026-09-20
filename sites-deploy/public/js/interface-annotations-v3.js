@@ -8,7 +8,7 @@
   const API_PATH = "/api/ui-notes";
   const LEGACY_LOCAL_KEY = PROJECT_ID + ":interface-notes:v1";
   const STATIC_DATA_URL = "/data/interface-notes.json";
-  const STATIC_DATA_VERSION = "20260920-v3-13";
+  const STATIC_DATA_VERSION = "20260920-v3-14";
   const TOOL_STATE_KEY = PROJECT_ID + ":ui-note-tool:v3";
   const MAX_ATTACHMENTS_PER_FIELD = 5;
   const MAX_SOURCE_IMAGE_BYTES = 8 * 1024 * 1024;
@@ -293,7 +293,10 @@
   }
 
   function resolveContext() {
-    const requested = (location.pathname || "/").split("/").filter(Boolean).pop() || "index.html";
+    const pathname = location.pathname || "/";
+    const requested = pathname.endsWith("/")
+      ? "index.html"
+      : pathname.split("/").filter(Boolean).pop() || "index.html";
     // Sites exposes the published page as both /prototype and /prototype.html.
     // They are the same product screen and must resolve to the same annotation identity.
     const routePath = requested === "prototype" || requested === "prototype.html"

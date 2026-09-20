@@ -28,6 +28,7 @@ assert.match(sourceScript, /loaded\s*=\s*embedded\.concat/);
 assert.match(sourceScript, /retryProjectNotes/);
 assert.match(sourceScript, /uiNotesMode["']\)\s*===\s*["']readonly["']/);
 assert.match(sourceScript, /collapsed:\s*false/);
+assert.match(sourceScript, /pathname\.endsWith\(["']\/["']\)\s*\?\s*["']index\.html["']/);
 assert.match(sourceScript, /data-ui-note-action="place"/);
 assert.match(sourceScript, /data-ui-note-action="toggle"/);
 assert.match(sourceScript, /data-ui-note-action="summary"/);
