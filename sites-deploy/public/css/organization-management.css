@@ -5,7 +5,6 @@
 .organization-tree-card{padding:14px 12px}
 .organization-tree-toolbar{display:flex;gap:8px;margin-bottom:12px}
 .organization-tree-toolbar .ant-input-search{min-width:0;flex:1}
-.organization-tree-toolbar>.ant-btn{flex:none;padding-inline:10px}
 .organization-management-view .ant-tree{font-size:14px}
 .organization-management-view .ant-tree-iconEle{color:var(--blue)}
 .organization-management-view .ant-tree-iconEle svg{width:16px;height:16px}
@@ -15,6 +14,7 @@
 .organization-profile-content{flex:1;min-width:0}
 .organization-profile-title{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:14px}
 .organization-profile-title h2{font-size:18px;margin:0;line-height:1.4;font-weight:600}
+.organization-profile-name{display:flex;align-items:center;gap:8px;min-width:0}.organization-profile-name h2{min-width:0;overflow-wrap:anywhere}
 .organization-detail-card .ant-descriptions-item-label{color:var(--muted);min-width:80px}
 .organization-management-view .ant-descriptions table{table-layout:auto;border-collapse:separate}
 .organization-management-view .ant-descriptions tr{height:auto;border:0;background:transparent}
@@ -77,9 +77,10 @@ body:has(.organization-department-drawer.ant-drawer-open) .ui-note-toolbar:not(.
 
 .organization-management-view .ant-tree .ant-tree-title{font-weight:600}.organization-management-view .ant-tree .organization-tree-institution{font-weight:400}
 
-.organization-region-title{display:flex;align-items:center;justify-content:space-between;gap:4px;min-width:0;width:100%}.organization-region-title>span{font-weight:600}.organization-region-actions{visibility:hidden;flex:none}.organization-region-title:hover .organization-region-actions,.organization-region-title:focus-within .organization-region-actions{visibility:visible}.organization-region-actions .ant-btn{width:24px;height:24px;padding:0}.organization-management-view .ant-tree .ant-tree-node-content-wrapper:has(.organization-region-title){flex:1}.organization-management-view .ant-tree-title:has(.organization-region-title){display:block;width:100%}.organization-tree-toolbar>.ant-btn{padding-inline:15px}.organization-tree-institution{font-weight:400}@media(hover:none){.organization-region-actions{visibility:visible}}
+.organization-region-title{display:flex;align-items:center;min-width:0;width:100%}.organization-region-title>span{font-weight:600}.organization-management-view .ant-tree .ant-tree-node-content-wrapper:has(.organization-region-title){flex:1}.organization-management-view .ant-tree-title:has(.organization-region-title){display:block;width:100%}.organization-tree-institution{font-weight:400}
 
-.organization-management-view .ant-tree .ant-tree-node-content-wrapper:has(.organization-region-title){display:flex;align-items:center;min-width:0}.organization-management-view .ant-tree-title:has(.organization-region-title){flex:1;min-width:0;width:auto}.organization-management-view .ant-tree-treenode:hover .organization-region-actions{visibility:visible}
+.organization-management-view .ant-tree .ant-tree-node-content-wrapper:has(.organization-region-title){display:flex;align-items:center;min-width:0}.organization-management-view .ant-tree-title:has(.organization-region-title){flex:1;min-width:0;width:auto}
+.organization-tree-label{display:flex;align-items:center;min-width:0;overflow:hidden}.organization-tree-label>span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.organization-node-title>span{font-weight:400}.organization-management-view .ant-tree-indent-unit{width:16px}.organization-management-view .ant-tree-switcher{width:18px}.organization-management-view .ant-tree-node-content-wrapper{min-height:28px;padding-inline:2px}
 
 .organization-editor,.organization-editor *{font-size:14px!important}.organization-editor input::placeholder,.organization-editor textarea::placeholder,.organization-editor .ant-input-textarea-show-count::after{font-size:14px!important}
 

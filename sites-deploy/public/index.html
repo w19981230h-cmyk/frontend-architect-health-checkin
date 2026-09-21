@@ -326,6 +326,7 @@
     .patient-batch-team-btn:disabled { cursor: not-allowed; color: rgba(0,0,0,.25); border-color: #d9d9d9; background: rgba(0,0,0,.04); }
     .patient-batch-team-count { min-width: 18px; height: 18px; padding: 0 5px; border-radius: 9px; display: inline-flex; align-items: center; justify-content: center; color: #fff; background: #3154ff; font-size: 11px; line-height: 18px; }
     .patient-batch-team-btn:disabled .patient-batch-team-count { color: rgba(0,0,0,.25); background: rgba(0,0,0,.08); }
+    .patient-create-btn { min-width: 108px; justify-content: center; }
     .patient-smart-filter-btn { height: 36px; padding: 0 14px; border: 1px solid #3154ff; border-radius: 4px; color: #fff; background: #3154ff; display: inline-flex; align-items: center; gap: 7px; font-weight: 600; box-shadow: 0 2px 0 rgba(25,45,145,.08); }
     .patient-smart-filter-btn:hover { border-color: #5975ff; background: #5975ff; }
     .patient-smart-filter-btn:focus-visible { outline: 3px solid rgba(49,84,255,.18); outline-offset: 2px; }
@@ -2811,10 +2812,11 @@
   <link rel="stylesheet" href="./css/statistics-report.css?v=20260911-05">
   <link rel="stylesheet" href="./css/operations-statistics.css?v=20260910-01">
   <link rel="stylesheet" href="./css/operations-statistics-responsive.css?v=20260910-02">
-  <link rel="stylesheet" href="./css/patient-archive-reference.css?v=20260920-2">
+  <link rel="stylesheet" href="./css/patient-archive-reference.css?v=20260920-3">
   <link rel="stylesheet" href="./css/health-portrait.css?v=20260910-1">
 <link rel="stylesheet" href="./css/personnel-management.css?v=20260916-1">
-<link rel="stylesheet" href="./css/organization-management.css?v=20260916-1">
+<link rel="stylesheet" href="./css/organization-management.css?v=20260920-3">
+<link rel="stylesheet" href="./css/workbench.css?v=20260918-4">
 <link rel="stylesheet" href="./css/system-role.css?v=20260916-1">
 <link rel="stylesheet" href="./css/dashboard-latest.css?v=20260913-40">
 <link rel="stylesheet" href="./css/dashboard-updated.css?v=20260913-2">
@@ -2843,7 +2845,7 @@
         <div class="sidebar-bottom"><div class="bottom-line"></div><div class="notice"><div class="notice-left"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M18 8a6 6 0 1 0-12 0c0 7-3 6-3 9h18c0-3-3-2-3-9"/><path d="M10 21h4"/></svg><span>消息通知</span></div><span class="badge">99+</span></div><div class="user-card"><div class="avatar"></div><strong>平台技术人员</strong><svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="m9 18 6-6-6-6"/></svg></div><div class="collapse"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M4 7h14M4 12h10M4 17h14"/></svg></div></div>
       </aside>
       <main class="list-main">
-        <header class="page-title" id="listPageTitle">团队管理</header><section class="list-panel list-view personnel-management-view" id="personnelManagementView" data-persistence-ignore aria-label="人员管理"></section><section class="list-panel list-view organization-management-view" id="organizationManagementView" data-persistence-ignore aria-label="组织管理"></section>
+        <header class="page-title" id="listPageTitle"><span id="listPageTitleText">团队管理</span><div id="globalOrganizationScope" data-persistence-ignore></div></header><section class="list-panel list-view personnel-management-view" id="personnelManagementView" data-persistence-ignore aria-label="人员管理"></section><section class="list-panel list-view organization-management-view" id="organizationManagementView" data-persistence-ignore aria-label="组织管理"></section>
         <section class="list-panel list-view system-role-view" id="systemRoleView" data-persistence-ignore aria-label="系统角色">
           <div class="system-role-shell">
             <div class="system-role-toolbar">
@@ -2965,42 +2967,12 @@
               </div>
             </section>
             <section class="workbench-right">
-              <div class="workbench-stats">
-                <div class="workbench-stat"><span>&#20170;&#26085;&#20837;&#32452;</span><strong>124</strong><b>&#20363;</b><small>&#36739;&#26152;&#26085; <em class="green">+12</em></small></div>
-                <div class="workbench-stat"><span>&#26234;&#33021;&#20998;&#32452;</span><strong>2,431</strong><b>&#20363;</b><small>&#32047;&#35745; <em class="blue">154771</em></small></div>
-                <div class="workbench-stat"><span>&#25163;&#21160;&#20998;&#32452;</span><strong>86</strong><b>&#20363;</b><small>&#24453;&#30830;&#35748; <em class="red">5</em></small></div>
-                <div class="workbench-stat"><span>&#31649;&#29702;&#20013;</span><strong>23</strong><b>&#20154;</b><small>&#38543;&#35775;&#20013; <em class="green">32</em></small></div>
-                <div class="workbench-stat"><span>&#26234;&#33021;&#22806;&#21628;</span><strong>2,431</strong><b>&#27425;</b><small>&#22833;&#36133; <em class="red">3</em></small></div>
-                <div class="workbench-stat"><span>&#20170;&#26085;&#23436;&#25104;</span><strong>7,171</strong><b>&#20363;</b><small>&#26412;&#26376; <em class="blue">12414</em></small></div>
+              <div class="workbench-stats" id="workbenchStats" aria-label="当前机构范围关键指标"></div>
+              <div class="workbench-section-heading">
+                <div><h2 class="workbench-section-title">今日待办</h2><p id="workbenchScopeSummary">按当前机构范围汇总</p></div>
+                <span class="workbench-live-indicator">实时更新</span>
               </div>
-              <h2 class="workbench-section-title">&#20170;&#26085;&#24453;&#21150;</h2>
-              <div class="workbench-todos">
-                <article class="workbench-todo">
-                  <span class="workbench-todo-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="9" cy="7" r="4"/><path d="M3 21v-2a6 6 0 0 1 6-6h1"/><path d="m16 17 2 2 4-5"/></svg></span>
-                  <div class="workbench-todo-main"><div class="workbench-todo-head">&#24453;&#23457;&#26680;&#24739;&#32773;&#20837;&#32452;<span class="workbench-priority">&#39640;&#20248;</span></div><span class="workbench-todo-desc">&#20849;5&#20010;&#39044;&#20998;&#32452;&#24739;&#32773;&#24453;&#23457;&#26680;</span></div>
-                  <button class="workbench-todo-action">&#21069;&#24448;&#23457;&#26680;</button>
-                </article>
-                <article class="workbench-todo">
-                  <span class="workbench-todo-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="4" y="4" width="6" height="6" rx="1.5"/><rect x="14" y="4" width="6" height="6" rx="1.5"/><rect x="4" y="14" width="6" height="6" rx="1.5"/><rect x="14" y="14" width="6" height="6" rx="1.5"/></svg></span>
-                  <div class="workbench-todo-main"><div class="workbench-todo-head">补充患者手机号<span class="workbench-priority">高优</span></div><span class="workbench-todo-desc">共5个预分组患者待审核</span></div>
-                  <button class="workbench-todo-action">再次外呼<span class="split">|</span>前往补充</button>
-                </article>
-                <article class="workbench-todo">
-                  <span class="workbench-todo-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7l.5 2.4a2 2 0 0 1-.5 1.8l-1 1a14 14 0 0 0 5.8 5.8l1-1a2 2 0 0 1 1.8-.5l2.4.5a2 2 0 0 1 1.7 2Z"/><path d="m16 3 5 5"/><path d="m21 3-5 5"/></svg></span>
-                  <div class="workbench-todo-main"><div class="workbench-todo-head">AI外呼失败处理<span class="workbench-priority">高优</span></div><span class="workbench-todo-desc">共5个预分组患者待审核</span></div>
-                  <button class="workbench-todo-action">前往审核</button>
-                </article>
-                <article class="workbench-todo">
-                  <span class="workbench-todo-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="4" y="5" width="16" height="15" rx="2"/><path d="M8 3v4M16 3v4M4 10h16"/><path d="M9 15h4"/><path d="m15 14 2 2 3-4"/></svg></span>
-                  <div class="workbench-todo-main"><div class="workbench-todo-head">今日待办随访任务</div><span class="workbench-todo-desc">共5个预分组患者待审核</span></div>
-                  <button class="workbench-todo-action">前往审核</button>
-                </article>
-                <article class="workbench-todo">
-                  <span class="workbench-todo-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="5" y="3" width="14" height="18" rx="2"/><path d="M9 8h6M9 12h6M9 16h3"/><path d="m15 16 1.5 1.5L20 14"/></svg></span>
-                  <div class="workbench-todo-main"><div class="workbench-todo-head">今日待办随访任务</div><span class="workbench-todo-desc">共5个预分组患者待审核</span></div>
-                  <button class="workbench-todo-action">前往审核</button>
-                </article>
-              </div>
+              <div class="workbench-todos" id="workbenchTodos" aria-live="polite"></div>
             </section>
           </div>
         </section>
@@ -3333,6 +3305,7 @@
             <button class="patient-smart-filter-btn" data-open-smart-filter><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="m12 3 1.6 4.4L18 9l-4.4 1.6L12 15l-1.6-4.4L6 9l4.4-1.6L12 3Z"/><path d="m18 15 .8 2.2L21 18l-2.2.8L18 21l-.8-2.2L15 18l2.2-.8L18 15Z"/></svg>智能筛选</button>
             <button class="patient-filter-btn" data-toggle-patient-filter><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M4 5h16l-6 7v6l-4 2v-8Z"/></svg>更多筛选</button>
             <div class="patient-list-toolbar-actions">
+              <button type="button" class="patient-batch-team-btn patient-create-btn" data-open-patient-create>＋ 建档</button>
               <button class="patient-batch-team-btn" data-open-patient-batch-team disabled>批量入组 <span class="patient-batch-team-count" id="patientBatchTeamCount">0</span></button>
               <button class="icon-button" data-patient-column-setting title="字段设置"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M6 4h4v16H6zM14 4h4v16h-4z"/><path d="M4 8h8M12 16h8"/></svg></button>
             </div>
@@ -3791,13 +3764,22 @@
     <header class="archive-topbar">
       <button class="archive-back" data-archive-back aria-label="返回全部患者"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="m15 18-6-6 6-6"/></svg></button>
       <h1 class="archive-title">患者档案</h1>
+      <div class="archive-more-actions">
+        <button class="archive-more-button" type="button" data-archive-more aria-haspopup="menu" aria-controls="archiveMoreMenu" aria-expanded="false">更多操作<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="m4 6 4 4 4-4"/></svg></button>
+        <div class="archive-more-menu" id="archiveMoreMenu" role="menu" hidden>
+          <button type="button" role="menuitem" data-archive-edit="basic"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="m3 14-.5 3.5L6 17l10-10-3-3L3 14ZM11.5 5.5l3 3"/></svg>编辑基本信息</button>
+          <button type="button" role="menuitem" data-archive-edit="health"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M10 17s-7-4.4-7-9a4 4 0 0 1 7-2.4A4 4 0 0 1 17 8c0 4.6-7 9-7 9Z"/></svg>编辑健康史</button>
+          <button type="button" role="menuitem" data-open-archive-changes><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M5 2.5h7l3 3V17.5H5zM12 2.5v3h3M8 9h4M8 12h4M8 15h3"/></svg>档案变更记录</button>
+          <button type="button" role="menuitem" data-open-patient-create><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M10 3v14M3 10h14"/></svg>建档</button>
+        </div>
+      </div>
     </header>
     <div class="archive-shell">
       <aside class="archive-sidebar">
         <div class="archive-side-cover"></div>
         <div class="archive-side-patient">
           <div class="archive-side-avatar"></div>
-          <div class="archive-side-line"><strong data-archive-text="name">黄尚忠</strong><span data-archive-text="gender">男</span><span><i data-archive-text="age">73</i>岁</span></div>
+          <div class="archive-side-line"><strong data-archive-text="name">黄尚忠</strong><span data-archive-text="gender">男</span><span data-archive-age-wrap><i data-archive-text="age">73</i>岁</span></div>
           <div class="archive-side-phone">联系电话:<span data-archive-text="phone">166****5580</span>　⌁</div>
         </div>
         <nav class="archive-side-nav">
@@ -3813,40 +3795,34 @@
           <section class="archive-overview">
             <div class="archive-person-art" aria-hidden="true"></div>
             <section class="archive-info-card">
-              <div class="archive-info-head"><strong data-archive-text="name">黄尚忠</strong><span data-archive-text="gender">男</span><span><i data-archive-text="age">73</i>岁</span><span>就诊号：<i data-archive-text="visitNo">22071025959</i></span></div>
+              <div class="archive-info-head"><strong data-archive-text="name">黄尚忠</strong><span data-archive-text="gender">男</span><span data-archive-age-wrap><i data-archive-text="age">73</i>岁</span><div id="archivePatientTags" class="archive-patient-tag-list" aria-label="患者标签"></div><span>就诊号：<i data-archive-text="visitNo">22071025959</i></span></div>
               <div class="archive-info-columns">
                 <section class="archive-info-section archive-info-section-basic">
-                  <div class="archive-info-section-head">
-                    <h2 class="archive-info-section-title">基本信息</h2>
-                    <button class="archive-edit-link" type="button" data-archive-edit="basic" aria-label="编辑基本信息"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m4 16.5-.5 4 4-.5L19 8.5 15.5 5 4 16.5Z"/><path d="m13.8 6.7 3.5 3.5"/></svg>编辑</button>
-                  </div>
+                  <div class="archive-info-section-head"><h2 class="archive-info-section-title">基本信息</h2></div>
                   <dl class="archive-details archive-details-basic">
-                    <div><dt>姓名</dt><dd data-archive-text="name">黄尚忠</dd></div>
-                    <div><dt>性别</dt><dd data-archive-text="gender">男</dd></div>
-                    <div><dt>年龄</dt><dd><span data-archive-text="age">73</span>岁</dd></div>
                     <div><dt>出生日期</dt><dd data-archive-text="birthDate">1952年07月</dd></div>
-                    <div><dt>手机号</dt><dd data-archive-text="phone">166****5580</dd></div>
+                    <div><dt>手机号</dt><dd class="archive-sensitive-value"><span data-archive-text="phone">166****5580</span><button type="button" class="archive-reveal-button" data-archive-reveal="phone" aria-label="显示完整手机号" aria-pressed="false"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M2 10s3-5 8-5 8 5 8 5-3 5-8 5-8-5-8-5Z"/><circle cx="10" cy="10" r="2.3"/></svg></button></dd></div>
                     <div><dt>证件类型</dt><dd data-archive-text="idType">--</dd></div>
-                    <div><dt>证件号</dt><dd data-archive-text="idNumber">--</dd></div>
+                    <div><dt>证件号</dt><dd class="archive-sensitive-value"><span data-archive-text="idNumber">--</span><button type="button" class="archive-reveal-button" data-archive-reveal="idNumber" aria-label="显示完整证件号" aria-pressed="false"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M2 10s3-5 8-5 8 5 8 5-3 5-8 5-8-5-8-5Z"/><circle cx="10" cy="10" r="2.3"/></svg></button></dd></div>
                     <div><dt>民族</dt><dd data-archive-text="ethnicity">汉族</dd></div>
                     <div><dt>婚姻状况</dt><dd data-archive-text="maritalStatus">--</dd></div>
                     <div><dt>职业</dt><dd data-archive-text="occupation">退休</dd></div>
-                    <div class="archive-detail-wide"><dt>常住地址</dt><dd data-archive-text="region">--</dd></div>
+                    <div><dt>常住地址</dt><dd data-archive-text="region">--</dd></div>
                   </dl>
                 </section>
                 <section class="archive-info-section archive-info-section-health">
                   <div class="archive-info-section-head">
-                    <h2 class="archive-info-section-title">健康史</h2>
-                    <button class="archive-edit-link" type="button" data-archive-edit="health" aria-label="编辑健康史"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m4 16.5-.5 4 4-.5L19 8.5 15.5 5 4 16.5Z"/><path d="m13.8 6.7 3.5 3.5"/></svg>编辑</button>
+                    <h2 class="archive-info-section-title"><span class="archive-health-title-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M20.8 5.7c-2.1-2.3-5.5-1.8-7.1.5L12 8.4l-1.7-2.2C8.7 3.9 5.3 3.4 3.2 5.7 1 8.2 1.6 12 4 14.2L12 21l8-6.8c2.4-2.2 3-6 0.8-8.5Z"/></svg></span><span>健康史</span></h2>
                   </div>
-                  <dl class="archive-details archive-details-health">
-                    <div class="archive-detail-wide"><dt>既往疾病</dt><dd data-archive-text="pastHistory" title="甲状腺结节、子宫肌瘤">甲状腺结节、子宫肌瘤</dd></div>
-                    <div><dt>手术史</dt><dd class="archive-pending" data-archive-text="surgeryHistory">待补充</dd></div>
-                    <div><dt>过敏史</dt><dd data-archive-text="allergyHistory">青霉素过敏</dd></div>
-                    <div><dt>家族史</dt><dd data-archive-text="familyHistory">父亲高血压</dd></div>
-                    <div><dt>吸烟史</dt><dd data-archive-text="smoking">偶尔</dd></div>
-                    <div><dt>饮酒史</dt><dd data-archive-text="drinking">经常</dd></div>
-                  </dl>
+                  <div class="archive-health-list" role="list" aria-label="健康史记录">
+                    <button type="button" class="archive-health-row tone-blue" role="listitem" data-archive-health-row="pastHistory"><span class="archive-health-row-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M7 3h10v3H7zM5 5h14v16H5zM8 10h8M8 14h8M8 18h5"/></svg></span><span class="archive-health-row-label">既往疾病</span><span class="archive-health-row-value" data-archive-text="pastHistory">高血压、2型糖尿病</span><span class="archive-health-row-count" data-archive-health-count="pastHistory">等4项</span><span class="archive-health-row-arrow" aria-hidden="true">›</span></button>
+                    <button type="button" class="archive-health-row tone-cyan" role="listitem" data-archive-health-row="surgeryHistory"><span class="archive-health-row-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="m5 19 4-1 10-10-3-3L6 15l-1 4Zm9-12 3 3M4 21h8"/></svg></span><span class="archive-health-row-label">手术史</span><span class="archive-health-row-value" data-archive-text="surgeryHistory">胆囊切除术（2021）、阑尾切除术（2018）</span><span class="archive-health-row-count" data-archive-health-count="surgeryHistory">等3项</span><span class="archive-health-row-arrow" aria-hidden="true">›</span></button>
+                    <button type="button" class="archive-health-row tone-indigo" role="listitem" data-archive-health-row="allergyHistory"><span class="archive-health-row-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 3 3.8 18a2 2 0 0 0 1.8 3h12.8a2 2 0 0 0 1.8-3L12 3Z"/><path d="M12 9v5M12 17h.01"/></svg></span><span class="archive-health-row-label">过敏史</span><span class="archive-health-row-value" data-archive-text="allergyHistory">青霉素过敏、尘螨过敏</span><span class="archive-health-row-count" data-archive-health-count="allergyHistory"></span><span class="archive-health-row-arrow" aria-hidden="true">›</span></button>
+                    <button type="button" class="archive-health-row tone-green" role="listitem" data-archive-health-row="familyHistory"><span class="archive-health-row-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 21s-8-4.7-8-11a4 4 0 0 1 7-2.7L12 8.5l1-1.2A4 4 0 0 1 20 10c0 6.3-8 11-8 11Z"/><path d="M8 5V2M16 5V2M4 9H1M23 9h-3"/></svg></span><span class="archive-health-row-label">家族史</span><span class="archive-health-row-value" data-archive-text="familyHistory">父亲-高血压、母亲-2型糖尿病</span><span class="archive-health-row-count" data-archive-health-count="familyHistory">等3项</span><span class="archive-health-row-arrow" aria-hidden="true">›</span></button>
+                    <button type="button" class="archive-health-row tone-blue" role="listitem" data-archive-health-row="medication"><span class="archive-health-row-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="3" y="8" width="18" height="8" rx="4" transform="rotate(-35 12 12)"/><path d="m9 15 6-6"/></svg></span><span class="archive-health-row-label">用药情况</span><span class="archive-health-row-value" data-archive-text="medication">氨氯地平片、二甲双胍片</span><span class="archive-health-row-count" data-archive-health-count="medicationHistory">等3项</span><span class="archive-health-row-arrow" aria-hidden="true">›</span></button>
+                    <button type="button" class="archive-health-row tone-coral" role="listitem" data-archive-health-row="smoking"><span class="archive-health-row-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M3 14h13v4H3zM18 14h3v4h-3zM15 7c3 0 4 2 4 4M4 4l16 16"/></svg></span><span class="archive-health-row-label">吸烟史</span><span class="archive-health-row-value" data-archive-text="smoking">已戒烟（吸烟20年，2023年戒烟）</span><span class="archive-health-row-count" data-archive-health-count="smoking"></span><span class="archive-health-row-arrow" aria-hidden="true">›</span></button>
+                    <button type="button" class="archive-health-row tone-orange" role="listitem" data-archive-health-row="drinking"><span class="archive-health-row-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M6 3h12l-2 18H8L6 3Zm1 5h10M10 12h4"/></svg></span><span class="archive-health-row-label">饮酒史</span><span class="archive-health-row-value" data-archive-text="drinking">偶尔饮酒（1-2次/周）</span><span class="archive-health-row-count" data-archive-health-count="drinking"></span><span class="archive-health-row-arrow" aria-hidden="true">›</span></button>
+                  </div>
                 </section>
               </div>
             </section>
@@ -4186,6 +4162,96 @@
     </div>
   </div>
 
+  <div class="modal-mask archive-edit-modal-mask" id="archiveBasicEditModal" aria-hidden="true">
+    <div class="archive-edit-modal" role="dialog" aria-modal="true" aria-labelledby="archiveBasicEditTitle">
+      <div class="archive-edit-modal-head">
+        <div><h2 id="archiveBasicEditTitle">编辑基本信息</h2><p>修改后仅更新患者的基本资料</p></div>
+        <button class="archive-edit-modal-close" type="button" data-close-archive-edit aria-label="关闭编辑基本信息抽屉">×</button>
+      </div>
+      <div class="archive-edit-modal-body">
+        <div class="archive-edit-form-grid">
+          <label class="archive-edit-field"><span>姓名</span><input type="text" maxlength="50" data-archive-modal-field="name" placeholder="请输入姓名" aria-required="true"><small data-archive-modal-error="name"></small></label>
+          <label class="archive-edit-field"><span>性别</span><select data-archive-modal-field="gender" aria-required="true"><option value="">请选择</option><option>男</option><option>女</option><option>其他</option></select><small data-archive-modal-error="gender"></small></label>
+          <label class="archive-edit-field"><span>年龄</span><input type="number" min="0" max="130" step="1" data-archive-modal-field="age" placeholder="请输入年龄" aria-required="true"><small data-archive-modal-error="age"></small></label>
+          <label class="archive-edit-field"><span>出生日期</span><input type="month" data-archive-modal-field="birthDate"><small data-archive-modal-error="birthDate"></small></label>
+          <label class="archive-edit-field"><span>手机号</span><input type="text" data-archive-modal-field="phone" placeholder="请输入手机号"><small data-archive-modal-error="phone"></small></label>
+          <label class="archive-edit-field"><span>证件类型</span><select data-archive-modal-field="idType"><option value="">请选择</option><option>居民身份证</option><option>护照</option><option>港澳居民来往内地通行证</option><option>台湾居民来往大陆通行证</option><option>其他</option></select><small data-archive-modal-error="idType"></small></label>
+          <label class="archive-edit-field"><span>证件号</span><input type="text" maxlength="32" data-archive-modal-field="idNumber" placeholder="请输入证件号"><small data-archive-modal-error="idNumber"></small></label>
+          <label class="archive-edit-field"><span>民族</span><select data-archive-modal-field="ethnicity"><option value="">请选择</option><option>汉族</option><option>壮族</option><option>回族</option><option>满族</option><option>其他</option></select></label>
+          <label class="archive-edit-field"><span>婚姻状况</span><select data-archive-modal-field="maritalStatus"><option value="">请选择</option><option>未婚</option><option>已婚</option><option>离异</option><option>丧偶</option><option>其他</option></select></label>
+          <label class="archive-edit-field"><span>职业</span><input type="text" maxlength="50" data-archive-modal-field="occupation" placeholder="请输入职业"></label>
+          <label class="archive-edit-field archive-edit-field-wide"><span>常住地址</span><input type="text" maxlength="200" data-archive-modal-field="region" placeholder="请输入常住地址"></label>
+        </div>
+      </div>
+      <div class="archive-edit-modal-foot"><button type="button" class="secondary-btn" data-close-archive-edit>取消</button><button type="button" class="confirm-btn" data-save-archive-edit="basic">保存更改</button></div>
+    </div>
+  </div>
+
+  <div class="modal-mask archive-edit-modal-mask" id="archiveHealthEditModal" aria-hidden="true">
+    <div class="archive-edit-modal archive-health-detail-modal" role="dialog" aria-modal="true" aria-labelledby="archiveHealthEditTitle">
+      <div class="archive-edit-modal-head">
+        <div><h2 id="archiveHealthEditTitle">编辑健康史</h2><p>按分类维护记录，完成后统一保存</p></div>
+        <button class="archive-edit-modal-close" type="button" data-close-archive-edit aria-label="关闭健康史详情抽屉">×</button>
+      </div>
+      <div class="archive-health-detail-tabs" id="archiveHealthDetailTabs" role="tablist" aria-label="健康史分类"></div>
+      <div class="archive-edit-modal-body archive-health-detail-body" id="archiveHealthDetailBody"></div>
+      <div class="archive-edit-modal-foot"><button type="button" class="secondary-btn" data-close-archive-edit>取消</button><button type="button" class="confirm-btn" data-save-health-history disabled>保存更改</button></div>
+    </div>
+  </div>
+  <div class="modal-mask archive-health-exit-mask" id="archiveHealthExitConfirm" aria-hidden="true">
+    <div class="archive-health-exit-dialog" role="alertdialog" aria-modal="true" aria-labelledby="archiveHealthExitTitle">
+      <h2 id="archiveHealthExitTitle">当前修改尚未保存，确认退出吗？</h2>
+      <p>退出后，本次对健康史的修改将不会保留。</p>
+      <div><button type="button" class="secondary-btn" data-continue-health-edit>继续编辑</button><button type="button" class="confirm-btn" data-discard-health-edit>放弃修改</button></div>
+    </div>
+  </div>
+  <div class="modal-mask archive-health-exit-mask archive-health-delete-mask" id="archiveHealthDeleteConfirm" aria-hidden="true">
+    <div class="archive-health-exit-dialog" role="alertdialog" aria-modal="true" aria-labelledby="archiveHealthDeleteTitle" aria-describedby="archiveHealthDeleteDescription">
+      <h2 id="archiveHealthDeleteTitle">确认删除健康史记录？</h2>
+      <p id="archiveHealthDeleteDescription"></p>
+      <div><button type="button" class="secondary-btn" data-cancel-health-delete>取消</button><button type="button" class="confirm-btn" data-confirm-health-delete>确认删除</button></div>
+    </div>
+  </div>
+
+  <div class="modal-mask archive-edit-modal-mask" id="archiveChangesModal" aria-hidden="true">
+    <div class="archive-edit-modal archive-changes-modal" role="dialog" aria-modal="true" aria-labelledby="archiveChangesTitle">
+      <div class="archive-edit-modal-head"><div><h2 id="archiveChangesTitle">档案变更记录</h2><p id="archiveChangesPatientName"></p></div><button class="archive-edit-modal-close" type="button" data-close-archive-changes aria-label="关闭档案变更记录">×</button></div>
+      <div class="archive-edit-modal-body archive-changes-body" id="archiveChangesList" aria-live="polite"></div>
+    </div>
+  </div>
+
+  <div class="modal-mask archive-edit-modal-mask" id="patientCreateModal" aria-hidden="true">
+    <div class="archive-edit-modal patient-create-drawer" role="dialog" aria-modal="true" aria-labelledby="patientCreateTitle">
+      <div class="archive-edit-modal-head"><div><h2 id="patientCreateTitle">快速建档</h2><p>先创建患者主档，健康史可在建档后继续完善</p></div><button class="archive-edit-modal-close" type="button" data-close-patient-create aria-label="关闭建档抽屉">×</button></div>
+      <div class="archive-edit-modal-body patient-create-body">
+        <form id="patientCreateForm" novalidate>
+          <section class="patient-create-section"><h3>基础信息</h3><div class="patient-create-grid">
+            <label class="patient-create-field"><span>患者来源 <b>*</b></span><select name="source"><option value="">请选择患者来源</option><option>门诊</option><option>住院</option><option>体检中心</option><option>社区筛查</option><option>义诊</option><option>医护手工建档</option><option>其他</option></select><small data-create-error="source"></small></label>
+            <label class="patient-create-field"><span>姓名 <b>*</b></span><input name="name" autocomplete="name" placeholder="请输入患者姓名"><small data-create-error="name"></small></label>
+            <label class="patient-create-field"><span>证件类型 <b>*</b></span><select name="idType"><option>居民身份证</option><option>护照</option><option>港澳居民来往内地通行证</option><option>台湾居民来往大陆通行证</option><option>其他</option></select></label>
+            <label class="patient-create-field"><span>证件号码 <b>*</b></span><input name="idNumber" autocomplete="off" placeholder="请输入证件号码"><small data-create-error="idNumber"></small></label>
+            <div class="patient-create-duplicate" id="patientCreateDuplicate" hidden></div>
+            <label class="patient-create-field">性别<select name="gender"><option value="">请选择</option><option>男</option><option>女</option></select></label>
+            <label class="patient-create-field">出生日期<input name="birthDate" type="date" max="2026-09-21"><small id="patientCreateAgeHint">年龄将根据出生日期自动计算</small></label>
+            <label class="patient-create-field"><span>手机号 <b>*</b></span><input name="phone" type="text" inputmode="numeric" autocomplete="tel" maxlength="11" placeholder="请输入11位手机号"><small data-create-error="phone"></small></label>
+            <p class="patient-create-phone-tip" id="patientCreatePhoneTip" hidden>该手机号已关联其他患者，请确认是否继续使用</p>
+          </div>
+          <details class="patient-create-collapse patient-create-more-inline" id="patientCreateMore"><summary>更多基本信息（选填）</summary><div class="patient-create-grid">
+            <label class="patient-create-field">民族<select name="ethnicity"><option value="">请选择</option><option>汉族</option><option>壮族</option><option>回族</option><option>满族</option><option>苗族</option><option>其他</option></select></label>
+            <label class="patient-create-field">婚姻状况<select name="maritalStatus"><option value="">请选择</option><option>未婚</option><option>已婚</option><option>离异</option><option>丧偶</option><option>其他</option></select></label>
+            <label class="patient-create-field">职业<input name="occupation" placeholder="请输入职业"></label>
+            <div class="patient-create-address"><span>常住地址</span><div><select name="province" aria-label="省份"><option value="">请选择省份</option></select><select name="city" aria-label="城市" disabled><option value="">请先选择省份</option></select><select name="district" aria-label="区县" disabled><option value="">请先选择城市</option></select></div><input name="addressDetail" placeholder="请输入详细地址"></div>
+          </div></details></section>
+          <details class="patient-create-collapse" id="patientCreateHealth"><summary>健康史（选填）</summary><p>仅快速补充既往疾病、手术史与过敏史，其他健康史可建档后完善。</p><div id="patientCreateHealthGroups"></div></details>
+        </form>
+      </div>
+      <div class="archive-edit-modal-foot"><button type="button" class="secondary-btn" data-close-patient-create>取消</button><button type="button" class="confirm-btn" id="patientCreateSubmit" data-submit-patient-create>创建档案</button></div>
+    </div>
+  </div>
+  <div class="modal-mask archive-health-exit-mask" id="patientCreateSuccess" aria-hidden="true">
+    <div class="archive-health-exit-dialog patient-create-success" role="dialog" aria-modal="true" aria-labelledby="patientCreateSuccessTitle"><div class="patient-create-success-icon">✓</div><h2 id="patientCreateSuccessTitle">患者档案创建成功</h2><p id="patientCreateSuccessSummary"></p><div><button type="button" class="secondary-btn" data-patient-create-next="continue">继续建档</button><button type="button" class="secondary-btn" data-patient-create-next="manage">纳入管理</button><button type="button" class="confirm-btn" data-patient-create-next="archive">进入患者档案</button></div></div>
+  </div>
+
   <div class="meal-detail-mask" id="mealDetailMask" data-close-meal-detail aria-hidden="true"></div>
   <aside class="meal-detail-drawer" id="mealDetailDrawer" aria-hidden="true" aria-labelledby="mealDetailTitle">
     <header class="meal-detail-head"><h2 id="mealDetailTitle">餐次详情</h2><button class="meal-detail-close" data-close-meal-detail aria-label="关闭餐次详情">×</button></header>
@@ -4267,7 +4333,7 @@
       portraits: []
     };
     const allPatients = [
-      { name: '黄尚忠', visitNo: '22071025959', age: '73', gender: '男', birthDate: '1952-07', phone: '166****5580', idType: '', idNumber: '', ethnicity: '汉族', maritalStatus: '', occupation: '退休', region: '--', pastHistory: '甲状腺结节、子宫肌瘤', surgeryHistory: '待补充', allergyHistory: '青霉素过敏', familyHistory: '父亲高血压', smoking: '偶尔', drinking: '经常', department: '呼吸与危重症医学科', diagnosis: '1.重症肺炎 2.脓毒症 脓毒性休克 3.急性肾功...', tags: ['高血压', '慢性肾病', '高风险'], visitDate: '2026/06/12', team: '呼吸内科随访团队', portraits: [] },
+      { name: '黄尚忠', visitNo: '22071025959', age: '73', gender: '男', birthDate: '1952-07', phone: '166****5580', idType: '', idNumber: '', ethnicity: '汉族', maritalStatus: '', occupation: '退休', region: '--', pastHistory: '高血压、2型糖尿病', pastHistoryCount: '等4项', surgeryHistory: '胆囊切除术（2021）、阑尾切除术（2018）', surgeryHistoryCount: '等3项', allergyHistory: '青霉素过敏、尘螨过敏', familyHistory: '父亲-高血压、母亲-2型糖尿病', familyHistoryCount: '等3项', medication: '氨氯地平片、二甲双胍片', medicationHistoryCount: '等3项', smoking: '已戒烟（吸烟20年，2023年戒烟）', drinking: '偶尔饮酒（1-2次/周）', department: '呼吸与危重症医学科', diagnosis: '1.重症肺炎 2.脓毒症 脓毒性休克 3.急性肾功...', tags: ['高血压', '慢性肾病', '高风险'], visitDate: '2026/06/12', team: '呼吸内科随访团队', portraits: [] },
       { name: '黄可睿', visitNo: '25052234005', age: '2', gender: '男', phone: '191****2319', department: '小儿科', diagnosis: '出院诊断：上呼吸道感染', tags: ['儿童', '重点随访'], visitDate: '2026/06/12', team: '小儿科随访团队' },
       { name: '冯金柳', visitNo: '11338105', age: '38', gender: '女', phone: '137****8802', department: '妇科', diagnosis: '子宫肌瘤', tags: ['高血压', '妇科随访'], visitDate: '2026/06/12', team: '妇科随访团队' },
       { name: '农业宝', visitNo: '452126195009101818', age: '75', gender: '男', phone: '188****6540', department: '泌尿外科', diagnosis: '慢性肾功能不全', tags: ['糖尿病', '高血压', '慢性肾病'], visitDate: '2026/06/12', team: '泌尿外科随访团队' },
@@ -4286,6 +4352,50 @@
       { name: '郑志强', visitNo: '24062011852', age: '55', gender: '男', phone: '189****2534', department: '全科医学科', diagnosis: '代谢综合征', tags: ['糖尿病前期', '高血压', '肥胖'], visitDate: '2026/05/30', team: '全科慢病管理团队' },
       { name: '何雅琴', visitNo: '23110408269', age: '60', gender: '女', phone: '158****8493', department: '肾内科', diagnosis: '慢性肾脏病2期', tags: ['慢性肾病', '糖尿病', '定期复查'], visitDate: '2026/05/29', team: '肾内科随访团队' }
     ];
+    const patientListInitialCount = allPatients.length;
+    allPatients[0].healthHistoryRecords = {
+      pastHistory: [
+        { name: '高血压', time: '2022-03-15' },
+        { name: '2型糖尿病', time: '2024-01-08' },
+        { name: '冠心病', time: '2021-06-20' },
+        { name: '慢性肾病', time: '2023-08-12' }
+      ],
+      surgeryHistory: [
+        { name: '胆囊切除术', time: '2021-06-18' },
+        { name: '阑尾切除术', time: '2018-04-09' },
+        { name: '白内障手术', time: '2020-10-22' }
+      ],
+      allergyHistory: [
+        { allergen: '青霉素', allergyType: '药物过敏' },
+        { allergen: '虾', allergyType: '食物过敏' }
+      ],
+      familyHistory: [
+        { relation: '父亲', disease: '高血压' },
+        { relation: '母亲', disease: '2型糖尿病' },
+        { relation: '兄长', disease: '冠心病' }
+      ],
+      medication: [
+        { name: '氨氯地平片', frequency: '每日1次', dose: '5mg', time: '' },
+        { name: '二甲双胍片', frequency: '', dose: '', time: '' },
+        { name: '阿司匹林肠溶片', frequency: '', dose: '', time: '' }
+      ],
+      smoking: [{ status: '已戒烟', amount: '10', years: '20', quitTime: '2025-01' }],
+      drinking: [{ status: '经常饮酒', frequency: '3', years: '10', quitTime: '' }]
+    };
+    // 列表源数据只有脱敏号码；以下完整值仅用于本地界面演示，不能视为真实患者资料。
+    allPatients.forEach((patient, index) => {
+      patient.phoneFull = String(patient.phone || '').replace(/\*{4}/, '0000');
+      patient.phoneIsDemo = true;
+      patient.idType = patient.idType || '居民身份证';
+      const birthYear = patient.birthDate?.slice(0, 4) || String(2026 - Number(patient.age || 0));
+      const birthMonth = patient.birthDate?.slice(5, 7) || '07';
+      const sequence = String(index * 2 + (patient.gender === '男' ? 1 : 2)).padStart(3, '0');
+      const first17 = `450101${birthYear}${birthMonth}15${sequence}`;
+      const weights = [7, 9, 10, 5, 8, 4, 2, 1, 6, 3, 7, 9, 10, 5, 8, 4, 2];
+      const sum = [...first17].reduce((total, digit, position) => total + Number(digit) * weights[position], 0);
+      patient.idNumber = first17 + '10X98765432'[sum % 11];
+      patient.idNumberIsDemo = true;
+    });
     const patientDemoProfiles = {
       sources: ['门诊', '住院', '体检中心', '社区筛查', '人工添加'],
       checkins: ['正常打卡', '偶有漏打卡', '连续未打卡', '尚未开始'],
@@ -5462,6 +5572,41 @@
       renderPatientSmartTags();
     }
     const patientEditState = { dirty: false, draft: null, target: null, returnPage: 'patientPage' };
+    const archiveEditState = { section: '', draft: null, trigger: null };
+    const archiveEditFields = { basic: ['name', 'gender', 'age', 'birthDate', 'phone', 'idType', 'idNumber', 'ethnicity', 'maritalStatus', 'occupation', 'region'] };
+    const healthHistoryConfig = {
+      pastHistory: { label: '既往疾病', addLabel: '新增疾病', fields: [{ key: 'name', label: '疾病名称', required: true, placeholder: '搜索或输入疾病名称', options: ['高血压', '2型糖尿病', '冠心病', '慢性肾病', '其他'] }, { key: 'time', label: '疾病时间', type: 'date', required: true }] },
+      surgeryHistory: { label: '手术史', addLabel: '新增手术', fields: [{ key: 'name', label: '手术名称', required: true, placeholder: '如：胆囊切除术' }, { key: 'time', label: '手术时间', type: 'date', required: true }] },
+      allergyHistory: { label: '过敏史', addLabel: '新增过敏信息', fields: [{ key: 'allergyType', label: '过敏类型', required: true, options: ['药物过敏', '食物过敏', '环境/接触物过敏', '其他'] }, { key: 'allergen', label: '过敏原', required: true, placeholder: '如：青霉素' }] },
+      familyHistory: { label: '家族史', addLabel: '新增家族史', fields: [{ key: 'relation', label: '亲属关系', required: true, options: ['父亲', '母亲', '兄弟', '姐妹', '子女', '祖父', '祖母', '外祖父', '外祖母', '其他'] }, { key: 'disease', label: '疾病名称', required: true, placeholder: '如：高血压' }] },
+      medication: { label: '用药情况', addLabel: '新增用药', fields: [{ key: 'name', label: '用药名称', required: true, placeholder: '如：氨氯地平片' }, { key: 'frequency', label: '用药频率', placeholder: '如：每日1次' }, { key: 'dose', label: '用药剂量', placeholder: '如：5mg' }, { key: 'time', label: '用药时间', placeholder: '如：早餐后、睡前' }] },
+      smoking: { label: '吸烟史', singleton: true, fields: [{ key: 'status', label: '吸烟状态', required: true, options: ['从不吸烟', '偶尔吸烟', '经常吸烟', '已戒烟'] }, { key: 'amount', label: '每日吸烟量（支/天）', type: 'number', min: '0', when: 'active', required: true }, { key: 'years', label: '吸烟年限（年）', type: 'number', min: '0', when: 'active', required: true }, { key: 'quitTime', label: '戒烟时间', type: 'month', when: '已戒烟', required: true }] },
+      drinking: { label: '饮酒史', singleton: true, fields: [{ key: 'status', label: '饮酒状态', required: true, options: ['从不饮酒', '偶尔饮酒', '经常饮酒', '已戒酒'] }, { key: 'frequency', label: '饮酒频率（次/周）', type: 'number', min: '0', when: 'active', required: true }, { key: 'years', label: '饮酒年限（年）', type: 'number', min: '0', when: 'active', required: true }, { key: 'quitTime', label: '戒酒时间', type: 'month', when: '已戒酒', required: true }] }
+    };
+    const healthHistoryState = { activeType: 'pastHistory', records: null, original: null, editors: {}, singletonEditing: new Set() };
+    let healthDeletePending = null;
+    const archiveSensitiveState = { phone: false, idNumber: false };
+    let archiveChangesTrigger = null;
+    allPatients[0].archiveChangeRecords = [
+      { time: '2026-09-21 14:32', actor: '张护士', source: 'B端', section: '基本信息', action: '修改', changes: [
+        { label: '手机号', before: '166**5580', after: '138**6688' },
+        { label: '职业', before: '退休', after: '个体经营' },
+        { label: '常住地址', before: '南宁市青秀区', after: '南宁市江南区' }
+      ], isDemo: true },
+      { time: '2026-09-20 18:16', actor: '患者本人', source: 'C端', section: '手术史', action: '新增', changes: [
+        { label: '手术名称', value: '胆囊切除术' }, { label: '手术时间', value: '2021-06' }
+      ], isDemo: true },
+      { time: '2026-09-18 10:25', actor: '李护士', source: 'B端', section: '吸烟史', action: '修改', changes: [
+        { label: '吸烟状态', before: '经常吸烟', after: '已戒烟' },
+        { label: '戒烟时间', before: '--', after: '2026-08' }
+      ], isDemo: true },
+      { time: '2026-09-15 09:30', actor: '患者本人', source: 'C端', section: '既往疾病', action: '新增', changes: [
+        { label: '疾病名称', value: '高血压' }, { label: '疾病时间', value: '2022-03' }
+      ], isDemo: true },
+      { time: '2026-09-10 16:20', actor: '张护士', source: 'B端', section: '家族史', action: '删除', changes: [
+        { label: '亲属关系', value: '父亲' }, { label: '疾病名称', value: '高血压' }
+      ], isDemo: true }
+    ];
     const patientPageState = { dirty: false, saving: false, publishing: false, editingId: null, creating: false, returnView: 'indicator' };
     const patientIndicatorState = { items: [] };
     let archiveCurrentPatient = allPatients[0];
@@ -5642,7 +5787,7 @@
       });
       document.getElementById('patientListRows').innerHTML = rows.length ? rows.map(patient => `<tr class="${patientBatchSelection.has(patient.visitNo) ? 'selected' : ''}" data-patient-row="${esc(patient.visitNo)}" tabindex="0" role="link" aria-label="查看${esc(patient.name)}的患者档案">
         <td class="patient-select-col"><input class="patient-row-check" type="checkbox" data-patient-select="${esc(patient.visitNo)}" aria-label="选择患者${esc(patient.name)}" ${patientBatchSelection.has(patient.visitNo) ? 'checked' : ''}></td>
-        <td class="patient-name-col"><div class="patient-name-with-tags"><button type="button" class="patient-name-link" data-open-patient-record="${esc(patient.visitNo)}" aria-label="查看${esc(patient.name)}的患者档案">${esc(patient.name)}</button>${renderPatientTags(patient.tags)}</div></td><td>${esc(patient.visitNo)}</td><td>${esc(patient.age)}岁</td><td>${esc(patient.gender)}</td>
+        <td class="patient-name-col"><div class="patient-name-with-tags"><button type="button" class="patient-name-link" data-open-patient-record="${esc(patient.visitNo)}" aria-label="查看${esc(patient.name)}的患者档案">${esc(patient.name)}</button>${renderPatientTags(patient.tags)}</div></td><td>${esc(patient.visitNo)}</td><td>${patient.age ? esc(patient.age) + '岁' : '--'}</td><td>${esc(patient.gender)}</td>
         <td><span class="patient-phone-mask">${esc(patient.phone)} <span class="patient-phone-eye">⌁</span></span></td><td class="institution-col" title="${esc(patient.managementInstitution || '--')}">${esc(patient.managementInstitution || '--')}</td><td>${esc(patient.department)}</td>
         <td class="patient-diagnosis" title="${esc(patient.diagnosis)}">${esc(patient.diagnosis)}</td><td>${esc(patient.visitDate)}</td><td title="${esc(patient.team)}">${esc(patient.team)}</td>
         <td><span class="patient-row-actions"><button data-open-patient-record="${esc(patient.visitNo)}">档案</button><button data-select-patient-group="${esc(patient.visitNo)}">选择分组</button><button type="button" class="patient-referral-action" data-open-referral="${esc(patient.visitNo)}">转诊申请</button></span></td>
@@ -5654,7 +5799,7 @@
         document.getElementById('patientFilterResultCount').textContent = `命中 ${rows.length} 位患者`;
       }
       const total = document.querySelector('.patient-list-pager .total');
-      if (total) total.textContent = patientListState.smartConditions.length || keyword || patientListState.team ? `共 ${rows.length} 条` : '共 78593 条';
+      if (total) total.textContent = patientListState.smartConditions.length || keyword || patientListState.team ? `共 ${rows.length} 条` : `共 ${78593 + allPatients.length - patientListInitialCount} 条`;
       updatePatientBatchSelectionUI(rows.map(patient => patient.visitNo));
       renderPatientSmartTags();
     }
@@ -6018,9 +6163,9 @@
       document.getElementById('statisticsReportView')?.classList.toggle('active', isStatisticsReport);
       document.getElementById('operationsStatisticsView')?.classList.toggle('active', isOperationsStatistics);
       document.getElementById('knowledgeDetailView')?.classList.remove('active');
-      if (document.getElementById('listPageTitle')) document.getElementById('listPageTitle').textContent = isHealthTasks ? '健康任务' : isCheckinEvaluation ? '评价任务' : isPatients ? '全部患者' : isIndicator ? '指标模板' : isScale ? '量表管理' : '方案管理';
+      if (document.getElementById('listPageTitleText')) document.getElementById('listPageTitleText').textContent = isHealthTasks ? '健康任务' : isCheckinEvaluation ? '评价任务' : isPatients ? '全部患者' : isIndicator ? '指标模板' : isScale ? '量表管理' : '方案管理';
       const listTitleMap = { personnel: '人员管理', organization: '组织管理', systemRoles: '系统角色', workbench: '工作台', healthTasks: '健康任务', checkinEvaluation: '评价任务', patients: '全部患者', indicator: '指标模板', teams: '团队管理', scale: '量表管理', plans: '方案管理', evaluationReports: '评估报告', articles: '文章管理', knowledge: '知识库', statisticsReport: '数据报表', operationsStatistics: '统计报表', dashboardLatest: '数据看板（最新稿）', dashboardUpdated: '数据看板更新版' };
-      if (document.getElementById('listPageTitle')) document.getElementById('listPageTitle').textContent = listTitleMap[view] || '方案管理';
+      if (document.getElementById('listPageTitleText')) document.getElementById('listPageTitleText').textContent = listTitleMap[view] || '方案管理';
       document.querySelector('.list-main')?.classList.toggle('workbench-main', isWorkbench);
       document.querySelector('.list-main')?.classList.toggle('statistics-report-main', isStatisticsReport || isOperationsStatistics);
       document.querySelector('.list-main')?.classList.toggle('operations-statistics-main', isOperationsStatistics);
@@ -6906,45 +7051,583 @@
       if (key === 'phone') return value || '--';
       return value || '--';
     }
-
+    function maskArchiveSensitive(key, value) {
+      const text = String(value || '');
+      if (!text) return '--';
+      if (key === 'phone') return text.length >= 7 ? text.slice(0, 3) + '****' + text.slice(-4) : text;
+      return text.length > 8 ? text.slice(0, 4) + '**********' + text.slice(-4) : text;
+    }
     function renderPatientDetail() {
       document.querySelectorAll('[data-patient-text]').forEach(node => {
-        const key = node.dataset.patientText;
-        node.textContent = patientDisplayValue(key, patientRecord[key]);
+        node.textContent = patientDisplayValue(node.dataset.patientText, patientRecord[node.dataset.patientText]);
       });
       const groups = { diagnosis: [], abnormal: [], risk: [] };
       patientRecord.portraits.forEach(item => groups[item.type]?.push(item));
       [['diagnosis','diagnosisSummary','diagnosisCount'],['abnormal','abnormalSummary','abnormalCount'],['risk','riskSummary','riskCount']].forEach(([type, summaryId, countId]) => {
-        const items = groups[type];
-        document.getElementById(summaryId).textContent = items.length ? items.map(item => item.name).join('、') : '--';
-        document.getElementById(countId).textContent = `共 ${items.length} 条`;
+        document.getElementById(summaryId).textContent = groups[type].map(item => item.name).join('、') || '--';
+        document.getElementById(countId).textContent = '共 ' + groups[type].length + ' 条';
       });
     }
-
     function renderPatientArchive() {
       if (!archiveCurrentPatient) return;
       const patient = archiveCurrentPatient;
-      const archiveValues = {
-        ethnicity: '汉族',
-        maritalStatus: '--',
-        occupation: Number(patient.age) >= 60 ? '退休' : '--',
-        region: '--',
-        pastHistory: '--',
-        surgeryHistory: '待补充',
-        allergyHistory: '--',
-        familyHistory: '--',
-        smoking: '--',
-        drinking: '--',
-        ...patient,
-        birthDate: patient.birthDate ? formatBirthDate(patient.birthDate) : `${2026 - Number(patient.age) - 1}年07月`
-      };
+      syncHealthHistorySummary(patient);
       document.querySelectorAll('[data-archive-text]').forEach(node => {
-        const value = archiveValues[node.dataset.archiveText];
-        node.textContent = value || '--';
-        if (node.matches('.archive-details dd')) node.title = value || '--';
+        const key = node.dataset.archiveText;
+        node.textContent = key === 'birthDate' ? formatBirthDate(patient.birthDate)
+          : key === 'phone' ? (archiveSensitiveState.phone ? patient.phoneFull : maskArchiveSensitive('phone', patient.phoneFull))
+          : key === 'idNumber' ? (archiveSensitiveState.idNumber ? patient.idNumber : maskArchiveSensitive('idNumber', patient.idNumber))
+          : (patient[key] || '--');
       });
-      document.querySelectorAll('[data-archive-text="region"]').forEach(node => { node.title = archiveValues.region || '--'; });
-      document.querySelectorAll('[data-archive-text="surgeryHistory"]').forEach(node => { node.classList.toggle('archive-pending', !patient.surgeryHistory || patient.surgeryHistory === '待补充'); });
+      document.querySelectorAll('[data-archive-age-wrap]').forEach(node => { node.lastChild.textContent = patient.age ? '岁' : ''; });
+      document.querySelectorAll('[data-archive-reveal]').forEach(button => {
+        const key = button.dataset.archiveReveal;
+        button.setAttribute('aria-pressed', String(archiveSensitiveState[key]));
+        button.setAttribute('aria-label', (archiveSensitiveState[key] ? '隐藏' : '显示完整') + (key === 'phone' ? '手机号' : '证件号'));
+      });
+      document.querySelectorAll('[data-archive-health-count]').forEach(node => {
+        node.textContent = patient[node.dataset.archiveHealthCount + 'Count'] || '';
+      });
+    }
+
+    function ensureHealthHistoryRecords(patient) {
+      if (!patient) return {};
+      if (!patient.healthHistoryRecords) {
+        const usable = value => value && value !== '--' && value !== '待补充';
+        patient.healthHistoryRecords = {
+          pastHistory: usable(patient.pastHistory) ? [{ name: patient.pastHistory, time: '' }] : [],
+          surgeryHistory: usable(patient.surgeryHistory) ? [{ name: patient.surgeryHistory, time: '' }] : [],
+          allergyHistory: usable(patient.allergyHistory) ? [{ allergen: patient.allergyHistory, allergyType: '' }] : [],
+          familyHistory: usable(patient.familyHistory) ? [{ relation: '', disease: patient.familyHistory }] : [],
+          medication: usable(patient.medication) ? [{ name: patient.medication, frequency: '', dose: '', time: '' }] : [],
+          smoking: usable(patient.smoking) ? [{ status: patient.smoking, amount: '', years: '', quitTime: '' }] : [],
+          drinking: usable(patient.drinking) ? [{ status: patient.drinking, frequency: '', years: '', quitTime: '' }] : []
+        };
+      }
+      Object.keys(healthHistoryConfig).forEach(type => {
+        if (!Array.isArray(patient.healthHistoryRecords[type])) patient.healthHistoryRecords[type] = [];
+      });
+      return patient.healthHistoryRecords;
+    }
+
+    function syncHealthHistorySummary(patient) {
+      const records = ensureHealthHistoryRecords(patient);
+      const compact = (type, formatter) => records[type].slice(0, 2).map(formatter).filter(Boolean).join('、') || '待补充';
+      const count = type => records[type].length > 1 ? `等${records[type].length}项` : '';
+      patient.pastHistory = compact('pastHistory', item => item.name);
+      patient.pastHistoryCount = count('pastHistory');
+      patient.surgeryHistory = compact('surgeryHistory', item => item.name);
+      patient.surgeryHistoryCount = count('surgeryHistory');
+      patient.allergyHistory = compact('allergyHistory', item => item.allergen);
+      patient.allergyHistoryCount = count('allergyHistory');
+      patient.familyHistory = compact('familyHistory', item => [item.relation, item.disease].filter(Boolean).join('-'));
+      patient.familyHistoryCount = count('familyHistory');
+      patient.medication = compact('medication', item => item.name);
+      patient.medicationHistoryCount = count('medication');
+      patient.smoking = records.smoking[0]?.status || '待补充';
+      patient.drinking = records.drinking[0]?.status || '待补充';
+    }
+
+    function recordArchiveChange(patient, section, action, lines) {
+      if (!lines.length) return;
+      if (!Array.isArray(patient.archiveChangeRecords)) patient.archiveChangeRecords = [];
+      patient.archiveChangeRecords.unshift({
+        time: new Date().toLocaleString('sv-SE', { hour12: false }),
+        actor: '当前操作人', source: 'B端', section, action,
+        changes: lines.map(line => {
+          const [label, detail = ''] = line.split('：');
+          const arrow = detail.indexOf(' → ');
+          return arrow < 0 ? { label, value: detail } : { label, before: detail.slice(0, arrow), after: detail.slice(arrow + 3) };
+        })
+      });
+    }
+
+    function setArchiveMoreOpen(open) {
+      const button = document.querySelector('[data-archive-more]');
+      const menu = document.getElementById('archiveMoreMenu');
+      if (!button || !menu) return;
+      menu.hidden = !open;
+      button.setAttribute('aria-expanded', String(open));
+    }
+
+    function archiveChangeModule(record) { return record.section === '基本信息' ? 'basic' : 'health'; }
+
+    function renderArchiveChanges() {
+      if (!archiveCurrentPatient) return;
+      const records = [...(archiveCurrentPatient.archiveChangeRecords || [])]
+        .sort((a, b) => String(b.time).localeCompare(String(a.time)));
+      document.getElementById('archiveChangesPatientName').textContent = `${archiveCurrentPatient.name} · 仅包含基本信息与健康史的变更`;
+      const changeHtml = change => `<div class="archive-change-field"><span class="archive-change-field-label">${esc(change.label)}</span><div class="archive-change-field-value">${Object.hasOwn(change, 'before') ? `<span class="archive-change-old">${esc(change.before || '--')}</span><span class="archive-change-arrow" aria-label="变更为">→</span><strong class="archive-change-new">${esc(change.after || '--')}</strong>` : `<strong>${esc(change.value || '--')}</strong>`}</div></div>`;
+      document.getElementById('archiveChangesList').innerHTML = records.length
+        ? `<div class="archive-changes-summary">共 ${records.length} 条记录</div><ol class="archive-changes-list">${records.map(record => `<li class="archive-change-item"><div class="archive-change-timeline-dot archive-change-timeline-dot--${esc(record.action)}"></div><div class="archive-change-head"><time datetime="${esc(record.time.replace(' ', 'T'))}">${esc(record.time)}</time></div><div class="archive-change-meta"><strong>${esc(record.actor || '当前操作人')}</strong><span class="archive-change-source">${esc(record.source || 'B端')}</span><span class="archive-change-module">${esc(archiveChangeModule(record) === 'basic' ? '基本信息' : '健康史')}</span></div><div class="archive-change-action"><span class="archive-change-action-badge archive-change-action-badge--${esc(record.action)}">${esc(record.action)}</span><strong>${esc(record.action)}${esc(record.section)}</strong></div><div class="archive-change-fields">${(record.changes || []).map(changeHtml).join('')}</div></li>`).join('')}</ol>`
+        : '<div class="archive-changes-empty"><span class="archive-changes-empty-icon" aria-hidden="true">▤</span><strong>暂无档案变更记录</strong><span>患者基本信息或健康史发生修改后，将在此处自动生成记录。</span></div>';
+    }
+
+    function openArchiveChanges(trigger) {
+      if (!archiveCurrentPatient) return;
+      archiveChangesTrigger = trigger;
+      setArchiveMoreOpen(false);
+      renderArchiveChanges();
+      const modal = document.getElementById('archiveChangesModal');
+      modal.classList.add('open');
+      modal.setAttribute('aria-hidden', 'false');
+      requestAnimationFrame(() => modal.querySelector('[data-close-archive-changes]')?.focus());
+    }
+
+    function closeArchiveChanges() {
+      const modal = document.getElementById('archiveChangesModal');
+      modal.classList.remove('open');
+      modal.setAttribute('aria-hidden', 'true');
+      document.querySelector('[data-archive-more]')?.focus();
+      archiveChangesTrigger = null;
+    }
+
+    function healthHistoryIcon(type) {
+      const paths = {
+        pastHistory: '<path d="M7 3h10v3h2v15H5V6h2V3Zm2 0v5h6V3H9Zm0 9h6m-6 4h6"/>',
+        surgeryHistory: '<path d="m5 19 4-4m6-10 4 4M8 16l8-8m-6-2 8 8M4 20l3-1-2-2-1 3Z"/>',
+        allergyHistory: '<path d="M12 3 3.7 18a2 2 0 0 0 1.8 3h13a2 2 0 0 0 1.8-3L12 3Zm0 6v5m0 3v.1"/>',
+        familyHistory: '<path d="M8 11a3 3 0 1 0 0-6 3 3 0 0 0 0 6Zm8 0a3 3 0 1 0 0-6 3 3 0 0 0 0 6ZM3 20v-2a5 5 0 0 1 10 0v2m0 0v-2a5 5 0 0 1 8-4"/>',
+        medication: '<rect x="3" y="8" width="18" height="8" rx="4" transform="rotate(-35 12 12)"/><path d="m9 15 6-6"/>',
+        smoking: '<path d="M3 14h13v4H3v-4Zm13 0h3v4h-3m0-9c0-2-2-2-2-4m5 6c2-3-2-3 0-7"/>',
+        drinking: '<path d="M7 3h10l-1 7a4 4 0 0 1-8 0L7 3Zm5 11v7m-4 0h8"/>'
+      };
+      return `<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">${paths[type] || paths.pastHistory}</svg>`;
+    }
+
+    function healthRecordsClone(value) { return JSON.parse(JSON.stringify(value)); }
+    function healthRecordShape(records) {
+      return Object.fromEntries(Object.keys(healthHistoryConfig).map(type => [type, (records[type] || []).map(item => ({ ...item }))]));
+    }
+    function healthHistoryIsDirty() {
+      if (!healthHistoryState.records) return false;
+      if (JSON.stringify(healthHistoryState.records) !== JSON.stringify(healthHistoryState.original)) return true;
+      return Object.entries(healthHistoryState.editors).some(([type, editor]) => editor && (editor.index < 0 ? Object.values(editor.draft).some(Boolean) : JSON.stringify(editor.draft) !== JSON.stringify(healthHistoryState.records[type][editor.index])));
+    }
+    function updateHealthSaveState() {
+      const button = document.querySelector('[data-save-health-history]');
+      if (button) button.disabled = !healthHistoryIsDirty();
+    }
+    function healthFieldVisible(field, draft, type) {
+      if (!field.when) return true;
+      if (field.when === '已停药') return draft.status === '已停药';
+      if (field.when === 'active') return !!draft.status && !draft.status.startsWith('从不');
+      return draft.status === field.when;
+    }
+    function healthFieldHtml(field, draft, type) {
+      if (!healthFieldVisible(field, draft, type)) return '';
+      const value = esc(draft[field.key] || '');
+      const label = field.key === 'amount' && draft.status === '已戒烟' ? '原每日吸烟量（支/天）' : field.key === 'frequency' && draft.status === '已戒酒' ? '原饮酒频率（次/周）' : field.label;
+      const control = field.options && type !== 'pastHistory'
+        ? '<select data-health-record-field="' + field.key + '"><option value="">请选择</option>' + field.options.map(option => '<option value="' + esc(option) + '"' + (draft[field.key] === option ? ' selected' : '') + '>' + esc(option) + '</option>').join('') + '</select>'
+        : '<input type="' + (field.type || 'text') + '" value="' + value + '" placeholder="' + esc(field.placeholder || '') + '"' + (field.min ? ' min="' + field.min + '"' : '') + (type === 'pastHistory' && field.key === 'name' ? ' list="archiveDiseaseOptions"' : '') + ' data-health-record-field="' + field.key + '">';
+      const hint = type === 'pastHistory' && field.key === 'name' ? '<small>可搜索选择，未找到时可直接输入其他疾病</small>' : '';
+      return '<label class="archive-health-editor-field"><span>' + esc(label) + (field.required ? '<b aria-hidden="true">*</b>' : '') + '</span>' + control + hint + '</label>';
+    }
+    function healthEditorHtml(type, editor) {
+      const config = healthHistoryConfig[type];
+      const fields = config.fields.map(field => healthFieldHtml(field, editor.draft, type)).join('');
+      const diseaseOptions = type === 'pastHistory' ? '<datalist id="archiveDiseaseOptions">' + config.fields[0].options.filter(value => value !== '其他').map(value => '<option value="' + esc(value) + '"></option>').join('') + '</datalist>' : '';
+      return '<section class="archive-health-editor-card" aria-label="' + (editor.index >= 0 ? '修改' : '新增') + esc(config.label) + '"><div class="archive-health-editor-title">' + (editor.index >= 0 ? '修改记录' : '新增记录') + '</div><div class="archive-health-editor-grid">' + fields + '</div>' + diseaseOptions + '<div class="archive-health-editor-error" data-health-record-error aria-live="polite"></div><div class="archive-health-editor-actions"><button type="button" class="secondary-btn" data-cancel-health-record>取消</button><button type="button" class="confirm-btn" data-save-health-record>' + (editor.index >= 0 ? '暂存修改' : '暂存新增') + '</button></div></section>';
+    }
+    function renderHealthHistoryDetail() {
+      if (!archiveCurrentPatient || !healthHistoryState.records) return;
+      const type = healthHistoryState.activeType;
+      const config = healthHistoryConfig[type];
+      const records = healthHistoryState.records[type];
+      const tabs = document.getElementById('archiveHealthDetailTabs');
+      const body = document.getElementById('archiveHealthDetailBody');
+      if (!tabs || !body) return;
+      tabs.innerHTML = Object.entries(healthHistoryConfig).map(([key, item]) => '<button type="button" role="tab" aria-selected="' + (key === type) + '" class="' + (key === type ? 'active' : '') + '" data-health-history-tab="' + key + '">' + item.label + '</button>').join('');
+      const editor = healthHistoryState.editors[type];
+      if (config.singleton) {
+        const record = records[0] || {};
+        const fields = config.fields.map(field => healthFieldHtml(field, record, type)).join('');
+        const deleteButton = records.length ? '<button type="button" class="archive-health-delete-singleton" data-delete-health-singleton>⌫ 删除</button>' : '';
+        const toolbar = '<div class="archive-health-detail-toolbar"><div class="archive-health-detail-count"><span class="archive-health-detail-icon">' + healthHistoryIcon(type) + '</span><strong>' + config.label + '</strong></div>' + deleteButton + '</div>';
+        const form = '<section class="archive-health-editor-card archive-health-singleton"><div class="archive-health-editor-title">当前状态：' + esc(record.status || '待补充') + '</div><div class="archive-health-editor-grid">' + fields + '</div><div class="archive-health-editor-error" data-health-record-error aria-live="polite"></div>' + (healthHistoryState.singletonEditing.has(type) ? '<div class="archive-health-editor-actions"><button type="button" class="secondary-btn" data-cancel-health-singleton>取消补充</button></div>' : '') + '</section>';
+        const empty = '<div class="archive-health-empty"><span class="archive-health-empty-icon" aria-hidden="true">' + healthHistoryIcon(type) + '</span><strong>暂无相关记录</strong><span>' + config.label + '待补充</span><button type="button" class="archive-health-add-btn" data-add-health-singleton>＋ 补充' + config.label + '</button></div>';
+        body.innerHTML = toolbar + (records.length || healthHistoryState.singletonEditing.has(type) ? form : empty);
+      } else {
+        const cards = records.length ? records.map((record, index) => {
+          const title = type === 'familyHistory' ? [record.relation, record.disease].filter(Boolean).join(' · ') : type === 'allergyHistory' ? record.allergen : record.name;
+          const visibleFields = config.fields.filter(field => healthFieldVisible(field, record, type) && (type !== 'medication' || field.required || record[field.key]));
+          return '<article class="archive-health-record-card"><div class="archive-health-record-head"><h3>' + (index + 1) + '. ' + esc(title || '未命名记录') + '</h3><div class="archive-health-record-actions"><button type="button" data-edit-health-record="' + index + '">✎ 修改</button><button type="button" class="danger" data-delete-health-record="' + index + '">⌫ 删除</button></div></div><dl>' + visibleFields.map(field => '<div><dt>' + esc(field.label) + '</dt><dd>' + esc(record[field.key] || '--') + '</dd></div>').join('') + '</dl></article>';
+        }).join('') : '<div class="archive-health-empty"><span class="archive-health-empty-icon" aria-hidden="true">' + healthHistoryIcon(type) + '</span><strong>暂无相关记录</strong><span>点击右上角“＋ ' + config.addLabel + '”补充患者的' + config.label + '信息</span></div>';
+        body.innerHTML = '<div class="archive-health-detail-toolbar"><div class="archive-health-detail-count"><span class="archive-health-detail-icon">' + healthHistoryIcon(type) + '</span><strong>' + config.label + '</strong><span>（共' + records.length + '项）</span></div><button type="button" class="archive-health-add-btn" data-add-health-record><span aria-hidden="true">＋</span> ' + config.addLabel + '</button></div>' + (editor ? healthEditorHtml(type, editor) : '') + '<div class="archive-health-record-list">' + cards + '</div>';
+      }
+      updateHealthSaveState();
+    }
+    function openHealthHistoryModal(type = 'pastHistory', trigger = null) {
+      if (!archiveCurrentPatient || !healthHistoryConfig[type]) return;
+      const modal = document.getElementById('archiveHealthEditModal');
+      if (modal.classList.contains('open')) {
+        healthHistoryState.activeType = type;
+        renderHealthHistoryDetail();
+        return;
+      }
+      closeArchiveEditModal(false);
+      const records = healthRecordShape(ensureHealthHistoryRecords(archiveCurrentPatient));
+      healthHistoryState.records = healthRecordsClone(records);
+      healthHistoryState.original = healthRecordsClone(records);
+      healthHistoryState.editors = {};
+      healthHistoryState.singletonEditing = new Set();
+      healthHistoryState.activeType = type;
+      archiveEditState.section = 'health';
+      archiveEditState.trigger = trigger;
+      renderHealthHistoryDetail();
+      modal.classList.add('open');
+      modal.setAttribute('aria-hidden', 'false');
+      requestAnimationFrame(() => modal.querySelector('[data-health-history-tab="' + type + '"]')?.focus());
+    }
+    function startHealthRecordEdit(index = -1) {
+      const type = healthHistoryState.activeType;
+      const config = healthHistoryConfig[type];
+      if (config.singleton) return;
+      const record = index >= 0 ? healthHistoryState.records[type][index] : Object.fromEntries(config.fields.map(field => [field.key, '']));
+      healthHistoryState.editors[type] = { index, draft: { ...record } };
+      renderHealthHistoryDetail();
+      requestAnimationFrame(() => document.querySelector('#archiveHealthDetailBody [data-health-record-field]')?.focus());
+    }
+    function stageHealthRecord(type, showError = true) {
+      const editor = healthHistoryState.editors[type];
+      if (!editor) return true;
+      const config = healthHistoryConfig[type];
+      const missing = config.fields.find(field => field.required && healthFieldVisible(field, editor.draft, type) && !String(editor.draft[field.key] || '').trim());
+      if (missing) {
+        if (showError) {
+          healthHistoryState.activeType = type;
+          renderHealthHistoryDetail();
+          document.querySelector('[data-health-record-error]').textContent = '请填写' + missing.label;
+          document.querySelector('[data-health-record-field="' + missing.key + '"]')?.focus();
+        }
+        return false;
+      }
+      const record = { ...editor.draft };
+      if (editor.index >= 0) healthHistoryState.records[type][editor.index] = record;
+      else healthHistoryState.records[type].push(record);
+      delete healthHistoryState.editors[type];
+      if (type === healthHistoryState.activeType) renderHealthHistoryDetail();
+      updateHealthSaveState();
+      return true;
+    }
+    function saveHealthRecord() {
+      stageHealthRecord(healthHistoryState.activeType);
+    }
+    function requestHealthDeletion(index, trigger) {
+      const type = healthHistoryState.activeType;
+      const records = healthHistoryState.records?.[type];
+      const record = records?.[index === null ? 0 : index];
+      if (!record) return;
+      const name = type === 'familyHistory' ? [record.relation, record.disease].filter(Boolean).join(' · ') : record.name || record.allergen || record.status || healthHistoryConfig[type].label;
+      const modal = document.getElementById('archiveHealthDeleteConfirm');
+      document.getElementById('archiveHealthDeleteDescription').textContent = '确定删除“' + name + '”吗？删除后将从本次编辑中移除，点击“保存更改”后生效。' + (records.length === 1 ? '此分类将显示“暂无相关记录”，档案首页显示“待补充”。' : '');
+      healthDeletePending = { type, index, trigger };
+      modal.classList.add('open');
+      modal.setAttribute('aria-hidden', 'false');
+      requestAnimationFrame(() => modal.querySelector('[data-cancel-health-delete]')?.focus());
+    }
+    function closeHealthDeleteConfirm(restoreFocus = true) {
+      const trigger = healthDeletePending?.trigger;
+      const modal = document.getElementById('archiveHealthDeleteConfirm');
+      modal.classList.remove('open');
+      modal.setAttribute('aria-hidden', 'true');
+      healthDeletePending = null;
+      if (restoreFocus) trigger?.focus?.();
+    }
+    function confirmHealthDeletion() {
+      if (!healthDeletePending || !healthHistoryState.records) return;
+      const { type, index } = healthDeletePending;
+      if (index === null) healthHistoryState.records[type] = [];
+      else healthHistoryState.records[type].splice(index, 1);
+      delete healthHistoryState.editors[type];
+      healthHistoryState.singletonEditing.delete(type);
+      closeHealthDeleteConfirm(false);
+      renderHealthHistoryDetail();
+      showToast('已移除记录，请点击“保存更改”完成保存');
+      requestAnimationFrame(() => document.querySelector('[data-add-health-record], [data-add-health-singleton], [data-health-history-tab="' + type + '"]')?.focus());
+    }
+    function saveHealthHistory() {
+      if (!healthHistoryIsDirty()) return;
+      for (const type of Object.keys(healthHistoryState.editors)) {
+        if (!stageHealthRecord(type)) return;
+      }
+      for (const type of ['smoking', 'drinking']) {
+        const record = healthHistoryState.records[type][0];
+        const missing = record && healthHistoryConfig[type].fields.find(field => field.required && healthFieldVisible(field, record, type) && !String(record[field.key] || '').trim());
+        if (missing) {
+          healthHistoryState.activeType = type;
+          renderHealthHistoryDetail();
+          document.querySelector('[data-health-record-error]').textContent = '请填写' + missing.label;
+          document.querySelector('[data-health-record-field="' + missing.key + '"]')?.focus();
+          return;
+        }
+      }
+      if (JSON.stringify(healthHistoryState.records) === JSON.stringify(healthHistoryState.original)) {
+        updateHealthSaveState();
+        return;
+      }
+      const lines = [];
+      Object.entries(healthHistoryConfig).forEach(([type, config]) => {
+        const before = healthHistoryState.original[type];
+        const after = healthHistoryState.records[type];
+        if (JSON.stringify(before) === JSON.stringify(after)) return;
+        if (config.singleton) {
+          config.fields.forEach(field => {
+            const oldValue = before.length ? (before[0]?.[field.key] || '--') : '待补充';
+            const newValue = after.length ? (after[0]?.[field.key] || '--') : '待补充';
+            if (oldValue !== newValue) lines.push(config.label + '·' + field.label + '：' + oldValue + ' → ' + newValue);
+          });
+        } else {
+          const describe = item => item ? config.fields.filter(field => healthFieldVisible(field, item, type) && item[field.key]).map(field => field.label + ' ' + item[field.key]).join('，') : '--';
+          for (let index = 0; index < Math.max(before.length, after.length); index++) {
+            if (JSON.stringify(before[index]) !== JSON.stringify(after[index])) {
+              lines.push(config.label + '·第' + (index + 1) + '条：' + describe(before[index]) + ' → ' + describe(after[index]));
+            }
+          }
+        }
+      });
+      archiveCurrentPatient.healthHistoryRecords = healthRecordsClone(healthHistoryState.records);
+      syncHealthHistorySummary(archiveCurrentPatient);
+      recordArchiveChange(archiveCurrentPatient, '健康史', '修改', lines);
+      closeArchiveEditModal(true, true);
+      renderPatientArchive();
+      showToast('健康史已保存');
+    }
+    document.addEventListener('input', event => {
+      const control = event.target.closest('#archiveHealthEditModal [data-health-record-field]');
+      if (!control || !healthHistoryState.records) return;
+      const type = healthHistoryState.activeType;
+      const key = control.dataset.healthRecordField;
+      const config = healthHistoryConfig[type];
+      if (config.singleton) {
+        if (!healthHistoryState.records[type].length) healthHistoryState.records[type].push({});
+        healthHistoryState.records[type][0][key] = control.value;
+        if (key === 'status') {
+          const record = healthHistoryState.records[type][0];
+          if (record.status.startsWith('从不')) {
+            record.amount = ''; record.frequency = ''; record.years = ''; record.quitTime = '';
+          } else if (!record.status.startsWith('已戒')) {
+            record.quitTime = '';
+          }
+        }
+      } else if (healthHistoryState.editors[type]) {
+        healthHistoryState.editors[type].draft[key] = control.value;
+      }
+      document.querySelector('#archiveHealthDetailBody [data-health-record-error]').textContent = '';
+      updateHealthSaveState();
+      if (key === 'status') {
+        renderHealthHistoryDetail();
+        document.querySelector('#archiveHealthDetailBody [data-health-record-field="status"]')?.focus();
+      }
+    });
+    function archiveModalValue(value) {
+      return value === '--' || value === '待补充' || value == null ? '' : String(value);
+    }
+
+    function calculateArchiveAge(birthDate) {
+      const match = /^(\d{4})-(\d{2})(?:-(\d{2}))?$/.exec(birthDate || '');
+      if (!match) return null;
+      const year = Number(match[1]);
+      const month = Number(match[2]);
+      const day = match[3] ? Number(match[3]) : 1;
+      const date = new Date(year, month - 1, day);
+      const today = new Date();
+      if (date.getFullYear() !== year || date.getMonth() !== month - 1 || date.getDate() !== day || date > today) return null;
+      let age = today.getFullYear() - year;
+      if (today.getMonth() + 1 < month || (match[3] && today.getMonth() + 1 === month && today.getDate() < day)) age--;
+      return age >= 0 && age <= 130 ? age : null;
+    }
+
+    function parseArchiveIdentityNumber(value) {
+      const number = String(value || '').trim().toUpperCase();
+      if (!/^\d{17}[\dX]$/.test(number)) return { error: '请输入18位居民身份证号' };
+      if (number.slice(0, 6) === '000000') return { error: '证件号码地区码无效' };
+      const birth = number.slice(6, 10) + '-' + number.slice(10, 12) + '-' + number.slice(12, 14);
+      const age = calculateArchiveAge(birth);
+      if (age === null) return { error: '证件号码中的出生日期无效' };
+      const weights = [7, 9, 10, 5, 8, 4, 2, 1, 6, 3, 7, 9, 10, 5, 8, 4, 2];
+      const sum = [...number.slice(0, 17)].reduce((total, digit, index) => total + Number(digit) * weights[index], 0);
+      if ('10X98765432'[sum % 11] !== number[17]) return { error: '证件号码校验位不正确' };
+      return { number, birthDate: birth.slice(0, 7), age, gender: Number(number[16]) % 2 ? '男' : '女' };
+    }
+
+    function archiveBasicValues(modal) {
+      return Object.fromEntries([...modal.querySelectorAll('[data-archive-modal-field]')].map(control => [control.dataset.archiveModalField, control.value.trim()]));
+    }
+
+    function archiveBasicError(key, values) {
+      const identity = values.idType === '居民身份证' && values.idNumber ? parseArchiveIdentityNumber(values.idNumber) : null;
+      const birthAge = values.birthDate ? calculateArchiveAge(values.birthDate) : null;
+      if (key === 'name') return values.name ? '' : '请输入姓名';
+      if (key === 'gender') return !values.gender ? '请选择性别' : identity && !identity.error && identity.gender !== values.gender ? '性别与身份证号不一致' : '';
+      if (key === 'age') {
+        if (!/^\d+$/.test(values.age) || Number(values.age) > 130) return '请输入0至130岁的整数年龄';
+        const expected = identity && !identity.error ? identity.age : birthAge;
+        return expected !== null && expected !== undefined && Number(values.age) !== expected ? (identity && !identity.error ? '年龄与身份证号不一致' : '年龄与出生日期不一致') : '';
+      }
+      if (key === 'birthDate') return values.birthDate && birthAge === null ? '请选择有效且不晚于今天的出生日期' : identity && !identity.error && identity.birthDate !== values.birthDate ? '出生日期与身份证号不一致' : '';
+      if (key === 'phone') return /^1[3-9]\d{9}$/.test(values.phone) ? '' : '请输入正确的11位手机号';
+      if (key === 'idType') return values.idNumber && !values.idType ? '请选择证件类型' : '';
+      if (key === 'idNumber') {
+        if (values.idType && !values.idNumber) return '请输入证件号';
+        if (identity?.error) return identity.error;
+        if (values.idNumber && !/^[A-Za-z0-9]{3,32}$/.test(values.idNumber)) return '请输入正确的证件号';
+      }
+      return '';
+    }
+
+    function validateArchiveBasic(modal, keys = archiveEditFields.basic, final = false) {
+      const values = archiveBasicValues(modal);
+      let firstInvalid = null;
+      keys.forEach(key => {
+        const errorNode = modal.querySelector('[data-archive-modal-error="' + key + '"]');
+        if (!errorNode) return;
+        const control = modal.querySelector('[data-archive-modal-field="' + key + '"]');
+        let message = archiveBasicError(key, values);
+        if (!final && key === 'idNumber' && values.idNumber.length > 0 && values.idNumber.length < 18 && values.idType === '居民身份证') message = '';
+        errorNode.textContent = message;
+        control?.setAttribute('aria-invalid', String(Boolean(message)));
+        if (message && !firstInvalid) firstInvalid = control;
+      });
+      return firstInvalid;
+    }
+
+    function handleArchiveBasicFieldChange(control, final = false) {
+      const modal = document.getElementById('archiveBasicEditModal');
+      if (!modal.classList.contains('open')) return;
+      const key = control.dataset.archiveModalField;
+      const field = name => modal.querySelector('[data-archive-modal-field="' + name + '"]');
+      const linked = new Set([key]);
+      if (key === 'idNumber' && !field('idType').value && /^\d{17}[\dXx]$/.test(control.value.trim())) {
+        field('idType').value = '居民身份证';
+        linked.add('idType');
+      }
+      if (key === 'idNumber' || key === 'idType') {
+        ['birthDate', 'age', 'gender'].forEach(name => linked.add(name));
+        const identity = field('idType').value === '居民身份证' ? parseArchiveIdentityNumber(field('idNumber').value) : null;
+        if (identity && !identity.error) {
+          field('idNumber').value = identity.number;
+          field('birthDate').value = identity.birthDate;
+          field('age').value = String(identity.age);
+          field('gender').value = identity.gender;
+          ['birthDate', 'age', 'gender'].forEach(name => linked.add(name));
+        }
+        linked.add('idNumber');
+      } else if (key === 'birthDate') {
+        const age = calculateArchiveAge(control.value);
+        if (age !== null) {
+          const identity = field('idType').value === '居民身份证' ? parseArchiveIdentityNumber(field('idNumber').value) : null;
+          field('age').value = String(identity && !identity.error && identity.birthDate === control.value ? identity.age : age);
+          linked.add('age');
+        }
+      }
+      ['age', 'gender', 'birthDate'].forEach(name => {
+        if (linked.has(name)) linked.add('idNumber');
+      });
+      validateArchiveBasic(modal, [...linked], final);
+    }
+    document.addEventListener('input', event => {
+      const control = event.target.closest('#archiveBasicEditModal [data-archive-modal-field]');
+      if (control) handleArchiveBasicFieldChange(control);
+    });
+    document.addEventListener('change', event => {
+      const control = event.target.closest('#archiveBasicEditModal [data-archive-modal-field]');
+      if (control) handleArchiveBasicFieldChange(control, true);
+    });
+    document.addEventListener('focusout', event => {
+      const control = event.target.closest('#archiveBasicEditModal [data-archive-modal-field]');
+      if (control) validateArchiveBasic(document.getElementById('archiveBasicEditModal'), [control.dataset.archiveModalField], true);
+    });
+
+    function openArchiveEditModal(section, trigger = null) {
+      if (!archiveCurrentPatient || !archiveEditFields[section]) return;
+      closeArchiveEditModal(false);
+      archiveEditState.section = section;
+      archiveEditState.trigger = trigger;
+      archiveEditState.draft = {};
+      archiveEditFields[section].forEach(field => {
+        archiveEditState.draft[field] = archiveModalValue(field === 'phone' ? archiveCurrentPatient.phoneFull || archiveCurrentPatient.phone : archiveCurrentPatient[field]);
+      });
+      const modal = document.getElementById(section === 'basic' ? 'archiveBasicEditModal' : 'archiveHealthEditModal');
+      modal.querySelectorAll('[data-archive-modal-field]').forEach(control => {
+        control.value = archiveEditState.draft[control.dataset.archiveModalField] || '';
+      });
+      modal.querySelectorAll('[data-archive-modal-error]').forEach(node => { node.textContent = ''; });
+      modal.querySelectorAll('[data-archive-modal-field]').forEach(control => control.removeAttribute('aria-invalid'));
+      if (section === 'basic') {
+        const idType = modal.querySelector('[data-archive-modal-field="idType"]').value;
+        const idNumber = modal.querySelector('[data-archive-modal-field="idNumber"]').value;
+        const identity = idType === '居民身份证' ? parseArchiveIdentityNumber(idNumber) : null;
+        const age = identity && !identity.error ? identity.age : calculateArchiveAge(modal.querySelector('[data-archive-modal-field="birthDate"]').value);
+        if (age !== null && age !== undefined) modal.querySelector('[data-archive-modal-field="age"]').value = String(age);
+      }
+      modal.classList.add('open');
+      modal.setAttribute('aria-hidden', 'false');
+      requestAnimationFrame(() => modal.querySelector('[data-archive-modal-field]')?.focus());
+    }
+
+    function closeArchiveEditModal(restoreFocus = true, force = false) {
+      if (!force && document.getElementById('archiveHealthEditModal').classList.contains('open') && healthHistoryIsDirty()) {
+        const confirm = document.getElementById('archiveHealthExitConfirm');
+        confirm.classList.add('open');
+        confirm.setAttribute('aria-hidden', 'false');
+        requestAnimationFrame(() => confirm.querySelector('[data-continue-health-edit]')?.focus());
+        return;
+      }
+      const trigger = archiveEditState.trigger;
+      document.querySelectorAll('#archiveBasicEditModal.open, #archiveHealthEditModal.open').forEach(modal => {
+        modal.classList.remove('open');
+        modal.setAttribute('aria-hidden', 'true');
+      });
+      archiveEditState.section = '';
+      archiveEditState.draft = null;
+      archiveEditState.trigger = null;
+      healthHistoryState.records = null;
+      healthHistoryState.original = null;
+      healthHistoryState.editors = {};
+      healthHistoryState.singletonEditing = new Set();
+      if (healthDeletePending) closeHealthDeleteConfirm(false);
+      document.getElementById('archiveHealthExitConfirm').classList.remove('open');
+      document.getElementById('archiveHealthExitConfirm').setAttribute('aria-hidden', 'true');
+      if (restoreFocus) (trigger?.closest?.('.archive-more-menu') ? document.querySelector('[data-archive-more]') : trigger)?.focus?.();
+    }
+
+    function saveArchiveEditModal(section) {
+      if (!archiveCurrentPatient || archiveEditState.section !== section || !archiveEditFields[section]) return;
+      const modal = document.getElementById(section === 'basic' ? 'archiveBasicEditModal' : 'archiveHealthEditModal');
+      const changes = {};
+      modal.querySelectorAll('[data-archive-modal-field]').forEach(control => {
+        changes[control.dataset.archiveModalField] = control.value.trim();
+      });
+      if (section === 'basic') {
+        const invalid = validateArchiveBasic(modal, ['name', 'gender', 'age', 'birthDate', 'phone', 'idType', 'idNumber'], true);
+        if (invalid) {
+          invalid.focus();
+          return;
+        }
+      }
+      const basicFieldLabels = { name: '姓名', gender: '性别', age: '年龄', birthDate: '出生日期', phone: '手机号', idType: '证件类型', idNumber: '证件号', ethnicity: '民族', maritalStatus: '婚姻状况', occupation: '职业', region: '常住地址' };
+      const changeLines = archiveEditFields.basic.filter(field => archiveModalValue(field === 'phone' ? archiveCurrentPatient.phoneFull : archiveCurrentPatient[field]) !== changes[field]).map(field => {
+        const before = archiveModalValue(field === 'phone' ? archiveCurrentPatient.phoneFull : archiveCurrentPatient[field]) || '--';
+        const after = changes[field] || '--';
+        const display = value => field === 'phone' || field === 'idNumber' ? maskArchiveSensitive(field, value) : value;
+        return `${basicFieldLabels[field]}：${display(before)} → ${display(after)}`;
+      });
+      recordArchiveChange(archiveCurrentPatient, '基本信息', '修改', changeLines);
+      const phoneChanged = archiveCurrentPatient.phoneFull !== changes.phone;
+      const idNumberChanged = archiveCurrentPatient.idNumber !== changes.idNumber;
+      Object.assign(archiveCurrentPatient, changes);
+      archiveCurrentPatient.phoneFull = changes.phone;
+      archiveCurrentPatient.phone = maskArchiveSensitive('phone', changes.phone);
+      if (phoneChanged) archiveCurrentPatient.phoneIsDemo = false;
+      if (idNumberChanged) archiveCurrentPatient.idNumberIsDemo = false;
+      archiveSensitiveState.phone = false;
+      archiveSensitiveState.idNumber = false;
+      renderPatientArchive();
+      renderPatientList();
+      closeArchiveEditModal();
+      showToast(section === 'basic' ? '基本信息已保存' : '健康史已保存');
     }
 
     function archiveMetricData(metric) {
@@ -7303,6 +7986,8 @@
 
     function openPatientArchive(patient) {
       archiveCurrentPatient = patient || allPatients[0];
+      archiveSensitiveState.phone = false;
+      archiveSensitiveState.idNumber = false;
       closePatientSmartFilter();
       document.querySelectorAll('.page').forEach(page => page.classList.remove('active'));
       // 保留列表页承载的系统主导航，档案页仅替换右侧业务工作区。
@@ -8844,7 +9529,249 @@
       }
     });
 
+    const patientCreateAddressData = {
+      '北京市': { '北京市': ['东城区', '西城区', '朝阳区', '海淀区', '丰台区', '石景山区', '通州区', '顺义区', '昌平区', '大兴区', '房山区', '门头沟区', '怀柔区', '平谷区', '密云区', '延庆区'] },
+      '天津市': { '天津市': ['和平区', '河东区', '河西区', '南开区', '河北区', '红桥区', '滨海新区', '东丽区', '西青区', '津南区', '北辰区', '武清区', '宝坻区', '宁河区', '静海区', '蓟州区'] },
+      '河北省': { '石家庄市': ['长安区', '桥西区', '新华区', '裕华区', '鹿泉区', '栾城区'], '唐山市': ['路南区', '路北区', '丰南区', '丰润区'], '保定市': ['竞秀区', '莲池区', '满城区', '清苑区'] },
+      '山西省': { '太原市': ['小店区', '迎泽区', '杏花岭区', '尖草坪区', '万柏林区', '晋源区'], '大同市': ['平城区', '云冈区', '新荣区'] },
+      '内蒙古自治区': { '呼和浩特市': ['新城区', '回民区', '玉泉区', '赛罕区'], '包头市': ['东河区', '昆都仑区', '青山区'] },
+      '辽宁省': { '沈阳市': ['和平区', '沈河区', '大东区', '皇姑区', '铁西区', '浑南区'], '大连市': ['中山区', '西岗区', '沙河口区', '甘井子区'] },
+      '吉林省': { '长春市': ['南关区', '宽城区', '朝阳区', '二道区', '绿园区'], '吉林市': ['昌邑区', '龙潭区', '船营区'] },
+      '黑龙江省': { '哈尔滨市': ['道里区', '南岗区', '道外区', '香坊区', '松北区'], '齐齐哈尔市': ['龙沙区', '建华区', '铁锋区'] },
+      '上海市': { '上海市': ['黄浦区', '徐汇区', '长宁区', '静安区', '普陀区', '虹口区', '杨浦区', '闵行区', '宝山区', '嘉定区', '浦东新区', '金山区', '松江区', '青浦区', '奉贤区', '崇明区'] },
+      '江苏省': { '南京市': ['玄武区', '秦淮区', '建邺区', '鼓楼区', '栖霞区', '雨花台区'], '苏州市': ['姑苏区', '虎丘区', '吴中区', '相城区', '吴江区'], '无锡市': ['梁溪区', '锡山区', '惠山区', '滨湖区', '新吴区'] },
+      '浙江省': { '杭州市': ['上城区', '拱墅区', '西湖区', '滨江区', '萧山区', '余杭区', '临平区', '钱塘区'], '宁波市': ['海曙区', '江北区', '北仑区', '镇海区', '鄞州区', '奉化区'], '温州市': ['鹿城区', '龙湾区', '瓯海区', '洞头区'], '绍兴市': ['越城区', '柯桥区', '上虞区'] },
+      '安徽省': { '合肥市': ['瑶海区', '庐阳区', '蜀山区', '包河区'], '芜湖市': ['镜湖区', '弋江区', '鸠江区'] },
+      '福建省': { '福州市': ['鼓楼区', '台江区', '仓山区', '晋安区', '马尾区'], '厦门市': ['思明区', '海沧区', '湖里区', '集美区', '同安区', '翔安区'], '泉州市': ['鲤城区', '丰泽区', '洛江区', '泉港区'] },
+      '江西省': { '南昌市': ['东湖区', '西湖区', '青云谱区', '青山湖区', '新建区'], '赣州市': ['章贡区', '南康区', '赣县区'] },
+      '山东省': { '济南市': ['历下区', '市中区', '槐荫区', '天桥区', '历城区'], '青岛市': ['市南区', '市北区', '黄岛区', '崂山区', '李沧区', '城阳区'], '烟台市': ['芝罘区', '福山区', '莱山区', '牟平区'] },
+      '河南省': { '郑州市': ['中原区', '二七区', '管城回族区', '金水区', '惠济区'], '洛阳市': ['老城区', '西工区', '涧西区', '洛龙区'] },
+      '湖北省': { '武汉市': ['江岸区', '江汉区', '硚口区', '汉阳区', '武昌区', '洪山区', '东西湖区'], '宜昌市': ['西陵区', '伍家岗区', '点军区', '猇亭区'] },
+      '湖南省': { '长沙市': ['芙蓉区', '天心区', '岳麓区', '开福区', '雨花区', '望城区'], '株洲市': ['荷塘区', '芦淞区', '石峰区', '天元区'] },
+      '广东省': { '广州市': ['越秀区', '海珠区', '荔湾区', '天河区', '白云区', '黄埔区', '番禺区', '花都区', '南沙区'], '深圳市': ['福田区', '罗湖区', '南山区', '盐田区', '宝安区', '龙岗区', '龙华区'], '佛山市': ['禅城区', '南海区', '顺德区', '三水区', '高明区'], '东莞市': ['莞城区', '南城区', '东城区', '万江区'] },
+      '广西壮族自治区': { '南宁市': ['兴宁区', '青秀区', '江南区', '西乡塘区', '良庆区', '邕宁区', '武鸣区'], '柳州市': ['城中区', '鱼峰区', '柳南区', '柳北区', '柳江区'], '桂林市': ['秀峰区', '叠彩区', '象山区', '七星区', '雁山区', '临桂区'], '北海市': ['海城区', '银海区', '铁山港区'] },
+      '海南省': { '海口市': ['秀英区', '龙华区', '琼山区', '美兰区'], '三亚市': ['海棠区', '吉阳区', '天涯区', '崖州区'] },
+      '重庆市': { '重庆市': ['渝中区', '江北区', '南岸区', '沙坪坝区', '九龙坡区', '大渡口区', '渝北区', '巴南区', '北碚区', '两江新区'] },
+      '四川省': { '成都市': ['锦江区', '青羊区', '金牛区', '武侯区', '成华区', '龙泉驿区', '双流区', '郫都区'], '绵阳市': ['涪城区', '游仙区', '安州区'] },
+      '贵州省': { '贵阳市': ['南明区', '云岩区', '花溪区', '乌当区', '白云区', '观山湖区'], '遵义市': ['红花岗区', '汇川区', '播州区'] },
+      '云南省': { '昆明市': ['五华区', '盘龙区', '官渡区', '西山区', '呈贡区'], '曲靖市': ['麒麟区', '沾益区', '马龙区'] },
+      '西藏自治区': { '拉萨市': ['城关区', '堆龙德庆区', '达孜区'], '日喀则市': ['桑珠孜区'] },
+      '陕西省': { '西安市': ['新城区', '碑林区', '莲湖区', '雁塔区', '未央区', '灞桥区', '长安区'], '咸阳市': ['秦都区', '杨陵区', '渭城区'] },
+      '甘肃省': { '兰州市': ['城关区', '七里河区', '西固区', '安宁区', '红古区'], '天水市': ['秦州区', '麦积区'] },
+      '青海省': { '西宁市': ['城东区', '城中区', '城西区', '城北区', '湟中区'], '海东市': ['乐都区', '平安区'] },
+      '宁夏回族自治区': { '银川市': ['兴庆区', '西夏区', '金凤区'], '石嘴山市': ['大武口区', '惠农区'] },
+      '新疆维吾尔自治区': { '乌鲁木齐市': ['天山区', '沙依巴克区', '新市区', '水磨沟区', '头屯河区', '米东区'], '喀什地区': ['喀什市', '疏附县', '疏勒县'] },
+      '香港特别行政区': { '香港特别行政区': ['中西区', '湾仔区', '东区', '南区', '油尖旺区', '深水埗区', '九龙城区', '沙田区'] },
+      '澳门特别行政区': { '澳门特别行政区': ['花地玛堂区', '圣安多尼堂区', '大堂区', '望德堂区', '风顺堂区'] },
+      '台湾省': { '台北市': ['中正区', '大同区', '中山区', '松山区', '大安区', '万华区'], '新北市': ['板桥区', '三重区', '中和区', '永和区'] }
+    };
+    function patientCreateAddressOptions(select, placeholder, values) {
+      select.innerHTML = `<option value="">${placeholder}</option>` + values.map(value => `<option value="${esc(value)}">${esc(value)}</option>`).join('');
+      select.disabled = !values.length;
+    }
+    function resetPatientCreateAddress() {
+      const form = patientCreateForm();
+      patientCreateAddressOptions(form.elements.province, '请选择省份', Object.keys(patientCreateAddressData));
+      patientCreateAddressOptions(form.elements.city, '请先选择省份', []);
+      patientCreateAddressOptions(form.elements.district, '请先选择城市', []);
+    }
+    function updatePatientCreateAddress(level) {
+      const form = patientCreateForm();
+      const province = form.elements.province.value;
+      if (level === 'province') patientCreateAddressOptions(form.elements.city, province ? '请选择城市' : '请先选择省份', province ? [...Object.keys(patientCreateAddressData[province]), '其他城市'] : []);
+      const city = form.elements.city.value;
+      patientCreateAddressOptions(form.elements.district, city ? '请选择区县' : '请先选择城市', city ? [...(patientCreateAddressData[province]?.[city] || []), '其他区县'] : []);
+    }
+    const patientCreateTypes = [
+      { key: 'pastHistory', title: '既往疾病', add: '添加疾病', first: '疾病名称', second: '疾病时间' },
+      { key: 'surgeryHistory', title: '手术史', add: '添加手术', first: '手术名称', second: '手术时间' },
+      { key: 'allergyHistory', title: '过敏史', add: '添加过敏信息', first: '过敏类型', second: '过敏原' }
+    ];
+    let patientCreateDuplicate = null;
+    let patientCreateCreated = null;
+    const patientCreateForm = () => document.getElementById('patientCreateForm');
+    const patientCreateValue = name => patientCreateForm().elements[name]?.value.trim() || '';
+    function renderPatientCreateHealth() {
+      document.getElementById('patientCreateHealthGroups').innerHTML = patientCreateTypes.map(type => `<div class="patient-create-health-group" data-create-group="${type.key}"><div class="patient-create-health-head"><span>${type.title}</span><button type="button" data-create-add="${type.key}">＋ ${type.add}</button></div><div class="patient-create-health-rows"><span class="patient-create-health-empty">暂无相关记录</span></div></div>`).join('');
+    }
+    function addPatientCreateHealthRow(typeKey) {
+      const type = patientCreateTypes.find(item => item.key === typeKey);
+      const rows = document.querySelector(`[data-create-group="${typeKey}"] .patient-create-health-rows`);
+      if (!type || !rows) return;
+      rows.querySelector('.patient-create-health-empty')?.remove();
+      const row = document.createElement('div');
+      row.className = 'patient-create-row';
+      row.dataset.createRow = typeKey;
+      row.innerHTML = typeKey === 'allergyHistory'
+        ? `<select aria-label="过敏类型" data-create-record="first"><option value="">请选择过敏类型</option><option>药物过敏</option><option>食物过敏</option><option>环境/接触物过敏</option><option>其他</option></select><input aria-label="过敏原" data-create-record="second" placeholder="请输入过敏原"><button type="button" data-create-remove aria-label="删除过敏信息">删除</button>`
+        : `<input aria-label="${type.first}" data-create-record="first" placeholder="${type.first}"><input type="date" aria-label="${type.second}" data-create-record="second"><button type="button" data-create-remove aria-label="删除${type.title}">删除</button>`;
+      rows.append(row);
+      row.querySelector('[data-create-record="first"]')?.focus();
+    }
+    function openPatientCreate(source = '') {
+      setArchiveMoreOpen(false);
+      const form = patientCreateForm();
+      form.reset();
+      form.elements.idType.value = '居民身份证';
+      form.elements.source.value = source;
+      form.elements.gender.disabled = false;
+      form.elements.birthDate.disabled = false;
+      form.elements.birthDate.max = new Date().toISOString().slice(0, 10);
+      resetPatientCreateAddress();
+      document.getElementById('patientCreateMore').open = false;
+      document.getElementById('patientCreateHealth').open = false;
+      document.querySelectorAll('[data-create-error]').forEach(node => node.textContent = '');
+      document.getElementById('patientCreateAgeHint').textContent = '年龄将根据出生日期自动计算';
+      document.getElementById('patientCreatePhoneTip').hidden = true;
+      document.getElementById('patientCreateDuplicate').hidden = true;
+      patientCreateDuplicate = null;
+      renderPatientCreateHealth();
+      document.getElementById('patientCreateSubmit').disabled = false;
+      const modal = document.getElementById('patientCreateModal');
+      modal.classList.add('open');
+      modal.setAttribute('aria-hidden', 'false');
+      setTimeout(() => form.elements.source.focus(), 0);
+    }
+    function closePatientCreate() {
+      const modal = document.getElementById('patientCreateModal');
+      modal.classList.remove('open');
+      modal.setAttribute('aria-hidden', 'true');
+    }
+    function checkPatientCreateIdentity(showFeedback = false) {
+      const form = patientCreateForm();
+      const idType = patientCreateValue('idType');
+      const idNumber = patientCreateValue('idNumber').toUpperCase();
+      form.elements.idNumber.value = idNumber;
+      const parsed = idType === '居民身份证' && idNumber ? parseArchiveIdentityNumber(idNumber) : null;
+      if (parsed && !parsed.error) {
+        form.elements.gender.value = parsed.gender;
+        form.elements.birthDate.value = idNumber.slice(6, 10) + '-' + idNumber.slice(10, 12) + '-' + idNumber.slice(12, 14);
+        form.elements.gender.disabled = true;
+        form.elements.birthDate.disabled = true;
+      } else if (idType !== '居民身份证' || !idNumber || form.elements.gender.disabled) {
+        form.elements.gender.disabled = false;
+        form.elements.birthDate.disabled = false;
+        if (form.elements.birthDate.dataset.autoFilled === 'true') {
+          form.elements.gender.value = '';
+          form.elements.birthDate.value = '';
+        }
+      }
+      form.elements.birthDate.dataset.autoFilled = String(Boolean(parsed && !parsed.error));
+      const age = calculateArchiveAge(form.elements.birthDate.value);
+      document.getElementById('patientCreateAgeHint').textContent = age === null ? '年龄将根据出生日期自动计算' : `自动计算年龄：${age}岁`;
+      patientCreateDuplicate = idNumber ? allPatients.find(patient => (patient.idNumber || '').toUpperCase() === idNumber && (patient.idType || '居民身份证') === idType) || null : null;
+      const duplicateBox = document.getElementById('patientCreateDuplicate');
+      duplicateBox.hidden = !patientCreateDuplicate || !showFeedback;
+      if (patientCreateDuplicate && showFeedback) duplicateBox.innerHTML = `<strong>该证件号码已存在患者档案</strong><p>${esc(patientCreateDuplicate.name)} · ${esc(patientCreateDuplicate.gender || '待补充')}｜${esc(patientCreateDuplicate.age || '待补充')}岁<br>手机号：${esc(maskArchiveSensitive('phone', patientCreateDuplicate.phoneFull || patientCreateDuplicate.phone))}</p><button type="button" data-create-view-duplicate>查看患者档案</button>`;
+      document.getElementById('patientCreateSubmit').disabled = Boolean(patientCreateDuplicate);
+      if (showFeedback) document.querySelector('[data-create-error="idNumber"]').textContent = parsed?.error || (idNumber && idType !== '居民身份证' && !/^[A-Z0-9]{3,32}$/.test(idNumber) ? '证件号码格式不正确' : '');
+    }
+    function checkPatientCreatePhone() {
+      const phone = patientCreateValue('phone');
+      document.getElementById('patientCreatePhoneTip').hidden = !(/^1[3-9]\d{9}$/.test(phone) && allPatients.some(patient => patient.phoneFull === phone));
+    }
+    function patientCreateRecords(type) {
+      return [...document.querySelectorAll(`[data-create-row="${type}"]`)].map(row => ({ first: row.querySelector('[data-create-record="first"]').value.trim(), second: row.querySelector('[data-create-record="second"]').value.trim() }));
+    }
+    function submitPatientCreate() {
+      const required = { name: '请输入姓名', idNumber: '请输入证件号码', phone: '请输入手机号', source: '请选择患者来源' };
+      let invalid = false;
+      Object.entries(required).forEach(([field, message]) => {
+        const error = document.querySelector(`[data-create-error="${field}"]`);
+        error.textContent = patientCreateValue(field) ? '' : message;
+        if (error.textContent) invalid = true;
+      });
+      const idNumber = patientCreateValue('idNumber');
+      const idType = patientCreateValue('idType');
+      const idError = idNumber ? idType === '居民身份证' ? parseArchiveIdentityNumber(idNumber).error : !/^[A-Z0-9]{3,32}$/i.test(idNumber) ? '证件号码格式不正确' : '' : '';
+      if (idError) { document.querySelector('[data-create-error="idNumber"]').textContent = idError; invalid = true; }
+      if (!/^1[3-9]\d{9}$/.test(patientCreateValue('phone'))) { document.querySelector('[data-create-error="phone"]').textContent = '请输入正确的11位手机号'; invalid = true; }
+      if (patientCreateValue('birthDate') && calculateArchiveAge(patientCreateValue('birthDate')) === null) { document.getElementById('patientCreateAgeHint').textContent = '请选择有效且不晚于今天的出生日期'; invalid = true; }
+      if ((patientCreateValue('city') === '其他城市' || patientCreateValue('district') === '其他区县') && !patientCreateValue('addressDetail')) { document.getElementById('patientCreateMore').open = true; showToast('请在详细地址中补充具体城市或区县'); invalid = true; }
+      checkPatientCreateIdentity(true);
+      if (patientCreateDuplicate) invalid = true;
+      const health = {};
+      patientCreateTypes.forEach(type => {
+        health[type.key] = patientCreateRecords(type.key).map(record => {
+          if (!record.first || !record.second) invalid = true;
+          return type.key === 'allergyHistory' ? { allergyType: record.first, allergen: record.second } : { name: record.first, time: record.second };
+        });
+      });
+      if (invalid) {
+        if (patientCreateTypes.some(type => patientCreateRecords(type.key).some(record => !record.first || !record.second))) { document.getElementById('patientCreateHealth').open = true; showToast('请补全已添加的健康史记录'); }
+        patientCreateForm().querySelector('[data-create-error]:not(:empty)')?.closest('label')?.querySelector('input,select')?.focus();
+        return;
+      }
+      const birthDate = patientCreateValue('birthDate');
+      const address = ['province', 'city', 'district', 'addressDetail'].map(patientCreateValue).filter(Boolean).join(' ');
+      const patient = {
+        name: patientCreateValue('name'), visitNo: `JD${Date.now()}`, idType, idNumber: idNumber.toUpperCase(),
+        phoneFull: patientCreateValue('phone'), phone: maskArchiveSensitive('phone', patientCreateValue('phone')),
+        gender: patientCreateValue('gender') || '待补充', birthDate, age: String(calculateArchiveAge(birthDate) ?? ''),
+        source: patientCreateValue('source'), ethnicity: patientCreateValue('ethnicity') || '--', maritalStatus: patientCreateValue('maritalStatus'),
+        occupation: patientCreateValue('occupation') || '--', region: address || '--',
+        department: '--', diagnosis: '--', managementInstitution: '--', visitDate: new Date().toLocaleDateString('zh-CN').replaceAll('/', '/'), team: '', tags: [], portraits: [],
+        healthHistoryRecords: { ...health, familyHistory: [], medication: [], smoking: [], drinking: [] }
+      };
+      allPatients.unshift(patient);
+      syncHealthHistorySummary(patient);
+      renderPatientList();
+      patientCreateCreated = patient;
+      closePatientCreate();
+      document.getElementById('patientCreateSuccessSummary').innerHTML = `${esc(patient.name)}<br>${esc(patient.gender)}｜${patient.age ? esc(patient.age) + '岁' : '年龄待补充'}<br>${esc(patient.phone)}`;
+      const success = document.getElementById('patientCreateSuccess');
+      success.classList.add('open');
+      success.setAttribute('aria-hidden', 'false');
+    }
+    document.addEventListener('input', event => {
+      if (!event.target.closest('#patientCreateForm')) return;
+      if (event.target.name === 'idNumber') checkPatientCreateIdentity(false);
+      if (event.target.name === 'birthDate') document.getElementById('patientCreateAgeHint').textContent = `自动计算年龄：${calculateArchiveAge(event.target.value) ?? '待补充'}岁`;
+      if (event.target.name === 'phone') checkPatientCreatePhone();
+      if (event.target.name) document.querySelector(`[data-create-error="${event.target.name}"]`)?.replaceChildren();
+    });
+    document.addEventListener('change', event => {
+      if (!event.target.closest('#patientCreateForm')) return;
+      if (event.target.name === 'idType') checkPatientCreateIdentity(false);
+      if (event.target.name === 'province' || event.target.name === 'city') updatePatientCreateAddress(event.target.name);
+    });
+    document.addEventListener('focusout', event => {
+      if (!event.target.closest('#patientCreateForm')) return;
+      if (event.target.name === 'idNumber') checkPatientCreateIdentity(true);
+      if (event.target.name === 'phone') checkPatientCreatePhone();
+    });
+
     document.addEventListener('click', e => {
+      const createTrigger = e.target.closest('[data-open-patient-create]');
+      if (createTrigger) { openPatientCreate(createTrigger.dataset.source || ''); return; }
+      if (e.target.closest('[data-close-patient-create]') || e.target.id === 'patientCreateModal') { closePatientCreate(); return; }
+      if (e.target.closest('[data-create-add]')) { addPatientCreateHealthRow(e.target.closest('[data-create-add]').dataset.createAdd); return; }
+      if (e.target.closest('[data-create-remove]')) { const rows = e.target.closest('.patient-create-health-rows'); e.target.closest('.patient-create-row').remove(); if (!rows.children.length) rows.innerHTML = '<span class="patient-create-health-empty">暂无相关记录</span>'; return; }
+      if (e.target.closest('[data-create-view-duplicate]')) { closePatientCreate(); openPatientArchive(patientCreateDuplicate); return; }
+      if (e.target.closest('[data-submit-patient-create]')) { submitPatientCreate(); return; }
+      const createNext = e.target.closest('[data-patient-create-next]');
+      if (createNext) {
+        const success = document.getElementById('patientCreateSuccess');
+        success.classList.remove('open'); success.setAttribute('aria-hidden', 'true');
+        if (createNext.dataset.patientCreateNext === 'continue') openPatientCreate();
+        if (createNext.dataset.patientCreateNext === 'archive') openPatientArchive(patientCreateCreated);
+        if (createNext.dataset.patientCreateNext === 'manage') openPatientBatchTeamModal(patientCreateCreated.visitNo);
+        return;
+      }
+      if (!e.target.closest('.archive-more-actions')) setArchiveMoreOpen(false);
+      if (e.target.closest('[data-archive-more]')) {
+        setArchiveMoreOpen(document.getElementById('archiveMoreMenu').hidden);
+        return;
+      }
+      const archiveChangesItem = e.target.closest('[data-open-archive-changes]');
+      if (archiveChangesItem) {
+        openArchiveChanges(archiveChangesItem);
+        return;
+      }
+      if (e.target.closest('[data-close-archive-changes]') || e.target.id === 'archiveChangesModal') {
+        closeArchiveChanges();
+        return;
+      }
       if (!e.target.closest('[data-smart-field-picker]')) document.querySelectorAll('.patient-condition-field-wrap.open').forEach(node => { node.classList.remove('open'); node.querySelector('[data-open-smart-field-picker]')?.setAttribute('aria-expanded', 'false'); });
       if (!e.target.closest('[data-smart-data-extract]')) {
         activePatientDataExtractId = '';
@@ -9401,7 +10328,101 @@
       }
       const archiveEdit = e.target.closest('[data-archive-edit]');
       if (archiveEdit) {
-        openPatientEditor(archiveCurrentPatient, 'archive', archiveEdit.dataset.archiveEdit);
+        setArchiveMoreOpen(false);
+        if (archiveEdit.dataset.archiveEdit === 'health') openHealthHistoryModal('pastHistory', archiveEdit);
+        else openArchiveEditModal('basic', archiveEdit);
+        return;
+      }
+      const archiveReveal = e.target.closest('[data-archive-reveal]');
+      if (archiveReveal) {
+        const key = archiveReveal.dataset.archiveReveal;
+        archiveSensitiveState[key] = !archiveSensitiveState[key];
+        renderPatientArchive();
+        document.querySelector(`[data-archive-reveal="${key}"]`)?.focus();
+        return;
+      }
+      const archiveHealthRow = e.target.closest('[data-archive-health-row]');
+      if (archiveHealthRow) {
+        openHealthHistoryModal(archiveHealthRow.dataset.archiveHealthRow, archiveHealthRow);
+        return;
+      }
+      const healthHistoryTab = e.target.closest('[data-health-history-tab]');
+      if (healthHistoryTab) {
+        healthHistoryState.activeType = healthHistoryTab.dataset.healthHistoryTab;
+        renderHealthHistoryDetail();
+        requestAnimationFrame(() => document.querySelector(`[data-health-history-tab="${healthHistoryState.activeType}"]`)?.focus());
+        return;
+      }
+      if (e.target.closest('[data-add-health-record]')) {
+        startHealthRecordEdit(-1);
+        return;
+      }
+      const editHealthRecord = e.target.closest('[data-edit-health-record]');
+      if (editHealthRecord) {
+        startHealthRecordEdit(Number(editHealthRecord.dataset.editHealthRecord));
+        return;
+      }
+      const deleteHealthRecordButton = e.target.closest('[data-delete-health-record]');
+      if (deleteHealthRecordButton) {
+        requestHealthDeletion(Number(deleteHealthRecordButton.dataset.deleteHealthRecord), deleteHealthRecordButton);
+        return;
+      }
+      if (e.target.closest('[data-delete-health-singleton]')) {
+        requestHealthDeletion(null, e.target.closest('[data-delete-health-singleton]'));
+        return;
+      }
+      if (e.target.closest('[data-cancel-health-delete]') || e.target.id === 'archiveHealthDeleteConfirm') {
+        closeHealthDeleteConfirm();
+        return;
+      }
+      if (e.target.closest('[data-confirm-health-delete]')) {
+        confirmHealthDeletion();
+        return;
+      }
+      if (e.target.closest('[data-add-health-singleton]')) {
+        healthHistoryState.singletonEditing.add(healthHistoryState.activeType);
+        renderHealthHistoryDetail();
+        requestAnimationFrame(() => document.querySelector('#archiveHealthDetailBody [data-health-record-field="status"]')?.focus());
+        return;
+      }
+      if (e.target.closest('[data-cancel-health-singleton]')) {
+        const type = healthHistoryState.activeType;
+        healthHistoryState.records[type] = [];
+        healthHistoryState.singletonEditing.delete(type);
+        renderHealthHistoryDetail();
+        return;
+      }
+      if (e.target.closest('[data-cancel-health-record]')) {
+        delete healthHistoryState.editors[healthHistoryState.activeType];
+        renderHealthHistoryDetail();
+        return;
+      }
+      if (e.target.closest('[data-save-health-record]')) {
+        saveHealthRecord();
+        return;
+      }
+      if (e.target.closest('[data-save-health-history]')) {
+        saveHealthHistory();
+        return;
+      }
+      if (e.target.closest('[data-continue-health-edit]')) {
+        const confirm = document.getElementById('archiveHealthExitConfirm');
+        confirm.classList.remove('open');
+        confirm.setAttribute('aria-hidden', 'true');
+        document.querySelector('#archiveHealthEditModal [data-save-health-history]')?.focus();
+        return;
+      }
+      if (e.target.closest('[data-discard-health-edit]')) {
+        closeArchiveEditModal(true, true);
+        return;
+      }
+      if (e.target.closest('[data-close-archive-edit]') || e.target.matches('.archive-edit-modal-mask')) {
+        closeArchiveEditModal();
+        return;
+      }
+      const saveArchiveEdit = e.target.closest('[data-save-archive-edit]');
+      if (saveArchiveEdit) {
+        saveArchiveEditModal(saveArchiveEdit.dataset.saveArchiveEdit);
         return;
       }
       const patientPageButton = e.target.closest('[data-patient-page]');
@@ -10488,6 +11509,23 @@
     });
 
     document.addEventListener('keydown', e => {
+      if (e.key === 'Escape' && document.getElementById('archiveHealthDeleteConfirm').classList.contains('open')) {
+        closeHealthDeleteConfirm();
+        return;
+      }
+      if (e.key === 'Escape' && document.querySelector('#archiveChangesModal.open')) {
+        closeArchiveChanges();
+        return;
+      }
+      if (e.key === 'Escape' && document.querySelector('#archiveBasicEditModal.open, #archiveHealthEditModal.open')) {
+        closeArchiveEditModal();
+        return;
+      }
+      if (e.key === 'Escape' && !document.getElementById('archiveMoreMenu').hidden) {
+        setArchiveMoreOpen(false);
+        document.querySelector('[data-archive-more]')?.focus();
+        return;
+      }
       const previewIndicator = e.target.closest('[data-preview-indicator]');
       if (previewIndicator && !e.target.closest('button') && (e.key === 'Enter' || e.key === ' ')) {
         e.preventDefault();
@@ -14847,7 +15885,8 @@
 <script src="./js/team-management.js"></script>
   <script src="./js/health-portrait.js?v=20260910-1"></script>
 <script src="./js/personnel-management.js?v=20260920-2"></script>
-<script src="./js/organization-management.js?v=20260920-2"></script>
+<script src="./js/organization-management.js?v=20260920-5"></script>
+<script src="./js/workbench.js?v=20260918-3"></script>
 <script src="./js/system-role.js?v=20260918-2"></script>
 <script src="./js/scale-create.js?v=20260916-3"></script>
 <script src="./js/dashboard-latest-data.js?v=20260913-31"></script>
