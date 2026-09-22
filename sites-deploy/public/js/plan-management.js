@@ -52,6 +52,15 @@
   }));
   const infoFields = () => [...document.querySelectorAll('#planCanvasPage [data-plan-tab-panel="info"] input, #planCanvasPage [data-plan-tab-panel="info"] textarea, #planCanvasPage [data-plan-tab-panel="info"] select')];
   const defaultInfo = infoFields().map(field => field.value);
+  const durationFieldIds = ['planManagementPeriod', 'planTaskExtensionPeriod'];
+  const limitDuration = value => String(value ?? '').replace(/\D/g, '').slice(0, 3);
+  durationFieldIds.forEach(id => {
+    const input = document.getElementById(id);
+    input.addEventListener('input', () => {
+      const limited = limitDuration(input.value);
+      if (input.value !== limited) input.value = limited;
+    });
+  });
   const defaultCheckin = document.querySelector('#planCanvasPage .plan-checkin-list')?.innerHTML || '';
   const defaultFlow = [...document.querySelectorAll('#planCanvasPage .plan-flow input')].map(field => field.value);
   const strategyReports = [
@@ -470,6 +479,7 @@
     fields[0].value = source.name;
     fields[2].value = source.description;
     fields.forEach((field, index) => { if (index !== 0 && index !== 2) field.value = source.details?.values?.[index] ?? defaultInfo[index] ?? ''; });
+    durationFieldIds.forEach(id => { const input = document.getElementById(id); input.value = limitDuration(input.value); });
     if (!source.details?.values?.length) {
       if (fields[3] && source.team) {
         const team = source.team.replace(/^团队/, '');
@@ -613,6 +623,7 @@
       for (const [id, label] of [['planManagementPeriod', '管理周期'], ['planTaskExtensionPeriod', '任务延续期']]) {
         const input = document.getElementById(id);
         const value = input.value.trim();
+        if (value.length > 3) { toast(`${label}最多输入 3 位数字`); input.focus(); return; }
         if (value && (!/^\d+$/.test(value) || !Number.isSafeInteger(Number(value)) || Number(value) < 1)) {
           toast(`${label}请输入大于 0 的整数`); input.focus(); return;
         }
