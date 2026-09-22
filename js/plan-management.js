@@ -61,6 +61,14 @@
   };
   const find = id => plans.find(plan => plan.id === id);
   const latest = plan => plan.versions?.[0]?.number || 1;
+  const versionLabel = value => {
+    const number = Number(value);
+    if (!Number.isSafeInteger(number) || number < 1) return '—';
+    const digits = '零一二三四五六七八九';
+    if (number < 10) return `第${digits[number]}版`;
+    if (number < 100) return `第${number < 20 ? '' : digits[Math.floor(number / 10)]}十${number % 10 ? digits[number % 10] : ''}版`;
+    return `第${number}版`;
+  };
   const activeVersion = plan => plan.versions?.find(version => version.number === plan.enabledVersion) || plan.versions?.[0];
   const displayData = plan => activeVersion(plan)?.data || plan;
   const status = plan => plan.enabledVersion == null ? '待发布' : '已发布';
@@ -210,7 +218,7 @@
     return `<tr class="plan-version-child" data-plan-id="${esc(plan.id)}" data-version="${version.number}">
       <td><span class="plan-child-indent" aria-hidden="true"></span><span class="plan-cell-name" title="${esc(data.name)}">${esc(data.name || '未命名方案')}</span></td>
       <td>${textCell(data.description)}</td><td>${textCell(data.profile, 'plan-profile-value')}</td><td>${textCell(data.team)}</td>
-      <td>V${version.number}</td><td>—</td><td>${Number(data.tasks) || 0}</td>
+      <td>${versionLabel(version.number)}</td><td>—</td><td>${Number(data.tasks) || 0}</td>
       <td><span class="plan-list-status ${version.published || isEnabled ? 'published' : 'pending'}">${version.published || isEnabled ? '已发布' : '待发布'}</span></td>
       <td>${isEnabled ? '当前启用' : '—'}</td>
       <td><div class="plan-row-actions"><button type="button" data-plan-edit-version="${esc(plan.id)}" data-version-number="${version.number}">编辑</button><button type="button" data-enable-plan-row="${esc(plan.id)}" data-version-number="${version.number}" ${isEnabled ? 'disabled' : ''}>${isEnabled ? '已启用' : '启用'}</button></div></td>
@@ -224,11 +232,11 @@
     return `<tr class="plan-parent-row" data-plan-id="${esc(plan.id)}">
       <td><div class="plan-name-with-expand"><button type="button" class="plan-expand-button" data-plan-expand="${esc(plan.id)}" aria-expanded="${isExpanded}" aria-label="${isExpanded ? '收起' : '展开'}${esc(plan.name)}的版本">${isExpanded ? '⌄' : '›'}</button><span class="plan-cell-name" title="${esc(data.name)}">${esc(data.name || '未命名方案')}</span></div></td>
       <td>${textCell(data.description)}</td><td>${textCell(data.profile, 'plan-profile-value')}</td><td>${textCell(data.team)}</td>
-      <td>V${shownVersion}</td>
+      <td>${versionLabel(shownVersion)}</td>
       <td><button type="button" class="plan-table-link" data-plan-versions="${esc(plan.id)}" aria-label="管理${esc(plan.name)}的${plan.versions?.length || 0}个版本">${plan.versions?.length || 0}</button></td>
       <td>${Number(data.tasks) || 0}</td>
       <td><span class="plan-list-status ${status(plan) === '已发布' ? 'published' : 'pending'}">${status(plan)}</span></td>
-      <td>${plan.enabledVersion == null ? '—' : `V${plan.enabledVersion}`}</td>
+      <td>${versionLabel(plan.enabledVersion)}</td>
       <td><div class="plan-row-actions"><button type="button" data-plan-edit="${esc(plan.id)}">编辑</button><button type="button" data-plan-copy="${esc(plan.id)}">复制新增</button></div></td>
       <td>${esc(plan.creator || '—')}</td><td>${esc(formatTime(plan.createdAt))}</td>
     </tr>${isExpanded ? (plan.versions || []).map(version => renderVersion(plan, version)).join('') : ''}`;
@@ -261,8 +269,8 @@
     versionPlanId = id;
     modal.querySelector('.plan-version-subtitle').textContent = plan.name;
     modal.querySelector('.plan-version-list').innerHTML = plan.versions.map((version, index) => `<article class="plan-version-row">
-      <div><strong>V${version.number}${plan.enabledVersion === version.number ? ' · 启用中' : ''}${index === 0 ? ' · 最新' : ''}</strong>
-      <span>${esc(formatTime(version.at))} · ${esc(version.note)}</span></div>
+      <div><strong>${versionLabel(version.number)}${plan.enabledVersion === version.number ? ' · 启用中' : ''}${index === 0 ? ' · 最新' : ''}</strong>
+      <span>${esc(formatTime(version.at))} · ${esc(String(version.note || '').replace(/V(\d+)/g, (_, number) => versionLabel(number)))}</span></div>
       <div class="plan-version-actions"><button type="button" data-enable-plan-version="${version.number}" ${plan.enabledVersion === version.number ? 'disabled' : ''}>启用此版本</button>
       <button type="button" data-restore-plan-version="${version.number}" ${index === 0 ? 'disabled' : ''}>恢复此版本</button></div></article>`).join('');
     modal.classList.add('open'); modal.setAttribute('aria-hidden', 'false');
@@ -388,9 +396,9 @@
     if (restore && versionPlanId) {
       const plan = find(versionPlanId);
       const version = plan.versions.find(item => item.number === Number(restore.dataset.restorePlanVersion));
-      if (!version || !confirm(`确定将“${plan.name}”恢复为 V${version.number} 吗？当前版本会保留在历史记录中。`)) return;
+      if (!version || !confirm(`确定将“${plan.name}”恢复为${versionLabel(version.number)}吗？当前版本会保留在历史记录中。`)) return;
       Object.assign(plan, structuredClone(version.data));
-      addVersion(plan, `恢复 V${version.number}`);
+      addVersion(plan, `恢复${versionLabel(version.number)}`);
       persist(); render(); showVersions(plan.id); toast('已恢复为待发布版本');
     }
   }, true);
