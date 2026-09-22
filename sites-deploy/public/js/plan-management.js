@@ -194,7 +194,7 @@
   const statusControl = makeSearchableSelect(statusSelect, '状态');
   const content = view.querySelector('.plan-content');
   content.innerHTML = `<div class="plan-table-wrap"><table class="plan-list-table">
-    <thead><tr><th>方案名称</th><th>方案描述</th><th>适用画像</th><th>适用团队</th><th>版本号</th><th>版本数量</th><th>任务数量</th><th>状态</th><th>启用版本</th><th>操作</th><th>创建人员</th><th>创建时间</th></tr></thead>
+    <thead><tr><th>方案名称</th><th>方案描述</th><th>适用画像</th><th>适用团队</th><th>版本号</th><th>版本数量</th><th>任务数量</th><th>状态</th><th>启用版本</th><th>创建人员</th><th>创建时间</th><th>操作</th></tr></thead>
     <tbody id="planListRows"></tbody></table></div>`;
   const rows = content.querySelector('#planListRows');
   const pager = view.querySelector('.plan-pager');
@@ -228,8 +228,8 @@
       <td>${versionLabel(version.number)}</td><td>—</td><td>${Number(data.tasks) || 0}</td>
       <td><span class="plan-list-status ${version.published || isEnabled ? 'published' : 'pending'}">${version.published || isEnabled ? '已发布' : '待发布'}</span></td>
       <td>${switchCell(plan, version)}</td>
-      <td><div class="plan-row-actions"><button type="button" data-plan-edit-version="${esc(plan.id)}" data-version-number="${version.number}">编辑</button></div></td>
       <td>${esc(version.creator || '—')}</td><td>${esc(formatTime(version.at))}</td>
+      <td><div class="plan-row-actions"><button type="button" data-plan-edit-version="${esc(plan.id)}" data-version-number="${version.number}">编辑</button></div></td>
     </tr>`;
   };
   const renderPlan = plan => {
@@ -244,8 +244,8 @@
       <td>${Number(data.tasks) || 0}</td>
       <td><span class="plan-list-status ${status(plan) === '已发布' ? 'published' : 'pending'}">${status(plan)}</span></td>
       <td>${switchCell(plan)}</td>
-      <td><div class="plan-row-actions"><button type="button" data-plan-edit="${esc(plan.id)}">编辑</button><button type="button" data-plan-copy="${esc(plan.id)}">复制新增</button></div></td>
       <td>${esc(plan.creator || '—')}</td><td>${esc(formatTime(plan.createdAt))}</td>
+      <td><div class="plan-row-actions"><button type="button" data-plan-edit="${esc(plan.id)}">编辑</button><button type="button" data-plan-copy="${esc(plan.id)}">复制新增</button></div></td>
     </tr>${isExpanded ? (plan.versions || []).map(version => renderVersion(plan, version)).join('') : ''}`;
   };
   const render = () => {
