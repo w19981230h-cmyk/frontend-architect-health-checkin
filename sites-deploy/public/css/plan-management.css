@@ -1,0 +1,28 @@
+.plan-card { position: relative; }
+.plan-state.is-disabled { color: #8c8c8c; background: #f5f5f5; }
+.plan-more-wrap { position: relative; }
+.plan-more:focus-visible, .plan-action-menu button:focus-visible, .plan-version-dialog button:focus-visible { outline: 2px solid #1677ff; outline-offset: 2px; }
+.plan-action-menu { position: absolute; z-index: 30; top: calc(100% + 4px); right: 0; min-width: 142px; padding: 4px; border: 1px solid #f0f0f0; border-radius: 8px; background: #fff; box-shadow: 0 6px 16px rgba(0,0,0,.08); }
+.plan-action-menu button { display: block; width: 100%; min-height: 34px; padding: 5px 12px; border: 0; border-radius: 4px; color: #434c5a; background: transparent; text-align: left; font: inherit; cursor: pointer; }
+.plan-action-menu button:hover { color: #1677ff; background: #f5f5f5; }
+.plan-action-menu button.danger { color: #ff4d4f; }
+.plan-action-menu button.danger:hover { background: #fff2f0; }
+.plan-empty { grid-column: 1 / -1; padding: 80px 16px; text-align: center; color: #8c8c8c; }
+.plan-version-mask { display: none; position: fixed; z-index: 10000; inset: 0; align-items: center; justify-content: center; padding: 20px; background: rgba(0,0,0,.45); }
+.plan-version-mask.open { display: flex; }
+.plan-version-dialog { width: min(560px, 100%); max-height: min(640px, 90vh); display: flex; flex-direction: column; border-radius: 8px; background: #fff; box-shadow: 0 12px 40px rgba(0,0,0,.16); }
+.plan-version-dialog header { display: flex; align-items: center; justify-content: space-between; padding: 16px 24px; border-bottom: 1px solid #f0f0f0; }
+.plan-version-dialog h2 { margin: 0; font-size: 18px; color: #262626; }
+.plan-version-dialog header button { border: 0; background: transparent; font-size: 24px; color: #8c8c8c; cursor: pointer; }
+.plan-version-subtitle { margin: 0; padding: 16px 24px 8px; color: #595959; }
+.plan-version-list { min-height: 120px; overflow: auto; padding: 0 24px 16px; }
+.plan-version-row { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 14px 0; border-bottom: 1px solid #f0f0f0; }
+.plan-version-row div { display: grid; gap: 4px; }
+.plan-version-row strong { color: #262626; font-size: 14px; }
+.plan-version-row span, .plan-version-empty { color: #8c8c8c; font-size: 13px; }
+.plan-version-row button, .plan-version-dialog footer button { min-height: 32px; padding: 4px 15px; border: 1px solid #d9d9d9; border-radius: 6px; background: #fff; color: #1677ff; cursor: pointer; white-space: nowrap; }
+.plan-version-row button:hover:not(:disabled), .plan-version-dialog footer button:hover { border-color: #4096ff; }
+.plan-version-row button:disabled { color: #bfbfbf; background: #f5f5f5; cursor: not-allowed; }
+.plan-version-empty { padding: 32px 0; text-align: center; }
+.plan-version-dialog footer { display: flex; justify-content: flex-end; padding: 12px 24px; border-top: 1px solid #f0f0f0; }
+@media (max-width: 600px) { .plan-action-menu { right: 0; } .plan-version-row { align-items: flex-start; flex-direction: column; } }
