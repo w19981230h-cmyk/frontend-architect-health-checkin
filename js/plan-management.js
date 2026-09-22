@@ -10,6 +10,19 @@
     '0—6岁儿童', '孕产妇及高危妊娠人群', '辅助生殖治疗患者', '超重与肥胖人群',
     '产后女性', '脊柱侧弯患者'
   ];
+  // Plausible, deterministic audit details for the built-in demonstration plans.
+  const demoAudit = [
+    { creator: '张明远', createdAt: '2026-03-12T09:18:00+08:00' },
+    { creator: '陈慧敏', createdAt: '2026-04-08T14:32:00+08:00' },
+    { creator: '陈慧敏', createdAt: '2026-05-16T10:05:00+08:00' },
+    { creator: '刘佳宁', createdAt: '2026-04-21T11:24:00+08:00' },
+    { creator: '李静', createdAt: '2026-05-09T09:47:00+08:00' },
+    { creator: '王晓雯', createdAt: '2026-06-03T15:16:00+08:00' },
+    { creator: '王晓雯', createdAt: '2026-06-19T13:08:00+08:00' },
+    { creator: '许静怡', createdAt: '2026-07-07T10:36:00+08:00' },
+    { creator: '李静', createdAt: '2026-07-22T16:12:00+08:00' },
+    { creator: '张明远', createdAt: '2026-08-11T09:53:00+08:00' }
+  ];
   const inferProfile = name => {
     if (/糖尿病.*高血压/.test(name)) return '糖尿病合并高血压患者';
     if (/结石/.test(name)) return '泌尿系结石术后患者';
@@ -81,18 +94,29 @@
     plan.versions ||= [];
     plan.versions.unshift({ number: (plan.versions[0]?.number || 0) + 1, at: new Date().toISOString(), creator: currentCreator, published: false, note, data: snapshot(plan) });
   };
-  plans.forEach((plan, index) => {
+  plans.forEach(plan => {
+    const seedMatch = /^seed-(\d+)$/.exec(plan.id || '');
+    const sample = seedMatch ? demoAudit[Number(seedMatch[1]) - 1] : null;
     plan.profile ||= profiles[Number(plan.id?.replace('seed-', '')) - 1] || plan.details?.values?.[4] || inferProfile(plan.name);
     if (!plan.versions?.length) addVersion(plan, '初始版本');
     plan.versions.forEach(version => {
       if (version.data) version.data.profile ||= inferProfile(version.data.name || '') || plan.profile;
+      if (sample && version.note === '初始版本') {
+        version.at = sample.createdAt;
+        version.creator = sample.creator;
+      } else if (!version.creator && version.at) {
+        version.creator = currentCreator;
+      }
     });
     if (plan.enabledVersion === undefined) plan.enabledVersion = plan.enabled === false ? null : (plan.versions[0]?.number || 1);
     if (plan.published === undefined) plan.published = plan.enabledVersion != null;
     if (plan.lastEnabledVersion == null && plan.enabledVersion != null) plan.lastEnabledVersion = plan.enabledVersion;
-    if (plan.id?.startsWith('seed-')) plan.versions.forEach(version => {
-      if (version.note === '初始版本') { version.at = null; version.creator = null; }
-    });
+    if (sample) {
+      plan.creator ||= sample.creator;
+      plan.createdAt ||= sample.createdAt;
+    } else if (!plan.creator) {
+      plan.creator = currentCreator;
+    }
     const enabled = plan.versions.find(version => version.number === plan.enabledVersion);
     if (enabled) enabled.published = true;
     if (!plan.id?.startsWith('seed-') && !plan.createdAt) plan.createdAt = [...plan.versions].at(-1)?.at || null;
