@@ -34,16 +34,28 @@
   const homeState = { team: null, tab: 'members', keyword: '', chart: null, chartObserver: null };
   const primaryTeamProfile = {
     receivedCriteria: '呼吸系统疾病出院后需持续随访，且患者本人已完成知情同意。',
-    planCount: 3,
     warningRuleCount: 2,
     dates: ['2026/08/06', '2026/08/07', '2026/08/08', '2026/08/09', '2026/08/10', '2026/08/11', '2026/08/12'],
     growth: [0, 1, 1, 2, 3, 4, 5],
     plans: [
-      { name: '呼吸系统疾病出院后30天随访方案', cycle: '30天', tasks: 12, status: '已启用' },
-      { name: '慢阻肺稳定期健康管理方案', cycle: '90天', tasks: 18, status: '已启用' },
-      { name: '肺炎康复期健康指导方案', cycle: '14天', tasks: 8, status: '已启用' }
+      { id: 'team-plan-1', name: '呼吸系统疾病出院后30天随访方案', profile: '呼吸系统疾病出院患者', tasks: 12, enabledVersion: 2, versions: [{ number: 2, name: '呼吸系统疾病出院后30天随访方案', profile: '呼吸系统疾病出院患者', tasks: 12 }, { number: 1, name: '呼吸系统疾病出院后30天随访方案', profile: '呼吸系统疾病出院患者', tasks: 10 }] },
+      { id: 'team-plan-2', name: '慢阻肺稳定期健康管理方案', profile: '慢阻肺稳定期患者', tasks: 18, enabledVersion: 1, versions: [{ number: 1, name: '慢阻肺稳定期健康管理方案', profile: '慢阻肺稳定期患者', tasks: 18 }] },
+      { id: 'team-plan-3', name: '肺炎康复期健康指导方案', profile: '肺炎康复期患者', tasks: 8, enabledVersion: 1, versions: [{ number: 1, name: '肺炎康复期健康指导方案', profile: '肺炎康复期患者', tasks: 8 }] }
     ]
   };
+  const teamPlanStorageKey = 'frontend-architect:team-plans:v1';
+  const defaultTeamPlans = { 1: primaryTeamProfile.plans };
+  let teamPlans;
+  try {
+    const saved = JSON.parse(localStorage.getItem(teamPlanStorageKey) || 'null');
+    teamPlans = saved && typeof saved === 'object' && !Array.isArray(saved) ? saved : structuredClone(defaultTeamPlans);
+  } catch { teamPlans = structuredClone(defaultTeamPlans); }
+  const plansForTeam = teamId => teamPlans[teamId] || [];
+  const saveTeamPlans = () => {
+    try { localStorage.setItem(teamPlanStorageKey, JSON.stringify(teamPlans)); return true; }
+    catch { window.showToast?.('保存失败，请检查浏览器存储空间'); return false; }
+  };
+  const versionLabel = number => number < 10 ? `第${'零一二三四五六七八九'[number]}版` : `第${number}版`;
   const teamMembers = [
     { name: '张明远', department: '呼吸与危重症医学科', identity: '医生', title: '主任医师', administrator: true, status: '正常' },
     { name: '李铭锐', department: '呼吸与危重症医学科', identity: '医生', title: '副主任医师', administrator: false, status: '正常' },
@@ -175,19 +187,54 @@
     }
   }
 
-  function renderPlanContent(plans) {
+  let openPlanMenu = null;
+  let planDialog = null;
+  const planForAction = id => plansForTeam(homeState.team?.id).find(plan => plan.id === id);
+  const displayPlan = plan => plan.versions?.find(version => version.number === plan.enabledVersion) || plan.versions?.[0] || plan;
+
+  function renderPlanContent() {
     const container = document.getElementById('teamPlanContent');
     if (!container) return;
-    if (!plans?.length) {
+    const plans = plansForTeam(homeState.team?.id);
+    setText('teamPlanTotal', plans.length);
+    setText('teamMetricPlans', `${plans.filter(plan => plan.enabledVersion != null).length}个`);
+    if (!plans.length) {
       container.innerHTML = '<div class="team-plan-empty"><div class="team-empty-box"><span class="team-box-lid"></span><i></i><i></i></div><span>暂无已配置方案</span></div>';
       return;
     }
-    container.innerHTML = `<div class="team-plan-grid">${plans.map(plan => `<article class="team-home-plan-card"><div class="team-home-plan-head"><span class="team-home-plan-icon">▣</span><strong>${escapeHtml(plan.name)}</strong><span class="team-home-plan-status">${escapeHtml(plan.status)}</span></div><div class="team-home-plan-meta"><span>管理周期：<b>${escapeHtml(plan.cycle)}</b></span><span>任务数：<b>${plan.tasks}</b></span></div><button type="button" class="team-home-plan-action">查看方案 ›</button></article>`).join('')}</div>`;
+    container.innerHTML = `<div class="team-plan-grid">${plans.map(plan => {
+      const data = displayPlan(plan);
+      const status = plan.enabledVersion != null ? '已启用' : plan.paused ? '已停用' : '待发布';
+      return `<article class="team-home-plan-card"><div class="team-home-plan-head"><span class="team-home-plan-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><path d="M8 6h11M8 12h11M8 18h11" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><circle cx="4.5" cy="6" r="1.5" fill="currentColor"/><circle cx="4.5" cy="12" r="1.5" fill="currentColor"/><circle cx="4.5" cy="18" r="1.5" fill="currentColor"/></svg></span><strong title="${escapeHtml(data.name)}">${escapeHtml(data.name)}</strong><span class="team-home-plan-status ${status === '已启用' ? '' : 'inactive'}">${status}</span></div><div class="team-home-plan-body"><p><span>适用画像：</span><b>${escapeHtml(data.profile || '未设置')}</b></p><p><span>版本号：</span><b>${versionLabel(data.number || 1)}</b></p></div><div class="team-home-plan-foot"><span class="team-home-plan-task">任务: ${Number(data.tasks) || 0}</span><div class="team-home-plan-menu-wrap"><button type="button" class="team-home-plan-more" data-team-plan-more="${escapeHtml(plan.id)}" aria-expanded="${openPlanMenu === plan.id}" aria-haspopup="menu">更多<svg viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="m3 6 5 5 5-5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button><div class="team-home-plan-menu" role="menu" ${openPlanMenu === plan.id ? '' : 'hidden'}><button type="button" role="menuitem" data-team-plan-action="toggle" data-plan-id="${escapeHtml(plan.id)}">${plan.enabledVersion != null ? '停用' : '启用'}</button><button type="button" role="menuitem" data-team-plan-action="edit" data-plan-id="${escapeHtml(plan.id)}">编辑</button><button type="button" role="menuitem" data-team-plan-action="copy" data-plan-id="${escapeHtml(plan.id)}">复制新增</button><button type="button" role="menuitem" data-team-plan-action="versions" data-plan-id="${escapeHtml(plan.id)}">版本管理</button><button type="button" role="menuitem" class="danger" data-team-plan-action="delete" data-plan-id="${escapeHtml(plan.id)}">删除</button></div></div></div></article>`;
+    }).join('')}</div>`;
+  }
+
+  function closePlanDialog() {
+    planDialog?.remove();
+    planDialog = null;
+  }
+
+  function showPlanDialog(type, plan = null) {
+    closePlanDialog();
+    openPlanMenu = null;
+    renderPlanContent();
+    planDialog = document.createElement('div');
+    planDialog.className = 'team-plan-modal-mask';
+    if (type === 'delete' && plan) {
+      planDialog.innerHTML = `<section class="team-plan-dialog" role="alertdialog" aria-modal="true" aria-labelledby="teamPlanDialogTitle"><header><h2 id="teamPlanDialogTitle">删除方案</h2><button type="button" data-team-plan-dialog-close aria-label="关闭">×</button></header><p class="team-plan-delete-message">确定删除“${escapeHtml(plan.name)}”及其全部版本吗？删除后将无法在团队主页找回。</p><footer><button type="button" data-team-plan-dialog-close>取消</button><button type="button" class="danger" data-team-plan-delete-confirm="${escapeHtml(plan.id)}">删除</button></footer></section>`;
+    } else if (type === 'versions' && plan) {
+      planDialog.innerHTML = `<section class="team-plan-dialog" role="dialog" aria-modal="true" aria-labelledby="teamPlanDialogTitle"><header><h2 id="teamPlanDialogTitle">版本管理</h2><button type="button" data-team-plan-dialog-close aria-label="关闭">×</button></header><p class="team-plan-dialog-subtitle">${escapeHtml(plan.name)}</p><div class="team-plan-version-list">${(plan.versions || []).map(version => `<div class="team-plan-version-item"><div><strong>${versionLabel(version.number)}${plan.enabledVersion === version.number ? ' · 当前启用' : ''}</strong><span>${escapeHtml(version.profile || '未设置画像')} · ${Number(version.tasks) || 0} 个任务</span></div><button type="button" data-team-enable-version="${version.number}" data-plan-id="${escapeHtml(plan.id)}" ${plan.enabledVersion === version.number ? 'disabled' : ''}>启用此版本</button></div>`).join('')}</div><footer><button type="button" data-team-plan-dialog-close>关闭</button></footer></section>`;
+    } else {
+      const data = plan ? displayPlan(plan) : { name: '', profile: '', tasks: 0 };
+      planDialog.innerHTML = `<section class="team-plan-dialog" role="dialog" aria-modal="true" aria-labelledby="teamPlanDialogTitle"><header><h2 id="teamPlanDialogTitle">${plan ? '编辑方案' : '新建方案模板'}</h2><button type="button" data-team-plan-dialog-close aria-label="关闭">×</button></header><form id="teamPlanForm" data-plan-id="${escapeHtml(plan?.id || '')}"><label>方案名称<input name="name" maxlength="100" required value="${escapeHtml(data.name)}"></label><label>适用画像<input name="profile" maxlength="100" required value="${escapeHtml(data.profile)}"></label><label>任务数量<input name="tasks" type="number" min="0" max="999" required value="${Number(data.tasks) || 0}"></label><footer><button type="button" data-team-plan-dialog-close>取消</button><button type="submit" class="primary">保存</button></footer></form></section>`;
+    }
+    document.body.append(planDialog);
+    planDialog.querySelector('input, [data-team-plan-dialog-close]')?.focus();
   }
 
   function renderTeamHome(team) {
     const isPrimaryTeam = team.id === 1;
-    const profile = isPrimaryTeam ? primaryTeamProfile : { receivedCriteria: '符合该团队专病管理范围并已完成知情同意。', planCount: 0, warningRuleCount: 1, plans: [] };
+    const profile = isPrimaryTeam ? primaryTeamProfile : { receivedCriteria: '符合该团队专病管理范围并已完成知情同意。', warningRuleCount: 1 };
     setText('teamHomeName', team.name);
     setText('teamHomeAdmin', team.administrator || '--');
     setText('teamHomeInstitution', team.institution || '--');
@@ -196,10 +243,8 @@
     setText('teamHomeReceived', profile.receivedCriteria);
     setText('teamMetricPatients', `${team.patients}人`);
     setText('teamMetricGrowth', `+${Math.max(0, team.patients - (profile.growth?.[0] || 0))}`);
-    setText('teamMetricPlans', `${profile.planCount}个`);
     setText('teamMetricMembers', `${team.members}人`);
     setText('teamMetricWarnings', `${profile.warningRuleCount}条`);
-    setText('teamPlanTotal', profile.planCount);
     setText('teamChartDateRange', `${(profile.dates || ['2026/08/06'])[0]} - ${(profile.dates || ['2026/08/12']).at(-1)}`);
     setText('teamMemberTabCount', team.members);
     setText('teamPatientTabCount', team.patients);
@@ -209,7 +254,8 @@
     if (peopleSearch) peopleSearch.value = '';
     document.querySelectorAll('[data-team-home-tab]').forEach(button => button.classList.toggle('active', button.dataset.teamHomeTab === 'members'));
     setText('teamAddPersonLabel', '添加成员');
-    renderPlanContent(profile.plans);
+    openPlanMenu = null;
+    renderPlanContent();
     renderPeopleTable();
     requestAnimationFrame(renderGrowthChart);
   }
@@ -366,13 +412,88 @@
     if (event.target.id === 'teamCreateDepartment') event.target.closest('.team-create-field')?.classList.remove('invalid');
   });
   document.addEventListener('keydown', event => {
+    if (event.key === 'Escape') {
+      if (planDialog) closePlanDialog();
+      if (openPlanMenu) { openPlanMenu = null; renderPlanContent(); }
+    }
     if (event.target.id === 'teamPageJump' && event.key === 'Enter') {
       const totalPages = Math.max(1, Math.ceil(filteredRows().length / state.pageSize));
       const page = Number(event.target.value);
       if (Number.isInteger(page) && page >= 1 && page <= totalPages) { state.page = page; renderTeamList(); }
     }
   });
+  document.addEventListener('submit', event => {
+    if (event.target.id !== 'teamPlanForm') return;
+    event.preventDefault();
+    const form = event.target;
+    const name = form.elements.name.value.trim();
+    const profile = form.elements.profile.value.trim();
+    const tasks = Number(form.elements.tasks.value);
+    if (!name || !profile || !Number.isInteger(tasks) || tasks < 0 || tasks > 999) return;
+    const teamId = homeState.team?.id;
+    if (!teamId) return;
+    teamPlans[teamId] ||= [];
+    const previous = structuredClone(teamPlans[teamId]);
+    const plan = form.dataset.planId ? planForAction(form.dataset.planId) : null;
+    if (plan) {
+      const number = Math.max(0, ...plan.versions.map(version => version.number)) + 1;
+      plan.versions.unshift({ number, name, profile, tasks });
+      plan.name = name; plan.profile = profile; plan.tasks = tasks;
+      if (plan.enabledVersion != null) plan.enabledVersion = number;
+    } else {
+      const id = `team-plan-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`;
+      teamPlans[teamId].unshift({ id, name, profile, tasks, enabledVersion: null, paused: false, versions: [{ number: 1, name, profile, tasks }] });
+    }
+    if (!saveTeamPlans()) { teamPlans[teamId] = previous; return; }
+    closePlanDialog(); renderPlanContent();
+    window.showToast?.(plan ? '方案已保存为新版本' : '方案模板已创建，启用后对团队生效');
+  });
   document.addEventListener('click', event => {
+    if (event.target.closest('[data-team-plan-dialog-close]') || event.target === planDialog) { closePlanDialog(); return; }
+    const deleteConfirm = event.target.closest('[data-team-plan-delete-confirm]');
+    if (deleteConfirm) {
+      const teamId = homeState.team?.id;
+      const previous = structuredClone(teamPlans[teamId] || []);
+      teamPlans[teamId] = previous.filter(plan => plan.id !== deleteConfirm.dataset.teamPlanDeleteConfirm);
+      if (!saveTeamPlans()) { teamPlans[teamId] = previous; return; }
+      closePlanDialog(); renderPlanContent(); window.showToast?.('方案已删除'); return;
+    }
+    const enableVersion = event.target.closest('[data-team-enable-version]');
+    if (enableVersion) {
+      const plan = planForAction(enableVersion.dataset.planId);
+      if (plan) {
+        plan.enabledVersion = Number(enableVersion.dataset.teamEnableVersion);
+        plan.paused = false;
+        if (saveTeamPlans()) { closePlanDialog(); renderPlanContent(); window.showToast?.('启用版本已更新'); }
+      }
+      return;
+    }
+    if (event.target.closest('#teamHomeView .team-plan-panel .team-primary-action')) { showPlanDialog('edit'); return; }
+    const more = event.target.closest('[data-team-plan-more]');
+    if (more) { openPlanMenu = openPlanMenu === more.dataset.teamPlanMore ? null : more.dataset.teamPlanMore; renderPlanContent(); return; }
+    const planAction = event.target.closest('[data-team-plan-action]');
+    if (planAction) {
+      const plan = planForAction(planAction.dataset.planId);
+      if (!plan) return;
+      const action = planAction.dataset.teamPlanAction;
+      if (action === 'edit') { showPlanDialog('edit', plan); return; }
+      if (action === 'versions') { showPlanDialog('versions', plan); return; }
+      if (action === 'delete') { showPlanDialog('delete', plan); return; }
+      const teamId = homeState.team.id;
+      const previous = structuredClone(teamPlans[teamId]);
+      if (action === 'toggle') {
+        if (plan.enabledVersion != null) { plan.lastEnabledVersion = plan.enabledVersion; plan.enabledVersion = null; plan.paused = true; }
+        else { plan.enabledVersion = plan.versions.some(version => version.number === plan.lastEnabledVersion) ? plan.lastEnabledVersion : plan.versions[0]?.number || 1; plan.paused = false; }
+      } else if (action === 'copy') {
+        const data = displayPlan(plan);
+        const id = `team-plan-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`;
+        teamPlans[teamId].unshift({ id, name: `${data.name}（副本）`, profile: data.profile, tasks: data.tasks, enabledVersion: null, paused: false, versions: [{ number: 1, name: `${data.name}（副本）`, profile: data.profile, tasks: data.tasks }] });
+      }
+      if (!saveTeamPlans()) teamPlans[teamId] = previous;
+      openPlanMenu = null; renderPlanContent();
+      return;
+    }
+    if (openPlanMenu && !event.target.closest('.team-home-plan-menu')) { openPlanMenu = null; renderPlanContent(); }
     if (event.target.closest('[data-team-search-clear]')) {
       const input = document.getElementById('teamSearchInput');
       if (input) input.value = '';

@@ -240,8 +240,9 @@
   const switchCell = (plan, version) => {
     const isChild = version != null;
     const checked = isChild ? plan.enabledVersion === version.number : plan.enabledVersion != null;
+    const blocked = isChild && !checked && version.published;
     const label = isChild ? `${checked ? '停用' : '启用'}${esc(plan.name)}的${versionLabel(version.number)}` : `${checked ? '停用' : '启用'}${esc(plan.name)}`;
-    return `<label class="checkin-eval-switch-row plan-version-switch" title="${label}"><input type="checkbox" role="switch" data-plan-switch="${esc(plan.id)}" ${isChild ? `data-version-number="${version.number}"` : ''} aria-label="${label}" ${checked ? 'checked' : ''}><span class="checkin-eval-switch" aria-hidden="true"></span></label>`;
+    return `<label class="checkin-eval-switch-row plan-version-switch" title="${blocked ? '仅待发布版本可开启' : label}"><input type="checkbox" role="switch" data-plan-switch="${esc(plan.id)}" ${isChild ? `data-version-number="${version.number}"` : ''} aria-label="${blocked ? `${versionLabel(version.number)}已发布，不可开启` : label}" ${checked ? 'checked' : ''} ${blocked ? 'disabled' : ''}><span class="checkin-eval-switch" aria-hidden="true"></span></label>`;
   };
   const renderVersion = (plan, version) => {
     const data = version.data || plan;
@@ -302,7 +303,7 @@
     modal.querySelector('.plan-version-list').innerHTML = plan.versions.map((version, index) => `<article class="plan-version-row">
       <div><strong>${versionLabel(version.number)}${plan.enabledVersion === version.number ? ' · 启用中' : ''}${index === 0 ? ' · 最新' : ''}</strong>
       <span>${esc(formatTime(version.at))} · ${esc(String(version.note || '').replace(/V(\d+)/g, (_, number) => versionLabel(number)))}</span></div>
-      <div class="plan-version-actions"><button type="button" data-enable-plan-version="${version.number}" ${plan.enabledVersion === version.number ? 'disabled' : ''}>启用此版本</button>
+      <div class="plan-version-actions"><button type="button" data-enable-plan-version="${version.number}" ${plan.enabledVersion === version.number ? 'disabled title="当前启用版本"' : version.published ? 'disabled title="仅待发布版本可开启"' : ''}>启用此版本</button>
       <button type="button" data-restore-plan-version="${version.number}" ${index === 0 ? 'disabled' : ''}>恢复此版本</button></div></article>`).join('');
     modal.classList.add('open'); modal.setAttribute('aria-hidden', 'false');
     modal.querySelector('[data-close-plan-versions]').focus();
@@ -378,6 +379,9 @@
       : Number(control.dataset.versionNumber);
     if (control.checked && !plan.versions.some(version => version.number === requestedVersion)) { render(); return; }
     const requestedRecord = plan.versions.find(version => version.number === requestedVersion);
+    if (control.checked && control.dataset.versionNumber != null && requestedRecord?.published && previousVersion !== requestedVersion) {
+      render(); toast('仅待发布版本可开启'); return;
+    }
     const previousPublished = requestedRecord?.published;
     plan.enabledVersion = control.checked ? requestedVersion : null;
     if (plan.enabledVersion != null) {
@@ -440,7 +444,9 @@
     const enable = target.closest('[data-enable-plan-version]');
     if (enable && versionPlanId) {
       const plan = find(versionPlanId);
-      plan.enabledVersion = Number(enable.dataset.enablePlanVersion);
+      const nextVersion = plan.versions.find(item => item.number === Number(enable.dataset.enablePlanVersion));
+      if (!nextVersion || nextVersion.published) { toast('仅待发布版本可开启'); return; }
+      plan.enabledVersion = nextVersion.number;
       plan.lastEnabledVersion = plan.enabledVersion;
       plan.published = true;
       const version = plan.versions.find(item => item.number === plan.enabledVersion);
