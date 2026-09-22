@@ -111,6 +111,78 @@
   topbar.insertBefore(statusSelect, topbar.querySelector('[data-new-plan]'));
   topbar.insertBefore(queryButton, topbar.querySelector('[data-new-plan]'));
   topbar.insertBefore(resetButton, topbar.querySelector('[data-new-plan]'));
+  const makeSearchableSelect = (native, label) => {
+    const control = document.createElement('div');
+    control.className = 'plan-filter-combobox';
+    native.before(control);
+    control.append(native);
+    native.classList.add('plan-filter-native');
+    const input = document.createElement('input');
+    input.type = 'text'; input.autocomplete = 'off'; input.setAttribute('role', 'combobox');
+    input.setAttribute('aria-label', label); input.setAttribute('aria-autocomplete', 'list');
+    input.setAttribute('aria-expanded', 'false');
+    const list = document.createElement('div');
+    list.className = 'plan-filter-options'; list.id = `plan-${label === '团队' ? 'team' : 'status'}-options`;
+    list.setAttribute('role', 'listbox'); list.hidden = true;
+    input.setAttribute('aria-controls', list.id);
+    const toggle = document.createElement('button');
+    toggle.type = 'button'; toggle.className = 'plan-filter-toggle'; toggle.setAttribute('aria-label', `展开${label}选项`);
+    toggle.innerHTML = '<span aria-hidden="true">⌄</span>';
+    control.append(input, toggle, list);
+    let matches = [];
+    let active = 0;
+    const options = () => [...native.options].map(option => ({ value: option.value, label: option.textContent.trim() }));
+    const sync = () => {
+      input.value = native.value ? (options().find(option => option.value === native.value)?.label || '') : '';
+      input.placeholder = options()[0]?.label || `请选择${label}`;
+    };
+    const paint = search => {
+      const term = search.trim().toLocaleLowerCase();
+      matches = options().filter(option => !term || (option.value && option.label.toLocaleLowerCase().includes(term)));
+      active = 0;
+      list.innerHTML = matches.length ? matches.map((option, index) => `<div id="${list.id}-${index}" class="plan-filter-option${index === 0 ? ' active' : ''}" role="option" data-value="${esc(option.value)}" aria-selected="${option.value === native.value}">${esc(option.label)}</div>`).join('') : '<div class="plan-filter-empty">暂无匹配数据</div>';
+      input.setAttribute('aria-activedescendant', matches.length ? `${list.id}-0` : '');
+    };
+    const open = () => { paint(input.value === (options().find(option => option.value === native.value)?.label || '') ? '' : input.value); list.hidden = false; input.setAttribute('aria-expanded', 'true'); };
+    const close = () => { list.hidden = true; input.setAttribute('aria-expanded', 'false'); input.removeAttribute('aria-activedescendant'); };
+    const select = value => { native.value = value; sync(); close(); native.dispatchEvent(new Event('change', { bubbles: true })); };
+    input.addEventListener('focus', () => { open(); input.select(); });
+    input.addEventListener('input', () => { native.value = ''; open(); paint(input.value); });
+    input.addEventListener('keydown', event => {
+      if (event.key === 'Escape') { close(); sync(); return; }
+      if (event.key === 'ArrowDown' || event.key === 'ArrowUp') {
+        event.preventDefault(); if (!matches.length) return;
+        active = (active + (event.key === 'ArrowDown' ? 1 : -1) + matches.length) % matches.length;
+        list.querySelectorAll('.plan-filter-option').forEach((item, index) => item.classList.toggle('active', index === active));
+        input.setAttribute('aria-activedescendant', `${list.id}-${active}`);
+        list.children[active]?.scrollIntoView({ block: 'nearest' });
+      }
+      if (event.key === 'Enter') {
+        event.preventDefault();
+        if (!list.hidden && matches[active]) select(matches[active].value);
+        else queryButton.click();
+      }
+    });
+    toggle.addEventListener('click', () => { const wasOpen = !list.hidden; if (wasOpen) { close(); sync(); } else { input.focus(); open(); } });
+    list.addEventListener('mousedown', event => event.preventDefault());
+    list.addEventListener('click', event => { const option = event.target.closest('[data-value]'); if (option) select(option.dataset.value); });
+    document.addEventListener('click', event => { if (!control.contains(event.target)) { close(); sync(); } });
+    sync();
+    return {
+      refresh: () => { sync(); if (!list.hidden) open(); },
+      clear: () => select(''),
+      commit: () => {
+        if (native.value || !input.value.trim()) { close(); sync(); return true; }
+        const term = input.value.trim().toLocaleLowerCase();
+        const found = options().filter(option => option.value && option.label.toLocaleLowerCase().includes(term));
+        if (found.length === 1) { select(found[0].value); return true; }
+        toast(found.length ? `请选择具体${label}` : `未找到匹配的${label}`);
+        input.focus(); return false;
+      }
+    };
+  };
+  const teamControl = makeSearchableSelect(teamSelect, '团队');
+  const statusControl = makeSearchableSelect(statusSelect, '状态');
   const content = view.querySelector('.plan-content');
   content.innerHTML = `<div class="plan-table-wrap"><table class="plan-list-table">
     <thead><tr><th>方案名称</th><th>方案描述</th><th>适用画像</th><th>适用团队</th><th>版本号</th><th>版本数量</th><th>任务数量</th><th>状态</th><th>启用版本</th><th>操作</th><th>创建人员</th><th>创建时间</th></tr></thead>
@@ -124,19 +196,20 @@
     const teams = [...new Set(plans.map(plan => displayData(plan).team).filter(Boolean))];
     teamSelect.innerHTML = '<option value="">全部团队</option>' + teams.map(team => `<option value="${esc(team)}">${esc(team)}</option>`).join('');
     teamSelect.value = selected;
+    teamControl.refresh();
   };
   const filtered = () => plans.filter(plan =>
     (!query.name || String(displayData(plan).name || '').toLowerCase().includes(query.name)) &&
     (!query.team || displayData(plan).team === query.team) &&
     (!query.status || status(plan) === query.status)
   );
-  const textCell = value => `<span class="plan-cell-ellipsis" title="${esc(value || '')}">${esc(value || '—')}</span>`;
+  const textCell = (value, className = '') => `<span class="plan-cell-ellipsis ${className}" title="${esc(value || '')}">${esc(value || '—')}</span>`;
   const renderVersion = (plan, version) => {
     const data = version.data || plan;
     const isEnabled = plan.enabledVersion === version.number;
     return `<tr class="plan-version-child" data-plan-id="${esc(plan.id)}" data-version="${version.number}">
       <td><span class="plan-child-indent" aria-hidden="true"></span><span class="plan-cell-name" title="${esc(data.name)}">${esc(data.name || '未命名方案')}</span></td>
-      <td>${textCell(data.description)}</td><td>${textCell(data.profile)}</td><td>${textCell(data.team)}</td>
+      <td>${textCell(data.description)}</td><td>${textCell(data.profile, 'plan-profile-value')}</td><td>${textCell(data.team)}</td>
       <td>V${version.number}</td><td>—</td><td>${Number(data.tasks) || 0}</td>
       <td><span class="plan-list-status ${version.published || isEnabled ? 'published' : 'pending'}">${version.published || isEnabled ? '已发布' : '待发布'}</span></td>
       <td>${isEnabled ? '当前启用' : '—'}</td>
@@ -150,7 +223,7 @@
     const isExpanded = expanded.has(plan.id);
     return `<tr class="plan-parent-row" data-plan-id="${esc(plan.id)}">
       <td><div class="plan-name-with-expand"><button type="button" class="plan-expand-button" data-plan-expand="${esc(plan.id)}" aria-expanded="${isExpanded}" aria-label="${isExpanded ? '收起' : '展开'}${esc(plan.name)}的版本">${isExpanded ? '⌄' : '›'}</button><span class="plan-cell-name" title="${esc(data.name)}">${esc(data.name || '未命名方案')}</span></div></td>
-      <td>${textCell(data.description)}</td><td>${textCell(data.profile)}</td><td>${textCell(data.team)}</td>
+      <td>${textCell(data.description)}</td><td>${textCell(data.profile, 'plan-profile-value')}</td><td>${textCell(data.team)}</td>
       <td>V${shownVersion}</td>
       <td><button type="button" class="plan-table-link" data-plan-versions="${esc(plan.id)}" aria-label="管理${esc(plan.name)}的${plan.versions?.length || 0}个版本">${plan.versions?.length || 0}</button></td>
       <td>${Number(data.tasks) || 0}</td>
@@ -222,14 +295,15 @@
   };
 
   render();
-  queryButton.addEventListener('click', () => {
+  queryButton.addEventListener('click', event => {
+    if (!teamControl.commit() || !statusControl.commit()) { event.stopPropagation(); return; }
     query.name = nameInput.value.trim().toLowerCase();
     query.team = teamSelect.value;
     query.status = statusSelect.value;
     page = 1; render();
   });
   resetButton.addEventListener('click', () => {
-    nameInput.value = ''; teamSelect.value = ''; statusSelect.value = '';
+    nameInput.value = ''; teamControl.clear(); statusControl.clear();
     query.name = ''; query.team = ''; query.status = '';
     page = 1; render();
   });
@@ -249,7 +323,7 @@
   });
   window.addEventListener('load', () => {
     // Other page modules restore unrelated form values during startup.
-    nameInput.value = ''; teamSelect.value = ''; statusSelect.value = '';
+    nameInput.value = ''; teamControl.clear(); statusControl.clear();
     pageSize = 10; page = 1; render();
   }, { once: true });
 
