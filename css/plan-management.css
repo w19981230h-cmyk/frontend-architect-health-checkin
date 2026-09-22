@@ -1,13 +1,41 @@
-.plan-card { position: relative; }
-.plan-state.is-disabled { color: #8c8c8c; background: #f5f5f5; }
-.plan-more-wrap { position: relative; }
-.plan-more:focus-visible, .plan-action-menu button:focus-visible, .plan-version-dialog button:focus-visible { outline: 2px solid #1677ff; outline-offset: 2px; }
-.plan-action-menu { position: absolute; z-index: 30; top: calc(100% + 4px); right: 0; min-width: 142px; padding: 4px; border: 1px solid #f0f0f0; border-radius: 8px; background: #fff; box-shadow: 0 6px 16px rgba(0,0,0,.08); }
-.plan-action-menu button { display: block; width: 100%; min-height: 34px; padding: 5px 12px; border: 0; border-radius: 4px; color: #434c5a; background: transparent; text-align: left; font: inherit; cursor: pointer; }
-.plan-action-menu button:hover { color: #1677ff; background: #f5f5f5; }
-.plan-action-menu button.danger { color: #ff4d4f; }
-.plan-action-menu button.danger:hover { background: #fff2f0; }
-.plan-empty { grid-column: 1 / -1; padding: 80px 16px; text-align: center; color: #8c8c8c; }
+#planManagementView .plan-topbar { height: auto; min-height: 66px; flex-wrap: wrap; align-items: center; padding: 12px 16px; }
+#planManagementView .plan-search, #planManagementView .plan-team-select, #planManagementView .plan-status-select { width: 220px; height: 36px; border: 1px solid #d9d9d9; border-radius: 6px; color: rgba(0,0,0,.88); background: #fff; }
+#planManagementView .plan-search:hover, #planManagementView .plan-team-select:hover, #planManagementView .plan-status-select:hover { border-color: #4096ff; }
+#planManagementView .plan-search:focus-within, #planManagementView .plan-team-select:focus, #planManagementView .plan-status-select:focus { border-color: #1677ff; outline: 2px solid rgba(5,145,255,.1); }
+#planManagementView .plan-status-select { padding: 0 10px; }
+#planManagementView .plan-query-button, #planManagementView .plan-reset-button { height: 36px; padding: 0 15px; border: 1px solid #d9d9d9; border-radius: 6px; background: #fff; color: rgba(0,0,0,.88); font-size: 14px; cursor: pointer; }
+#planManagementView .plan-query-button { border-color: #1677ff; background: #1677ff; color: #fff; }
+#planManagementView .plan-query-button:hover, #planManagementView .plan-create:hover { border-color: #4096ff; background: #4096ff; }
+#planManagementView .plan-reset-button:hover { border-color: #4096ff; color: #1677ff; }
+#planManagementView .plan-create { height: 36px; margin-left: auto; border-radius: 6px; background: #1677ff; }
+#planManagementView .plan-content { display: flex; min-height: 0; padding: 0; overflow: hidden; }
+.plan-table-wrap { flex: 1; min-width: 0; overflow: auto; }
+.plan-list-table { width: 100%; min-width: 1540px; table-layout: fixed; border-collapse: collapse; color: rgba(0,0,0,.65); font-size: 14px; }
+.plan-list-table thead { position: sticky; top: 0; z-index: 2; }
+.plan-list-table th { height: 48px; padding: 0 12px; color: rgba(0,0,0,.65); background: #fafafa; text-align: left; font-weight: 600; white-space: nowrap; }
+.plan-list-table td { height: 56px; padding: 0 12px; border-bottom: 1px solid #f0f0f0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.plan-list-table tbody tr:hover td { background: #fafafa; }
+.plan-list-table th:nth-child(1) { width: 210px; }
+.plan-list-table th:nth-child(2) { width: 280px; }
+.plan-list-table th:nth-child(3) { width: 170px; }
+.plan-list-table th:nth-child(4) { width: 180px; }
+.plan-list-table th:nth-child(5), .plan-list-table th:nth-child(6), .plan-list-table th:nth-child(7) { width: 90px; }
+.plan-list-table th:nth-child(8), .plan-list-table th:nth-child(9) { width: 100px; }
+.plan-list-table th:nth-child(10) { width: 190px; }
+.plan-cell-name { display: block; overflow: hidden; text-overflow: ellipsis; color: rgba(0,0,0,.88); font-weight: 600; }
+.plan-cell-ellipsis { display: block; overflow: hidden; text-overflow: ellipsis; }
+.plan-list-status { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 13px; }
+.plan-list-status.published { color: #389e0d; background: #f6ffed; }
+.plan-list-status.pending { color: #d48806; background: #fffbe6; }
+.plan-table-link, .plan-row-actions button { padding: 0; border: 0; background: transparent; color: #1677ff; font: inherit; cursor: pointer; }
+.plan-table-link:hover, .plan-row-actions button:hover { color: #4096ff; }
+.plan-row-actions { display: flex; align-items: center; gap: 14px; }
+.plan-list-empty { height: 180px!important; text-align: center; color: rgba(0,0,0,.45); }
+#planManagementView .plan-pager { height: 64px; padding: 0 16px; justify-content: flex-end; gap: 8px; border-top: 1px solid #f0f0f0; }
+#planManagementView .plan-pager > span { margin-right: auto; }
+#planManagementView .plan-pager .page-btn:disabled { color: rgba(0,0,0,.25); background: #f5f5f5; cursor: not-allowed; }
+.plan-page-size { height: 32px; padding: 0 8px; border: 1px solid #d9d9d9; border-radius: 6px; background: #fff; }
+.plan-query-button:focus-visible, .plan-reset-button:focus-visible, .plan-table-link:focus-visible, .plan-row-actions button:focus-visible, .plan-version-dialog button:focus-visible { outline: 2px solid #1677ff; outline-offset: 2px; }
 .plan-version-mask { display: none; position: fixed; z-index: 10000; inset: 0; align-items: center; justify-content: center; padding: 20px; background: rgba(0,0,0,.45); }
 .plan-version-mask.open { display: flex; }
 .plan-version-dialog { width: min(560px, 100%); max-height: min(640px, 90vh); display: flex; flex-direction: column; border-radius: 8px; background: #fff; box-shadow: 0 12px 40px rgba(0,0,0,.16); }
@@ -20,9 +48,11 @@
 .plan-version-row div { display: grid; gap: 4px; }
 .plan-version-row strong { color: #262626; font-size: 14px; }
 .plan-version-row span, .plan-version-empty { color: #8c8c8c; font-size: 13px; }
+.plan-version-actions { display: flex!important; gap: 8px; }
 .plan-version-row button, .plan-version-dialog footer button { min-height: 32px; padding: 4px 15px; border: 1px solid #d9d9d9; border-radius: 6px; background: #fff; color: #1677ff; cursor: pointer; white-space: nowrap; }
 .plan-version-row button:hover:not(:disabled), .plan-version-dialog footer button:hover { border-color: #4096ff; }
 .plan-version-row button:disabled { color: #bfbfbf; background: #f5f5f5; cursor: not-allowed; }
 .plan-version-empty { padding: 32px 0; text-align: center; }
 .plan-version-dialog footer { display: flex; justify-content: flex-end; padding: 12px 24px; border-top: 1px solid #f0f0f0; }
-@media (max-width: 600px) { .plan-action-menu { right: 0; } .plan-version-row { align-items: flex-start; flex-direction: column; } }
+@media (max-width: 900px) { #planManagementView .plan-topbar { align-items: stretch; } #planManagementView .plan-search, #planManagementView .plan-team-select, #planManagementView .plan-status-select { width: min(100%, 220px); } #planManagementView .plan-create { margin-left: 0; } }
+@media (max-width: 600px) { .plan-version-row { align-items: flex-start; flex-direction: column; } .plan-version-actions { flex-wrap: wrap; } }

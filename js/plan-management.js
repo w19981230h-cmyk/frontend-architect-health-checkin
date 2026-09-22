@@ -1,79 +1,152 @@
-/* Plan card actions and local version history for the static preview. */
+/* Plan list and version history for the static preview. */
 (() => {
-  const grid = document.querySelector('#planManagementView .plan-grid');
-  if (!grid) return;
+  const view = document.getElementById('planManagementView');
+  const oldGrid = view?.querySelector('.plan-grid');
+  if (!oldGrid) return;
 
   const storageKey = 'frontend-architect:plans:v1';
-  const originalCards = [...grid.querySelectorAll('.plan-card')];
-  const originalInfoValues = [...document.querySelectorAll('#planCanvasPage [data-plan-tab-panel="info"] input, #planCanvasPage [data-plan-tab-panel="info"] textarea, #planCanvasPage [data-plan-tab-panel="info"] select')].map(field => field.value);
-  const originalCheckinList = document.querySelector('#planCanvasPage .plan-checkin-list')?.innerHTML || '';
-  const originalFlowValues = [...document.querySelectorAll('#planCanvasPage .plan-flow input')].map(field => field.value);
-  const readStorage = () => {
-    try {
-      const value = JSON.parse(localStorage.getItem(storageKey) || 'null');
-      return Array.isArray(value) ? value : null;
-    } catch { return null; }
+  const profiles = [
+    '泌尿系结石术后患者', '糖尿病合并高血压患者', '高血糖人群', '脂肪肝患者',
+    '0—6岁儿童', '孕产妇及高危妊娠人群', '辅助生殖治疗患者', '超重与肥胖人群',
+    '产后女性', '脊柱侧弯患者'
+  ];
+  const inferProfile = name => {
+    if (/糖尿病.*高血压/.test(name)) return '糖尿病合并高血压患者';
+    if (/结石/.test(name)) return '泌尿系结石术后患者';
+    if (/高血糖/.test(name)) return '高血糖人群';
+    if (/脂肪肝/.test(name)) return '脂肪肝患者';
+    if (/儿童/.test(name)) return '0—6岁儿童';
+    if (/孕产/.test(name)) return '孕产妇及高危妊娠人群';
+    if (/辅助生殖/.test(name)) return '辅助生殖治疗患者';
+    if (/体重/.test(name)) return '超重与肥胖人群';
+    if (/产后/.test(name)) return '产后女性';
+    if (/脊柱侧弯/.test(name)) return '脊柱侧弯患者';
+    return '';
   };
-  const initial = originalCards.map((card, index) => ({
+  const seed = [...oldGrid.querySelectorAll('.plan-card')].map((card, index) => ({
     id: `seed-${index + 1}`,
     name: card.querySelector('.plan-name')?.textContent.trim() || '未命名方案',
     description: card.querySelector('.plan-desc')?.textContent.trim() || '',
+    profile: profiles[index] || '',
     team: card.querySelector('.plan-team')?.textContent.trim() || '',
     tasks: Number(card.querySelector('.plan-task')?.textContent.match(/\d+/)?.[0]) || 0,
-    enabled: true,
+    published: true,
+    enabledVersion: 1,
     details: {},
     versions: []
   }));
-  let plans = readStorage() || initial;
+  const infoFields = () => [...document.querySelectorAll('#planCanvasPage [data-plan-tab-panel="info"] input, #planCanvasPage [data-plan-tab-panel="info"] textarea, #planCanvasPage [data-plan-tab-panel="info"] select')];
+  const defaultInfo = infoFields().map(field => field.value);
+  const defaultCheckin = document.querySelector('#planCanvasPage .plan-checkin-list')?.innerHTML || '';
+  const defaultFlow = [...document.querySelectorAll('#planCanvasPage .plan-flow input')].map(field => field.value);
+  const read = () => {
+    try { const value = JSON.parse(localStorage.getItem(storageKey) || 'null'); return Array.isArray(value) ? value : null; }
+    catch { return null; }
+  };
+  let plans = read() || seed;
   let activeId = null;
   let versionPlanId = null;
-  let menuId = null;
-
-  const escapeHtml = value => String(value ?? '').replace(/[&<>"']/g, character => ({
+  let page = 1;
+  let pageSize = 10;
+  const query = { name: '', team: '', status: '' };
+  const esc = value => String(value ?? '').replace(/[&<>"']/g, character => ({
     '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
   })[character]);
-  const save = () => {
+  const toast = message => window.showToast ? window.showToast(message, 'top') : alert(message);
+  const persist = () => {
     try { localStorage.setItem(storageKey, JSON.stringify(plans)); return true; }
-    catch { window.showToast?.('保存失败，请检查浏览器存储空间', 'top'); return false; }
+    catch { toast('保存失败，请检查浏览器存储空间'); return false; }
   };
-  const notice = message => window.showToast ? window.showToast(message, 'top') : alert(message);
   const find = id => plans.find(plan => plan.id === id);
+  const latest = plan => plan.versions?.[0]?.number || 1;
+  const status = plan => plan.enabledVersion === latest(plan) ? '已发布' : '待发布';
   const snapshot = plan => ({
-    name: plan.name, description: plan.description, team: plan.team,
-    tasks: plan.tasks, enabled: plan.enabled, details: { ...plan.details }
+    name: plan.name, description: plan.description, profile: plan.profile,
+    team: plan.team, tasks: plan.tasks, details: structuredClone(plan.details || {})
   });
   const addVersion = (plan, note) => {
     plan.versions ||= [];
     plan.versions.unshift({ number: (plan.versions[0]?.number || 0) + 1, at: new Date().toISOString(), note, data: snapshot(plan) });
   };
-  // Preserve an original version so the first edit can be undone.
-  plans.forEach(plan => { if (!plan.versions?.length) addVersion(plan, '初始版本'); });
-  save();
+  plans.forEach((plan, index) => {
+    plan.profile ||= profiles[Number(plan.id?.replace('seed-', '')) - 1] || plan.details?.values?.[4] || inferProfile(plan.name);
+    if (!plan.versions?.length) addVersion(plan, '初始版本');
+    if (plan.enabledVersion === undefined) plan.enabledVersion = plan.enabled === false ? null : (plan.versions[0]?.number || 1);
+    if (plan.published === undefined) plan.published = plan.enabledVersion != null;
+  });
+  persist();
+
+  // Reuse the project's existing search, select and pager hierarchy with a standard table surface.
+  const topbar = view.querySelector('.plan-topbar');
+  topbar.setAttribute('data-persistence-ignore', '');
+  const nameInput = topbar.querySelector('.plan-search input');
+  nameInput.value = '';
+  nameInput.name = 'planNameQuery';
+  nameInput.autocomplete = 'off';
+  nameInput.setAttribute('aria-label', '方案名称');
+  const teamSelect = topbar.querySelector('.plan-team-select');
+  teamSelect.innerHTML = '<option value="">全部团队</option>';
+  const statusSelect = document.createElement('select');
+  statusSelect.className = 'plan-status-select';
+  statusSelect.setAttribute('aria-label', '状态');
+  statusSelect.innerHTML = '<option value="">请选择状态</option><option value="已发布">已发布</option><option value="待发布">待发布</option>';
+  const queryButton = document.createElement('button');
+  queryButton.type = 'button'; queryButton.className = 'plan-query-button'; queryButton.textContent = '查询';
+  const resetButton = document.createElement('button');
+  resetButton.type = 'button'; resetButton.className = 'plan-reset-button'; resetButton.textContent = '重置';
+  topbar.insertBefore(statusSelect, topbar.querySelector('[data-new-plan]'));
+  topbar.insertBefore(queryButton, topbar.querySelector('[data-new-plan]'));
+  topbar.insertBefore(resetButton, topbar.querySelector('[data-new-plan]'));
+  const content = view.querySelector('.plan-content');
+  content.innerHTML = `<div class="plan-table-wrap"><table class="plan-list-table">
+    <thead><tr><th>方案名称</th><th>方案描述</th><th>适用画像</th><th>适用团队</th><th>版本号</th><th>版本数量</th><th>任务数量</th><th>状态</th><th>启用版本</th><th>操作</th></tr></thead>
+    <tbody id="planListRows"></tbody></table></div>`;
+  const rows = content.querySelector('#planListRows');
+  const pager = view.querySelector('.plan-pager');
+  pager.setAttribute('data-persistence-ignore', '');
+
+  const refreshTeams = () => {
+    const selected = teamSelect.value;
+    const teams = [...new Set(plans.map(plan => plan.team).filter(Boolean))];
+    teamSelect.innerHTML = '<option value="">全部团队</option>' + teams.map(team => `<option value="${esc(team)}">${esc(team)}</option>`).join('');
+    teamSelect.value = selected;
+  };
+  const filtered = () => plans.filter(plan =>
+    (!query.name || plan.name.toLowerCase().includes(query.name)) &&
+    (!query.team || plan.team === query.team) &&
+    (!query.status || status(plan) === query.status)
+  );
   const render = () => {
-    grid.innerHTML = plans.map(plan => `<article class="plan-card" data-plan-id="${escapeHtml(plan.id)}" tabindex="0" aria-label="编辑${escapeHtml(plan.name)}">
-      <div class="plan-card-head"><span class="plan-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M8 5h8M8 12h8M8 19h8"/><path d="M5 5h.01M5 12h.01M5 19h.01"/></svg></span><h3 class="plan-name" title="${escapeHtml(plan.name)}">${escapeHtml(plan.name)}</h3><span class="plan-state ${plan.enabled ? '' : 'is-disabled'}">${plan.enabled ? '已启用' : '已停用'}</span></div>
-      <p class="plan-desc">${escapeHtml(plan.description)}</p><div class="plan-team">${escapeHtml(plan.team)}</div>
-      <div class="plan-card-foot"><span class="plan-task">任务: ${Number(plan.tasks) || 0}</span><div class="plan-more-wrap">
-        <button type="button" class="plan-more" aria-haspopup="menu" aria-expanded="${menuId === plan.id}" aria-label="${escapeHtml(plan.name)}更多操作">更多<svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="m6 9 6 6 6-6"/></svg></button>
-        ${menuId === plan.id ? `<div class="plan-action-menu" role="menu" aria-label="方案操作">
-          <button type="button" role="menuitem" data-plan-action="toggle">${plan.enabled ? '停用' : '启用'}</button>
-          <button type="button" role="menuitem" data-plan-action="edit">编辑</button>
-          <button type="button" role="menuitem" data-plan-action="copy">复制并新增</button>
-          <button type="button" role="menuitem" data-plan-action="versions">版本管理</button>
-          <button type="button" role="menuitem" class="danger" data-plan-action="delete">删除</button>
-        </div>` : ''}</div></div></article>`).join('') || '<div class="plan-empty">暂无方案</div>';
-    const count = document.querySelector('#planManagementView .plan-pager > span');
-    if (count) count.textContent = `共 ${Math.max(0, 80 + plans.length - initial.length)} 条`;
+    refreshTeams();
+    const matches = filtered();
+    const totalPages = Math.max(1, Math.ceil(matches.length / pageSize));
+    page = Math.min(page, totalPages);
+    const visible = matches.slice((page - 1) * pageSize, page * pageSize);
+    rows.innerHTML = visible.length ? visible.map(plan => `<tr data-plan-id="${esc(plan.id)}">
+      <td><span class="plan-cell-name" title="${esc(plan.name)}">${esc(plan.name)}</span></td>
+      <td><span class="plan-cell-ellipsis" title="${esc(plan.description)}">${esc(plan.description || '—')}</span></td>
+      <td><span class="plan-cell-ellipsis" title="${esc(plan.profile)}">${esc(plan.profile || '—')}</span></td>
+      <td><span class="plan-cell-ellipsis" title="${esc(plan.team)}">${esc(plan.team || '—')}</span></td>
+      <td>V${latest(plan)}</td>
+      <td><button type="button" class="plan-table-link" data-plan-versions="${esc(plan.id)}" aria-label="查看${esc(plan.name)}的${plan.versions?.length || 0}个版本">${plan.versions?.length || 0}</button></td>
+      <td>${Number(plan.tasks) || 0}</td>
+      <td><span class="plan-list-status ${status(plan) === '已发布' ? 'published' : 'pending'}">${status(plan)}</span></td>
+      <td>${plan.enabledVersion == null ? '—' : `V${plan.enabledVersion}`}</td>
+      <td><div class="plan-row-actions"><button type="button" data-plan-edit="${esc(plan.id)}">编辑</button><button type="button" data-plan-copy="${esc(plan.id)}">复制新增</button></div></td>
+    </tr>`).join('') : '<tr><td class="plan-list-empty" colspan="10">暂无符合条件的方案</td></tr>';
+    pager.innerHTML = `<span>共 ${matches.length} 条</span>
+      <button type="button" class="page-btn" data-plan-page="prev" ${page === 1 ? 'disabled' : ''} aria-label="上一页">‹</button>
+      ${Array.from({ length: totalPages }, (_, index) => `<button type="button" class="page-btn ${page === index + 1 ? 'active' : ''}" data-plan-page="${index + 1}" ${page === index + 1 ? 'aria-current="page"' : ''}>${index + 1}</button>`).join('')}
+      <button type="button" class="page-btn" data-plan-page="next" ${page === totalPages ? 'disabled' : ''} aria-label="下一页">›</button>
+      <select class="plan-page-size" aria-label="每页条数"><option value="10" ${pageSize === 10 ? 'selected' : ''}>10 条/页</option><option value="20" ${pageSize === 20 ? 'selected' : ''}>20 条/页</option><option value="50" ${pageSize === 50 ? 'selected' : ''}>50 条/页</option></select>`;
   };
 
   const modal = document.createElement('div');
-  modal.className = 'plan-version-mask';
-  modal.setAttribute('aria-hidden', 'true');
+  modal.className = 'plan-version-mask'; modal.setAttribute('aria-hidden', 'true');
   modal.innerHTML = `<section class="plan-version-dialog" role="dialog" aria-modal="true" aria-labelledby="planVersionTitle">
     <header><h2 id="planVersionTitle">版本管理</h2><button type="button" data-close-plan-versions aria-label="关闭">×</button></header>
     <p class="plan-version-subtitle"></p><div class="plan-version-list"></div>
-    <footer><button type="button" data-close-plan-versions>关闭</button></footer>
-  </section>`;
+    <footer><button type="button" data-close-plan-versions>关闭</button></footer></section>`;
   document.body.append(modal);
   const closeVersions = () => { modal.classList.remove('open'); modal.setAttribute('aria-hidden', 'true'); versionPlanId = null; };
   const showVersions = id => {
@@ -81,114 +154,120 @@
     if (!plan) return;
     versionPlanId = id;
     modal.querySelector('.plan-version-subtitle').textContent = plan.name;
-    modal.querySelector('.plan-version-list').innerHTML = plan.versions?.length
-      ? plan.versions.map((version, index) => `<article class="plan-version-row"><div><strong>版本 ${version.number}${index === 0 ? ' · 当前' : ''}</strong><span>${escapeHtml(new Date(version.at).toLocaleString('zh-CN'))} · ${escapeHtml(version.note)}</span></div><button type="button" data-restore-plan-version="${version.number}" ${index === 0 ? 'disabled' : ''}>恢复此版本</button></article>`).join('')
-      : '<div class="plan-version-empty">暂无保存记录。编辑并保存方案后，这里会显示历史版本。</div>';
-    modal.classList.add('open');
-    modal.setAttribute('aria-hidden', 'false');
+    modal.querySelector('.plan-version-list').innerHTML = plan.versions.map((version, index) => `<article class="plan-version-row">
+      <div><strong>V${version.number}${plan.enabledVersion === version.number ? ' · 启用中' : ''}${index === 0 ? ' · 最新' : ''}</strong>
+      <span>${esc(new Date(version.at).toLocaleString('zh-CN'))} · ${esc(version.note)}</span></div>
+      <div class="plan-version-actions"><button type="button" data-enable-plan-version="${version.number}" ${plan.enabledVersion === version.number ? 'disabled' : ''}>启用此版本</button>
+      <button type="button" data-restore-plan-version="${version.number}" ${index === 0 ? 'disabled' : ''}>恢复此版本</button></div></article>`).join('');
+    modal.classList.add('open'); modal.setAttribute('aria-hidden', 'false');
     modal.querySelector('[data-close-plan-versions]').focus();
   };
-
-  const detailFields = () => [...document.querySelectorAll('#planCanvasPage [data-plan-tab-panel="info"] input, #planCanvasPage [data-plan-tab-panel="info"] textarea, #planCanvasPage [data-plan-tab-panel="info"] select')];
-  const fillDetails = plan => {
-    const fields = detailFields();
-    fields.forEach((field, index) => { if (index > 0) field.value = plan.details?.values?.[index] ?? originalInfoValues[index] ?? ''; });
-    if (!plan.details?.values?.length && fields[3] && plan.team) {
-      const team = plan.team.replace(/^团队/, '');
-      if (![...fields[3].options].some(option => option.value === team)) fields[3].add(new Option(team, team));
-      fields[3].value = team;
+  const fillEditor = plan => {
+    const fields = infoFields();
+    fields[0].value = plan.name;
+    fields[2].value = plan.description;
+    fields.forEach((field, index) => { if (index !== 0 && index !== 2) field.value = plan.details?.values?.[index] ?? defaultInfo[index] ?? ''; });
+    if (!plan.details?.values?.length) {
+      if (fields[3] && plan.team) {
+        const team = plan.team.replace(/^团队/, '');
+        if (![...fields[3].options].some(option => option.value === team)) fields[3].add(new Option(team, team));
+        fields[3].value = team;
+      }
+      if (fields[4]) fields[4].value = plan.profile;
     }
-    const checkinList = document.querySelector('#planCanvasPage .plan-checkin-list');
-    if (checkinList) {
-      checkinList.innerHTML = plan.details?.checkinHtml ?? originalCheckinList;
-      checkinList.dataset.hasCheckin = plan.details?.hasCheckin ?? 'true';
-    }
-    document.querySelectorAll('#planCanvasPage .plan-flow input').forEach((field, index) => {
-      field.value = plan.details?.flowValues?.[index] ?? originalFlowValues[index] ?? '';
-    });
+    const checkin = document.querySelector('#planCanvasPage .plan-checkin-list');
+    if (checkin) { checkin.innerHTML = plan.details?.checkinHtml ?? defaultCheckin; checkin.dataset.hasCheckin = plan.details?.hasCheckin ?? 'true'; }
+    document.querySelectorAll('#planCanvasPage .plan-flow input').forEach((field, index) => { field.value = plan.details?.flowValues?.[index] ?? defaultFlow[index] ?? ''; });
+    document.getElementById('generatedPlanTitle').textContent = plan.name;
   };
-  const openEditor = card => {
-    activeId = card.dataset.planId;
-    card.click();
-    fillDetails(find(activeId));
+  const openEditor = plan => {
+    activeId = plan.id;
+    fillEditor(plan);
+    document.querySelectorAll('.page.active').forEach(element => element.classList.remove('active'));
+    document.getElementById('planCanvasPage').classList.add('active');
   };
 
   render();
+  queryButton.addEventListener('click', () => {
+    query.name = nameInput.value.trim().toLowerCase();
+    query.team = teamSelect.value;
+    query.status = statusSelect.value;
+    page = 1; render();
+  });
+  resetButton.addEventListener('click', () => {
+    nameInput.value = ''; teamSelect.value = ''; statusSelect.value = '';
+    query.name = ''; query.team = ''; query.status = '';
+    page = 1; render();
+  });
+  nameInput.addEventListener('keydown', event => { if (event.key === 'Enter') queryButton.click(); });
+  pager.addEventListener('click', event => {
+    const button = event.target.closest('[data-plan-page]');
+    if (!button) return;
+    page = button.dataset.planPage === 'prev' ? page - 1 : button.dataset.planPage === 'next' ? page + 1 : Number(button.dataset.planPage);
+    render();
+  });
+  pager.addEventListener('change', event => {
+    if (event.target.matches('.plan-page-size')) {
+      const nextSize = Number(event.target.value);
+      if (![10, 20, 50].includes(nextSize)) return;
+      pageSize = nextSize; page = 1; render();
+    }
+  });
+  window.addEventListener('load', () => {
+    // Other page modules restore unrelated form values during startup.
+    nameInput.value = ''; teamSelect.value = ''; statusSelect.value = '';
+    pageSize = 10; page = 1; render();
+  }, { once: true });
+
   document.addEventListener('click', event => {
     const target = event.target;
-    const card = target.closest('#planManagementView .plan-card');
-    const action = target.closest('[data-plan-action]');
-    if (action && card) {
+    const edit = target.closest('[data-plan-edit]');
+    if (edit) { event.preventDefault(); event.stopImmediatePropagation(); openEditor(find(edit.dataset.planEdit)); return; }
+    const copy = target.closest('[data-plan-copy]');
+    if (copy) {
       event.preventDefault(); event.stopImmediatePropagation();
-      const plan = find(card.dataset.planId);
-      const kind = action.dataset.planAction;
-      menuId = null;
-      if (!plan) return;
-      if (kind === 'toggle') {
-        plan.enabled = !plan.enabled; addVersion(plan, plan.enabled ? '启用方案' : '停用方案'); save(); render(); notice(plan.enabled ? '方案已启用' : '方案已停用');
-      } else if (kind === 'edit') {
-        render(); openEditor(grid.querySelector(`[data-plan-id="${plan.id}"]`));
-      } else if (kind === 'copy') {
-        const copy = { ...snapshot(plan), id: `plan-${Date.now()}`, name: `${plan.name}（副本）`, enabled: false, versions: [] };
-        addVersion(copy, '复制创建'); plans.unshift(copy); save(); render(); notice('已复制为新方案，可继续编辑');
-      } else if (kind === 'versions') {
-        render(); showVersions(plan.id);
-      } else if (kind === 'delete') {
-        if (!confirm(`确定删除“${plan.name}”吗？删除后无法恢复。`)) { render(); return; }
-        plans = plans.filter(item => item.id !== plan.id); save(); render(); notice('方案已删除');
-      }
-      return;
+      const source = find(copy.dataset.planCopy);
+      const plan = { ...snapshot(source), id: `plan-${Date.now()}`, name: `${source.name}（副本）`, published: false, enabledVersion: null, versions: [] };
+      addVersion(plan, '复制创建'); plans.unshift(plan); persist(); page = 1; render(); toast('已复制为待发布方案'); return;
     }
-    if (target.closest('#planManagementView .plan-more') && card) {
-      event.preventDefault(); event.stopImmediatePropagation();
-      menuId = menuId === card.dataset.planId ? null : card.dataset.planId;
-      render();
-      grid.querySelector(`[data-plan-id="${card.dataset.planId}"] .plan-more`)?.focus();
-      return;
-    }
-    if (card) {
-      activeId = card.dataset.planId;
-      queueMicrotask(() => fillDetails(find(activeId)));
-    } else if (menuId && !target.closest('.plan-action-menu')) { menuId = null; render(); }
+    const versions = target.closest('[data-plan-versions]');
+    if (versions) { event.preventDefault(); event.stopImmediatePropagation(); showVersions(versions.dataset.planVersions); return; }
     if (target.closest('[data-new-plan]')) activeId = null;
     if (target.closest('[data-save-plan]')) {
       event.preventDefault(); event.stopImmediatePropagation();
-      const name = document.getElementById('planNameInput')?.value.trim();
-      if (!name) { notice('请填写方案名称'); document.getElementById('planNameInput')?.focus(); return; }
+      const fields = infoFields();
+      const name = fields[0]?.value.trim();
+      if (!name) { toast('请填写方案名称'); fields[0]?.focus(); return; }
       let plan = find(activeId);
-      if (!plan) {
-        plan = { id: `plan-${Date.now()}`, name, description: '', team: '体验测试团队', tasks: 0, enabled: false, details: {}, versions: [] };
-        plans.unshift(plan); activeId = plan.id;
-      }
-      const fields = detailFields();
+      if (!plan) { plan = { id: `plan-${Date.now()}`, name, description: '', profile: '', team: '', tasks: 0, published: false, enabledVersion: null, details: {}, versions: [] }; plans.unshift(plan); activeId = plan.id; }
       plan.name = name;
-      plan.description = document.getElementById('planDescInput')?.value.trim() || '';
+      plan.description = fields[2]?.value.trim() || '';
+      plan.profile = fields[4]?.value.trim() || '';
       plan.team = `团队${fields[3]?.value || '体验测试团队'}`;
-      const checkinList = document.querySelector('#planCanvasPage .plan-checkin-list');
-      plan.details = {
-        values: fields.map(field => field.value),
-        checkinHtml: checkinList?.innerHTML || '',
-        hasCheckin: checkinList?.dataset.hasCheckin || 'false',
-        flowValues: [...document.querySelectorAll('#planCanvasPage .plan-flow input')].map(field => field.value)
-      };
+      const checkin = document.querySelector('#planCanvasPage .plan-checkin-list');
+      plan.details = { values: fields.map(field => field.value), checkinHtml: checkin?.innerHTML || '', hasCheckin: checkin?.dataset.hasCheckin || 'false',
+        flowValues: [...document.querySelectorAll('#planCanvasPage .plan-flow input')].map(field => field.value) };
       addVersion(plan, '保存方案');
-      if (save()) { render(); document.getElementById('generatedPlanTitle').textContent = name; notice('方案已保存，版本记录已更新'); }
+      if (persist()) { render(); document.getElementById('generatedPlanTitle').textContent = name; toast('方案已保存为待发布版本'); }
+      return;
     }
-    if (target.closest('[data-close-plan-versions]') || target === modal) closeVersions();
+    if (target.closest('[data-close-plan-versions]') || target === modal) { closeVersions(); return; }
+    const enable = target.closest('[data-enable-plan-version]');
+    if (enable && versionPlanId) {
+      const plan = find(versionPlanId);
+      plan.enabledVersion = Number(enable.dataset.enablePlanVersion);
+      plan.published = true;
+      persist(); render(); showVersions(plan.id); toast('启用版本已更新'); return;
+    }
     const restore = target.closest('[data-restore-plan-version]');
     if (restore && versionPlanId) {
       const plan = find(versionPlanId);
-      const version = plan?.versions.find(item => item.number === Number(restore.dataset.restorePlanVersion));
-      if (!version || !confirm(`确定将“${plan.name}”恢复为版本 ${version.number} 吗？当前版本会保留在历史记录中。`)) return;
+      const version = plan.versions.find(item => item.number === Number(restore.dataset.restorePlanVersion));
+      if (!version || !confirm(`确定将“${plan.name}”恢复为 V${version.number} 吗？当前版本会保留在历史记录中。`)) return;
       Object.assign(plan, structuredClone(version.data));
-      addVersion(plan, `恢复版本 ${version.number}`);
-      save(); render(); showVersions(plan.id); notice('方案已恢复');
+      addVersion(plan, `恢复 V${version.number}`);
+      persist(); render(); showVersions(plan.id); toast('已恢复为待发布版本');
     }
   }, true);
-  document.addEventListener('keydown', event => {
-    if (event.key === 'Escape') { if (modal.classList.contains('open')) closeVersions(); else if (menuId) { menuId = null; render(); } }
-    if ((event.key === 'Enter' || event.key === ' ') && event.target.matches('#planManagementView .plan-card') && !event.target.matches('button')) {
-      event.preventDefault(); openEditor(event.target);
-    }
-  });
+  document.addEventListener('keydown', event => { if (event.key === 'Escape' && modal.classList.contains('open')) closeVersions(); });
 })();
