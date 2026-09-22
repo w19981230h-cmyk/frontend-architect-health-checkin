@@ -517,12 +517,25 @@
     }
     const versions = target.closest('[data-plan-versions]');
     if (versions) { event.preventDefault(); event.stopImmediatePropagation(); showVersions(versions.dataset.planVersions); return; }
-    if (target.closest('[data-new-plan]')) activeId = null;
+    if (target.closest('[data-new-plan]')) {
+      activeId = null;
+      document.getElementById('planManagementPeriod').value = '';
+      document.getElementById('planManagementPeriodUnit').value = '天';
+      document.getElementById('planTaskExtensionPeriod').value = '';
+      document.getElementById('planTaskExtensionPeriodUnit').value = '天';
+    }
     if (target.closest('[data-save-plan]')) {
       event.preventDefault(); event.stopImmediatePropagation();
       const fields = infoFields();
       const name = fields[0]?.value.trim();
       if (!name) { toast('请填写方案名称'); fields[0]?.focus(); return; }
+      for (const [id, label] of [['planManagementPeriod', '管理周期'], ['planTaskExtensionPeriod', '任务延续期']]) {
+        const input = document.getElementById(id);
+        const value = input.value.trim();
+        if (value && (!/^\d+$/.test(value) || !Number.isSafeInteger(Number(value)) || Number(value) < 1)) {
+          toast(`${label}请输入大于 0 的整数`); input.focus(); return;
+        }
+      }
       let plan = find(activeId);
       if (!plan) { plan = { id: `plan-${Date.now()}`, name, description: '', profile: '', team: '', tasks: 0, creator: currentCreator, createdAt: new Date().toISOString(), published: false, enabled: false, activationModel: 2, enabledVersion: null, details: {}, versions: [] }; plans.unshift(plan); activeId = plan.id; }
       plan.name = name;

@@ -2347,6 +2347,8 @@
     .plan-config-panel-body[data-plan-tab-panel="info"] .plan-field textarea { min-height: 112px; padding: 10px 12px; }
     .plan-config-panel-body[data-plan-tab-panel="info"] .plan-field .plan-muted-help { margin: -2px 0 0; color: #a7b2c1; font-size: 12px; line-height: 20px; }
     .plan-config-panel-body[data-plan-tab-panel="info"] #planDescInput { min-height: 132px; }
+    .plan-config-panel-body[data-plan-tab-panel="info"] .plan-duration-control { display: grid; grid-template-columns: minmax(0, 1fr) 96px; gap: 8px; }
+    .plan-config-panel-body[data-plan-tab-panel="info"] .plan-duration-control input { min-width: 0; }
     .plan-config-panel-body[data-plan-tab-panel="info"] .plan-config-section:nth-of-type(2) .plan-field:first-of-type textarea { min-height: 120px; }
     .plan-add-row { display: flex; justify-content: space-between; align-items: center; gap: 16px; color: #3154ff; font-weight: 800; }
     .plan-add-row .plan-section-title { margin: 0; }
@@ -3548,6 +3550,8 @@
               <h2>智能策略</h2>
               <div class="plan-field"><label class="required">患者画像</label><div class="plan-muted-help">自然语言描述患者画像，AI 根据画像智能匹配患者</div><textarea>18-75岁，已完成泌尿系结石手术（如输尿管镜碎石、经皮肾镜碎石、体外冲击波碎石等），无严重感染或出血风险，需要术后随访与康复指导的患者。</textarea></div>
               <div class="plan-field"><label>方案启动时间</label><div class="plan-muted-help">自动根据患者的关键事件自动开始执行方案</div><select><option>最近入组时间</option><option>出院后第1天</option><option>手术后第1天</option></select></div>
+              <div class="plan-field"><label for="planManagementPeriod">管理周期</label><div class="plan-duration-control"><input id="planManagementPeriod" type="number" min="1" step="1" inputmode="numeric" placeholder="请输入数字"><select id="planManagementPeriodUnit" aria-label="管理周期单位"><option>天</option><option>周</option><option>月</option><option>年</option></select></div></div>
+              <div class="plan-field"><label for="planTaskExtensionPeriod">任务延续期</label><div class="plan-duration-control"><input id="planTaskExtensionPeriod" type="number" min="1" step="1" inputmode="numeric" placeholder="请输入数字"><select id="planTaskExtensionPeriodUnit" aria-label="任务延续期单位"><option>天</option><option>周</option><option>月</option><option>年</option></select></div></div>
             </section>
           </div>
           <div class="plan-config-panel-body" data-plan-tab-panel="checkin">
@@ -15896,6 +15900,6 @@
 <script src="./js/dashboard-updated-content.js?v=20260913-2"></script>
 <script src="./js/evaluation-report.js?v=20260916-1"></script>
 <script src="./js/article-management.js?v=20260916-1"></script>
-<script src="./js/plan-management.js?v=20260922-15"></script>
+<script src="./js/plan-management.js?v=20260922-16"></script>
 </body>
 </html>
