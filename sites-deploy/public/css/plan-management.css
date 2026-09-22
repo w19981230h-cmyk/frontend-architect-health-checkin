@@ -116,6 +116,7 @@
 .plan-strategy-heading { min-height: 62px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid #e9edf4; color: #263852; font-size: 16px; }
 .plan-strategy-heading strong { font-weight: 800; }
 .plan-strategy-reports { display: grid; gap: 18px; padding-top: 18px; }
+.plan-strategy-reports[hidden] { display: none; }
 .plan-strategy-card { padding: 0 14px 14px; border: 1px solid #3154ff; border-radius: 10px; background: #fff; color: #25334a; transition: opacity .2s; }
 .plan-strategy-card.is-inactive { opacity: .52; }
 .plan-strategy-card-head { min-height: 81px; display: flex; align-items: center; gap: 14px; border-bottom: 1px solid #edf0f6; }

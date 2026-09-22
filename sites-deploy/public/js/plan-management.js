@@ -81,6 +81,7 @@
   document.querySelector('#planCanvasPage [data-plan-tab-panel="info"]').after(strategyPanel);
   const syncStrategy = () => {
     const active = strategyPanel.querySelector('[data-strategy-master]').checked;
+    strategyPanel.querySelector('.plan-strategy-reports').hidden = !active;
     strategyPanel.querySelectorAll('[data-strategy-report]').forEach(card => {
       const enabled = card.querySelector('[data-strategy-enabled]').checked;
       const review = card.querySelector('[data-strategy-review]').checked;
