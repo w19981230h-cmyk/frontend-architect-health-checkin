@@ -86,7 +86,7 @@
   };
   const activeVersion = plan => plan.versions?.find(version => version.number === plan.enabledVersion) || plan.versions?.[0];
   const displayData = plan => activeVersion(plan)?.data || plan;
-  const status = plan => plan.enabled ? '已发布' : '待发布';
+  const status = plan => activeVersion(plan)?.published ? '已发布' : '待发布';
   const formatTime = value => value && !Number.isNaN(new Date(value).getTime()) ? new Date(value).toLocaleString('zh-CN', { hour12: false }) : '—';
   const snapshot = plan => ({
     name: plan.name, description: plan.description, profile: plan.profile,
@@ -288,12 +288,11 @@
   };
   const renderVersion = (plan, version) => {
     const data = version.data || plan;
-    const isEnabled = plan.enabled && plan.enabledVersion === version.number;
     return `<tr class="plan-version-child" data-plan-id="${esc(plan.id)}" data-version="${version.number}">
       <td><span class="plan-child-indent" aria-hidden="true"></span><span class="plan-cell-name" title="${esc(data.name)}">${esc(data.name || '未命名方案')}</span></td>
       <td>${textCell(data.description)}</td><td>${textCell(data.profile, 'plan-profile-value')}</td><td>${textCell(data.team)}</td>
       <td>${versionLabel(version.number)}</td><td>—</td><td>${Number(data.tasks) || 0}</td>
-      <td><span class="plan-list-status ${version.published || isEnabled ? 'published' : 'pending'}">${version.published || isEnabled ? '已发布' : '待发布'}</span></td>
+      <td><span class="plan-list-status ${version.published ? 'published' : 'pending'}">${version.published ? '已发布' : '待发布'}</span></td>
       <td>${switchCell(plan, version)}</td>
       <td>${esc(version.creator || '—')}</td><td>${esc(formatTime(version.at))}</td>
       <td>${rowActions(plan, version)}</td>
@@ -453,7 +452,6 @@
     if (!plan) return;
     const previousVersion = plan.enabledVersion;
     const previousEnabled = plan.enabled;
-    const previousPublishedPlan = plan.published;
     const previousLast = plan.lastEnabledVersion;
     const requestedVersion = control.dataset.versionNumber == null
       ? (plan.versions.some(version => version.number === plan.lastEnabledVersion) ? plan.lastEnabledVersion : latest(plan))
@@ -463,17 +461,13 @@
     if (control.checked && control.dataset.versionNumber != null && requestedRecord?.published && previousVersion !== requestedVersion) {
       render(); toast('仅待发布版本可开启'); return;
     }
-    const previousPublished = requestedRecord?.published;
     plan.enabled = control.checked;
     if (plan.enabled) {
       plan.enabledVersion = requestedVersion;
       plan.lastEnabledVersion = requestedVersion;
-      if (requestedRecord) requestedRecord.published = true;
     }
-    plan.published = plan.enabled;
     if (!persist()) {
-      plan.enabled = previousEnabled; plan.enabledVersion = previousVersion; plan.lastEnabledVersion = previousLast; plan.published = previousPublishedPlan;
-      if (requestedRecord) requestedRecord.published = previousPublished;
+      plan.enabled = previousEnabled; plan.enabledVersion = previousVersion; plan.lastEnabledVersion = previousLast;
       render(); return;
     }
     render();
