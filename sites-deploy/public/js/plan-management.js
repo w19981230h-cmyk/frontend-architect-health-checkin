@@ -89,6 +89,7 @@
     });
     if (plan.enabledVersion === undefined) plan.enabledVersion = plan.enabled === false ? null : (plan.versions[0]?.number || 1);
     if (plan.published === undefined) plan.published = plan.enabledVersion != null;
+    if (plan.lastEnabledVersion == null && plan.enabledVersion != null) plan.lastEnabledVersion = plan.enabledVersion;
     if (plan.id?.startsWith('seed-')) plan.versions.forEach(version => {
       if (version.note === '初始版本') { version.at = null; version.creator = null; }
     });
@@ -212,6 +213,12 @@
     (!query.status || status(plan) === query.status)
   );
   const textCell = (value, className = '') => `<span class="plan-cell-ellipsis ${className}" title="${esc(value || '')}">${esc(value || '—')}</span>`;
+  const switchCell = (plan, version) => {
+    const isChild = version != null;
+    const checked = isChild ? plan.enabledVersion === version.number : plan.enabledVersion != null;
+    const label = isChild ? `${checked ? '停用' : '启用'}${esc(plan.name)}的${versionLabel(version.number)}` : `${checked ? '停用' : '启用'}${esc(plan.name)}`;
+    return `<label class="checkin-eval-switch-row plan-version-switch" title="${label}"><input type="checkbox" role="switch" data-plan-switch="${esc(plan.id)}" ${isChild ? `data-version-number="${version.number}"` : ''} aria-label="${label}" ${checked ? 'checked' : ''}><span class="checkin-eval-switch" aria-hidden="true"></span></label>`;
+  };
   const renderVersion = (plan, version) => {
     const data = version.data || plan;
     const isEnabled = plan.enabledVersion === version.number;
@@ -220,8 +227,8 @@
       <td>${textCell(data.description)}</td><td>${textCell(data.profile, 'plan-profile-value')}</td><td>${textCell(data.team)}</td>
       <td>${versionLabel(version.number)}</td><td>—</td><td>${Number(data.tasks) || 0}</td>
       <td><span class="plan-list-status ${version.published || isEnabled ? 'published' : 'pending'}">${version.published || isEnabled ? '已发布' : '待发布'}</span></td>
-      <td>${isEnabled ? '当前启用' : '—'}</td>
-      <td><div class="plan-row-actions"><button type="button" data-plan-edit-version="${esc(plan.id)}" data-version-number="${version.number}">编辑</button><button type="button" data-enable-plan-row="${esc(plan.id)}" data-version-number="${version.number}" ${isEnabled ? 'disabled' : ''}>${isEnabled ? '已启用' : '启用'}</button></div></td>
+      <td>${switchCell(plan, version)}</td>
+      <td><div class="plan-row-actions"><button type="button" data-plan-edit-version="${esc(plan.id)}" data-version-number="${version.number}">编辑</button></div></td>
       <td>${esc(version.creator || '—')}</td><td>${esc(formatTime(version.at))}</td>
     </tr>`;
   };
@@ -230,13 +237,13 @@
     const shownVersion = activeVersion(plan)?.number || latest(plan);
     const isExpanded = expanded.has(plan.id);
     return `<tr class="plan-parent-row" data-plan-id="${esc(plan.id)}">
-      <td><div class="plan-name-with-expand"><button type="button" class="plan-expand-button" data-plan-expand="${esc(plan.id)}" aria-expanded="${isExpanded}" aria-label="${isExpanded ? '收起' : '展开'}${esc(plan.name)}的版本">${isExpanded ? '⌄' : '›'}</button><span class="plan-cell-name" title="${esc(data.name)}">${esc(data.name || '未命名方案')}</span></div></td>
+      <td><div class="plan-name-with-expand"><button type="button" class="plan-expand-button" data-plan-expand="${esc(plan.id)}" aria-expanded="${isExpanded}" aria-label="${isExpanded ? '收起' : '展开'}${esc(plan.name)}的版本"><svg class="plan-expand-icon" viewBox="0 0 16 16" aria-hidden="true"><path d="m6 3 5 5-5 5" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button><span class="plan-cell-name" title="${esc(data.name)}">${esc(data.name || '未命名方案')}</span></div></td>
       <td>${textCell(data.description)}</td><td>${textCell(data.profile, 'plan-profile-value')}</td><td>${textCell(data.team)}</td>
       <td>${versionLabel(shownVersion)}</td>
       <td><button type="button" class="plan-table-link" data-plan-versions="${esc(plan.id)}" aria-label="管理${esc(plan.name)}的${plan.versions?.length || 0}个版本">${plan.versions?.length || 0}</button></td>
       <td>${Number(data.tasks) || 0}</td>
       <td><span class="plan-list-status ${status(plan) === '已发布' ? 'published' : 'pending'}">${status(plan)}</span></td>
-      <td>${versionLabel(plan.enabledVersion)}</td>
+      <td>${switchCell(plan)}</td>
       <td><div class="plan-row-actions"><button type="button" data-plan-edit="${esc(plan.id)}">编辑</button><button type="button" data-plan-copy="${esc(plan.id)}">复制新增</button></div></td>
       <td>${esc(plan.creator || '—')}</td><td>${esc(formatTime(plan.createdAt))}</td>
     </tr>${isExpanded ? (plan.versions || []).map(version => renderVersion(plan, version)).join('') : ''}`;
@@ -335,6 +342,35 @@
     pageSize = 10; page = 1; render();
   }, { once: true });
 
+  document.addEventListener('change', event => {
+    const control = event.target.closest('[data-plan-switch]');
+    if (!control) return;
+    const plan = find(control.dataset.planSwitch);
+    if (!plan) return;
+    const previousVersion = plan.enabledVersion;
+    const previousLast = plan.lastEnabledVersion;
+    const requestedVersion = control.dataset.versionNumber == null
+      ? (plan.versions.some(version => version.number === plan.lastEnabledVersion) ? plan.lastEnabledVersion : latest(plan))
+      : Number(control.dataset.versionNumber);
+    if (control.checked && !plan.versions.some(version => version.number === requestedVersion)) { render(); return; }
+    const requestedRecord = plan.versions.find(version => version.number === requestedVersion);
+    const previousPublished = requestedRecord?.published;
+    plan.enabledVersion = control.checked ? requestedVersion : null;
+    if (plan.enabledVersion != null) {
+      plan.lastEnabledVersion = plan.enabledVersion;
+      const version = plan.versions.find(item => item.number === plan.enabledVersion);
+      if (version) version.published = true;
+    } else if (previousVersion != null) plan.lastEnabledVersion = previousVersion;
+    plan.published = plan.enabledVersion != null;
+    if (!persist()) {
+      plan.enabledVersion = previousVersion; plan.lastEnabledVersion = previousLast; plan.published = previousVersion != null;
+      if (requestedRecord) requestedRecord.published = previousPublished;
+      render(); return;
+    }
+    render();
+    toast(plan.enabledVersion == null ? '方案已停用' : `已启用${versionLabel(plan.enabledVersion)}`);
+  }, true);
+
   document.addEventListener('click', event => {
     const target = event.target;
     const expand = target.closest('[data-plan-expand]');
@@ -344,12 +380,6 @@
       const plan = find(editVersion.dataset.planEditVersion);
       const version = plan?.versions.find(item => item.number === Number(editVersion.dataset.versionNumber));
       if (version) openEditor(plan, version.data);
-      return;
-    }
-    const enableRow = target.closest('[data-enable-plan-row]');
-    if (enableRow && !enableRow.disabled) {
-      const plan = find(enableRow.dataset.enablePlanRow);
-      if (plan) { plan.enabledVersion = Number(enableRow.dataset.versionNumber); plan.published = true; const version = plan.versions.find(item => item.number === plan.enabledVersion); if (version) version.published = true; persist(); render(); toast('启用版本已更新'); }
       return;
     }
     const edit = target.closest('[data-plan-edit]');
@@ -387,6 +417,7 @@
     if (enable && versionPlanId) {
       const plan = find(versionPlanId);
       plan.enabledVersion = Number(enable.dataset.enablePlanVersion);
+      plan.lastEnabledVersion = plan.enabledVersion;
       plan.published = true;
       const version = plan.versions.find(item => item.number === plan.enabledVersion);
       if (version) version.published = true;
