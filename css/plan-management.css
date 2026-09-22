@@ -69,6 +69,17 @@
 .plan-table-link:hover, .plan-row-actions button:hover { color: #4096ff; }
 .plan-row-actions button:disabled { color: rgba(0,0,0,.25); cursor: not-allowed; }
 .plan-row-actions { display: flex; align-items: center; gap: 14px; }
+.plan-actions-more { display: inline-flex; align-items: center; gap: 4px; }
+.plan-actions-more svg { width: 14px; height: 14px; transition: transform .2s; }
+.plan-actions-more[aria-expanded="true"] svg { transform: rotate(180deg); }
+.plan-actions-menu { min-width: 112px; padding: 4px; position: fixed; z-index: 9999; border: 1px solid #f0f0f0; border-radius: 6px; background: #fff; box-shadow: 0 6px 16px rgba(0,0,0,.08), 0 3px 6px -4px rgba(0,0,0,.12); }
+.plan-actions-menu[hidden] { display: none; }
+.plan-actions-menu button { width: 100%; min-height: 32px; padding: 5px 10px; display: block; border: 0; border-radius: 4px; background: transparent; color: rgba(0,0,0,.88); text-align: left; font-size: 14px; cursor: pointer; }
+.plan-actions-menu button:hover:not(:disabled) { background: #f5f5f5; }
+.plan-actions-menu button.danger { color: #ff4d4f; }
+.plan-actions-menu button.danger:hover:not(:disabled) { background: #fff1f0; }
+.plan-actions-menu button:disabled { color: rgba(0,0,0,.25); cursor: not-allowed; }
+.plan-actions-menu button:focus-visible { outline: 2px solid #1677ff; outline-offset: -2px; }
 .plan-list-empty { height: 180px!important; text-align: center; color: rgba(0,0,0,.45); }
 #planManagementView .plan-pager { height: 64px; padding: 0 16px; justify-content: flex-end; gap: 8px; border-top: 1px solid #f0f0f0; }
 #planManagementView .plan-pager > span { margin-right: auto; }
@@ -93,5 +104,8 @@
 .plan-version-row button:disabled { color: #bfbfbf; background: #f5f5f5; cursor: not-allowed; }
 .plan-version-empty { padding: 32px 0; text-align: center; }
 .plan-version-dialog footer { display: flex; justify-content: flex-end; padding: 12px 24px; border-top: 1px solid #f0f0f0; }
+.plan-delete-message { margin: 0; padding: 24px; color: rgba(0,0,0,.65); line-height: 1.6; }
+.plan-delete-mask .plan-delete-confirm { border-color: #ff4d4f; background: #ff4d4f; color: #fff; }
+.plan-delete-mask .plan-delete-confirm:hover { border-color: #ff7875; background: #ff7875; }
 @media (max-width: 900px) { #planManagementView .plan-topbar { align-items: stretch; } #planManagementView .plan-search, #planManagementView .plan-filter-combobox { width: min(100%, 220px); } #planManagementView .plan-create { margin-left: 0; } }
 @media (max-width: 600px) { .plan-version-row { align-items: flex-start; flex-direction: column; } .plan-version-actions { flex-wrap: wrap; } }

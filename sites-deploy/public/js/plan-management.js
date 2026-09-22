@@ -92,7 +92,9 @@
   });
   const addVersion = (plan, note) => {
     plan.versions ||= [];
-    plan.versions.unshift({ number: (plan.versions[0]?.number || 0) + 1, at: new Date().toISOString(), creator: currentCreator, published: false, note, data: snapshot(plan) });
+    const number = Math.max(plan.nextVersionNumber || 1, ...plan.versions.map(version => version.number + 1));
+    plan.nextVersionNumber = number + 1;
+    plan.versions.unshift({ number, at: new Date().toISOString(), creator: currentCreator, published: false, note, data: snapshot(plan) });
   };
   plans.forEach(plan => {
     const seedMatch = /^seed-(\d+)$/.exec(plan.id || '');
@@ -244,6 +246,40 @@
     const label = isChild ? `${checked ? '停用' : '启用'}${esc(plan.name)}的${versionLabel(version.number)}` : `${checked ? '停用' : '启用'}${esc(plan.name)}`;
     return `<label class="checkin-eval-switch-row plan-version-switch" title="${blocked ? '仅待发布版本可开启' : label}"><input type="checkbox" role="switch" data-plan-switch="${esc(plan.id)}" ${isChild ? `data-version-number="${version.number}"` : ''} aria-label="${blocked ? `${versionLabel(version.number)}已发布，不可开启` : label}" ${checked ? 'checked' : ''} ${blocked ? 'disabled' : ''}><span class="checkin-eval-switch" aria-hidden="true"></span></label>`;
   };
+  const actionMenu = document.createElement('div');
+  actionMenu.className = 'plan-actions-menu';
+  actionMenu.setAttribute('role', 'menu');
+  actionMenu.hidden = true;
+  document.body.append(actionMenu);
+  let actionMenuTrigger = null;
+  const closeActionMenu = () => {
+    actionMenu.hidden = true;
+    actionMenu.innerHTML = '';
+    if (actionMenuTrigger) actionMenuTrigger.setAttribute('aria-expanded', 'false');
+    actionMenuTrigger = null;
+  };
+  const rowActions = (plan, version) => {
+    const child = version != null;
+    const versionAttribute = child ? ` data-version-number="${version.number}"` : '';
+    return `<div class="plan-row-actions"><button type="button" ${child ? `data-plan-edit-version="${esc(plan.id)}"${versionAttribute}` : `data-plan-edit="${esc(plan.id)}"`}>编辑</button><button type="button" class="plan-actions-more" data-plan-more="${esc(plan.id)}"${versionAttribute} aria-haspopup="menu" aria-expanded="false">更多<svg viewBox="0 0 16 16" aria-hidden="true"><path d="m3 6 5 5 5-5" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button></div>`;
+  };
+  const openActionMenu = trigger => {
+    if (actionMenuTrigger === trigger) { closeActionMenu(); return; }
+    closeActionMenu();
+    const plan = find(trigger.dataset.planMore);
+    if (!plan) return;
+    const versionNumber = trigger.dataset.versionNumber;
+    const version = versionNumber == null ? null : plan.versions.find(item => item.number === Number(versionNumber));
+    const cannotDelete = version && (plan.enabledVersion === version.number || plan.versions.length <= 1);
+    const versionAttribute = version ? ` data-version-number="${version.number}"` : '';
+    actionMenu.innerHTML = `<button type="button" role="menuitem" data-plan-copy="${esc(plan.id)}"${versionAttribute}>复制新增</button><button type="button" role="menuitem" class="danger" data-plan-delete="${esc(plan.id)}"${versionAttribute} ${cannotDelete ? `disabled title="${plan.enabledVersion === version.number ? '请先停用或切换启用版本' : '最后一个版本请删除方案主体'}"` : ''}>删除</button>`;
+    actionMenu.hidden = false;
+    actionMenuTrigger = trigger;
+    trigger.setAttribute('aria-expanded', 'true');
+    const rect = trigger.getBoundingClientRect();
+    actionMenu.style.left = `${Math.max(8, Math.min(rect.right - actionMenu.offsetWidth, window.innerWidth - actionMenu.offsetWidth - 8))}px`;
+    actionMenu.style.top = `${Math.max(8, Math.min(rect.bottom + 4, window.innerHeight - actionMenu.offsetHeight - 8))}px`;
+  };
   const renderVersion = (plan, version) => {
     const data = version.data || plan;
     const isEnabled = plan.enabledVersion === version.number;
@@ -254,7 +290,7 @@
       <td><span class="plan-list-status ${version.published || isEnabled ? 'published' : 'pending'}">${version.published || isEnabled ? '已发布' : '待发布'}</span></td>
       <td>${switchCell(plan, version)}</td>
       <td>${esc(version.creator || '—')}</td><td>${esc(formatTime(version.at))}</td>
-      <td><div class="plan-row-actions"><button type="button" data-plan-edit-version="${esc(plan.id)}" data-version-number="${version.number}">编辑</button></div></td>
+      <td>${rowActions(plan, version)}</td>
     </tr>`;
   };
   const renderPlan = plan => {
@@ -270,10 +306,11 @@
       <td><span class="plan-list-status ${status(plan) === '已发布' ? 'published' : 'pending'}">${status(plan)}</span></td>
       <td>${switchCell(plan)}</td>
       <td>${esc(plan.creator || '—')}</td><td>${esc(formatTime(plan.createdAt))}</td>
-      <td><div class="plan-row-actions"><button type="button" data-plan-edit="${esc(plan.id)}">编辑</button><button type="button" data-plan-copy="${esc(plan.id)}">复制新增</button></div></td>
+      <td>${rowActions(plan)}</td>
     </tr>${isExpanded ? (plan.versions || []).map(version => renderVersion(plan, version)).join('') : ''}`;
   };
   const render = () => {
+    closeActionMenu();
     refreshTeams();
     const matches = filtered();
     const totalPages = Math.max(1, Math.ceil(matches.length / pageSize));
@@ -307,6 +344,42 @@
       <button type="button" data-restore-plan-version="${version.number}" ${index === 0 ? 'disabled' : ''}>恢复此版本</button></div></article>`).join('');
     modal.classList.add('open'); modal.setAttribute('aria-hidden', 'false');
     modal.querySelector('[data-close-plan-versions]').focus();
+  };
+  const deleteMask = document.createElement('div');
+  deleteMask.className = 'plan-version-mask plan-delete-mask';
+  deleteMask.setAttribute('aria-hidden', 'true');
+  deleteMask.innerHTML = `<section class="plan-version-dialog" role="alertdialog" aria-modal="true" aria-labelledby="planDeleteTitle"><header><h2 id="planDeleteTitle">删除方案</h2><button type="button" data-close-plan-delete aria-label="关闭">×</button></header><p class="plan-delete-message"></p><footer><button type="button" data-close-plan-delete>取消</button><button type="button" class="plan-delete-confirm" data-confirm-plan-delete>删除</button></footer></section>`;
+  document.body.append(deleteMask);
+  let deleteTarget = null;
+  const closeDelete = () => { deleteMask.classList.remove('open'); deleteMask.setAttribute('aria-hidden', 'true'); deleteTarget = null; };
+  const showDelete = (plan, version) => {
+    if (!plan) return;
+    if (version && (plan.enabledVersion === version.number || plan.versions.length <= 1)) return;
+    deleteTarget = { planId: plan.id, versionNumber: version?.number ?? null };
+    deleteMask.querySelector('#planDeleteTitle').textContent = version ? '删除方案版本' : '删除方案';
+    deleteMask.querySelector('.plan-delete-message').textContent = version
+      ? `确定删除“${plan.name}”的${versionLabel(version.number)}吗？删除后无法恢复。`
+      : `确定删除“${plan.name}”及其全部版本吗？删除后无法恢复。`;
+    deleteMask.classList.add('open'); deleteMask.setAttribute('aria-hidden', 'false');
+    deleteMask.querySelector('[data-close-plan-delete]').focus();
+  };
+  const confirmDelete = () => {
+    const plan = find(deleteTarget?.planId);
+    if (!plan) { closeDelete(); return; }
+    const before = structuredClone(plans);
+    if (deleteTarget.versionNumber == null) {
+      plans = plans.filter(item => item.id !== plan.id);
+      expanded.delete(plan.id);
+      if (activeId === plan.id) activeId = null;
+    } else {
+      const number = deleteTarget.versionNumber;
+      if (plan.enabledVersion === number || plan.versions.length <= 1) { closeDelete(); return; }
+      plan.nextVersionNumber = Math.max(plan.nextVersionNumber || 1, ...plan.versions.map(version => version.number + 1));
+      plan.versions = plan.versions.filter(version => version.number !== number);
+      if (plan.lastEnabledVersion === number) plan.lastEnabledVersion = plan.enabledVersion ?? plan.versions[0]?.number ?? null;
+    }
+    if (!persist()) { plans = before; render(); return; }
+    closeDelete(); render(); toast('已删除');
   };
   const fillEditor = (plan, source = displayData(plan)) => {
     const fields = infoFields();
@@ -401,6 +474,20 @@
 
   document.addEventListener('click', event => {
     const target = event.target;
+    if (target.closest('[data-close-plan-delete]') || target === deleteMask) { closeDelete(); return; }
+    if (target.closest('[data-confirm-plan-delete]')) { confirmDelete(); return; }
+    const more = target.closest('[data-plan-more]');
+    if (more) { event.preventDefault(); event.stopImmediatePropagation(); openActionMenu(more); return; }
+    const deleteAction = target.closest('[data-plan-delete]');
+    if (deleteAction) {
+      event.preventDefault(); event.stopImmediatePropagation();
+      const plan = find(deleteAction.dataset.planDelete);
+      const version = deleteAction.dataset.versionNumber == null ? null : plan?.versions.find(item => item.number === Number(deleteAction.dataset.versionNumber));
+      closeActionMenu();
+      if (deleteAction.dataset.versionNumber != null && !version) return;
+      showDelete(plan, version); return;
+    }
+    if (actionMenuTrigger && !target.closest('.plan-actions-menu')) closeActionMenu();
     const expand = target.closest('[data-plan-expand]');
     if (expand) { const id = expand.dataset.planExpand; expanded.has(id) ? expanded.delete(id) : expanded.add(id); render(); return; }
     const editVersion = target.closest('[data-plan-edit-version]');
@@ -416,8 +503,15 @@
     if (copy) {
       event.preventDefault(); event.stopImmediatePropagation();
       const source = find(copy.dataset.planCopy);
-      const plan = { ...structuredClone(displayData(source)), id: `plan-${Date.now()}`, name: `${displayData(source).name}（副本）`, creator: currentCreator, createdAt: new Date().toISOString(), published: false, enabledVersion: null, versions: [] };
-      addVersion(plan, '复制创建'); plans.unshift(plan); persist(); page = 1; render(); toast('已复制为待发布方案'); return;
+      if (!source) return;
+      const version = copy.dataset.versionNumber == null ? null : source.versions.find(item => item.number === Number(copy.dataset.versionNumber));
+      if (copy.dataset.versionNumber != null && !version) return;
+      const data = version?.data || displayData(source);
+      closeActionMenu();
+      const plan = { ...structuredClone(data), id: `plan-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`, name: `${data.name}（副本）`, creator: currentCreator, createdAt: new Date().toISOString(), published: false, enabledVersion: null, versions: [] };
+      addVersion(plan, '复制创建'); plans.unshift(plan);
+      if (!persist()) { plans.shift(); render(); return; }
+      page = 1; render(); toast('已复制为待发布方案'); return;
     }
     const versions = target.closest('[data-plan-versions]');
     if (versions) { event.preventDefault(); event.stopImmediatePropagation(); showVersions(versions.dataset.planVersions); return; }
@@ -463,5 +557,12 @@
       persist(); render(); showVersions(plan.id); toast('已恢复为待发布版本');
     }
   }, true);
-  document.addEventListener('keydown', event => { if (event.key === 'Escape' && modal.classList.contains('open')) closeVersions(); });
+  document.addEventListener('keydown', event => {
+    if (event.key !== 'Escape') return;
+    if (deleteMask.classList.contains('open')) closeDelete();
+    else if (!actionMenu.hidden) closeActionMenu();
+    else if (modal.classList.contains('open')) closeVersions();
+  });
+  view.querySelector('.plan-table-wrap')?.addEventListener('scroll', closeActionMenu);
+  window.addEventListener('resize', closeActionMenu);
 })();
