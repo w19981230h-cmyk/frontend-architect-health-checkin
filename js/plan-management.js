@@ -54,6 +54,84 @@
   const defaultInfo = infoFields().map(field => field.value);
   const defaultCheckin = document.querySelector('#planCanvasPage .plan-checkin-list')?.innerHTML || '';
   const defaultFlow = [...document.querySelectorAll('#planCanvasPage .plan-flow input')].map(field => field.value);
+  const strategyReports = [
+    { key: 'daily', name: '日报', schedule: '次日生成', icon: '日', tone: 'teal', template: '体重日报' },
+    { key: 'weekly', name: '周报', schedule: '次周一生成', icon: '周', tone: 'blue', template: '体重周报' },
+    { key: 'monthly', name: '月报', schedule: '次月 1 号生成', icon: '月', tone: 'indigo', template: '体重月报' }
+  ];
+  const strategyDefaults = () => ({
+    enabled: true,
+    reports: Object.fromEntries(strategyReports.map(report => [report.key, {
+      enabled: true, template: report.template, review: true, doctor: '欧舒朗', pushTime: 'after-review'
+    }]))
+  });
+  const strategyPanel = document.createElement('div');
+  strategyPanel.className = 'plan-config-panel-body plan-strategy-panel';
+  strategyPanel.dataset.planTabPanel = 'strategy';
+  strategyPanel.setAttribute('data-persistence-ignore', '');
+  strategyPanel.innerHTML = `<div class="plan-strategy-shell">
+    <div class="plan-strategy-heading"><strong>阶段总结</strong><label class="plan-strategy-switch"><input type="checkbox" role="switch" data-strategy-master aria-label="启用阶段总结" checked><span aria-hidden="true"></span></label></div>
+    <div class="plan-strategy-reports">${strategyReports.map(report => `<article class="plan-strategy-card" data-strategy-report="${report.key}">
+      <div class="plan-strategy-card-head"><span class="plan-strategy-icon ${report.tone}" aria-hidden="true">${report.icon}</span><div class="plan-strategy-card-title"><strong>${report.name}</strong><small>${report.schedule}</small></div><label class="plan-strategy-switch"><input type="checkbox" role="switch" data-strategy-enabled aria-label="启用${report.name}" checked><span aria-hidden="true"></span></label></div>
+      <div class="plan-strategy-field"><label for="planStrategyTemplate-${report.key}">报告模板：</label><div class="plan-strategy-template"><span class="plan-strategy-word" aria-hidden="true">W</span><select id="planStrategyTemplate-${report.key}" data-strategy-template aria-label="${report.name}报告模板"><option value="">请选择报告模板</option><option value="体重${report.name}" selected>体重${report.name}</option><option value="健康${report.name}">健康${report.name}</option><option value="随访${report.name}">随访${report.name}</option></select><button type="button" data-strategy-clear-template aria-label="移除${report.name}报告模板">×</button></div></div>
+      <div class="plan-strategy-review"><span>医生审核：</span><label class="plan-strategy-switch"><input type="checkbox" role="switch" data-strategy-review aria-label="${report.name}医生审核" checked><span aria-hidden="true"></span></label></div>
+      <div class="plan-strategy-field"><label for="planStrategyDoctor-${report.key}">审核医生：</label><select id="planStrategyDoctor-${report.key}" class="plan-strategy-select" data-strategy-doctor><option>欧舒朗</option><option>张明远</option><option>陈慧敏</option><option>刘佳宁</option></select></div>
+      <div class="plan-strategy-field"><label for="planStrategyPush-${report.key}">推送时间：</label><select id="planStrategyPush-${report.key}" class="plan-strategy-select plan-strategy-push" data-strategy-push><option value="after-review">医生审核后自动下发</option><option value="immediate">生成后立即下发</option><option value="next-day">次日 08:00 下发</option></select></div>
+    </article>`).join('')}</div></div>`;
+  document.querySelector('#planCanvasPage [data-plan-tab-panel="info"]').after(strategyPanel);
+  const syncStrategy = () => {
+    const active = strategyPanel.querySelector('[data-strategy-master]').checked;
+    strategyPanel.querySelectorAll('[data-strategy-report]').forEach(card => {
+      const enabled = card.querySelector('[data-strategy-enabled]').checked;
+      const review = card.querySelector('[data-strategy-review]').checked;
+      const template = card.querySelector('[data-strategy-template]');
+      const working = active && enabled;
+      card.classList.toggle('is-inactive', !working);
+      card.querySelector('[data-strategy-enabled]').disabled = !active;
+      card.querySelector('[data-strategy-review]').disabled = !working;
+      template.disabled = !working;
+      card.querySelector('[data-strategy-clear-template]').disabled = !working || !template.value;
+      card.querySelector('[data-strategy-doctor]').disabled = !working || !review;
+      const push = card.querySelector('[data-strategy-push]');
+      push.disabled = !working || review;
+      if (review) push.value = 'after-review';
+    });
+  };
+  const fillStrategy = saved => {
+    const value = saved || strategyDefaults();
+    strategyPanel.querySelector('[data-strategy-master]').checked = value.enabled !== false;
+    strategyReports.forEach(report => {
+      const card = strategyPanel.querySelector(`[data-strategy-report="${report.key}"]`);
+      const reportValue = value.reports?.[report.key] || strategyDefaults().reports[report.key];
+      card.querySelector('[data-strategy-enabled]').checked = reportValue.enabled !== false;
+      card.querySelector('[data-strategy-template]').value = reportValue.template ?? report.template;
+      card.querySelector('[data-strategy-review]').checked = reportValue.review !== false;
+      card.querySelector('[data-strategy-doctor]').value = reportValue.doctor || '欧舒朗';
+      card.querySelector('[data-strategy-push]').value = reportValue.pushTime || 'after-review';
+    });
+    syncStrategy();
+  };
+  const readStrategy = () => ({
+    enabled: strategyPanel.querySelector('[data-strategy-master]').checked,
+    reports: Object.fromEntries(strategyReports.map(report => {
+      const card = strategyPanel.querySelector(`[data-strategy-report="${report.key}"]`);
+      return [report.key, {
+        enabled: card.querySelector('[data-strategy-enabled]').checked,
+        template: card.querySelector('[data-strategy-template]').value,
+        review: card.querySelector('[data-strategy-review]').checked,
+        doctor: card.querySelector('[data-strategy-doctor]').value,
+        pushTime: card.querySelector('[data-strategy-push]').value
+      }];
+    }))
+  });
+  strategyPanel.addEventListener('change', syncStrategy);
+  strategyPanel.addEventListener('click', event => {
+    const clear = event.target.closest('[data-strategy-clear-template]');
+    if (!clear) return;
+    clear.closest('[data-strategy-report]').querySelector('[data-strategy-template]').value = '';
+    syncStrategy();
+  });
+  fillStrategy();
   const read = () => {
     try { const value = JSON.parse(localStorage.getItem(storageKey) || 'null'); return Array.isArray(value) ? value : null; }
     catch { return null; }
@@ -402,6 +480,7 @@
     const checkin = document.querySelector('#planCanvasPage .plan-checkin-list');
     if (checkin) { checkin.innerHTML = source.details?.checkinHtml ?? defaultCheckin; checkin.dataset.hasCheckin = source.details?.hasCheckin ?? 'true'; }
     document.querySelectorAll('#planCanvasPage .plan-flow input').forEach((field, index) => { field.value = source.details?.flowValues?.[index] ?? defaultFlow[index] ?? ''; });
+    fillStrategy(source.details?.strategy);
     document.getElementById('generatedPlanTitle').textContent = source.name;
   };
   const openEditor = (plan, source) => {
@@ -519,6 +598,7 @@
     if (versions) { event.preventDefault(); event.stopImmediatePropagation(); showVersions(versions.dataset.planVersions); return; }
     if (target.closest('[data-new-plan]')) {
       activeId = null;
+      fillStrategy();
       document.getElementById('planManagementPeriod').value = '';
       document.getElementById('planManagementPeriodUnit').value = '天';
       document.getElementById('planTaskExtensionPeriod').value = '';
@@ -544,7 +624,7 @@
       plan.team = `团队${fields[3]?.value || '体验测试团队'}`;
       const checkin = document.querySelector('#planCanvasPage .plan-checkin-list');
       plan.details = { values: fields.map(field => field.value), checkinHtml: checkin?.innerHTML || '', hasCheckin: checkin?.dataset.hasCheckin || 'false',
-        flowValues: [...document.querySelectorAll('#planCanvasPage .plan-flow input')].map(field => field.value) };
+        flowValues: [...document.querySelectorAll('#planCanvasPage .plan-flow input')].map(field => field.value), strategy: readStrategy() };
       addVersion(plan, '保存方案');
       if (persist()) { render(); document.getElementById('generatedPlanTitle').textContent = name; toast('方案已保存为待发布版本'); }
       return;

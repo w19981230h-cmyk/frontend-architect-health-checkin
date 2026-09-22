@@ -107,5 +107,47 @@
 .plan-delete-message { margin: 0; padding: 24px; color: rgba(0,0,0,.65); line-height: 1.6; }
 .plan-delete-mask .plan-delete-confirm { border-color: #ff4d4f; background: #ff4d4f; color: #fff; }
 .plan-delete-mask .plan-delete-confirm:hover { border-color: #ff7875; background: #ff7875; }
+
+/* Strategy settings in the plan editor. */
+#planCanvasPage .plan-canvas-body { grid-template-columns: 404px minmax(760px, 1fr) 330px; }
+#planCanvasPage .plan-config-tabs { gap: 36px; }
+#planCanvasPage .plan-strategy-panel { margin: 0 -29px 0 -4px; }
+.plan-strategy-shell { padding: 0 18px 22px; border-radius: 10px; background: #fbfbfd; }
+.plan-strategy-heading { min-height: 62px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid #e9edf4; color: #263852; font-size: 16px; }
+.plan-strategy-heading strong { font-weight: 800; }
+.plan-strategy-reports { display: grid; gap: 18px; padding-top: 18px; }
+.plan-strategy-card { padding: 0 14px 14px; border: 1px solid #3154ff; border-radius: 10px; background: #fff; color: #25334a; transition: opacity .2s; }
+.plan-strategy-card.is-inactive { opacity: .52; }
+.plan-strategy-card-head { min-height: 81px; display: flex; align-items: center; gap: 14px; border-bottom: 1px solid #edf0f6; }
+.plan-strategy-icon { width: 43px; height: 44px; flex: none; display: grid; place-items: center; border-radius: 6px; color: #fff; font-size: 16px; font-weight: 800; }
+.plan-strategy-icon.teal { background: #17b5b3; }
+.plan-strategy-icon.blue { background: #2470ff; }
+.plan-strategy-icon.indigo { background: #304bf2; }
+.plan-strategy-card-title { min-width: 0; display: grid; gap: 4px; line-height: 1.25; }
+.plan-strategy-card-title strong { font-size: 16px; font-weight: 800; }
+.plan-strategy-card-title small { color: #8490a4; font-size: 14px; }
+.plan-strategy-card-head .plan-strategy-switch { margin-left: auto; }
+.plan-strategy-switch { position: relative; width: 38px; height: 22px; flex: none; display: inline-block; vertical-align: middle; }
+.plan-strategy-switch input { position: absolute; inset: 0; z-index: 1; width: 100%; height: 100%; margin: 0; opacity: 0; cursor: pointer; }
+.plan-strategy-switch span { position: absolute; inset: 0; border-radius: 11px; background: #cbd3df; transition: background .18s; }
+.plan-strategy-switch span::after { content: ""; position: absolute; top: 2px; left: 2px; width: 18px; height: 18px; border-radius: 50%; background: #fff; box-shadow: 0 1px 3px rgba(18,34,61,.16); transition: transform .18s; }
+.plan-strategy-switch input:checked + span { background: #2346f5; }
+.plan-strategy-switch input:checked + span::after { transform: translateX(16px); }
+.plan-strategy-switch input:disabled { cursor: not-allowed; }
+.plan-strategy-switch input:focus-visible + span { outline: 2px solid #1677ff; outline-offset: 2px; }
+.plan-strategy-field { display: grid; gap: 10px; margin-top: 20px; }
+.plan-strategy-field > label { color: #25334a; font-size: 15px; font-weight: 700; line-height: 20px; }
+.plan-strategy-template { height: 44px; display: flex; align-items: center; gap: 12px; padding: 0 10px 0 24px; border-radius: 9px; background: #fafbfe; }
+.plan-strategy-word { width: 20px; height: 20px; flex: none; display: grid; place-items: center; border-radius: 4px; background: #5c7df3; color: #fff; font-size: 11px; font-weight: 800; }
+.plan-strategy-template select { min-width: 0; width: 100%; height: 40px; padding: 0; border: 0; appearance: none; outline: none; background: transparent; color: #3154ff; font: inherit; font-size: 15px; cursor: pointer; }
+.plan-strategy-template select:disabled { cursor: not-allowed; }
+.plan-strategy-template button { width: 42px; height: 18px; flex: none; border-left: 1px solid #dce4f3; border-radius: 0; background: transparent; color: #66758e; font-size: 25px; font-weight: 300; line-height: 14px; cursor: pointer; }
+.plan-strategy-template button:disabled { opacity: .45; cursor: not-allowed; }
+.plan-strategy-review { min-height: 24px; display: flex; align-items: center; justify-content: space-between; margin-top: 20px; color: #25334a; font-size: 15px; font-weight: 700; }
+.plan-strategy-select { width: 100%; height: 42px; padding: 0 14px; border: 1px solid #e0e6f0; border-radius: 5px; background: #fff; color: #647188; font: inherit; font-size: 14px; }
+.plan-strategy-select:disabled { border-color: #edf0f5; background: #fafbff; color: #abb5c6; }
+.plan-strategy-push { appearance: none; }
+.plan-strategy-review + .plan-strategy-field { margin-top: 26px; }
+.plan-strategy-card .plan-strategy-field:last-child { margin-top: 23px; }
 @media (max-width: 900px) { #planManagementView .plan-topbar { align-items: stretch; } #planManagementView .plan-search, #planManagementView .plan-filter-combobox { width: min(100%, 220px); } #planManagementView .plan-create { margin-left: 0; } }
 @media (max-width: 600px) { .plan-version-row { align-items: flex-start; flex-direction: column; } .plan-version-actions { flex-wrap: wrap; } }
