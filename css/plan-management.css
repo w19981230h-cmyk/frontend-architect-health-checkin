@@ -10,18 +10,28 @@
 #planManagementView .plan-create { height: 36px; margin-left: auto; border-radius: 6px; background: #1677ff; }
 #planManagementView .plan-content { display: flex; min-height: 0; padding: 0; overflow: hidden; }
 .plan-table-wrap { flex: 1; min-width: 0; overflow: auto; }
-.plan-list-table { width: 100%; min-width: 1540px; table-layout: fixed; border-collapse: collapse; color: rgba(0,0,0,.65); font-size: 14px; }
+.plan-list-table { width: 100%; min-width: 1850px; table-layout: fixed; border-collapse: collapse; color: rgba(0,0,0,.65); font-size: 14px; }
 .plan-list-table thead { position: sticky; top: 0; z-index: 2; }
 .plan-list-table th { height: 48px; padding: 0 12px; color: rgba(0,0,0,.65); background: #fafafa; text-align: left; font-weight: 600; white-space: nowrap; }
 .plan-list-table td { height: 56px; padding: 0 12px; border-bottom: 1px solid #f0f0f0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .plan-list-table tbody tr:hover td { background: #fafafa; }
-.plan-list-table th:nth-child(1) { width: 210px; }
+.plan-list-table th:nth-child(1) { width: 230px; }
 .plan-list-table th:nth-child(2) { width: 280px; }
 .plan-list-table th:nth-child(3) { width: 170px; }
 .plan-list-table th:nth-child(4) { width: 180px; }
 .plan-list-table th:nth-child(5), .plan-list-table th:nth-child(6), .plan-list-table th:nth-child(7) { width: 90px; }
 .plan-list-table th:nth-child(8), .plan-list-table th:nth-child(9) { width: 100px; }
 .plan-list-table th:nth-child(10) { width: 190px; }
+.plan-list-table th:nth-child(11) { width: 110px; }
+.plan-list-table th:nth-child(12) { width: 170px; }
+.plan-name-with-expand { display: flex; align-items: center; gap: 8px; min-width: 0; }
+.plan-name-with-expand .plan-cell-name { min-width: 0; }
+.plan-expand-button { flex: 0 0 18px; width: 18px; height: 18px; padding: 0; border: 1px solid #d9d9d9; border-radius: 3px; background: #fff; color: rgba(0,0,0,.65); line-height: 14px; font-size: 17px; cursor: pointer; }
+.plan-expand-button:hover { border-color: #4096ff; color: #1677ff; }
+.plan-version-child td { background: #fafafa; }
+.plan-version-child:hover td { background: #f5f5f5!important; }
+.plan-version-child .plan-cell-name { display: inline-block; max-width: calc(100% - 34px); vertical-align: middle; font-weight: 400; }
+.plan-child-indent { display: inline-block; width: 33px; border-left: 1px solid #d9d9d9; vertical-align: middle; }
 .plan-cell-name { display: block; overflow: hidden; text-overflow: ellipsis; color: rgba(0,0,0,.88); font-weight: 600; }
 .plan-cell-ellipsis { display: block; overflow: hidden; text-overflow: ellipsis; }
 .plan-list-status { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 13px; }
@@ -29,13 +39,14 @@
 .plan-list-status.pending { color: #d48806; background: #fffbe6; }
 .plan-table-link, .plan-row-actions button { padding: 0; border: 0; background: transparent; color: #1677ff; font: inherit; cursor: pointer; }
 .plan-table-link:hover, .plan-row-actions button:hover { color: #4096ff; }
+.plan-row-actions button:disabled { color: rgba(0,0,0,.25); cursor: not-allowed; }
 .plan-row-actions { display: flex; align-items: center; gap: 14px; }
 .plan-list-empty { height: 180px!important; text-align: center; color: rgba(0,0,0,.45); }
 #planManagementView .plan-pager { height: 64px; padding: 0 16px; justify-content: flex-end; gap: 8px; border-top: 1px solid #f0f0f0; }
 #planManagementView .plan-pager > span { margin-right: auto; }
 #planManagementView .plan-pager .page-btn:disabled { color: rgba(0,0,0,.25); background: #f5f5f5; cursor: not-allowed; }
 .plan-page-size { height: 32px; padding: 0 8px; border: 1px solid #d9d9d9; border-radius: 6px; background: #fff; }
-.plan-query-button:focus-visible, .plan-reset-button:focus-visible, .plan-table-link:focus-visible, .plan-row-actions button:focus-visible, .plan-version-dialog button:focus-visible { outline: 2px solid #1677ff; outline-offset: 2px; }
+.plan-query-button:focus-visible, .plan-reset-button:focus-visible, .plan-table-link:focus-visible, .plan-expand-button:focus-visible, .plan-row-actions button:focus-visible, .plan-version-dialog button:focus-visible { outline: 2px solid #1677ff; outline-offset: 2px; }
 .plan-version-mask { display: none; position: fixed; z-index: 10000; inset: 0; align-items: center; justify-content: center; padding: 20px; background: rgba(0,0,0,.45); }
 .plan-version-mask.open { display: flex; }
 .plan-version-dialog { width: min(560px, 100%); max-height: min(640px, 90vh); display: flex; flex-direction: column; border-radius: 8px; background: #fff; box-shadow: 0 12px 40px rgba(0,0,0,.16); }
