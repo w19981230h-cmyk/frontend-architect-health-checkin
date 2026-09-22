@@ -44,6 +44,8 @@
     team: card.querySelector('.plan-team')?.textContent.trim() || '',
     tasks: Number(card.querySelector('.plan-task')?.textContent.match(/\d+/)?.[0]) || 0,
     published: true,
+    enabled: true,
+    activationModel: 2,
     enabledVersion: 1,
     details: {},
     versions: []
@@ -84,7 +86,7 @@
   };
   const activeVersion = plan => plan.versions?.find(version => version.number === plan.enabledVersion) || plan.versions?.[0];
   const displayData = plan => activeVersion(plan)?.data || plan;
-  const status = plan => plan.enabledVersion == null ? '待发布' : '已发布';
+  const status = plan => plan.enabled ? '已发布' : '待发布';
   const formatTime = value => value && !Number.isNaN(new Date(value).getTime()) ? new Date(value).toLocaleString('zh-CN', { hour12: false }) : '—';
   const snapshot = plan => ({
     name: plan.name, description: plan.description, profile: plan.profile,
@@ -110,8 +112,12 @@
         version.creator = currentCreator;
       }
     });
-    if (plan.enabledVersion === undefined) plan.enabledVersion = plan.enabled === false ? null : (plan.versions[0]?.number || 1);
-    if (plan.published === undefined) plan.published = plan.enabledVersion != null;
+    if (plan.activationModel !== 2) {
+      plan.enabled = plan.enabledVersion != null;
+      plan.activationModel = 2;
+    }
+    if (plan.enabledVersion == null) plan.enabledVersion = plan.versions.some(version => version.number === plan.lastEnabledVersion) ? plan.lastEnabledVersion : latest(plan);
+    if (plan.published === undefined) plan.published = plan.enabled;
     if (plan.lastEnabledVersion == null && plan.enabledVersion != null) plan.lastEnabledVersion = plan.enabledVersion;
     if (sample) {
       plan.creator ||= sample.creator;
@@ -120,7 +126,7 @@
       plan.creator = currentCreator;
     }
     const enabled = plan.versions.find(version => version.number === plan.enabledVersion);
-    if (enabled) enabled.published = true;
+    if (enabled && plan.enabled) enabled.published = true;
     if (!plan.id?.startsWith('seed-') && !plan.createdAt) plan.createdAt = [...plan.versions].at(-1)?.at || null;
   });
   persist();
@@ -241,7 +247,7 @@
   const textCell = (value, className = '') => `<span class="plan-cell-ellipsis ${className}" title="${esc(value || '')}">${esc(value || '—')}</span>`;
   const switchCell = (plan, version) => {
     const isChild = version != null;
-    const checked = isChild ? plan.enabledVersion === version.number : plan.enabledVersion != null;
+    const checked = Boolean(plan.enabled && (!isChild || plan.enabledVersion === version.number));
     const blocked = isChild && !checked && version.published;
     const label = isChild ? `${checked ? '停用' : '启用'}${esc(plan.name)}的${versionLabel(version.number)}` : `${checked ? '停用' : '启用'}${esc(plan.name)}`;
     return `<label class="checkin-eval-switch-row plan-version-switch" title="${blocked ? '仅待发布版本可开启' : label}"><input type="checkbox" role="switch" data-plan-switch="${esc(plan.id)}" ${isChild ? `data-version-number="${version.number}"` : ''} aria-label="${blocked ? `${versionLabel(version.number)}已发布，不可开启` : label}" ${checked ? 'checked' : ''} ${blocked ? 'disabled' : ''}><span class="checkin-eval-switch" aria-hidden="true"></span></label>`;
@@ -282,7 +288,7 @@
   };
   const renderVersion = (plan, version) => {
     const data = version.data || plan;
-    const isEnabled = plan.enabledVersion === version.number;
+    const isEnabled = plan.enabled && plan.enabledVersion === version.number;
     return `<tr class="plan-version-child" data-plan-id="${esc(plan.id)}" data-version="${version.number}">
       <td><span class="plan-child-indent" aria-hidden="true"></span><span class="plan-cell-name" title="${esc(data.name)}">${esc(data.name || '未命名方案')}</span></td>
       <td>${textCell(data.description)}</td><td>${textCell(data.profile, 'plan-profile-value')}</td><td>${textCell(data.team)}</td>
@@ -338,7 +344,7 @@
     versionPlanId = id;
     modal.querySelector('.plan-version-subtitle').textContent = plan.name;
     modal.querySelector('.plan-version-list').innerHTML = plan.versions.map((version, index) => `<article class="plan-version-row">
-      <div><strong>${versionLabel(version.number)}${plan.enabledVersion === version.number ? ' · 启用中' : ''}${index === 0 ? ' · 最新' : ''}</strong>
+      <div><strong>${versionLabel(version.number)}${plan.enabledVersion === version.number ? (plan.enabled ? ' · 启用中' : ' · 当前版本') : ''}${index === 0 ? ' · 最新' : ''}</strong>
       <span>${esc(formatTime(version.at))} · ${esc(String(version.note || '').replace(/V(\d+)/g, (_, number) => versionLabel(number)))}</span></div>
       <div class="plan-version-actions"><button type="button" data-enable-plan-version="${version.number}" ${plan.enabledVersion === version.number ? 'disabled title="当前启用版本"' : version.published ? 'disabled title="仅待发布版本可开启"' : ''}>启用此版本</button>
       <button type="button" data-restore-plan-version="${version.number}" ${index === 0 ? 'disabled' : ''}>恢复此版本</button></div></article>`).join('');
@@ -446,6 +452,8 @@
     const plan = find(control.dataset.planSwitch);
     if (!plan) return;
     const previousVersion = plan.enabledVersion;
+    const previousEnabled = plan.enabled;
+    const previousPublishedPlan = plan.published;
     const previousLast = plan.lastEnabledVersion;
     const requestedVersion = control.dataset.versionNumber == null
       ? (plan.versions.some(version => version.number === plan.lastEnabledVersion) ? plan.lastEnabledVersion : latest(plan))
@@ -456,20 +464,20 @@
       render(); toast('仅待发布版本可开启'); return;
     }
     const previousPublished = requestedRecord?.published;
-    plan.enabledVersion = control.checked ? requestedVersion : null;
-    if (plan.enabledVersion != null) {
-      plan.lastEnabledVersion = plan.enabledVersion;
-      const version = plan.versions.find(item => item.number === plan.enabledVersion);
-      if (version) version.published = true;
-    } else if (previousVersion != null) plan.lastEnabledVersion = previousVersion;
-    plan.published = plan.enabledVersion != null;
+    plan.enabled = control.checked;
+    if (plan.enabled) {
+      plan.enabledVersion = requestedVersion;
+      plan.lastEnabledVersion = requestedVersion;
+      if (requestedRecord) requestedRecord.published = true;
+    }
+    plan.published = plan.enabled;
     if (!persist()) {
-      plan.enabledVersion = previousVersion; plan.lastEnabledVersion = previousLast; plan.published = previousVersion != null;
+      plan.enabled = previousEnabled; plan.enabledVersion = previousVersion; plan.lastEnabledVersion = previousLast; plan.published = previousPublishedPlan;
       if (requestedRecord) requestedRecord.published = previousPublished;
       render(); return;
     }
     render();
-    toast(plan.enabledVersion == null ? '方案已停用' : `已启用${versionLabel(plan.enabledVersion)}`);
+    toast(plan.enabled ? `已启用${versionLabel(plan.enabledVersion)}` : '方案已停用');
   }, true);
 
   document.addEventListener('click', event => {
@@ -508,7 +516,7 @@
       if (copy.dataset.versionNumber != null && !version) return;
       const data = version?.data || displayData(source);
       closeActionMenu();
-      const plan = { ...structuredClone(data), id: `plan-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`, name: `${data.name}（副本）`, creator: currentCreator, createdAt: new Date().toISOString(), published: false, enabledVersion: null, versions: [] };
+      const plan = { ...structuredClone(data), id: `plan-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`, name: `${data.name}（副本）`, creator: currentCreator, createdAt: new Date().toISOString(), published: false, enabled: false, activationModel: 2, enabledVersion: null, versions: [] };
       addVersion(plan, '复制创建'); plans.unshift(plan);
       if (!persist()) { plans.shift(); render(); return; }
       page = 1; render(); toast('已复制为待发布方案'); return;
@@ -522,7 +530,7 @@
       const name = fields[0]?.value.trim();
       if (!name) { toast('请填写方案名称'); fields[0]?.focus(); return; }
       let plan = find(activeId);
-      if (!plan) { plan = { id: `plan-${Date.now()}`, name, description: '', profile: '', team: '', tasks: 0, creator: currentCreator, createdAt: new Date().toISOString(), published: false, enabledVersion: null, details: {}, versions: [] }; plans.unshift(plan); activeId = plan.id; }
+      if (!plan) { plan = { id: `plan-${Date.now()}`, name, description: '', profile: '', team: '', tasks: 0, creator: currentCreator, createdAt: new Date().toISOString(), published: false, enabled: false, activationModel: 2, enabledVersion: null, details: {}, versions: [] }; plans.unshift(plan); activeId = plan.id; }
       plan.name = name;
       plan.description = fields[2]?.value.trim() || '';
       plan.profile = fields[4]?.value.trim() || '';
@@ -540,12 +548,18 @@
       const plan = find(versionPlanId);
       const nextVersion = plan.versions.find(item => item.number === Number(enable.dataset.enablePlanVersion));
       if (!nextVersion || nextVersion.published) { toast('仅待发布版本可开启'); return; }
+      const previousVersion = plan.enabledVersion;
+      const previousLast = plan.lastEnabledVersion;
+      const previousPublishedPlan = plan.published;
       plan.enabledVersion = nextVersion.number;
       plan.lastEnabledVersion = plan.enabledVersion;
-      plan.published = true;
-      const version = plan.versions.find(item => item.number === plan.enabledVersion);
-      if (version) version.published = true;
-      persist(); render(); showVersions(plan.id); toast('启用版本已更新'); return;
+      nextVersion.published = true;
+      if (!persist()) {
+        plan.enabledVersion = previousVersion; plan.lastEnabledVersion = previousLast;
+        plan.published = previousPublishedPlan; nextVersion.published = false;
+        render(); showVersions(plan.id); return;
+      }
+      render(); showVersions(plan.id); toast('当前版本已更新，方案启停状态保持不变'); return;
     }
     const restore = target.closest('[data-restore-plan-version]');
     if (restore && versionPlanId) {
