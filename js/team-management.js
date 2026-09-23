@@ -194,6 +194,7 @@
 
   let openPlanMenu = null;
   let planDialog = null;
+  let versionPromotion = null;
   const planForAction = id => plansForTeam(homeState.team?.id).find(plan => plan.id === id);
   const displayPlan = plan => plan.versions?.find(version => version.number === plan.enabledVersion) || plan.versions?.find(version => version.number === plan.lastEnabledVersion) || plan.versions?.[0] || plan;
 
@@ -239,7 +240,7 @@
       planDialog.innerHTML = `<section class="team-plan-drawer" role="dialog" aria-modal="true" aria-labelledby="teamPlanDialogTitle"><header><div><h2 id="teamPlanDialogTitle">版本管理</h2><p>${escapeHtml(plan.name)}</p></div><button type="button" data-team-plan-dialog-close aria-label="关闭版本管理">×</button></header><div class="team-plan-drawer-content"><div class="team-plan-drawer-summary">共 ${plan.versions.length} 个版本 · 当前${plan.enabledVersion != null ? `启用${versionLabel(plan.enabledVersion)}` : '未启用'}</div>${sortedVersions.map(version => {
         const current = plan.enabledVersion === version.number;
         const published = version.published || current;
-        return `<article class="team-home-plan-card team-plan-version-card"><div class="team-home-plan-head"><span class="team-home-plan-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><path d="M8 6h11M8 12h11M8 18h11" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><circle cx="4.5" cy="6" r="1.5" fill="currentColor"/><circle cx="4.5" cy="12" r="1.5" fill="currentColor"/><circle cx="4.5" cy="18" r="1.5" fill="currentColor"/></svg></span><div class="team-home-plan-title"><strong title="${escapeHtml(version.name)}">${escapeHtml(version.name)}</strong><span class="team-home-plan-status ${published ? '' : 'inactive'}">${published ? '已发布' : '待发布'}</span></div><button type="button" role="switch" class="team-home-plan-switch ${current ? 'on' : ''}" data-team-version-action="${current ? 'disable' : 'enable'}" data-plan-id="${escapeHtml(plan.id)}" data-version-number="${version.number}" aria-checked="${current}" aria-label="${current ? '停用' : '启用'}${escapeHtml(version.name)}${versionLabel(version.number)}" ${!published && !current ? 'disabled title="待发布版本不可启用"' : ''}><i></i></button></div><div class="team-home-plan-body"><div class="team-home-plan-info"><span>适用画像：</span><b>${escapeHtml(version.profile || '未设置')}</b></div></div><div class="team-home-plan-foot"><span class="team-home-plan-task">任务: ${Number(version.tasks) || 0}</span><span class="team-home-plan-version-tag">${versionLabel(version.number)}</span><div class="team-home-plan-actions"><div class="team-plan-version-menu-wrap"><button type="button" class="team-home-plan-more team-plan-version-more" data-team-version-more aria-haspopup="menu" aria-expanded="false">更多<svg viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="m3 6 5 5 5-5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button><div class="team-plan-version-menu" role="menu" hidden><button type="button" role="menuitem" data-team-version-action="edit" data-plan-id="${escapeHtml(plan.id)}" data-version-number="${version.number}">编辑</button><button type="button" role="menuitem" data-team-version-action="${current ? 'disable' : 'enable'}" data-plan-id="${escapeHtml(plan.id)}" data-version-number="${version.number}" ${!published && !current ? 'disabled title="待发布版本不可启用"' : ''}>${current ? '停用' : '启用'}</button><button type="button" role="menuitem" class="danger" data-team-version-action="delete" data-plan-id="${escapeHtml(plan.id)}" data-version-number="${version.number}">删除</button></div></div></div></div></article>`;
+        return `<article class="team-home-plan-card team-plan-version-card" data-team-version-card="${version.number}"><div class="team-home-plan-head"><span class="team-home-plan-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><path d="M8 6h11M8 12h11M8 18h11" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><circle cx="4.5" cy="6" r="1.5" fill="currentColor"/><circle cx="4.5" cy="12" r="1.5" fill="currentColor"/><circle cx="4.5" cy="18" r="1.5" fill="currentColor"/></svg></span><div class="team-home-plan-title"><strong title="${escapeHtml(version.name)}">${escapeHtml(version.name)}</strong><span class="team-home-plan-status ${published ? '' : 'inactive'}">${published ? '已发布' : '待发布'}</span></div><button type="button" role="switch" class="team-home-plan-switch ${current ? 'on' : ''}" data-team-version-action="${current ? 'disable' : 'enable'}" data-plan-id="${escapeHtml(plan.id)}" data-version-number="${version.number}" aria-checked="${current}" aria-label="${current ? '停用' : '启用'}${escapeHtml(version.name)}${versionLabel(version.number)}" ${!published && !current ? 'disabled title="待发布版本不可启用"' : ''}><i></i></button></div><div class="team-home-plan-body"><div class="team-home-plan-info"><span>适用画像：</span><b>${escapeHtml(version.profile || '未设置')}</b></div></div><div class="team-home-plan-foot"><span class="team-home-plan-task">任务: ${Number(version.tasks) || 0}</span><span class="team-home-plan-version-tag">${versionLabel(version.number)}</span><div class="team-home-plan-actions"><div class="team-plan-version-menu-wrap"><button type="button" class="team-home-plan-more team-plan-version-more" data-team-version-more aria-haspopup="menu" aria-expanded="false">更多<svg viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="m3 6 5 5 5-5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button><div class="team-plan-version-menu" role="menu" hidden><button type="button" role="menuitem" data-team-version-action="edit" data-plan-id="${escapeHtml(plan.id)}" data-version-number="${version.number}">编辑</button><button type="button" role="menuitem" data-team-version-action="${current ? 'disable' : 'enable'}" data-plan-id="${escapeHtml(plan.id)}" data-version-number="${version.number}" ${!published && !current ? 'disabled title="待发布版本不可启用"' : ''}>${current ? '停用' : '启用'}</button><button type="button" role="menuitem" class="danger" data-team-version-action="delete" data-plan-id="${escapeHtml(plan.id)}" data-version-number="${version.number}">删除</button></div></div></div></div></article>`;
       }).join('')}</div><footer><button type="button" data-team-plan-dialog-close>关闭</button></footer></section>`;
     } else {
       const data = version || (plan ? displayPlan(plan) : { name: '', profile: '', tasks: 0 });
@@ -247,6 +248,16 @@
       planDialog.innerHTML = `<section class="team-plan-dialog" role="dialog" aria-modal="true" aria-labelledby="teamPlanDialogTitle"><header><h2 id="teamPlanDialogTitle">${editingVersion ? `编辑${versionLabel(version.number)}` : plan ? '编辑方案' : '新建方案模板'}</h2><button type="button" data-team-plan-dialog-close aria-label="关闭">×</button></header><form id="teamPlanForm" data-plan-id="${escapeHtml(plan?.id || '')}" data-version-number="${editingVersion ? version.number : ''}">${editingVersion && version.published ? '<p class="team-plan-edit-note">编辑已发布版本后将生成待发布的新版本。</p>' : ''}<label>方案名称<input name="name" maxlength="100" required value="${escapeHtml(data.name)}"></label><label>适用画像<input name="profile" maxlength="100" required value="${escapeHtml(data.profile)}"></label><label>任务数量<input name="tasks" type="number" min="0" max="999" required value="${Number(data.tasks) || 0}"></label><footer><button type="button" data-team-plan-dialog-close>取消</button><button type="submit" class="primary">保存</button></footer></form></section>`;
     }
     document.body.append(planDialog);
+    if (type === 'versions' && versionPromotion?.planId === plan?.id) {
+      const promoted = planDialog.querySelector(`[data-team-version-card="${versionPromotion.versionNumber}"]`);
+      if (promoted && versionPromotion.distance > 0 && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        promoted.animate([
+          { transform: `translateY(${versionPromotion.distance}px)`, opacity: .72, boxShadow: '0 12px 32px rgba(49,84,255,.18)' },
+          { transform: 'translateY(0)', opacity: 1, boxShadow: '0 2px 10px rgba(40,65,110,.04)' }
+        ], { duration: 460, easing: 'cubic-bezier(.22,.75,.24,1)' });
+      }
+      versionPromotion = null;
+    }
     planDialog.querySelector('input, [data-team-plan-dialog-close]')?.focus();
   }
 
@@ -518,6 +529,15 @@
       const previous = structuredClone(teamPlans[teamId]);
       const enabling = action === 'enable';
       if (enabling && !version.published) { window.showToast?.('待发布版本不可启用，请先发布'); return; }
+      if (enabling) {
+        const selectedCard = versionAction.closest('[data-team-version-card]');
+        const firstCard = planDialog?.querySelector('[data-team-version-card]');
+        versionPromotion = {
+          planId: plan.id,
+          versionNumber: version.number,
+          distance: Math.max(0, (selectedCard?.getBoundingClientRect().top || 0) - (firstCard?.getBoundingClientRect().top || 0))
+        };
+      }
       plan.enabledVersion = enabling ? version.number : null;
       plan.lastEnabledVersion = version.number;
       plan.paused = !enabling;
