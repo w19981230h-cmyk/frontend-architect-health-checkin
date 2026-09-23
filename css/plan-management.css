@@ -107,6 +107,11 @@
 .plan-delete-message { margin: 0; padding: 24px; color: rgba(0,0,0,.65); line-height: 1.6; }
 .plan-delete-mask .plan-delete-confirm { border-color: #ff4d4f; background: #ff4d4f; color: #fff; }
 .plan-delete-mask .plan-delete-confirm:hover { border-color: #ff7875; background: #ff7875; }
+.plan-publish-mask .plan-delete-message { padding-bottom: 10px; }
+.plan-publish-tip { margin: 0; padding: 0 24px 24px; color: #8c8c8c; font-size: 13px; }
+.plan-publish-mask .plan-version-dialog footer { gap: 8px; }
+.plan-publish-mask .plan-publish-confirm { border-color: #1677ff; background: #1677ff; color: #fff; }
+.plan-publish-mask .plan-publish-confirm:hover { border-color: #4096ff; background: #4096ff; }
 
 /* Strategy settings in the plan editor. */
 #planCanvasPage .plan-canvas-body { grid-template-columns: 404px minmax(760px, 1fr) 330px; }

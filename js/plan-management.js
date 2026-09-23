@@ -448,6 +448,19 @@
   deleteMask.setAttribute('aria-hidden', 'true');
   deleteMask.innerHTML = `<section class="plan-version-dialog" role="alertdialog" aria-modal="true" aria-labelledby="planDeleteTitle"><header><h2 id="planDeleteTitle">删除方案</h2><button type="button" data-close-plan-delete aria-label="关闭">×</button></header><p class="plan-delete-message"></p><footer><button type="button" data-close-plan-delete>取消</button><button type="button" class="plan-delete-confirm" data-confirm-plan-delete>删除</button></footer></section>`;
   document.body.append(deleteMask);
+  const publishMask = document.createElement('div');
+  publishMask.className = 'plan-version-mask plan-publish-mask';
+  publishMask.setAttribute('aria-hidden', 'true');
+  publishMask.innerHTML = `<section class="plan-version-dialog" role="alertdialog" aria-modal="true" aria-labelledby="planPublishTitle"><header><h2 id="planPublishTitle">发布成功</h2><button type="button" data-close-plan-publish aria-label="关闭">×</button></header><p class="plan-delete-message">当前版本已发布，是否立即启用该方案？</p><p class="plan-publish-tip">启用后，团队可按当前版本执行方案；暂不启用不会影响已经启用的其他版本。</p><footer><button type="button" data-close-plan-publish>暂不启用</button><button type="button" class="plan-publish-confirm" data-confirm-plan-publish>立即启用</button></footer></section>`;
+  document.body.append(publishMask);
+  let publishTarget = null;
+  const closePublish = () => { publishMask.classList.remove('open'); publishMask.setAttribute('aria-hidden', 'true'); publishTarget = null; };
+  const showPublishConfirm = (plan, version) => {
+    publishTarget = { planId: plan.id, versionNumber: version.number };
+    publishMask.classList.add('open');
+    publishMask.setAttribute('aria-hidden', 'false');
+    publishMask.querySelector('[data-confirm-plan-publish]')?.focus();
+  };
   let deleteTarget = null;
   const closeDelete = () => { deleteMask.classList.remove('open'); deleteMask.setAttribute('aria-hidden', 'true'); deleteTarget = null; };
   const showDelete = (plan, version) => {
@@ -620,17 +633,21 @@
       document.getElementById('planTaskExtensionPeriod').value = '';
       document.getElementById('planTaskExtensionPeriodUnit').value = '天';
     }
-    if (target.closest('[data-save-plan]')) {
+    const savePlan = target.closest('[data-save-plan]');
+    const publishPlan = target.closest('[data-publish-plan]');
+    if (savePlan || publishPlan) {
       event.preventDefault(); event.stopImmediatePropagation();
-      if (window.validatePlanFormMode && !window.validatePlanFormMode()) return;
+      const formWorkspace = document.querySelector('.plan-form-workspace');
+      if (window.validatePlanFormMode && formWorkspace && !formWorkspace.hidden && !window.validatePlanFormMode()) return;
       const fields = infoFields();
       const name = fields[0]?.value.trim();
       if (!name) { toast('请填写方案名称'); fields[0]?.focus(); return; }
       for (const [id, label] of [['planManagementPeriod', '管理周期'], ['planTaskExtensionPeriod', '任务延续期']]) {
         const input = document.getElementById(id);
         const value = input.value.trim();
+        if (!value) { toast(`请输入${label}`); input.focus(); return; }
         if (value.length > 3) { toast(`${label}最多输入 3 位数字`); input.focus(); return; }
-        if (value && (!/^\d+$/.test(value) || !Number.isSafeInteger(Number(value)) || Number(value) < 1)) {
+        if (!/^\d+$/.test(value) || !Number.isSafeInteger(Number(value)) || Number(value) < 1) {
           toast(`${label}请输入大于 0 的整数`); input.focus(); return;
         }
       }
@@ -643,9 +660,28 @@
       const checkin = document.querySelector('#planCanvasPage .plan-checkin-list');
       plan.details = { values: fields.map(field => field.value), checkinHtml: checkin?.innerHTML || '', hasCheckin: checkin?.dataset.hasCheckin || 'false',
         flowValues: [...document.querySelectorAll('#planCanvasPage .plan-flow input')].map(field => field.value), strategy: readStrategy() };
-      addVersion(plan, '保存方案');
-      if (persist()) { render(); document.getElementById('generatedPlanTitle').textContent = name; toast('方案已保存为待发布版本'); }
+      addVersion(plan, publishPlan ? '发布方案' : '保存方案');
+      const createdVersion = plan.versions[0];
+      if (publishPlan) { createdVersion.published = true; plan.published = true; }
+      if (persist()) {
+        render();
+        document.getElementById('generatedPlanTitle').textContent = name;
+        if (publishPlan) showPublishConfirm(plan, createdVersion);
+        else toast('方案已保存为待发布版本');
+      }
       return;
+    }
+    if (target.closest('[data-close-plan-publish]') || target === publishMask) { closePublish(); toast('方案已发布，暂未启用'); return; }
+    if (target.closest('[data-confirm-plan-publish]') && publishTarget) {
+      const plan = find(publishTarget.planId);
+      const version = plan?.versions.find(item => item.number === publishTarget.versionNumber);
+      if (!plan || !version?.published) { closePublish(); return; }
+      const previous = { enabled: plan.enabled, enabledVersion: plan.enabledVersion, lastEnabledVersion: plan.lastEnabledVersion };
+      plan.enabled = true;
+      plan.enabledVersion = version.number;
+      plan.lastEnabledVersion = version.number;
+      if (!persist()) { Object.assign(plan, previous); render(); return; }
+      closePublish(); render(); toast(`${versionLabel(version.number)}已发布并启用`); return;
     }
     if (target.closest('[data-close-plan-versions]') || target === modal) { closeVersions(); return; }
     const enable = target.closest('[data-enable-plan-version]');
@@ -678,7 +714,8 @@
   }, true);
   document.addEventListener('keydown', event => {
     if (event.key !== 'Escape') return;
-    if (deleteMask.classList.contains('open')) closeDelete();
+    if (publishMask.classList.contains('open')) closePublish();
+    else if (deleteMask.classList.contains('open')) closeDelete();
     else if (!actionMenu.hidden) closeActionMenu();
     else if (modal.classList.contains('open')) closeVersions();
   });

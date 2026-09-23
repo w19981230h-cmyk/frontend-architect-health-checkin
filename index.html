@@ -2314,7 +2314,9 @@
     .plan-ai-generate.ready { background: #3154ff; }
     .plan-ai-skip { border: 1px solid #3154ff; color: #3154ff; background: #eef3ff; }
     .plan-canvas-page { height: 100vh; min-width: 1440px; background: #eef5ff; display: grid; grid-template-rows: 54px minmax(0, 1fr); }
-    .plan-canvas-save { margin-left: 14px; height: 34px; min-width: 70px; border-radius: 4px; background: #1d43ff; color: #fff; font-weight: 800; }
+    .plan-canvas-save, .plan-canvas-publish { height: 34px; min-width: 70px; border-radius: 4px; font-weight: 800; }
+    .plan-canvas-save { margin-left: 14px; border: 1px solid #3154ff; background: #fff; color: #3154ff; }
+    .plan-canvas-publish { margin-left: -8px; border: 1px solid #1d43ff; background: #1d43ff; color: #fff; }
     .plan-canvas-body { min-height: 0; display: grid; grid-template-columns: 390px minmax(760px, 1fr) 330px; }
     .plan-config-panel { min-height: 0; overflow: auto; padding: 0 22px 48px; background: #fff; border-right: 1px solid #dde6f3; }
     .plan-config-tabs { position: sticky; top: 0; z-index: 2; display: flex; gap: 26px; padding: 18px 0 0; background: #fff; border-bottom: 1px solid #eef2f7; margin: 0 0 26px; }
@@ -2827,7 +2829,7 @@
 <link rel="stylesheet" href="./css/dashboard-updated.css?v=20260913-2">
 <link rel="stylesheet" href="./css/evaluation-report.css?v=20260916-1">
 <link rel="stylesheet" href="./css/article-management.css?v=20260916-1">
-<link rel="stylesheet" href="./css/plan-management.css?v=20260923-14">
+<link rel="stylesheet" href="./css/plan-management.css?v=20260923-15">
 </head>
 <body>
   <script src="./save-persistence-final.js"></script>
@@ -3537,6 +3539,7 @@
         <div class="plan-title-text" id="generatedPlanTitle">泌尿系结石术后随访健康管理方案</div>
         <div class="plan-mode-switch"><button class="active">画布模式</button><button>表单模式</button></div>
         <button class="plan-canvas-save" data-save-plan>保存</button>
+        <button class="plan-canvas-publish" data-publish-plan>发布</button>
       </header>
       <main class="plan-canvas-body">
         <aside class="plan-config-panel">
@@ -15938,7 +15941,7 @@
 <script src="./js/dashboard-updated-content.js?v=20260913-2"></script>
 <script src="./js/evaluation-report.js?v=20260916-1"></script>
 <script src="./js/article-management.js?v=20260916-1"></script>
-<script src="./js/plan-management.js?v=20260923-21"></script>
+<script src="./js/plan-management.js?v=20260923-22"></script>
 <script src="./js/plan-form-mode.js?v=20260923-3"></script>
 </body>
 </html>
