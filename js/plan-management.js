@@ -214,7 +214,7 @@
       plan.creator = currentCreator;
     }
     const enabled = plan.versions.find(version => version.number === plan.enabledVersion);
-    if (enabled && plan.enabled) enabled.published = true;
+    if (enabled && !enabled.published) plan.enabled = false;
     if (!plan.id?.startsWith('seed-') && !plan.createdAt) plan.createdAt = [...plan.versions].at(-1)?.at || null;
   });
   persist();
@@ -335,10 +335,11 @@
   const textCell = (value, className = '') => `<span class="plan-cell-ellipsis ${className}" title="${esc(value || '')}">${esc(value || '—')}</span>`;
   const switchCell = (plan, version) => {
     const isChild = version != null;
-    const checked = Boolean(plan.enabled && (!isChild || plan.enabledVersion === version.number));
-    const blocked = isChild && !checked && version.published;
+    const blocked = isChild ? !version.published : status(plan) === '待发布';
+    const checked = Boolean(!blocked && plan.enabled && (!isChild || plan.enabledVersion === version.number));
     const label = isChild ? `${checked ? '停用' : '启用'}${esc(plan.name)}的${versionLabel(version.number)}` : `${checked ? '停用' : '启用'}${esc(plan.name)}`;
-    return `<label class="checkin-eval-switch-row plan-version-switch" title="${blocked ? '仅待发布版本可开启' : label}"><input type="checkbox" role="switch" data-plan-switch="${esc(plan.id)}" ${isChild ? `data-version-number="${version.number}"` : ''} aria-label="${blocked ? `${versionLabel(version.number)}已发布，不可开启` : label}" ${checked ? 'checked' : ''} ${blocked ? 'disabled' : ''}><span class="checkin-eval-switch" aria-hidden="true"></span></label>`;
+    const blockedLabel = isChild ? `${versionLabel(version.number)}待发布，不可启用` : `${esc(plan.name)}待发布，不可启用`;
+    return `<label class="checkin-eval-switch-row plan-version-switch" title="${blocked ? '待发布状态不可启用版本' : label}"><input type="checkbox" role="switch" data-plan-switch="${esc(plan.id)}" ${isChild ? `data-version-number="${version.number}"` : ''} aria-label="${blocked ? blockedLabel : label}" ${checked ? 'checked' : ''} ${blocked ? 'disabled' : ''}><span class="checkin-eval-switch" aria-hidden="true"></span></label>`;
   };
   const actionMenu = document.createElement('div');
   actionMenu.className = 'plan-actions-menu';
@@ -433,7 +434,7 @@
     modal.querySelector('.plan-version-list').innerHTML = plan.versions.map((version, index) => `<article class="plan-version-row">
       <div><strong>${versionLabel(version.number)}${plan.enabledVersion === version.number ? (plan.enabled ? ' · 启用中' : ' · 当前版本') : ''}${index === 0 ? ' · 最新' : ''}</strong>
       <span>${esc(formatTime(version.at))} · ${esc(String(version.note || '').replace(/V(\d+)/g, (_, number) => versionLabel(number)))}</span></div>
-      <div class="plan-version-actions"><button type="button" data-enable-plan-version="${version.number}" ${plan.enabledVersion === version.number ? 'disabled title="当前启用版本"' : version.published ? 'disabled title="仅待发布版本可开启"' : ''}>启用此版本</button>
+      <div class="plan-version-actions"><button type="button" data-enable-plan-version="${version.number}" ${plan.enabledVersion === version.number && plan.enabled ? 'disabled title="当前启用版本"' : !version.published ? 'disabled title="待发布版本不可启用"' : ''}>启用此版本</button>
       <button type="button" data-restore-plan-version="${version.number}" ${index === 0 ? 'disabled' : ''}>恢复此版本</button></div></article>`).join('');
     modal.classList.add('open'); modal.setAttribute('aria-hidden', 'false');
     modal.querySelector('[data-close-plan-versions]').focus();
@@ -548,8 +549,8 @@
       : Number(control.dataset.versionNumber);
     if (control.checked && !plan.versions.some(version => version.number === requestedVersion)) { render(); return; }
     const requestedRecord = plan.versions.find(version => version.number === requestedVersion);
-    if (control.checked && control.dataset.versionNumber != null && requestedRecord?.published && previousVersion !== requestedVersion) {
-      render(); toast('仅待发布版本可开启'); return;
+    if (control.checked && !requestedRecord?.published) {
+      render(); toast('待发布版本不可启用'); return;
     }
     plan.enabled = control.checked;
     if (plan.enabled) {
@@ -646,7 +647,7 @@
     if (enable && versionPlanId) {
       const plan = find(versionPlanId);
       const nextVersion = plan.versions.find(item => item.number === Number(enable.dataset.enablePlanVersion));
-      if (!nextVersion || nextVersion.published) { toast('仅待发布版本可开启'); return; }
+      if (!nextVersion || !nextVersion.published) { toast('待发布版本不可启用'); return; }
       const previousVersion = plan.enabledVersion;
       const previousLast = plan.lastEnabledVersion;
       const previousPublishedPlan = plan.published;
