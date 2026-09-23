@@ -70,6 +70,7 @@
   ];
   const strategyDefaults = () => ({
     enabled: true,
+    warningEnabled: false,
     reports: Object.fromEntries(strategyReports.map(report => [report.key, {
       enabled: true, template: report.template, review: true, doctor: '欧舒朗', pushTime: 'after-review'
     }]))
@@ -80,6 +81,7 @@
   strategyPanel.setAttribute('data-persistence-ignore', '');
   strategyPanel.innerHTML = `<div class="plan-strategy-shell">
     <div class="plan-strategy-heading"><strong>阶段总结</strong><label class="plan-strategy-switch"><input type="checkbox" role="switch" data-strategy-master aria-label="启用阶段总结" checked><span aria-hidden="true"></span></label></div>
+    <div class="plan-strategy-warning"><strong>预警规则</strong><label class="plan-strategy-switch"><input type="checkbox" role="switch" data-strategy-warning aria-label="启用预警规则"><span aria-hidden="true"></span></label></div>
     <div class="plan-strategy-reports">${strategyReports.map(report => `<article class="plan-strategy-card" data-strategy-report="${report.key}">
       <div class="plan-strategy-card-head"><span class="plan-strategy-icon ${report.tone}" aria-hidden="true">${report.icon}</span><div class="plan-strategy-card-title"><strong>${report.name}</strong><small>${report.schedule}</small></div><label class="plan-strategy-switch"><input type="checkbox" role="switch" data-strategy-enabled aria-label="启用${report.name}" checked><span aria-hidden="true"></span></label></div>
       <div class="plan-strategy-field"><label for="planStrategyTemplate-${report.key}">报告模板：</label><div class="plan-strategy-template"><span class="plan-strategy-word" aria-hidden="true">W</span><select id="planStrategyTemplate-${report.key}" data-strategy-template aria-label="${report.name}报告模板"><option value="">请选择报告模板</option><option value="体重${report.name}" selected>体重${report.name}</option><option value="健康${report.name}">健康${report.name}</option><option value="随访${report.name}">随访${report.name}</option></select><button type="button" data-strategy-clear-template aria-label="移除${report.name}报告模板">×</button></div></div>
@@ -110,6 +112,7 @@
   const fillStrategy = saved => {
     const value = saved || strategyDefaults();
     strategyPanel.querySelector('[data-strategy-master]').checked = value.enabled !== false;
+    strategyPanel.querySelector('[data-strategy-warning]').checked = value.warningEnabled === true;
     strategyReports.forEach(report => {
       const card = strategyPanel.querySelector(`[data-strategy-report="${report.key}"]`);
       const reportValue = value.reports?.[report.key] || strategyDefaults().reports[report.key];
@@ -123,6 +126,7 @@
   };
   const readStrategy = () => ({
     enabled: strategyPanel.querySelector('[data-strategy-master]').checked,
+    warningEnabled: strategyPanel.querySelector('[data-strategy-warning]').checked,
     reports: Object.fromEntries(strategyReports.map(report => {
       const card = strategyPanel.querySelector(`[data-strategy-report="${report.key}"]`);
       return [report.key, {
