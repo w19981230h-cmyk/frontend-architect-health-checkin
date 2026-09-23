@@ -190,11 +190,41 @@
     plan.nextVersionNumber = number + 1;
     plan.versions.unshift({ number, at: new Date().toISOString(), creator: currentCreator, published: false, note, data: snapshot(plan) });
   };
+  const demoVersionCounts = [3, 4, 3, 2, 2, 3, 2, 2, 3, 2];
+  const demoVersionNotes = ['初始版本', '优化随访任务与执行周期', '补充健康宣教和阶段总结', '调整患者画像与预警规则'];
+  const demoVersionCreators = ['平台技术人员', '陈慧敏', '刘佳宁', '张明远'];
   plans.forEach(plan => {
     const seedMatch = /^seed-(\d+)$/.exec(plan.id || '');
     const sample = seedMatch ? demoAudit[Number(seedMatch[1]) - 1] : null;
     plan.profile ||= profiles[Number(plan.id?.replace('seed-', '')) - 1] || plan.details?.values?.[4] || inferProfile(plan.name);
     if (!plan.versions?.length) addVersion(plan, '初始版本');
+    if (seedMatch && plan.versions.length === 1 && !plan.demoVersionsSeeded) {
+      const seedIndex = Number(seedMatch[1]) - 1;
+      const count = demoVersionCounts[seedIndex] || 2;
+      const baseData = structuredClone(plan.versions[0].data || snapshot(plan));
+      const baseTime = new Date(sample?.createdAt || plan.createdAt || '2026-03-01T09:00:00+08:00').getTime();
+      const latestIsPending = [1, 4, 7].includes(seedIndex);
+      plan.versions = Array.from({ length: count }, (_, offset) => {
+        const number = offset + 1;
+        const data = structuredClone(baseData);
+        data.tasks = Math.max(1, (Number(baseData.tasks) || Number(plan.tasks) || 1) + offset);
+        return {
+          number,
+          at: new Date(baseTime + offset * 14 * 24 * 60 * 60 * 1000).toISOString(),
+          creator: offset === 0 && sample ? sample.creator : demoVersionCreators[(seedIndex + offset) % demoVersionCreators.length],
+          published: !(latestIsPending && number === count),
+          note: demoVersionNotes[Math.min(offset, demoVersionNotes.length - 1)],
+          data
+        };
+      }).reverse();
+      const enabledNumber = latestIsPending ? Math.max(1, count - 1) : count;
+      plan.enabledVersion = enabledNumber;
+      plan.lastEnabledVersion = enabledNumber;
+      plan.enabled = ![1, 4, 7].includes(seedIndex);
+      plan.published = true;
+      plan.nextVersionNumber = count + 1;
+      plan.demoVersionsSeeded = true;
+    }
     plan.versions.forEach(version => {
       if (version.data) version.data.profile ||= inferProfile(version.data.name || '') || plan.profile;
       if (sample && version.note === '初始版本') {
