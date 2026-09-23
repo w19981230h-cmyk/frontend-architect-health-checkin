@@ -22,10 +22,30 @@
 #planManagementView .plan-query-button { border-color: #1677ff; background: #1677ff; color: #fff; }
 #planManagementView .plan-query-button:hover, #planManagementView .plan-create:hover { border-color: #4096ff; background: #4096ff; }
 #planManagementView .plan-reset-button:hover { border-color: #4096ff; color: #1677ff; }
-#planManagementView .plan-create { height: 36px; margin-left: auto; border-radius: 6px; background: #1677ff; }
+#planManagementView .plan-create { height: 36px; margin-left: 0; border-radius: 6px; background: #1677ff; }
+#planManagementView .plan-column-settings { position: relative; margin-left: auto; }
+#planManagementView .plan-column-button { height: 36px; display: inline-flex; align-items: center; gap: 6px; padding: 0 15px; border: 1px solid #d9d9d9; border-radius: 6px; background: #fff; color: rgba(0,0,0,.88); font-size: 14px; cursor: pointer; }
+#planManagementView .plan-column-button:hover { border-color: #4096ff; color: #1677ff; }
+#planManagementView .plan-column-button:focus-visible { outline: 2px solid rgba(5,145,255,.2); outline-offset: 1px; }
+#planManagementView .plan-column-button svg { width: 16px; height: 16px; }
+#planManagementView .plan-column-panel { position: absolute; z-index: 40; top: calc(100% + 6px); right: 0; width: 280px; overflow: hidden; border: 1px solid #f0f0f0; border-radius: 8px; background: #fff; box-shadow: 0 6px 16px rgba(0,0,0,.08), 0 3px 6px -4px rgba(0,0,0,.12); }
+#planManagementView .plan-column-panel[hidden] { display: none; }
+#planManagementView .plan-column-panel header { min-height: 48px; display: flex; align-items: center; justify-content: space-between; padding: 0 16px; border-bottom: 1px solid #f0f0f0; }
+#planManagementView .plan-column-panel header strong { color: rgba(0,0,0,.88); font-size: 14px; }
+#planManagementView .plan-column-panel header span { color: rgba(0,0,0,.45); font-size: 13px; }
+#planManagementView .plan-column-panel header b { color: #1677ff; font-weight: 600; }
+#planManagementView .plan-column-options { display: grid; grid-template-columns: 1fr 1fr; gap: 4px 12px; padding: 10px 12px; }
+#planManagementView .plan-column-options label { min-height: 32px; display: flex; align-items: center; gap: 8px; padding: 0 4px; border-radius: 4px; color: rgba(0,0,0,.88); font-size: 14px; cursor: pointer; }
+#planManagementView .plan-column-options label:hover { background: #f5f5f5; }
+#planManagementView .plan-column-options input { width: 16px; height: 16px; margin: 0; accent-color: #1677ff; cursor: pointer; }
+#planManagementView .plan-column-panel footer { min-height: 46px; display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 0 16px; border-top: 1px solid #f0f0f0; }
+#planManagementView .plan-column-panel footer span { color: rgba(0,0,0,.45); font-size: 12px; }
+#planManagementView .plan-column-panel footer button { flex: none; padding: 0; border: 0; background: transparent; color: #1677ff; font-size: 13px; cursor: pointer; }
+#planManagementView .plan-column-panel footer button:hover { color: #4096ff; }
 #planManagementView .plan-content { display: flex; min-height: 0; padding: 0; overflow: hidden; }
 .plan-table-wrap { flex: 1; min-width: 0; overflow: auto; }
 .plan-list-table { width: 100%; min-width: 1850px; table-layout: fixed; border-collapse: collapse; color: rgba(0,0,0,.65); font-size: 14px; }
+.plan-list-table [data-plan-column][hidden] { display: none; }
 .plan-list-table thead { position: sticky; top: 0; z-index: 2; }
 .plan-list-table th { height: 48px; padding: 0 12px; color: rgba(0,0,0,.65); background: #fafafa; text-align: left; font-weight: 600; white-space: nowrap; }
 .plan-list-table td { height: 56px; padding: 0 12px; border-bottom: 1px solid #f0f0f0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
@@ -157,5 +177,5 @@
 .plan-strategy-push { appearance: none; }
 .plan-strategy-review + .plan-strategy-field { margin-top: 26px; }
 .plan-strategy-card .plan-strategy-field:last-child { margin-top: 23px; }
-@media (max-width: 900px) { #planManagementView .plan-topbar { align-items: stretch; } #planManagementView .plan-search, #planManagementView .plan-filter-combobox { width: min(100%, 220px); } #planManagementView .plan-create { margin-left: 0; } }
+@media (max-width: 900px) { #planManagementView .plan-topbar { align-items: stretch; } #planManagementView .plan-search, #planManagementView .plan-filter-combobox { width: min(100%, 220px); } #planManagementView .plan-column-settings { margin-left: 0; } }
 @media (max-width: 600px) { .plan-version-row { align-items: flex-start; flex-direction: column; } .plan-version-actions { flex-wrap: wrap; } }

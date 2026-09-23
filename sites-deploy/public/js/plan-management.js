@@ -274,6 +274,46 @@
   topbar.insertBefore(statusSelect, topbar.querySelector('[data-new-plan]'));
   topbar.insertBefore(queryButton, topbar.querySelector('[data-new-plan]'));
   topbar.insertBefore(resetButton, topbar.querySelector('[data-new-plan]'));
+  const columnStorageKey = 'frontend-architect:plan-columns:v1';
+  const columnDefinitions = [
+    { key: 'name', label: '方案名称', fixed: true, width: 230 },
+    { key: 'description', label: '方案描述', width: 280 },
+    { key: 'profile', label: '适用画像', width: 170 },
+    { key: 'team', label: '适用团队', width: 180 },
+    { key: 'version', label: '版本号', width: 90 },
+    { key: 'versionCount', label: '版本数量', width: 90 },
+    { key: 'tasks', label: '任务数量', width: 90 },
+    { key: 'status', label: '状态', width: 100 },
+    { key: 'enabled', label: '启用版本', width: 100 },
+    { key: 'creator', label: '创建人员', width: 110 },
+    { key: 'createdAt', label: '创建时间', width: 170 },
+    { key: 'actions', label: '操作', fixed: true, width: 190 }
+  ];
+  const optionalColumns = columnDefinitions.filter(column => !column.fixed);
+  const readVisibleColumns = () => {
+    try {
+      const saved = JSON.parse(localStorage.getItem(columnStorageKey) || 'null');
+      if (Array.isArray(saved)) return new Set(saved.filter(key => optionalColumns.some(column => column.key === key)));
+    } catch (_) {}
+    return new Set(optionalColumns.map(column => column.key));
+  };
+  let visibleColumns = readVisibleColumns();
+  const columnSettings = document.createElement('div');
+  columnSettings.className = 'plan-column-settings';
+  columnSettings.innerHTML = `<button type="button" class="plan-column-button" data-plan-columns aria-haspopup="dialog" aria-expanded="false"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M2.5 3.5h11M2.5 8h11M2.5 12.5h11M5 2v3M10.5 6.5v3M7 11v3" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg><span>自定义列</span></button>
+    <section class="plan-column-panel" role="dialog" aria-label="自定义列表字段" hidden>
+      <header><strong>自定义列</strong><span>已选 <b data-plan-column-count></b> 项</span></header>
+      <div class="plan-column-options">${optionalColumns.map(column => `<label><input type="checkbox" data-plan-column-toggle="${column.key}"><span>${column.label}</span></label>`).join('')}</div>
+      <footer><span>方案名称、操作为固定列</span><button type="button" data-plan-column-reset>恢复默认</button></footer>
+    </section>`;
+  topbar.insertBefore(columnSettings, topbar.querySelector('[data-new-plan]'));
+  const columnButton = columnSettings.querySelector('[data-plan-columns]');
+  const columnPanel = columnSettings.querySelector('.plan-column-panel');
+  const syncColumnPanel = () => {
+    columnSettings.querySelectorAll('[data-plan-column-toggle]').forEach(input => { input.checked = visibleColumns.has(input.dataset.planColumnToggle); });
+    columnSettings.querySelector('[data-plan-column-count]').textContent = String(visibleColumns.size);
+  };
+  const closeColumnPanel = () => { columnPanel.hidden = true; columnButton.setAttribute('aria-expanded', 'false'); };
   const makeSearchableSelect = (native, label) => {
     const control = document.createElement('div');
     control.className = 'plan-filter-combobox';
@@ -348,9 +388,18 @@
   const statusControl = makeSearchableSelect(statusSelect, '状态');
   const content = view.querySelector('.plan-content');
   content.innerHTML = `<div class="plan-table-wrap"><table class="plan-list-table">
-    <thead><tr><th>方案名称</th><th>方案描述</th><th>适用画像</th><th>适用团队</th><th>版本号</th><th>版本数量</th><th>任务数量</th><th>状态</th><th>启用版本</th><th>创建人员</th><th>创建时间</th><th>操作</th></tr></thead>
+    <thead><tr>${columnDefinitions.map(column => `<th data-plan-column="${column.key}">${column.label}</th>`).join('')}</tr></thead>
     <tbody id="planListRows"></tbody></table></div>`;
   const rows = content.querySelector('#planListRows');
+  const table = content.querySelector('.plan-list-table');
+  const applyColumnVisibility = () => {
+    columnDefinitions.forEach(column => {
+      const shown = column.fixed || visibleColumns.has(column.key);
+      content.querySelectorAll(`[data-plan-column="${column.key}"]`).forEach(cell => { cell.hidden = !shown; });
+    });
+    table.style.minWidth = `${columnDefinitions.filter(column => column.fixed || visibleColumns.has(column.key)).reduce((total, column) => total + column.width, 0)}px`;
+    syncColumnPanel();
+  };
   const pager = view.querySelector('.plan-pager');
   pager.setAttribute('data-persistence-ignore', '');
 
@@ -412,13 +461,13 @@
   const renderVersion = (plan, version) => {
     const data = version.data || plan;
     return `<tr class="plan-version-child" data-plan-id="${esc(plan.id)}" data-version="${version.number}">
-      <td><span class="plan-child-indent" aria-hidden="true"></span><span class="plan-cell-name" title="${esc(data.name)}">${esc(data.name || '未命名方案')}</span></td>
-      <td>${textCell(data.description)}</td><td>${textCell(data.profile, 'plan-profile-value')}</td><td>${textCell(data.team)}</td>
-      <td>${versionLabel(version.number)}</td><td>—</td><td>${Number(data.tasks) || 0}</td>
-      <td><span class="plan-list-status ${version.published ? 'published' : 'pending'}">${version.published ? '已发布' : '待发布'}</span></td>
-      <td>${switchCell(plan, version)}</td>
-      <td>${esc(version.creator || '—')}</td><td>${esc(formatTime(version.at))}</td>
-      <td>${rowActions(plan, version)}</td>
+      <td data-plan-column="name"><span class="plan-child-indent" aria-hidden="true"></span><span class="plan-cell-name" title="${esc(data.name)}">${esc(data.name || '未命名方案')}</span></td>
+      <td data-plan-column="description">${textCell(data.description)}</td><td data-plan-column="profile">${textCell(data.profile, 'plan-profile-value')}</td><td data-plan-column="team">${textCell(data.team)}</td>
+      <td data-plan-column="version">${versionLabel(version.number)}</td><td data-plan-column="versionCount">—</td><td data-plan-column="tasks">${Number(data.tasks) || 0}</td>
+      <td data-plan-column="status"><span class="plan-list-status ${version.published ? 'published' : 'pending'}">${version.published ? '已发布' : '待发布'}</span></td>
+      <td data-plan-column="enabled">${switchCell(plan, version)}</td>
+      <td data-plan-column="creator">${esc(version.creator || '—')}</td><td data-plan-column="createdAt">${esc(formatTime(version.at))}</td>
+      <td data-plan-column="actions">${rowActions(plan, version)}</td>
     </tr>`;
   };
   const renderPlan = plan => {
@@ -426,15 +475,15 @@
     const shownVersion = activeVersion(plan)?.number || latest(plan);
     const isExpanded = expanded.has(plan.id);
     return `<tr class="plan-parent-row" data-plan-id="${esc(plan.id)}">
-      <td><div class="plan-name-with-expand"><button type="button" class="plan-expand-button" data-plan-expand="${esc(plan.id)}" aria-expanded="${isExpanded}" aria-label="${isExpanded ? '收起' : '展开'}${esc(plan.name)}的版本"><svg class="plan-expand-icon" viewBox="0 0 16 16" aria-hidden="true"><path d="m6 3 5 5-5 5" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button><span class="plan-cell-name" title="${esc(data.name)}">${esc(data.name || '未命名方案')}</span></div></td>
-      <td>${textCell(data.description)}</td><td>${textCell(data.profile, 'plan-profile-value')}</td><td>${textCell(data.team)}</td>
-      <td>${versionLabel(shownVersion)}</td>
-      <td><button type="button" class="plan-table-link" data-plan-versions="${esc(plan.id)}" aria-label="管理${esc(plan.name)}的${plan.versions?.length || 0}个版本">${plan.versions?.length || 0}</button></td>
-      <td>${Number(data.tasks) || 0}</td>
-      <td><span class="plan-list-status ${status(plan) === '已发布' ? 'published' : 'pending'}">${status(plan)}</span></td>
-      <td>${switchCell(plan)}</td>
-      <td>${esc(plan.creator || '—')}</td><td>${esc(formatTime(plan.createdAt))}</td>
-      <td>${rowActions(plan)}</td>
+      <td data-plan-column="name"><div class="plan-name-with-expand"><button type="button" class="plan-expand-button" data-plan-expand="${esc(plan.id)}" aria-expanded="${isExpanded}" aria-label="${isExpanded ? '收起' : '展开'}${esc(plan.name)}的版本"><svg class="plan-expand-icon" viewBox="0 0 16 16" aria-hidden="true"><path d="m6 3 5 5-5 5" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button><span class="plan-cell-name" title="${esc(data.name)}">${esc(data.name || '未命名方案')}</span></div></td>
+      <td data-plan-column="description">${textCell(data.description)}</td><td data-plan-column="profile">${textCell(data.profile, 'plan-profile-value')}</td><td data-plan-column="team">${textCell(data.team)}</td>
+      <td data-plan-column="version">${versionLabel(shownVersion)}</td>
+      <td data-plan-column="versionCount"><button type="button" class="plan-table-link" data-plan-versions="${esc(plan.id)}" aria-label="管理${esc(plan.name)}的${plan.versions?.length || 0}个版本">${plan.versions?.length || 0}</button></td>
+      <td data-plan-column="tasks">${Number(data.tasks) || 0}</td>
+      <td data-plan-column="status"><span class="plan-list-status ${status(plan) === '已发布' ? 'published' : 'pending'}">${status(plan)}</span></td>
+      <td data-plan-column="enabled">${switchCell(plan)}</td>
+      <td data-plan-column="creator">${esc(plan.creator || '—')}</td><td data-plan-column="createdAt">${esc(formatTime(plan.createdAt))}</td>
+      <td data-plan-column="actions">${rowActions(plan)}</td>
     </tr>${isExpanded ? (plan.versions || []).map(version => renderVersion(plan, version)).join('') : ''}`;
   };
   const render = () => {
@@ -444,7 +493,8 @@
     const totalPages = Math.max(1, Math.ceil(matches.length / pageSize));
     page = Math.min(page, totalPages);
     const visible = matches.slice((page - 1) * pageSize, page * pageSize);
-    rows.innerHTML = visible.length ? visible.map(renderPlan).join('') : '<tr><td class="plan-list-empty" colspan="12">暂无符合条件的方案</td></tr>';
+    rows.innerHTML = visible.length ? visible.map(renderPlan).join('') : `<tr><td class="plan-list-empty" colspan="${columnDefinitions.filter(column => column.fixed || visibleColumns.has(column.key)).length}">暂无符合条件的方案</td></tr>`;
+    applyColumnVisibility();
     pager.innerHTML = `<span>共 ${matches.length} 条</span>
       <button type="button" class="page-btn" data-plan-page="prev" ${page === 1 ? 'disabled' : ''} aria-label="上一页">‹</button>
       ${Array.from({ length: totalPages }, (_, index) => `<button type="button" class="page-btn ${page === index + 1 ? 'active' : ''}" data-plan-page="${index + 1}" ${page === index + 1 ? 'aria-current="page"' : ''}>${index + 1}</button>`).join('')}
@@ -551,6 +601,29 @@
   };
 
   render();
+  columnButton.addEventListener('click', event => {
+    event.stopPropagation();
+    const opening = columnPanel.hidden;
+    columnPanel.hidden = !opening;
+    columnButton.setAttribute('aria-expanded', String(opening));
+    if (opening) syncColumnPanel();
+  });
+  columnPanel.addEventListener('click', event => {
+    event.stopPropagation();
+    const reset = event.target.closest('[data-plan-column-reset]');
+    if (reset) {
+      visibleColumns = new Set(optionalColumns.map(column => column.key));
+      localStorage.removeItem(columnStorageKey);
+      applyColumnVisibility();
+      return;
+    }
+    const input = event.target.closest('[data-plan-column-toggle]');
+    if (!input) return;
+    input.checked ? visibleColumns.add(input.dataset.planColumnToggle) : visibleColumns.delete(input.dataset.planColumnToggle);
+    localStorage.setItem(columnStorageKey, JSON.stringify([...visibleColumns]));
+    applyColumnVisibility();
+  });
+  document.addEventListener('click', event => { if (!columnSettings.contains(event.target)) closeColumnPanel(); });
   queryButton.addEventListener('click', event => {
     if (!teamControl.commit() || !statusControl.commit()) { event.stopPropagation(); return; }
     query.name = nameInput.value.trim().toLowerCase();
@@ -744,7 +817,8 @@
   }, true);
   document.addEventListener('keydown', event => {
     if (event.key !== 'Escape') return;
-    if (publishMask.classList.contains('open')) closePublish();
+    if (!columnPanel.hidden) { closeColumnPanel(); columnButton.focus(); }
+    else if (publishMask.classList.contains('open')) closePublish();
     else if (deleteMask.classList.contains('open')) closeDelete();
     else if (!actionMenu.hidden) closeActionMenu();
     else if (modal.classList.contains('open')) closeVersions();
