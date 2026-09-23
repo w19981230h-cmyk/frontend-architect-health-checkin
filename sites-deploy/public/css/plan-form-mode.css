@@ -26,10 +26,13 @@
 .plan-form-counter { margin-top: 4px; display: block; color: #9aa5b6; font-size: 12px; text-align: right; }
 .plan-form-help { margin-top: -5px; margin-bottom: 8px; color: #9aa5b6; font-size: 12px; }
 .plan-form-error { min-height: 18px; margin-top: 4px; color: #ff4d4f; font-size: 12px; }
-.plan-form-duration { display: grid; grid-template-columns: 1fr 92px 1fr 92px; gap: 8px; }
+.plan-form-duration-fields { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.plan-form-duration-fields .plan-form-field { margin-bottom: 0; }
+.plan-form-duration { display: grid; grid-template-columns: 1fr 92px; gap: 8px; }
 .plan-summary-block { margin-top: 10px; padding: 14px; background: #fafafa; }
 .plan-summary-head { min-height: 34px; display: flex; align-items: center; justify-content: space-between; color: #34445c; font-weight: 700; }
 .plan-summary-list { display: grid; gap: 12px; margin-top: 12px; }
+.plan-summary-list[hidden] { display: none; }
 .plan-summary-item { min-height: 66px; padding: 12px; display: flex; align-items: center; gap: 12px; border-radius: 6px; background: #fff; }
 .plan-summary-icon { width: 38px; height: 38px; display: grid; place-items: center; border-radius: 6px; color: #fff; background: #19c1bb; font-weight: 800; }
 .plan-summary-item:nth-child(2) .plan-summary-icon { background: #3978ff; }

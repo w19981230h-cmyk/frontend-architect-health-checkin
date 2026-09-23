@@ -28,7 +28,10 @@
         <div class="plan-form-field"><label class="required" for="formPlanTeam">所属团队</label><select id="formPlanTeam"><option value="">请选择团队</option><option selected>团队控糖管理团队</option><option>团队体验测试团队</option><option>团队妇产专班</option></select><div class="plan-form-error" data-form-error="formPlanTeam"></div></div>
         <div class="plan-form-field"><label class="required" for="formPlanProfile">患者画像</label><textarea id="formPlanProfile" maxlength="200">糖尿病合并高血压患者</textarea><span class="plan-form-counter" data-count-for="formPlanProfile">11 / 200</span><div class="plan-form-error" data-form-error="formPlanProfile"></div></div>
         <div class="plan-form-field"><label for="formPlanCourse">宣教课程</label><select id="formPlanCourse"><option>请选择</option><option selected>糖尿病与高血压联合管理课程</option><option>合理饮食与运动课程</option></select></div>
-        <div class="plan-form-field"><span class="plan-form-label required">管理周期与任务延续期</span><div class="plan-form-duration"><input id="formManagementPeriod" type="number" min="1" max="999" value="30" aria-label="管理周期"><select id="formManagementPeriodUnit"><option selected>天</option><option>周</option><option>月</option><option>年</option></select><input id="formTaskExtensionPeriod" type="number" min="1" max="999" value="7" aria-label="任务延续期"><select id="formTaskExtensionPeriodUnit"><option selected>天</option><option>周</option><option>月</option><option>年</option></select></div><div class="plan-form-error" data-form-error="periods"></div></div>
+        <div class="plan-form-duration-fields">
+          <div class="plan-form-field"><label class="required" for="formManagementPeriod">管理周期</label><div class="plan-form-duration"><input id="formManagementPeriod" type="number" min="1" max="999" value="30" aria-label="管理周期"><select id="formManagementPeriodUnit" aria-label="管理周期单位"><option selected>天</option><option>周</option><option>月</option><option>年</option></select></div><div class="plan-form-error" data-form-error="formManagementPeriod"></div></div>
+          <div class="plan-form-field"><label class="required" for="formTaskExtensionPeriod">任务延续期</label><div class="plan-form-duration"><input id="formTaskExtensionPeriod" type="number" min="1" max="999" value="7" aria-label="任务延续期"><select id="formTaskExtensionPeriodUnit" aria-label="任务延续期单位"><option selected>天</option><option>周</option><option>月</option><option>年</option></select></div><div class="plan-form-error" data-form-error="formTaskExtensionPeriod"></div></div>
+        </div>
         <section class="plan-summary-block"><div class="plan-summary-head"><span>阶段总结</span><button type="button" class="plan-form-switch on" data-form-switch="summary" role="switch" aria-checked="true"><i></i></button></div><div class="plan-summary-list" data-summary-list><div class="plan-summary-item"><span class="plan-summary-icon">日</span><span class="plan-summary-copy"><strong>日报</strong><small>次日生成</small></span><button type="button" class="plan-form-switch on" data-form-switch="daily" role="switch" aria-checked="true"><i></i></button></div><div class="plan-summary-item"><span class="plan-summary-icon">周</span><span class="plan-summary-copy"><strong>周报</strong><small>次周一生成</small></span><button type="button" class="plan-form-switch on" data-form-switch="weekly" role="switch" aria-checked="true"><i></i></button></div><div class="plan-summary-item"><span class="plan-summary-icon">月</span><span class="plan-summary-copy"><strong>月报</strong><small>次月1号生成</small></span><button type="button" class="plan-form-switch on" data-form-switch="monthly" role="switch" aria-checked="true"><i></i></button></div></div></section>
       </div>
     </section>
@@ -105,11 +108,16 @@
       if (error) error.textContent = valid ? '' : '此项为必填项';
       if (!valid && !firstInvalid) firstInvalid = input;
     });
-    const periodInputs = [document.getElementById('formManagementPeriod'), document.getElementById('formTaskExtensionPeriod')];
-    const periodsValid = periodInputs.every(input => /^\d{1,3}$/.test(input.value) && Number(input.value) >= 1);
-    periodInputs.forEach(input => input.setAttribute('aria-invalid', String(!periodsValid)));
-    workspace.querySelector('[data-form-error="periods"]').textContent = periodsValid ? '' : '管理周期和任务延续期为必填项，请输入1至999之间的整数';
-    if (!periodsValid && !firstInvalid) firstInvalid = periodInputs.find(input => !input.value) || periodInputs[0];
+    const periodInputs = [
+      [document.getElementById('formManagementPeriod'), '请输入管理周期'],
+      [document.getElementById('formTaskExtensionPeriod'), '请输入任务延续期']
+    ];
+    periodInputs.forEach(([input, message]) => {
+      const valid = /^\d{1,3}$/.test(input.value) && Number(input.value) >= 1;
+      input.setAttribute('aria-invalid', String(!valid));
+      workspace.querySelector(`[data-form-error="${input.id}"]`).textContent = valid ? '' : `${message}（1至999）`;
+      if (!valid && !firstInvalid) firstInvalid = input;
+    });
     if (firstInvalid) { setStep('basic'); firstInvalid.focus(); window.showToast?.('请完善基础配置中的必填项'); return false; }
     const invalidTask = tasks.findIndex(task => !task.name.trim() || !task.content.trim() || task.content.startsWith('请选择'));
     if (invalidTask >= 0) { setStep('path'); document.querySelector(`[data-path-task="${invalidTask}"] input`)?.focus(); window.showToast?.('请完善路径任务信息'); return false; }
@@ -150,7 +158,11 @@
   workspace.addEventListener('input', event => {
     const input = event.target;
     if (input.matches('[maxlength]')) updateCounter(input);
-    if (input.matches('#formManagementPeriod, #formTaskExtensionPeriod')) input.value = input.value.replace(/\D/g, '').slice(0, 3);
+    if (input.matches('#formManagementPeriod, #formTaskExtensionPeriod')) {
+      input.value = input.value.replace(/\D/g, '').slice(0, 3);
+      const error = workspace.querySelector(`[data-form-error="${input.id}"]`);
+      if (error) error.textContent = '';
+    }
     input.removeAttribute('aria-invalid');
     const card = input.closest('[data-path-task]');
     if (card && input.dataset.taskKey) { tasks[Number(card.dataset.pathTask)][input.dataset.taskKey] = input.type === 'number' ? Number(input.value) : input.value; const count = input.parentElement.querySelector('span'); if (input.dataset.taskKey === 'name' && count) count.textContent = `${input.value.length} / 40`; }
