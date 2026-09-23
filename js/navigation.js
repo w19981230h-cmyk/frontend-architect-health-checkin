@@ -24,3 +24,37 @@ function exitPlanEditor() {
   activatePage('listPage');
   showListView('plans');
 }
+
+function validatePlanDurationFields() {
+  const fields = [
+    ['planManagementPeriod', 'planManagementPeriodError', '请输入管理周期'],
+    ['planTaskExtensionPeriod', 'planTaskExtensionPeriodError', '请输入任务延续期']
+  ];
+  let firstInvalid = null;
+  fields.forEach(([inputId, errorId, emptyMessage]) => {
+    const input = document.getElementById(inputId);
+    const error = document.getElementById(errorId);
+    const value = input?.value.trim() || '';
+    const valid = /^\d{1,3}$/.test(value) && Number(value) >= 1 && Number(value) <= 999;
+    input?.setAttribute('aria-invalid', String(!valid));
+    if (error) error.textContent = valid ? '' : (value ? '请输入1至999之间的整数' : emptyMessage);
+    if (!valid && !firstInvalid) firstInvalid = input;
+  });
+  if (!firstInvalid) return true;
+  const infoTab = document.querySelector('[data-plan-tab="info"]');
+  document.querySelectorAll('[data-plan-tab]').forEach(button => button.classList.toggle('active', button === infoTab));
+  document.querySelectorAll('[data-plan-tab-panel]').forEach(panel => panel.classList.toggle('active', panel.dataset.planTabPanel === 'info'));
+  firstInvalid.scrollIntoView({ block: 'center', behavior: 'smooth' });
+  firstInvalid.focus();
+  showToast('请完善管理周期和任务延续期');
+  return false;
+}
+
+document.addEventListener('input', event => {
+  const input = event.target.closest('#planManagementPeriod, #planTaskExtensionPeriod');
+  if (!input) return;
+  input.value = input.value.replace(/\D/g, '').slice(0, 3);
+  input.removeAttribute('aria-invalid');
+  const errorId = input.getAttribute('aria-describedby');
+  if (errorId) document.getElementById(errorId)?.replaceChildren();
+});

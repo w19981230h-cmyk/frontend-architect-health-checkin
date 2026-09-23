@@ -2349,6 +2349,8 @@
     .plan-config-panel-body[data-plan-tab-panel="info"] #planDescInput { min-height: 132px; }
     .plan-config-panel-body[data-plan-tab-panel="info"] .plan-duration-control { display: grid; grid-template-columns: minmax(0, 1fr) 96px; gap: 8px; }
     .plan-config-panel-body[data-plan-tab-panel="info"] .plan-duration-control input { min-width: 0; }
+    .plan-duration-control input[aria-invalid="true"] { border-color: #ff4d4f; box-shadow: 0 0 0 2px rgba(255,77,79,.08); }
+    .plan-duration-error { min-height: 18px; margin-top: 4px; color: #ff4d4f; font-size: 12px; line-height: 18px; }
     .plan-config-panel-body[data-plan-tab-panel="info"] .plan-config-section:nth-of-type(2) .plan-field:first-of-type textarea { min-height: 120px; }
     .plan-add-row { display: flex; justify-content: space-between; align-items: center; gap: 16px; color: #3154ff; font-weight: 800; }
     .plan-add-row .plan-section-title { margin: 0; }
@@ -3550,8 +3552,8 @@
               <h2>智能策略</h2>
               <div class="plan-field"><label class="required">患者画像</label><div class="plan-muted-help">自然语言描述患者画像，AI 根据画像智能匹配患者</div><textarea>18-75岁，已完成泌尿系结石手术（如输尿管镜碎石、经皮肾镜碎石、体外冲击波碎石等），无严重感染或出血风险，需要术后随访与康复指导的患者。</textarea></div>
               <div class="plan-field"><label>方案启动时间</label><div class="plan-muted-help">自动根据患者的关键事件自动开始执行方案</div><select><option>最近入组时间</option><option>出院后第1天</option><option>手术后第1天</option></select></div>
-              <div class="plan-field"><label for="planManagementPeriod">管理周期</label><div class="plan-duration-control"><input id="planManagementPeriod" type="number" min="1" max="999" step="1" inputmode="numeric" placeholder="请输入数字"><select id="planManagementPeriodUnit" aria-label="管理周期单位"><option>天</option><option>周</option><option>月</option><option>年</option></select></div></div>
-              <div class="plan-field"><label for="planTaskExtensionPeriod">任务延续期</label><div class="plan-duration-control"><input id="planTaskExtensionPeriod" type="number" min="1" max="999" step="1" inputmode="numeric" placeholder="请输入数字"><select id="planTaskExtensionPeriodUnit" aria-label="任务延续期单位"><option>天</option><option>周</option><option>月</option><option>年</option></select></div></div>
+              <div class="plan-field"><label class="required" for="planManagementPeriod">管理周期</label><div class="plan-duration-control"><input id="planManagementPeriod" type="number" min="1" max="999" step="1" inputmode="numeric" placeholder="请输入数字" required aria-required="true" aria-describedby="planManagementPeriodError"><select id="planManagementPeriodUnit" aria-label="管理周期单位"><option>天</option><option>周</option><option>月</option><option>年</option></select></div><div class="plan-duration-error" id="planManagementPeriodError" aria-live="polite"></div></div>
+              <div class="plan-field"><label class="required" for="planTaskExtensionPeriod">任务延续期</label><div class="plan-duration-control"><input id="planTaskExtensionPeriod" type="number" min="1" max="999" step="1" inputmode="numeric" placeholder="请输入数字" required aria-required="true" aria-describedby="planTaskExtensionPeriodError"><select id="planTaskExtensionPeriodUnit" aria-label="任务延续期单位"><option>天</option><option>周</option><option>月</option><option>年</option></select></div><div class="plan-duration-error" id="planTaskExtensionPeriodError" aria-live="polite"></div></div>
             </section>
           </div>
           <div class="plan-config-panel-body" data-plan-tab-panel="checkin">
@@ -5659,6 +5661,40 @@
       activatePage('listPage');
       showListView('plans');
     }
+
+    function validatePlanDurationFields() {
+      const fields = [
+        ['planManagementPeriod', 'planManagementPeriodError', '请输入管理周期'],
+        ['planTaskExtensionPeriod', 'planTaskExtensionPeriodError', '请输入任务延续期']
+      ];
+      let firstInvalid = null;
+      fields.forEach(([inputId, errorId, emptyMessage]) => {
+        const input = document.getElementById(inputId);
+        const error = document.getElementById(errorId);
+        const value = input?.value.trim() || '';
+        const valid = /^\d{1,3}$/.test(value) && Number(value) >= 1 && Number(value) <= 999;
+        input?.setAttribute('aria-invalid', String(!valid));
+        if (error) error.textContent = valid ? '' : (value ? '请输入1至999之间的整数' : emptyMessage);
+        if (!valid && !firstInvalid) firstInvalid = input;
+      });
+      if (!firstInvalid) return true;
+      const infoTab = document.querySelector('[data-plan-tab="info"]');
+      document.querySelectorAll('[data-plan-tab]').forEach(button => button.classList.toggle('active', button === infoTab));
+      document.querySelectorAll('[data-plan-tab-panel]').forEach(panel => panel.classList.toggle('active', panel.dataset.planTabPanel === 'info'));
+      firstInvalid.scrollIntoView({ block: 'center', behavior: 'smooth' });
+      firstInvalid.focus();
+      showToast('请完善管理周期和任务延续期');
+      return false;
+    }
+
+    document.addEventListener('input', event => {
+      const input = event.target.closest('#planManagementPeriod, #planTaskExtensionPeriod');
+      if (!input) return;
+      input.value = input.value.replace(/\D/g, '').slice(0, 3);
+      input.removeAttribute('aria-invalid');
+      const errorId = input.getAttribute('aria-describedby');
+      if (errorId) document.getElementById(errorId)?.replaceChildren();
+    });
 
     const typeMeta = {
       single: { label: '单选', icon: radioIcon(), section: '选择' },
@@ -10729,6 +10765,7 @@
         return;
       }
       if (e.target.closest('[data-save-plan]')) {
+        if (!validatePlanDurationFields()) return;
         showToast('方案已保存');
         return;
       }

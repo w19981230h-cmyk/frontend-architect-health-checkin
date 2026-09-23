@@ -335,6 +335,7 @@ document.addEventListener('click', e => {
     return;
   }
   if (e.target.closest('[data-save-plan]')) {
+    if (!validatePlanDurationFields()) return;
     showToast('方案已保存');
     return;
   }
