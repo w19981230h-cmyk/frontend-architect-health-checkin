@@ -622,6 +622,7 @@
     }
     if (target.closest('[data-save-plan]')) {
       event.preventDefault(); event.stopImmediatePropagation();
+      if (window.validatePlanFormMode && !window.validatePlanFormMode()) return;
       const fields = infoFields();
       const name = fields[0]?.value.trim();
       if (!name) { toast('请填写方案名称'); fields[0]?.focus(); return; }
