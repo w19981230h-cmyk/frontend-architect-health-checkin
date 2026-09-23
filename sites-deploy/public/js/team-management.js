@@ -38,12 +38,12 @@
     dates: ['2026/08/06', '2026/08/07', '2026/08/08', '2026/08/09', '2026/08/10', '2026/08/11', '2026/08/12'],
     growth: [0, 1, 1, 2, 3, 4, 5],
     plans: [
-      { id: 'team-plan-1', name: '呼吸系统疾病出院后30天随访方案', profile: '呼吸系统疾病出院患者', tasks: 12, enabledVersion: 2, versions: [{ number: 2, name: '呼吸系统疾病出院后30天随访方案', profile: '呼吸系统疾病出院患者', tasks: 12 }, { number: 1, name: '呼吸系统疾病出院后30天随访方案', profile: '呼吸系统疾病出院患者', tasks: 10 }] },
-      { id: 'team-plan-2', name: '慢阻肺稳定期健康管理方案', profile: '慢阻肺稳定期患者', tasks: 18, enabledVersion: 1, versions: [{ number: 1, name: '慢阻肺稳定期健康管理方案', profile: '慢阻肺稳定期患者', tasks: 18 }] },
-      { id: 'team-plan-3', name: '肺炎康复期健康指导方案', profile: '肺炎康复期患者', tasks: 8, enabledVersion: 1, versions: [{ number: 1, name: '肺炎康复期健康指导方案', profile: '肺炎康复期患者', tasks: 8 }] }
+      { id: 'team-plan-1', name: '呼吸系统疾病出院后30天随访方案', profile: '呼吸系统疾病出院患者', tasks: 14, enabledVersion: 3, versions: [{ number: 4, name: '呼吸系统疾病出院后30天随访方案', profile: '呼吸系统疾病出院患者', tasks: 16, published: false }, { number: 3, name: '呼吸系统疾病出院后30天随访方案', profile: '呼吸系统疾病出院患者', tasks: 14, published: true }, { number: 2, name: '呼吸系统疾病出院后30天随访方案', profile: '呼吸系统疾病出院患者', tasks: 12, published: true }, { number: 1, name: '呼吸系统疾病出院后30天随访方案', profile: '呼吸系统疾病出院患者', tasks: 10, published: true }] },
+      { id: 'team-plan-2', name: '慢阻肺稳定期健康管理方案', profile: '慢阻肺稳定期患者', tasks: 18, enabledVersion: 2, versions: [{ number: 3, name: '慢阻肺稳定期健康管理方案', profile: '慢阻肺稳定期患者', tasks: 20, published: false }, { number: 2, name: '慢阻肺稳定期健康管理方案', profile: '慢阻肺稳定期患者', tasks: 18, published: true }, { number: 1, name: '慢阻肺稳定期健康管理方案', profile: '慢阻肺稳定期患者', tasks: 15, published: true }] },
+      { id: 'team-plan-3', name: '肺炎康复期健康指导方案', profile: '肺炎康复期患者', tasks: 8, enabledVersion: 2, versions: [{ number: 3, name: '肺炎康复期健康指导方案', profile: '肺炎康复期患者', tasks: 10, published: false }, { number: 2, name: '肺炎康复期健康指导方案', profile: '肺炎康复期患者', tasks: 8, published: true }, { number: 1, name: '肺炎康复期健康指导方案', profile: '肺炎康复期患者', tasks: 6, published: true }] }
     ]
   };
-  const teamPlanStorageKey = 'frontend-architect:team-plans:v1';
+  const teamPlanStorageKey = 'frontend-architect:team-plans:v2';
   const defaultTeamPlans = { 1: primaryTeamProfile.plans };
   let teamPlans;
   try {
