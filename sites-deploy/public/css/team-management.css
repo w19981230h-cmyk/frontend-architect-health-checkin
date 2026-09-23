@@ -176,6 +176,7 @@ body.team-create-open { overflow: hidden; }
 .team-home-plan-switch.on i { transform: translateX(22px); }
 .team-home-plan-switch:hover { background: #a6a6a6; }
 .team-home-plan-switch.on:hover { background: #4096ff; }
+.team-home-plan-switch:disabled { opacity: .55; cursor: not-allowed; }
 .team-home-plan-switch:focus-visible, .team-home-plan-versions:focus-visible, .team-home-plan-more:focus-visible, .team-plan-version-more:focus-visible { outline: 2px solid #1677ff; outline-offset: 2px; }
 .team-home-plan-foot { min-height: 56px; margin-top: auto; padding: 10px 18px; display: flex; align-items: center; justify-content: space-between; border-top: 1px dashed #e6ebf2; }
 .team-home-plan-task { padding: 6px 9px; border-radius: 4px; color: #455571; background: #f5f7ff; font-size: 13px; }
@@ -219,6 +220,8 @@ body.team-create-open { overflow: hidden; }
 .team-plan-drawer header button { padding: 0; border: 0; color: #8b96a7; background: transparent; cursor: pointer; font-size: 24px; }
 .team-plan-drawer-content { flex: 1; min-height: 0; padding: 20px 24px; overflow-y: auto; background: #f7f9fc; }
 .team-plan-drawer-summary { margin-bottom: 14px; color: #63728a; font-size: 13px; }
+.team-plan-version-card { min-height: 220px; margin-bottom: 12px; border-radius: 16px; }
+.team-plan-version-card:last-child { margin-bottom: 0; }
 .team-plan-version-item { margin-bottom: 12px; padding: 17px; border: 1px solid #e6eaf2; border-radius: 8px; background: #fff; }
 .team-plan-version-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
 .team-plan-version-title { min-width: 0; display: flex; align-items: center; gap: 8px; }
@@ -237,6 +240,7 @@ body.team-create-open { overflow: hidden; }
 .team-plan-version-menu[hidden] { display: none; }
 .team-plan-version-menu button { width: 100%; min-height: 32px; padding: 5px 10px; display: block; border: 0; border-radius: 4px; color: #4a5870; background: transparent; text-align: left; cursor: pointer; font-size: 13px; }
 .team-plan-version-menu button:hover { color: #1677ff; background: #f1f5ff; }
+.team-plan-version-menu button:disabled { color: #aab3c0; background: transparent; cursor: not-allowed; }
 .team-plan-version-menu button.danger { color: #ff4d4f; }
 .team-plan-version-menu button.danger:hover { background: #fff1f0; }
 .team-plan-drawer footer button { min-height: 32px; padding: 0 15px; border: 1px solid #d9d9d9; border-radius: 4px; color: #1677ff; background: #fff; cursor: pointer; }
