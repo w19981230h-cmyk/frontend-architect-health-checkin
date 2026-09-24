@@ -448,9 +448,14 @@
     if (!plan) return;
     const versionNumber = trigger.dataset.versionNumber;
     const version = versionNumber == null ? null : plan.versions.find(item => item.number === Number(versionNumber));
+    const publicationVersion = version || activeVersion(plan);
     const cannotDelete = version && (plan.enabledVersion === version.number || plan.versions.length <= 1);
     const versionAttribute = version ? ` data-version-number="${version.number}"` : '';
-    actionMenu.innerHTML = `<button type="button" role="menuitem" data-plan-copy="${esc(plan.id)}"${versionAttribute}>复制新增</button><button type="button" role="menuitem" class="danger" data-plan-delete="${esc(plan.id)}"${versionAttribute} ${cannotDelete ? `disabled title="${plan.enabledVersion === version.number ? '请先停用或切换启用版本' : '最后一个版本请删除方案主体'}"` : ''}>删除</button>`;
+    const publicationAttribute = publicationVersion ? ` data-version-number="${publicationVersion.number}"` : '';
+    const publicationAction = publicationVersion?.published
+      ? `<button type="button" role="menuitem" data-plan-unpublish="${esc(plan.id)}"${publicationAttribute}>取消发布</button>`
+      : `<button type="button" role="menuitem" data-plan-publish="${esc(plan.id)}"${publicationAttribute}>发布</button>`;
+    actionMenu.innerHTML = `${publicationAction}<button type="button" role="menuitem" data-plan-copy="${esc(plan.id)}"${versionAttribute}>复制新增</button><button type="button" role="menuitem" class="danger" data-plan-delete="${esc(plan.id)}"${versionAttribute} ${cannotDelete ? `disabled title="${plan.enabledVersion === version.number ? '请先停用或切换启用版本' : '最后一个版本请删除方案主体'}"` : ''}>删除</button>`;
     actionMenu.hidden = false;
     actionMenuTrigger = trigger;
     trigger.setAttribute('aria-expanded', 'true');
@@ -691,6 +696,27 @@
     if (target.closest('[data-confirm-plan-delete]')) { confirmDelete(); return; }
     const more = target.closest('[data-plan-more]');
     if (more) { event.preventDefault(); event.stopImmediatePropagation(); openActionMenu(more); return; }
+    const publicationAction = target.closest('[data-plan-publish], [data-plan-unpublish]');
+    if (publicationAction) {
+      event.preventDefault(); event.stopImmediatePropagation();
+      const plan = find(publicationAction.dataset.planPublish || publicationAction.dataset.planUnpublish);
+      const version = plan?.versions.find(item => item.number === Number(publicationAction.dataset.versionNumber));
+      if (!plan || !version) { closeActionMenu(); return; }
+      const publishing = publicationAction.hasAttribute('data-plan-publish');
+      const previous = { published: version.published, planPublished: plan.published, enabled: plan.enabled };
+      version.published = publishing;
+      plan.published = plan.versions.some(item => item.published);
+      if (!publishing && plan.enabledVersion === version.number) plan.enabled = false;
+      closeActionMenu();
+      if (!persist()) {
+        version.published = previous.published; plan.published = previous.planPublished; plan.enabled = previous.enabled;
+        render(); return;
+      }
+      render();
+      if (publishing) showPublishConfirm(plan, version);
+      else toast(`${versionLabel(version.number)}已取消发布${previous.enabled && plan.enabledVersion === version.number ? '，方案已同步停用' : ''}`);
+      return;
+    }
     const deleteAction = target.closest('[data-plan-delete]');
     if (deleteAction) {
       event.preventDefault(); event.stopImmediatePropagation();
