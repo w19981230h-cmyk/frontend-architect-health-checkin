@@ -26,7 +26,7 @@
 .plan-form-counter { margin-top: 4px; display: block; color: #9aa5b6; font-size: 12px; text-align: right; }
 .plan-form-help { margin-top: -5px; margin-bottom: 8px; color: #9aa5b6; font-size: 12px; }
 .plan-form-error { min-height: 18px; margin-top: 4px; color: #ff4d4f; font-size: 12px; }
-.plan-form-duration-fields { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.plan-form-duration-fields { display: grid; grid-template-columns: 1fr; gap: 16px; }
 .plan-form-duration-fields .plan-form-field { margin-bottom: 0; }
 .plan-form-duration { display: grid; grid-template-columns: 1fr 92px; gap: 8px; }
 .plan-summary-block { margin-top: 10px; padding: 14px; background: #fafafa; }

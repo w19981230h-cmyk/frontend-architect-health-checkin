@@ -184,7 +184,8 @@
 #patientArchivePage .archive-info-head > span { color: #2f3d56; font-size: 16px; font-weight: 700; }
 #patientArchivePage .archive-info-head > span:last-child { display: none; }
 #patientArchivePage .archive-info-head .archive-patient-tag-list { min-width: 0; display: flex; align-items: center; flex-wrap: wrap; gap: 6px; }
-#patientArchivePage .archive-patient-tag { padding: 3px 8px; border-radius: 4px; color: #315cff; background: #edf3ff; font-size: 12px; font-weight: 600; line-height: 18px; }
+#patientArchivePage .archive-info-head .archive-patient-tag-list[hidden] { display: none; }
+#patientArchivePage .archive-patient-tag { padding: 3px 8px; border: 1px solid #dce7ff; border-radius: 4px; color: #315cff; background: #edf3ff; font-size: 12px; font-weight: 600; line-height: 18px; white-space: nowrap; }
 #patientArchivePage .archive-demo-label { color: #8491a5; font-size: 11px; }
 #patientArchivePage .archive-info-columns { grid-template-columns: minmax(0, .86fr) minmax(0, 1.14fr); align-items: start; gap: 40px; }
 #patientArchivePage .archive-info-section { min-width: 0; }
@@ -653,6 +654,7 @@ body:has(#archiveChangesModal.open) .interface-note-toolbar { display: none; }
 .archive-changes-empty span:last-child { max-width: 300px; }
 .archive-edit-form-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px 24px; }
 .archive-edit-field { min-width: 0; display: flex; flex-direction: column; gap: 8px; color: #43536d; font-size: 13px; font-weight: 600; }
+.archive-edit-field > span b { color: #e5484d; font-size: 13px; font-weight: 600; }
 .archive-edit-field-wide { grid-column: 1 / -1; }
 .archive-edit-field input,
 .archive-edit-field select,
@@ -820,7 +822,6 @@ body:has(#archiveChangesModal.open) .interface-note-toolbar { display: none; }
 .archive-health-editor-field input:focus,
 .archive-health-editor-field select:focus { border-color: #315cff; box-shadow: 0 0 0 3px rgba(49, 92, 255, .08); }
 .archive-health-singleton { margin-top: 14px; }
-.archive-edit-modal-foot [data-save-health-history]:disabled { opacity: .48; cursor: not-allowed; box-shadow: none; }
 .archive-health-exit-mask { z-index: 2147482200; align-items: center; justify-content: center; }
 .archive-health-delete-mask { z-index: 2147482201; }
 .archive-health-exit-dialog { width: min(420px, calc(100vw - 32px)); padding: 24px; border-radius: 10px; background: #fff; box-shadow: 0 16px 48px rgba(24, 42, 75, .18); }

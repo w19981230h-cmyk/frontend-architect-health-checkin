@@ -8,7 +8,7 @@
   const API_PATH = "/api/ui-notes";
   const LEGACY_LOCAL_KEY = PROJECT_ID + ":interface-notes:v1";
   const STATIC_DATA_URL = "/data/interface-notes.json";
-  const STATIC_DATA_VERSION = "20260920-v3-14";
+  const STATIC_DATA_VERSION = "20260923-v3-17";
   const TOOL_STATE_KEY = PROJECT_ID + ":ui-note-tool:v3";
   const MAX_ATTACHMENTS_PER_FIELD = 5;
   const MAX_SOURCE_IMAGE_BYTES = 8 * 1024 * 1024;
@@ -237,7 +237,7 @@
 
   function openOverlayContext() {
     const selectors = [
-      "[data-note-scope]", "#packageEditorOverlay", "#archiveParseDrawer",
+      "[data-note-scope]", ".patient-create-drawer", "#packageEditorOverlay", "#archiveParseDrawer",
       "#archiveUploadModal", "[role='dialog']", "[role='alertdialog']",
       ".ant-modal", ".ant-drawer", ".modal", ".drawer", ".dialog",
       ".medical-upload-modal", ".archive-parse-drawer", ".meal-detail-drawer",
@@ -261,9 +261,19 @@
       });
     if (!candidates.length) return null;
     const target = candidates.map(function describe(node, index) {
-      return { node: node, index: index, z: Number.parseInt(getComputedStyle(node).zIndex, 10) || 0 };
+      const priority = node.hasAttribute("data-note-scope")
+        ? 3
+        : node.matches("[role='dialog'],[role='alertdialog']")
+          ? 2
+          : 1;
+      return {
+        node: node,
+        index: index,
+        priority: priority,
+        z: Number.parseInt(getComputedStyle(node).zIndex, 10) || 0
+      };
     }).sort(function byLayer(left, right) {
-      return (left.z - right.z) || (left.index - right.index);
+      return (left.z - right.z) || (left.priority - right.priority) || (left.index - right.index);
     }).pop().node;
 
     const declaredScope = normalizeText(target.dataset.noteScope);
@@ -727,8 +737,9 @@
     layer.innerHTML = notes.map(function pointMarkup(note) {
       const savedWidth = Math.max(1, Number(note.targetSnapshot?.annotationSurfaceWidth || metrics.width));
       const savedHeight = Math.max(1, Number(note.targetSnapshot?.annotationSurfaceHeight || metrics.height));
-      const left = Math.max(13, note.x * savedWidth);
-      const top = Math.max(13, note.y * savedHeight);
+      const targetAnchor = resolvedTargetAnchor(note, metrics);
+      const left = Math.max(13, targetAnchor ? targetAnchor.left : note.x * savedWidth);
+      const top = Math.max(13, targetAnchor ? targetAnchor.top : note.y * savedHeight);
       const selected = note.id === state.selectedId ? " is-selected" : "";
       return '<button type="button" class="ui-note-point' + selected + '" data-ui-note-ui data-ui-note-id="' + escapeHtml(note.id) + '" style="left:' + left + 'px;top:' + top + 'px" aria-label="批注 ' + note.noteNumber + '：' + escapeHtml(note.title) + '" title="' + escapeHtml(note.title) + '">' + note.noteNumber + '</button>';
     }).join("");
@@ -789,6 +800,92 @@
     return stableNodeToken(target) || target.tagName.toLowerCase();
   }
 
+  function annotationTargetElement(target) {
+    if (!(target instanceof Element)) return null;
+    return target.closest([
+      "button", "a", "input", "select", "textarea", "label", "th", "td",
+      "[role='button']", "[role='tab']", "[data-action]", "[data-page]", "[data-nav]",
+      "[data-archive-tab]", "[data-patient-tab]", "[data-service-view]", "[data-service-tab]",
+      "[data-note-scope]"
+    ].join(",")) || target;
+  }
+
+  function usableAnnotationTarget(target, metrics) {
+    if (!(target instanceof Element) || !isVisible(target) || target.matches("html,body")) return false;
+    if (target === metrics.surface || !metrics.surface.contains(target)) return false;
+    const rect = target.getBoundingClientRect();
+    if (rect.width < 2 || rect.height < 2) return false;
+    return !(rect.width > metrics.rect.width * 0.82 && rect.height > metrics.rect.height * 0.72);
+  }
+
+  function targetByStoredKey(targetKey) {
+    const key = String(targetKey || "");
+    if (!key || key === "surface") return null;
+    if (key.startsWith("#")) return document.getElementById(key.slice(1));
+    const dataMatch = key.match(/^data-([A-Za-z0-9_-]+):(.*)$/);
+    if (dataMatch) {
+      const attribute = "data-" + dataMatch[1].replace(/[A-Z]/g, function kebab(letter) { return "-" + letter.toLowerCase(); });
+      return Array.from(document.querySelectorAll("[" + attribute + "]")).find(function sameValue(node) {
+        return String(node.getAttribute(attribute) || "") === dataMatch[2] && isVisible(node);
+      }) || null;
+    }
+    try {
+      return document.querySelector(key);
+    } catch (_) {
+      return null;
+    }
+  }
+
+  function targetByLabel(note) {
+    const requested = normalizeText(note.targetSnapshot?.label || note.title || "").replace(/^[+＋]\s*/, "");
+    if (!requested) return null;
+    const candidates = Array.from(document.querySelectorAll([
+      "button", "a", "label", "th", "td", "h1", "h2", "h3", "h4",
+      "[role='button']", "[role='tab']", "[aria-label]", "[title]", "[data-action]"
+    ].join(","))).filter(isVisible).filter(function matchingLabel(node) {
+      const text = normalizeText(
+        node.getAttribute("aria-label") || node.getAttribute("title") || shortText(node, 120)
+      ).replace(/^[+＋]\s*/, "");
+      if (!text) return false;
+      return text === requested
+        || (text.length > 1 && requested.endsWith(text))
+        || (requested.length > 1 && text.endsWith(requested));
+    });
+    return candidates.sort(function smallestArea(left, right) {
+      const a = left.getBoundingClientRect();
+      const b = right.getBoundingClientRect();
+      return (a.width * a.height) - (b.width * b.height);
+    })[0] || null;
+  }
+
+  function resolvedTargetAnchor(note, metrics) {
+    let target = annotationTargetElement(targetByStoredKey(note.targetKey));
+    if (!usableAnnotationTarget(target, metrics)) target = annotationTargetElement(targetByLabel(note));
+    if (!usableAnnotationTarget(target, metrics)) return null;
+    const rect = target.getBoundingClientRect();
+    const offsetX = Number.isFinite(Number(note.targetSnapshot?.targetOffsetX))
+      ? Math.max(0, Math.min(1, Number(note.targetSnapshot.targetOffsetX)))
+      : 0.5;
+    const offsetY = Number.isFinite(Number(note.targetSnapshot?.targetOffsetY))
+      ? Math.max(0, Math.min(1, Number(note.targetSnapshot.targetOffsetY)))
+      : 0;
+    return {
+      left: rect.left - metrics.rect.left + (metrics.surface.scrollLeft || 0) + rect.width * offsetX,
+      top: rect.top - metrics.rect.top + (metrics.surface.scrollTop || 0) + rect.height * offsetY
+    };
+  }
+
+  function targetPlacementSnapshot(target, event, metrics) {
+    const resolved = annotationTargetElement(target);
+    if (!usableAnnotationTarget(resolved, metrics)) return null;
+    const rect = resolved.getBoundingClientRect();
+    return {
+      target: resolved,
+      offsetX: Math.max(0, Math.min(1, (event.clientX - rect.left) / Math.max(1, rect.width))),
+      offsetY: Math.max(0, Math.min(1, (event.clientY - rect.top) / Math.max(1, rect.height)))
+    };
+  }
+
   function nearestSection(target) {
     const section = target instanceof Element ? target.closest("section,article,main,[class*='section'],[class*='panel'],[class*='card']") : null;
     if (!section) return state.context?.pageTitle || "";
@@ -810,7 +907,9 @@
 
   function createDraftAt(event) {
     const point = surfacePointFromEvent(event);
-    const target = event.target instanceof Element ? event.target : state.context.surfaceElement;
+    const rawTarget = event.target instanceof Element ? event.target : state.context.surfaceElement;
+    const targetPlacement = targetPlacementSnapshot(rawTarget, event, currentSurfaceMetrics());
+    const target = targetPlacement?.target || rawTarget;
     const now = new Date().toISOString();
     const id = uid("note");
     const context = state.context;
@@ -833,6 +932,9 @@
         role: target.getAttribute?.("role") || target.tagName?.toLowerCase() || "",
         annotationSurfaceHeight: point.height,
         annotationSurfaceWidth: point.width,
+        anchorMode: targetPlacement ? "target" : "surface",
+        targetOffsetX: targetPlacement?.offsetX,
+        targetOffsetY: targetPlacement?.offsetY,
         attachments: [],
         interactionContent: "",
         interactionAttachments: [],
@@ -1458,6 +1560,25 @@
     drag.point.classList.remove("is-dragging");
     drag.point.releasePointerCapture?.(event.pointerId);
     if (!drag.moved) return;
+    const metrics = currentSurfaceMetrics();
+    const underlying = document.elementsFromPoint(event.clientX, event.clientY).find(function businessTarget(node) {
+      return node instanceof Element && !node.closest("[data-ui-note-ui]");
+    });
+    const targetPlacement = targetPlacementSnapshot(underlying, event, metrics);
+    if (targetPlacement) {
+      drag.note.targetKey = stableTargetKey(targetPlacement.target);
+      drag.note.targetSnapshot.label = targetLabel(targetPlacement.target);
+      drag.note.targetSnapshot.section = nearestSection(targetPlacement.target);
+      drag.note.targetSnapshot.role = targetPlacement.target.getAttribute("role") || targetPlacement.target.tagName.toLowerCase();
+      drag.note.targetSnapshot.anchorMode = "target";
+      drag.note.targetSnapshot.targetOffsetX = targetPlacement.offsetX;
+      drag.note.targetSnapshot.targetOffsetY = targetPlacement.offsetY;
+    } else {
+      drag.note.targetKey = "surface";
+      drag.note.targetSnapshot.anchorMode = "surface";
+      delete drag.note.targetSnapshot.targetOffsetX;
+      delete drag.note.targetSnapshot.targetOffsetY;
+    }
     state.suppressPointClick = true;
     setTimeout(function allowPointClick() { state.suppressPointClick = false; }, 0);
     drag.note.updatedAt = new Date().toISOString();

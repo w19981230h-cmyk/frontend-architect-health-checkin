@@ -52,7 +52,7 @@
   }));
   const infoFields = () => [...document.querySelectorAll('#planCanvasPage [data-plan-tab-panel="info"] input, #planCanvasPage [data-plan-tab-panel="info"] textarea, #planCanvasPage [data-plan-tab-panel="info"] select')];
   const defaultInfo = infoFields().map(field => field.value);
-  const durationFieldIds = ['planManagementPeriod', 'planTaskExtensionPeriod'];
+  const durationFieldIds = ['planManagementPeriod'];
   const limitDuration = value => String(value ?? '').replace(/\D/g, '').slice(0, 3);
   durationFieldIds.forEach(id => {
     const input = document.getElementById(id);
@@ -763,8 +763,6 @@
       fillStrategy();
       document.getElementById('planManagementPeriod').value = '';
       document.getElementById('planManagementPeriodUnit').value = '天';
-      document.getElementById('planTaskExtensionPeriod').value = '';
-      document.getElementById('planTaskExtensionPeriodUnit').value = '天';
     }
     const savePlan = target.closest('[data-save-plan]');
     const publishPlan = target.closest('[data-publish-plan]');
@@ -775,7 +773,7 @@
       const fields = infoFields();
       const name = fields[0]?.value.trim();
       if (!name) { toast('请填写方案名称'); fields[0]?.focus(); return; }
-      for (const [id, label] of [['planManagementPeriod', '管理周期'], ['planTaskExtensionPeriod', '任务延续期']]) {
+      for (const [id, label] of [['planManagementPeriod', '管理周期']]) {
         const input = document.getElementById(id);
         const value = input.value.trim();
         if (!value) { toast(`请输入${label}`); input.focus(); return; }

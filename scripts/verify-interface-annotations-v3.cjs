@@ -35,13 +35,13 @@ assert.match(sourceScript, /data-ui-note-action="summary"/);
 assert.match(sourceScript, /data-ui-note-action="expand"[^>]*>批注<\/button>/);
 assert.match(sourceScript, /ensureShell\(\);\s*const next = resolveContext\(\);/);
 assert.match(sourceCss, /\.ui-note-toolbar\s*{[\s\S]*?position:\s*fixed/);
-assert.match(sourceCss, /--ui-note-z:\s*2147482000/);
+assert.match(sourceCss, /--ui-note-z:\s*2147482600/);
 assert.match(sourceCss, /\.ui-note-toolbar\.is-collapsed\s*{[\s\S]*?bottom:\s*88px/);
 
 const active = notes.filter((note) => note.status !== "deleted");
 const patientPageId = "index.html|#|page:listPage/view:patientListView|page:base";
 const patientNotes = active.filter((note) => note.pageId === patientPageId);
-assert.equal(patientNotes.length, 4, "全部患者页面应显示 4 个有效备注点");
+assert.equal(patientNotes.length, 5, "全部患者页面应显示 5 个有效备注点");
 
 const identities = new Map();
 for (const note of active) {

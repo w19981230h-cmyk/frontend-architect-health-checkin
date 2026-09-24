@@ -7,7 +7,10 @@
   --ui-note-line: #e4e9f1;
   --ui-note-soft: #f5f7fb;
   --ui-note-panel-width: 424px;
-  --ui-note-z: 2147482000;
+  /* Business drawers may use a near-maximum stacking layer. Keep the
+     annotation controls above them so the entry never disappears when a
+     dialog opens, while retaining enough headroom for annotation modals. */
+  --ui-note-z: 2147482600;
 }
 
 [data-ui-note-ui] {

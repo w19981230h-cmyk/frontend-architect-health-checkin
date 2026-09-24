@@ -3,8 +3,9 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="stylesheet" href="./css/team-management.css?v=20260923-1">
-  <link rel="stylesheet" href="./css/interface-annotations-v3.css?v=20260828-v3-10">
+  <link rel="stylesheet" href="./css/team-management.css?v=20260923-4">
+  <link rel="stylesheet" href="./css/plan-form-mode.css?v=20260924-2">
+  <link rel="stylesheet" href="./css/interface-annotations-v3.css?v=20260924-v3-18">
   <link rel="stylesheet" href="./css/referral-drawer.css?v=20260902-8">
   <link rel="stylesheet" href="./css/scale-create.css?v=20260916-3">
   <title>AI患者管理系统 - 量表设计</title>
@@ -2313,7 +2314,9 @@
     .plan-ai-generate.ready { background: #3154ff; }
     .plan-ai-skip { border: 1px solid #3154ff; color: #3154ff; background: #eef3ff; }
     .plan-canvas-page { height: 100vh; min-width: 1440px; background: #eef5ff; display: grid; grid-template-rows: 54px minmax(0, 1fr); }
-    .plan-canvas-save { margin-left: 14px; height: 34px; min-width: 70px; border-radius: 4px; background: #1d43ff; color: #fff; font-weight: 800; }
+    .plan-canvas-save, .plan-canvas-publish { height: 34px; min-width: 70px; border-radius: 4px; font-weight: 800; }
+    .plan-canvas-save { margin-left: 14px; border: 1px solid #3154ff; background: #fff; color: #3154ff; }
+    .plan-canvas-publish { margin-left: -8px; border: 1px solid #1d43ff; background: #1d43ff; color: #fff; }
     .plan-canvas-body { min-height: 0; display: grid; grid-template-columns: 390px minmax(760px, 1fr) 330px; }
     .plan-config-panel { min-height: 0; overflow: auto; padding: 0 22px 48px; background: #fff; border-right: 1px solid #dde6f3; }
     .plan-config-tabs { position: sticky; top: 0; z-index: 2; display: flex; gap: 26px; padding: 18px 0 0; background: #fff; border-bottom: 1px solid #eef2f7; margin: 0 0 26px; }
@@ -2347,6 +2350,10 @@
     .plan-config-panel-body[data-plan-tab-panel="info"] .plan-field textarea { min-height: 112px; padding: 10px 12px; }
     .plan-config-panel-body[data-plan-tab-panel="info"] .plan-field .plan-muted-help { margin: -2px 0 0; color: #a7b2c1; font-size: 12px; line-height: 20px; }
     .plan-config-panel-body[data-plan-tab-panel="info"] #planDescInput { min-height: 132px; }
+    .plan-config-panel-body[data-plan-tab-panel="info"] .plan-duration-control { display: grid; grid-template-columns: minmax(0, 1fr) 96px; gap: 8px; }
+    .plan-config-panel-body[data-plan-tab-panel="info"] .plan-duration-control input { min-width: 0; }
+    .plan-duration-control input[aria-invalid="true"] { border-color: #ff4d4f; box-shadow: 0 0 0 2px rgba(255,77,79,.08); }
+    .plan-duration-error { min-height: 18px; margin-top: 4px; color: #ff4d4f; font-size: 12px; line-height: 18px; }
     .plan-config-panel-body[data-plan-tab-panel="info"] .plan-config-section:nth-of-type(2) .plan-field:first-of-type textarea { min-height: 120px; }
     .plan-add-row { display: flex; justify-content: space-between; align-items: center; gap: 16px; color: #3154ff; font-weight: 800; }
     .plan-add-row .plan-section-title { margin: 0; }
@@ -2812,8 +2819,8 @@
   <link rel="stylesheet" href="./css/statistics-report.css?v=20260911-05">
   <link rel="stylesheet" href="./css/operations-statistics.css?v=20260910-01">
   <link rel="stylesheet" href="./css/operations-statistics-responsive.css?v=20260910-02">
-  <link rel="stylesheet" href="./css/patient-archive-reference.css?v=20260920-3">
-  <link rel="stylesheet" href="./css/health-portrait.css?v=20260910-1">
+  <link rel="stylesheet" href="./css/patient-archive-reference.css?v=20260924-1">
+  <link rel="stylesheet" href="./css/health-portrait.css?v=20260924-3">
 <link rel="stylesheet" href="./css/personnel-management.css?v=20260916-1">
 <link rel="stylesheet" href="./css/organization-management.css?v=20260920-3">
 <link rel="stylesheet" href="./css/workbench.css?v=20260918-4">
@@ -2822,6 +2829,7 @@
 <link rel="stylesheet" href="./css/dashboard-updated.css?v=20260913-2">
 <link rel="stylesheet" href="./css/evaluation-report.css?v=20260916-1">
 <link rel="stylesheet" href="./css/article-management.css?v=20260916-1">
+<link rel="stylesheet" href="./css/plan-management.css?v=20260923-16">
 </head>
 <body>
   <script src="./save-persistence-final.js"></script>
@@ -3531,10 +3539,11 @@
         <div class="plan-title-text" id="generatedPlanTitle">泌尿系结石术后随访健康管理方案</div>
         <div class="plan-mode-switch"><button class="active">画布模式</button><button>表单模式</button></div>
         <button class="plan-canvas-save" data-save-plan>保存</button>
+        <button class="plan-canvas-publish" data-publish-plan>发布</button>
       </header>
       <main class="plan-canvas-body">
         <aside class="plan-config-panel">
-          <div class="plan-config-tabs"><button class="plan-config-tab active" data-plan-tab="info">方案信息</button><button class="plan-config-tab" data-plan-tab="checkin">健康打卡</button></div>
+          <div class="plan-config-tabs"><button class="plan-config-tab active" data-plan-tab="info">基础信息</button><button class="plan-config-tab" data-plan-tab="strategy">智能策略</button><button class="plan-config-tab" data-plan-tab="checkin">健康打卡</button></div>
           <div class="plan-config-panel-body active" data-plan-tab-panel="info">
             <section class="plan-config-section">
               <h2>基本信息</h2>
@@ -3547,6 +3556,7 @@
               <h2>智能策略</h2>
               <div class="plan-field"><label class="required">患者画像</label><div class="plan-muted-help">自然语言描述患者画像，AI 根据画像智能匹配患者</div><textarea>18-75岁，已完成泌尿系结石手术（如输尿管镜碎石、经皮肾镜碎石、体外冲击波碎石等），无严重感染或出血风险，需要术后随访与康复指导的患者。</textarea></div>
               <div class="plan-field"><label>方案启动时间</label><div class="plan-muted-help">自动根据患者的关键事件自动开始执行方案</div><select><option>最近入组时间</option><option>出院后第1天</option><option>手术后第1天</option></select></div>
+              <div class="plan-field"><label class="required" for="planManagementPeriod">管理周期</label><div class="plan-duration-control"><input id="planManagementPeriod" type="number" min="1" max="999" step="1" inputmode="numeric" placeholder="请输入数字" required aria-required="true" aria-describedby="planManagementPeriodError"><select id="planManagementPeriodUnit" aria-label="管理周期单位"><option>天</option><option>周</option><option>月</option><option>年</option></select></div><div class="plan-duration-error" id="planManagementPeriodError" aria-live="polite"></div></div>
             </section>
           </div>
           <div class="plan-config-panel-body" data-plan-tab-panel="checkin">
@@ -4170,13 +4180,13 @@
       </div>
       <div class="archive-edit-modal-body">
         <div class="archive-edit-form-grid">
-          <label class="archive-edit-field"><span>姓名</span><input type="text" maxlength="50" data-archive-modal-field="name" placeholder="请输入姓名" aria-required="true"><small data-archive-modal-error="name"></small></label>
-          <label class="archive-edit-field"><span>性别</span><select data-archive-modal-field="gender" aria-required="true"><option value="">请选择</option><option>男</option><option>女</option><option>其他</option></select><small data-archive-modal-error="gender"></small></label>
-          <label class="archive-edit-field"><span>年龄</span><input type="number" min="0" max="130" step="1" data-archive-modal-field="age" placeholder="请输入年龄" aria-required="true"><small data-archive-modal-error="age"></small></label>
+          <label class="archive-edit-field"><span>姓名 <b aria-hidden="true">*</b></span><input type="text" maxlength="50" data-archive-modal-field="name" placeholder="请输入姓名" aria-required="true"><small data-archive-modal-error="name"></small></label>
+          <label class="archive-edit-field"><span>性别 <b aria-hidden="true">*</b></span><select data-archive-modal-field="gender" aria-required="true"><option value="">请选择</option><option>男</option><option>女</option><option>其他</option></select><small data-archive-modal-error="gender"></small></label>
+          <label class="archive-edit-field"><span>年龄 <b aria-hidden="true">*</b></span><input type="number" min="0" max="130" step="1" data-archive-modal-field="age" placeholder="请输入年龄" aria-required="true"><small data-archive-modal-error="age"></small></label>
           <label class="archive-edit-field"><span>出生日期</span><input type="month" data-archive-modal-field="birthDate"><small data-archive-modal-error="birthDate"></small></label>
-          <label class="archive-edit-field"><span>手机号</span><input type="text" data-archive-modal-field="phone" placeholder="请输入手机号"><small data-archive-modal-error="phone"></small></label>
-          <label class="archive-edit-field"><span>证件类型</span><select data-archive-modal-field="idType"><option value="">请选择</option><option>居民身份证</option><option>护照</option><option>港澳居民来往内地通行证</option><option>台湾居民来往大陆通行证</option><option>其他</option></select><small data-archive-modal-error="idType"></small></label>
-          <label class="archive-edit-field"><span>证件号</span><input type="text" maxlength="32" data-archive-modal-field="idNumber" placeholder="请输入证件号"><small data-archive-modal-error="idNumber"></small></label>
+          <label class="archive-edit-field"><span>手机号 <b aria-hidden="true">*</b></span><input type="text" data-archive-modal-field="phone" placeholder="请输入手机号" aria-required="true"><small data-archive-modal-error="phone"></small></label>
+          <label class="archive-edit-field"><span>证件类型 <b aria-hidden="true">*</b></span><select data-archive-modal-field="idType" aria-required="true"><option value="">请选择</option><option>居民身份证</option><option>护照</option><option>港澳居民来往内地通行证</option><option>台湾居民来往大陆通行证</option><option>其他</option></select><small data-archive-modal-error="idType"></small></label>
+          <label class="archive-edit-field"><span>证件号 <b aria-hidden="true">*</b></span><input type="text" maxlength="32" data-archive-modal-field="idNumber" placeholder="请输入证件号" aria-required="true"><small data-archive-modal-error="idNumber"></small></label>
           <label class="archive-edit-field"><span>民族</span><select data-archive-modal-field="ethnicity"><option value="">请选择</option><option>汉族</option><option>壮族</option><option>回族</option><option>满族</option><option>其他</option></select></label>
           <label class="archive-edit-field"><span>婚姻状况</span><select data-archive-modal-field="maritalStatus"><option value="">请选择</option><option>未婚</option><option>已婚</option><option>离异</option><option>丧偶</option><option>其他</option></select></label>
           <label class="archive-edit-field"><span>职业</span><input type="text" maxlength="50" data-archive-modal-field="occupation" placeholder="请输入职业"></label>
@@ -4190,12 +4200,11 @@
   <div class="modal-mask archive-edit-modal-mask" id="archiveHealthEditModal" aria-hidden="true">
     <div class="archive-edit-modal archive-health-detail-modal" role="dialog" aria-modal="true" aria-labelledby="archiveHealthEditTitle">
       <div class="archive-edit-modal-head">
-        <div><h2 id="archiveHealthEditTitle">编辑健康史</h2><p>按分类维护记录，完成后统一保存</p></div>
+        <div><h2 id="archiveHealthEditTitle">编辑健康史</h2><p>按分类维护记录，保存后立即生效</p></div>
         <button class="archive-edit-modal-close" type="button" data-close-archive-edit aria-label="关闭健康史详情抽屉">×</button>
       </div>
       <div class="archive-health-detail-tabs" id="archiveHealthDetailTabs" role="tablist" aria-label="健康史分类"></div>
       <div class="archive-edit-modal-body archive-health-detail-body" id="archiveHealthDetailBody"></div>
-      <div class="archive-edit-modal-foot"><button type="button" class="secondary-btn" data-close-archive-edit>取消</button><button type="button" class="confirm-btn" data-save-health-history disabled>保存更改</button></div>
     </div>
   </div>
   <div class="modal-mask archive-health-exit-mask" id="archiveHealthExitConfirm" aria-hidden="true">
@@ -4221,7 +4230,7 @@
   </div>
 
   <div class="modal-mask archive-edit-modal-mask" id="patientCreateModal" aria-hidden="true">
-    <div class="archive-edit-modal patient-create-drawer" role="dialog" aria-modal="true" aria-labelledby="patientCreateTitle">
+    <div class="archive-edit-modal patient-create-drawer" role="dialog" aria-modal="true" aria-labelledby="patientCreateTitle" data-note-scope="patient-create" data-note-mode="quick-create" data-note-entity="new-patient">
       <div class="archive-edit-modal-head"><div><h2 id="patientCreateTitle">快速建档</h2><p>先创建患者主档，健康史可在建档后继续完善</p></div><button class="archive-edit-modal-close" type="button" data-close-patient-create aria-label="关闭建档抽屉">×</button></div>
       <div class="archive-edit-modal-body patient-create-body">
         <form id="patientCreateForm" novalidate>
@@ -5654,6 +5663,39 @@
       activatePage('listPage');
       showListView('plans');
     }
+
+    function validatePlanDurationFields() {
+      const fields = [
+        ['planManagementPeriod', 'planManagementPeriodError', '请输入管理周期']
+      ];
+      let firstInvalid = null;
+      fields.forEach(([inputId, errorId, emptyMessage]) => {
+        const input = document.getElementById(inputId);
+        const error = document.getElementById(errorId);
+        const value = input?.value.trim() || '';
+        const valid = /^\d{1,3}$/.test(value) && Number(value) >= 1 && Number(value) <= 999;
+        input?.setAttribute('aria-invalid', String(!valid));
+        if (error) error.textContent = valid ? '' : (value ? '请输入1至999之间的整数' : emptyMessage);
+        if (!valid && !firstInvalid) firstInvalid = input;
+      });
+      if (!firstInvalid) return true;
+      const infoTab = document.querySelector('[data-plan-tab="info"]');
+      document.querySelectorAll('[data-plan-tab]').forEach(button => button.classList.toggle('active', button === infoTab));
+      document.querySelectorAll('[data-plan-tab-panel]').forEach(panel => panel.classList.toggle('active', panel.dataset.planTabPanel === 'info'));
+      firstInvalid.scrollIntoView({ block: 'center', behavior: 'smooth' });
+      firstInvalid.focus();
+      showToast('请完善管理周期');
+      return false;
+    }
+
+    document.addEventListener('input', event => {
+      const input = event.target.closest('#planManagementPeriod');
+      if (!input) return;
+      input.value = input.value.replace(/\D/g, '').slice(0, 3);
+      input.removeAttribute('aria-invalid');
+      const errorId = input.getAttribute('aria-describedby');
+      if (errorId) document.getElementById(errorId)?.replaceChildren();
+    });
 
     const typeMeta = {
       single: { label: '单选', icon: radioIcon(), section: '选择' },
@@ -7088,6 +7130,12 @@
       document.querySelectorAll('[data-archive-health-count]').forEach(node => {
         node.textContent = patient[node.dataset.archiveHealthCount + 'Count'] || '';
       });
+      const archivePatientTags = document.getElementById('archivePatientTags');
+      if (archivePatientTags) {
+        const tags = Array.isArray(patient.tags) ? patient.tags.filter(Boolean) : [];
+        archivePatientTags.innerHTML = tags.map(tag => `<span class="archive-patient-tag">${esc(tag)}</span>`).join('');
+        archivePatientTags.hidden = tags.length === 0;
+      }
     }
 
     function ensureHealthHistoryRecords(patient) {
@@ -7228,7 +7276,7 @@
       const config = healthHistoryConfig[type];
       const fields = config.fields.map(field => healthFieldHtml(field, editor.draft, type)).join('');
       const diseaseOptions = type === 'pastHistory' ? '<datalist id="archiveDiseaseOptions">' + config.fields[0].options.filter(value => value !== '其他').map(value => '<option value="' + esc(value) + '"></option>').join('') + '</datalist>' : '';
-      return '<section class="archive-health-editor-card" aria-label="' + (editor.index >= 0 ? '修改' : '新增') + esc(config.label) + '"><div class="archive-health-editor-title">' + (editor.index >= 0 ? '修改记录' : '新增记录') + '</div><div class="archive-health-editor-grid">' + fields + '</div>' + diseaseOptions + '<div class="archive-health-editor-error" data-health-record-error aria-live="polite"></div><div class="archive-health-editor-actions"><button type="button" class="secondary-btn" data-cancel-health-record>取消</button><button type="button" class="confirm-btn" data-save-health-record>' + (editor.index >= 0 ? '暂存修改' : '暂存新增') + '</button></div></section>';
+      return '<section class="archive-health-editor-card" aria-label="' + (editor.index >= 0 ? '修改' : '新增') + esc(config.label) + '"><div class="archive-health-editor-title">' + (editor.index >= 0 ? '修改记录' : '新增记录') + '</div><div class="archive-health-editor-grid">' + fields + '</div>' + diseaseOptions + '<div class="archive-health-editor-error" data-health-record-error aria-live="polite"></div><div class="archive-health-editor-actions"><button type="button" class="secondary-btn" data-cancel-health-record>取消</button><button type="button" class="confirm-btn" data-save-health-record>保存</button></div></section>';
     }
     function renderHealthHistoryDetail() {
       if (!archiveCurrentPatient || !healthHistoryState.records) return;
@@ -7245,7 +7293,7 @@
         const fields = config.fields.map(field => healthFieldHtml(field, record, type)).join('');
         const deleteButton = records.length ? '<button type="button" class="archive-health-delete-singleton" data-delete-health-singleton>⌫ 删除</button>' : '';
         const toolbar = '<div class="archive-health-detail-toolbar"><div class="archive-health-detail-count"><span class="archive-health-detail-icon">' + healthHistoryIcon(type) + '</span><strong>' + config.label + '</strong></div>' + deleteButton + '</div>';
-        const form = '<section class="archive-health-editor-card archive-health-singleton"><div class="archive-health-editor-title">当前状态：' + esc(record.status || '待补充') + '</div><div class="archive-health-editor-grid">' + fields + '</div><div class="archive-health-editor-error" data-health-record-error aria-live="polite"></div>' + (healthHistoryState.singletonEditing.has(type) ? '<div class="archive-health-editor-actions"><button type="button" class="secondary-btn" data-cancel-health-singleton>取消补充</button></div>' : '') + '</section>';
+        const form = '<section class="archive-health-editor-card archive-health-singleton"><div class="archive-health-editor-title">当前状态：' + esc(record.status || '待补充') + '</div><div class="archive-health-editor-grid">' + fields + '</div><div class="archive-health-editor-error" data-health-record-error aria-live="polite"></div><div class="archive-health-editor-actions"><button type="button" class="secondary-btn" data-cancel-health-singleton>取消</button><button type="button" class="confirm-btn" data-save-health-singleton>保存</button></div></section>';
         const empty = '<div class="archive-health-empty"><span class="archive-health-empty-icon" aria-hidden="true">' + healthHistoryIcon(type) + '</span><strong>暂无相关记录</strong><span>' + config.label + '待补充</span><button type="button" class="archive-health-add-btn" data-add-health-singleton>＋ 补充' + config.label + '</button></div>';
         body.innerHTML = toolbar + (records.length || healthHistoryState.singletonEditing.has(type) ? form : empty);
       } else {
@@ -7312,7 +7360,7 @@
       return true;
     }
     function saveHealthRecord() {
-      stageHealthRecord(healthHistoryState.activeType);
+      if (stageHealthRecord(healthHistoryState.activeType)) commitHealthHistoryChanges();
     }
     function requestHealthDeletion(index, trigger) {
       const type = healthHistoryState.activeType;
@@ -7321,7 +7369,7 @@
       if (!record) return;
       const name = type === 'familyHistory' ? [record.relation, record.disease].filter(Boolean).join(' · ') : record.name || record.allergen || record.status || healthHistoryConfig[type].label;
       const modal = document.getElementById('archiveHealthDeleteConfirm');
-      document.getElementById('archiveHealthDeleteDescription').textContent = '确定删除“' + name + '”吗？删除后将从本次编辑中移除，点击“保存更改”后生效。' + (records.length === 1 ? '此分类将显示“暂无相关记录”，档案首页显示“待补充”。' : '');
+      document.getElementById('archiveHealthDeleteDescription').textContent = '确定删除“' + name + '”吗？删除后立即生效。' + (records.length === 1 ? '此分类将显示“暂无相关记录”，档案首页显示“待补充”。' : '');
       healthDeletePending = { type, index, trigger };
       modal.classList.add('open');
       modal.setAttribute('aria-hidden', 'false');
@@ -7344,25 +7392,11 @@
       healthHistoryState.singletonEditing.delete(type);
       closeHealthDeleteConfirm(false);
       renderHealthHistoryDetail();
-      showToast('已移除记录，请点击“保存更改”完成保存');
+      commitHealthHistoryChanges('健康史记录已删除');
       requestAnimationFrame(() => document.querySelector('[data-add-health-record], [data-add-health-singleton], [data-health-history-tab="' + type + '"]')?.focus());
     }
-    function saveHealthHistory() {
+    function commitHealthHistoryChanges(successMessage = '健康史已保存') {
       if (!healthHistoryIsDirty()) return;
-      for (const type of Object.keys(healthHistoryState.editors)) {
-        if (!stageHealthRecord(type)) return;
-      }
-      for (const type of ['smoking', 'drinking']) {
-        const record = healthHistoryState.records[type][0];
-        const missing = record && healthHistoryConfig[type].fields.find(field => field.required && healthFieldVisible(field, record, type) && !String(record[field.key] || '').trim());
-        if (missing) {
-          healthHistoryState.activeType = type;
-          renderHealthHistoryDetail();
-          document.querySelector('[data-health-record-error]').textContent = '请填写' + missing.label;
-          document.querySelector('[data-health-record-field="' + missing.key + '"]')?.focus();
-          return;
-        }
-      }
       if (JSON.stringify(healthHistoryState.records) === JSON.stringify(healthHistoryState.original)) {
         updateHealthSaveState();
         return;
@@ -7390,9 +7424,22 @@
       archiveCurrentPatient.healthHistoryRecords = healthRecordsClone(healthHistoryState.records);
       syncHealthHistorySummary(archiveCurrentPatient);
       recordArchiveChange(archiveCurrentPatient, '健康史', '修改', lines);
-      closeArchiveEditModal(true, true);
+      healthHistoryState.original = healthRecordsClone(healthHistoryState.records);
+      healthHistoryState.singletonEditing.clear();
       renderPatientArchive();
-      showToast('健康史已保存');
+      renderHealthHistoryDetail();
+      showToast(successMessage);
+    }
+    function saveHealthSingleton() {
+      const type = healthHistoryState.activeType;
+      const record = healthHistoryState.records?.[type]?.[0] || {};
+      const missing = healthHistoryConfig[type].fields.find(field => field.required && healthFieldVisible(field, record, type) && !String(record[field.key] || '').trim());
+      if (missing) {
+        document.querySelector('[data-health-record-error]').textContent = '请填写' + missing.label;
+        document.querySelector('[data-health-record-field="' + missing.key + '"]')?.focus();
+        return;
+      }
+      commitHealthHistoryChanges();
     }
     document.addEventListener('input', event => {
       const control = event.target.closest('#archiveHealthEditModal [data-health-record-field]');
@@ -7468,9 +7515,9 @@
       }
       if (key === 'birthDate') return values.birthDate && birthAge === null ? '请选择有效且不晚于今天的出生日期' : identity && !identity.error && identity.birthDate !== values.birthDate ? '出生日期与身份证号不一致' : '';
       if (key === 'phone') return /^1[3-9]\d{9}$/.test(values.phone) ? '' : '请输入正确的11位手机号';
-      if (key === 'idType') return values.idNumber && !values.idType ? '请选择证件类型' : '';
+      if (key === 'idType') return values.idType ? '' : '请选择证件类型';
       if (key === 'idNumber') {
-        if (values.idType && !values.idNumber) return '请输入证件号';
+        if (!values.idNumber) return '请输入证件号';
         if (identity?.error) return identity.error;
         if (values.idNumber && !/^[A-Za-z0-9]{3,32}$/.test(values.idNumber)) return '请输入正确的证件号';
       }
@@ -10387,9 +10434,13 @@
       }
       if (e.target.closest('[data-cancel-health-singleton]')) {
         const type = healthHistoryState.activeType;
-        healthHistoryState.records[type] = [];
+        healthHistoryState.records[type] = healthRecordsClone(healthHistoryState.original[type] || []);
         healthHistoryState.singletonEditing.delete(type);
         renderHealthHistoryDetail();
+        return;
+      }
+      if (e.target.closest('[data-save-health-singleton]')) {
+        saveHealthSingleton();
         return;
       }
       if (e.target.closest('[data-cancel-health-record]')) {
@@ -10401,15 +10452,11 @@
         saveHealthRecord();
         return;
       }
-      if (e.target.closest('[data-save-health-history]')) {
-        saveHealthHistory();
-        return;
-      }
       if (e.target.closest('[data-continue-health-edit]')) {
         const confirm = document.getElementById('archiveHealthExitConfirm');
         confirm.classList.remove('open');
         confirm.setAttribute('aria-hidden', 'true');
-        document.querySelector('#archiveHealthEditModal [data-save-health-history]')?.focus();
+        document.querySelector('#archiveHealthEditModal [data-save-health-record], #archiveHealthEditModal [data-save-health-singleton], #archiveHealthEditModal [data-health-record-field]')?.focus();
         return;
       }
       if (e.target.closest('[data-discard-health-edit]')) {
@@ -10724,6 +10771,7 @@
         return;
       }
       if (e.target.closest('[data-save-plan]')) {
+        if (!validatePlanDurationFields()) return;
         showToast('方案已保存');
         return;
       }
@@ -15874,16 +15922,16 @@
 </script>
 
 <script src="./js/service-management.js?v=package-editor-open-v14"></script>
-<script src="./js/interface-notes-snapshot.js?v=20260920-v3-14"></script>
-<script src="./js/interface-annotations-v3.js?v=20260920-v3-14"></script>
+<script src="./js/interface-notes-snapshot.js?v=20260923-v3-17"></script>
+<script src="./js/interface-annotations-v3.js?v=20260924-v3-18"></script>
 <script src="./js/knowledge-base.js?v=knowledge-v15"></script>
 <script src="./assets/echarts.min.js"></script>
 <script src="./js/statistics-data.js?v=20260907-28"></script>
 <script src="./js/statistics-filters.js?v=20260913-40"></script>
 <script src="./js/statistics-report.js?v=20260911-05"></script>
 <script src="./js/operations-statistics.js?v=20260910-01"></script>
-<script src="./js/team-management.js?v=20260923-1"></script>
-  <script src="./js/health-portrait.js?v=20260910-1"></script>
+<script src="./js/team-management.js?v=20260923-7"></script>
+  <script src="./js/health-portrait.js?v=20260924-3"></script>
 <script src="./js/personnel-management.js?v=20260920-2"></script>
 <script src="./js/organization-management.js?v=20260920-5"></script>
 <script src="./js/workbench.js?v=20260918-3"></script>
@@ -15895,5 +15943,7 @@
 <script src="./js/dashboard-updated-content.js?v=20260913-2"></script>
 <script src="./js/evaluation-report.js?v=20260916-1"></script>
 <script src="./js/article-management.js?v=20260916-1"></script>
+<script src="./js/plan-management.js?v=20260924-4"></script>
+<script src="./js/plan-form-mode.js?v=20260924-2"></script>
 </body>
 </html>

@@ -3,7 +3,7 @@
   if (!modal) return;
 
   const profiles = {
-    overview: { title: '综合健康评估', status: '日常关注', state: 'attention', summary: '当前主要关注心脏与血管健康、血液免疫与感染及内分泌代谢健康，建议结合持续监测数据进行管理。', focus: '健康风险综合管理', focusCopy: '建议围绕重点分类补充监测数据并持续随访。', daily: '保持规律作息、均衡饮食和适量运动。', positive: '当前主要健康信息已完成分类整理。', advice: ['优先补齐重点指标记录', '按计划完成健康随访', '出现明显不适时及时就医。'] },
+    overview: { title: '综合健康评估', status: '日常关注', state: 'attention', summary: '当前主要关注心脏与血管健康、血液免疫与感染及内分泌代谢健康，建议结合持续监测数据进行管理。', focus: '健康风险综合管理', focusCopy: '建议围绕重点分类补充监测数据并持续随访。', focusTarget: 'heart', daily: '保持规律作息、均衡饮食和适量运动。', dailyTarget: 'metabolism', positive: '当前主要健康信息已完成分类整理。', advice: ['优先补齐重点指标记录', '按计划完成健康随访', '出现明显不适时及时就医。'] },
     mind: { title: '神经、心理与睡眠健康', status: '正常', state: 'normal', summary: '当前暂无明确神经、心理或睡眠异常记录，整体状态平稳。', focus: '暂无重点异常', focusCopy: '继续观察睡眠质量与情绪变化。', daily: '建议保持稳定作息，避免长期熬夜。', positive: '当前无相关疾病及异常症状记录。', advice: ['保持规律睡眠', '适量进行户外活动', '如持续失眠或情绪低落，及时咨询专业人员。'] },
     vision: { title: '眼与视觉健康', status: '正常', state: 'normal', summary: '现有档案中未发现明确眼部疾病或视力异常风险。', focus: '暂无重点异常', focusCopy: '按需完善视力和眼底检查记录。', daily: '减少长时间近距离用眼。', positive: '当前无明确眼科异常记录。', advice: ['控制连续用眼时长', '定期检查视力', '出现视物模糊及时就诊。'] },
     oral: { title: '耳鼻咽与口腔健康', status: '日常关注', state: 'attention', summary: '当前信息较少，建议在日常管理中关注听力、鼻咽和口腔状态。', focus: '基础信息待完善', focusCopy: '建议补充近期口腔及耳鼻咽检查情况。', daily: '保持口腔清洁，关注牙龈出血等变化。', positive: '暂无明确严重异常记录。', advice: ['保持早晚刷牙', '定期进行口腔检查', '出现持续疼痛及时就医。'] },
@@ -71,10 +71,16 @@
   }
 
   function renderSummary(profile, showStatus = true) {
+    const focusDetailButton = profile.focusTarget
+      ? `<button type="button" class="health-focus-detail-link" data-health-focus-detail="${profile.focusTarget}">查看详情 <span aria-hidden="true">›</span></button>`
+      : '';
+    const dailyDetailButton = profile.dailyTarget
+      ? `<button type="button" class="health-focus-detail-link" data-health-focus-detail="${profile.dailyTarget}">查看详情 <span aria-hidden="true">›</span></button>`
+      : '';
     return `
       <article class="health-detail-summary"><h4><i>▤</i>总结${showStatus && profile.state !== 'empty' ? `<em class="health-summary-status ${profile.state}">${profile.status}</em>` : ''}</h4><p>${profile.summary}</p></article>
-      <article class="health-detail-card critical"><h4><i>!</i>优先关注</h4><div><strong>${profile.focus}</strong><p>${profile.focusCopy}</p></div></article>
-      <article class="health-detail-card attention"><h4><i>−</i>日常关注</h4><p>${profile.daily}</p></article>
+      <article class="health-detail-card critical"><header><h4><i>!</i>优先关注</h4>${focusDetailButton}</header><div><strong>${profile.focus}</strong><p>${profile.focusCopy}</p></div></article>
+      <article class="health-detail-card attention"><header><h4><i>−</i>日常关注</h4>${dailyDetailButton}</header><p>${profile.daily}</p></article>
       <article class="health-detail-card positive"><h4><i>✓</i>积极情况</h4><p>${profile.positive}</p></article>
       <article class="health-detail-card advice"><h4><i>◇</i>健康建议</h4><ol>${profile.advice.map(item => `<li>${item}</li>`).join('')}</ol></article>`;
   }
@@ -211,6 +217,13 @@
     if (detailTab) {
       activeDetailTab = detailTab.dataset.healthDetailTab;
       renderDetail();
+      return;
+    }
+    const focusDetail = event.target.closest('[data-health-focus-detail]');
+    if (focusDetail) {
+      const target = focusDetail.dataset.healthFocusDetail;
+      showProfile(target);
+      requestAnimationFrame(() => query(`[data-health-system="${target}"]`)?.focus());
       return;
     }
   });

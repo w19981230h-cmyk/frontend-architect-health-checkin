@@ -27,8 +27,7 @@ function exitPlanEditor() {
 
 function validatePlanDurationFields() {
   const fields = [
-    ['planManagementPeriod', 'planManagementPeriodError', '请输入管理周期'],
-    ['planTaskExtensionPeriod', 'planTaskExtensionPeriodError', '请输入任务延续期']
+    ['planManagementPeriod', 'planManagementPeriodError', '请输入管理周期']
   ];
   let firstInvalid = null;
   fields.forEach(([inputId, errorId, emptyMessage]) => {
@@ -46,12 +45,12 @@ function validatePlanDurationFields() {
   document.querySelectorAll('[data-plan-tab-panel]').forEach(panel => panel.classList.toggle('active', panel.dataset.planTabPanel === 'info'));
   firstInvalid.scrollIntoView({ block: 'center', behavior: 'smooth' });
   firstInvalid.focus();
-  showToast('请完善管理周期和任务延续期');
+  showToast('请完善管理周期');
   return false;
 }
 
 document.addEventListener('input', event => {
-  const input = event.target.closest('#planManagementPeriod, #planTaskExtensionPeriod');
+  const input = event.target.closest('#planManagementPeriod');
   if (!input) return;
   input.value = input.value.replace(/\D/g, '').slice(0, 3);
   input.removeAttribute('aria-invalid');

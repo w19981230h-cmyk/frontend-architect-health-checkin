@@ -240,10 +240,18 @@ body.health-portrait-open { overflow: hidden; }
 .health-summary-status.critical { background: #ff721d; }
 .health-summary-status.severe { background: #ef405a; }
 .health-detail-card.critical { background: linear-gradient(90deg, #fff1eb, #fff8f4); }
+.health-detail-card.critical > header { margin-bottom: 9px; display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.health-detail-card.critical > header h4 { margin-bottom: 0; }
 .health-detail-card.critical h4 i { background: #ff661b; }
 .health-detail-card.critical > div { padding: 10px 14px; border: 1px solid #ffc4aa; border-radius: 6px; }
 .health-detail-card.critical strong { display: block; margin-bottom: 5px; color: #f15722; font-size: 14px; }
+.health-focus-detail-link { min-height: 30px; padding: 0 8px; display: inline-flex; align-items: center; gap: 4px; border: 0; border-radius: 5px; color: #315cff; background: transparent; font-size: 13px; font-weight: 600; cursor: pointer; }
+.health-focus-detail-link:hover { background: #fff; }
+.health-focus-detail-link:focus-visible { outline: 2px solid #8eb0ff; outline-offset: 2px; }
+.health-focus-detail-link span { font-size: 18px; line-height: 1; }
 .health-detail-card.attention { background: linear-gradient(90deg, #fff9e6, #fffdf5); }
+.health-detail-card.attention > header { margin-bottom: 9px; display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.health-detail-card.attention > header h4 { margin-bottom: 0; }
 .health-detail-card.attention h4 i { background: #f3b600; }
 .health-detail-card.positive { background: linear-gradient(90deg, #ebfaf1, #f6fcf8); }
 .health-detail-card.positive h4 i { background: #3fbd70; }
