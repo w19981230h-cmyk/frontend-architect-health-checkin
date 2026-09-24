@@ -583,6 +583,10 @@
     fields[2].value = source.description;
     fields.forEach((field, index) => { if (index !== 0 && index !== 2) field.value = source.details?.values?.[index] ?? defaultInfo[index] ?? ''; });
     durationFieldIds.forEach(id => { const input = document.getElementById(id); input.value = limitDuration(input.value); });
+    const managementPeriod = document.getElementById('planManagementPeriod');
+    const managementPeriodUnit = document.getElementById('planManagementPeriodUnit');
+    if (managementPeriod && !managementPeriod.value) managementPeriod.value = '30';
+    if (managementPeriodUnit && !managementPeriodUnit.value) managementPeriodUnit.value = '天';
     if (!source.details?.values?.length) {
       if (fields[3] && source.team) {
         const team = source.team.replace(/^团队/, '');
