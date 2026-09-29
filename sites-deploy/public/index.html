@@ -6237,6 +6237,8 @@
       }
       if (isCheckinEvaluation) applyCheckinEvalFilters();
       if (isStatisticsReport) window.renderStatisticsReport?.();
+      window.currentApplicationView = view;
+      window.dispatchEvent(new CustomEvent('applicationViewChange', { detail: { view } }));
     }
 
     function exitPatientArchiveForGlobalNavigation() {
@@ -15921,7 +15923,7 @@
 })();
 </script>
 
-<script src="./js/service-management.js?v=package-editor-open-v14"></script>
+<script src="./js/service-management.js?v=20260929-1"></script>
 <script src="./js/interface-notes-snapshot.js?v=20260923-v3-17"></script>
 <script src="./js/interface-annotations-v3.js?v=20260924-v3-18"></script>
 <script src="./js/knowledge-base.js?v=knowledge-v15"></script>
@@ -15933,7 +15935,7 @@
 <script src="./js/team-management.js?v=20260923-7"></script>
   <script src="./js/health-portrait.js?v=20260924-3"></script>
 <script src="./js/personnel-management.js?v=20260929-2"></script>
-<script src="./js/organization-management.js?v=20260929-1"></script>
+<script src="./js/organization-management.js?v=20260929-4"></script>
 <script src="./js/workbench.js?v=20260918-3"></script>
 <script src="./js/system-role.js?v=20260929-1"></script>
 <script src="./js/scale-create.js?v=20260916-3"></script>

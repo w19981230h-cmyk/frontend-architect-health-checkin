@@ -81,6 +81,29 @@
     ['120106', 'nutrition', '营养膳食管理服务包', '个性化膳食评估与营养搭配指导', '30天', '159.00', '家庭营养管理方案', '73', '已上架'],
     ['120107', 'recovery', '术后康复随访服务包', '康复计划、复诊提醒与恢复评估', '30天', '239.00', '术后康复随访方案', '35', '待上架']
   ];
+  const serviceScopeAssignments = [
+    { consortium: 'J0002', institution: 'H0002' },
+    { consortium: 'J0002', institution: 'H0018' },
+    { consortium: 'J0003', institution: 'H0003' },
+    { consortium: 'J0003', institution: 'H0022' },
+    { consortium: 'J0005', institution: 'H0005' },
+    { consortium: 'J0010', institution: 'H0017' },
+    { consortium: 'J0013', institution: 'H0013' }
+  ];
+
+  function scopeAssignmentAt(index) {
+    return serviceScopeAssignments[Math.max(0, index) % serviceScopeAssignments.length];
+  }
+
+  function matchesOrganizationScope(consortium, institution) {
+    const scope = window.organizationScope;
+    if (!scope) return true;
+    const consortiums = Array.isArray(scope.consortiums) ? scope.consortiums : [];
+    const institutions = Array.isArray(scope.institutions) ? scope.institutions : [];
+    const consortiumHit = scope.allConsortiums || !consortiums.length || consortiums.includes('__all__') || consortiums.includes(consortium);
+    const institutionHit = scope.allInstitutions || !institutions.length || institutions.includes('__all__') || institutions.includes(institution);
+    return consortiumHit && institutionHit;
+  }
 
   const serviceRecordPeople = [
     ['李可', 'LK', '女', 30], ['张熙', 'ZX', '女', 38], ['王晨', 'WC', '男', 45], ['周宁', 'ZN', '女', 34],
@@ -807,8 +830,9 @@
 
   function renderOrderRow(row) {
     const [orderNo, packageName, buyer, patient, period, term, pay, time, status] = row;
+    const assignment = scopeAssignmentAt(orderRows.indexOf(row));
     const detailLabel = { 待使用: '订单详情', 生效中: '服务详情', 已完成: '服务记录', 待审核: '审核退款', 退款中: '退款进度', 已退款: '退款详情' }[status] || '订单详情';
-    return `<tr data-order-row data-order-status="${status}" data-order-search="${row.join(' ')}">
+    return `<tr data-order-row data-order-status="${status}" data-consortium="${assignment.consortium}" data-institution="${assignment.institution}" data-order-search="${row.join(' ')}">
       <td>${orderNo}</td><td title="${packageName}">${packageName}</td><td>${buyer}</td><td>${patient}</td>
       <td>${period}</td><td>${pay.toFixed(2)}</td><td>${time}</td>
       <td><span class="order-badge ${badgeClass(status)}">${status}</span></td>
@@ -823,7 +847,8 @@
   function renderTransactionRow(row) {
     const typeClass = row.type === '支付' ? 'payment' : 'refund';
     const amountSign = row.type === '支付' ? '+' : '-';
-    return `<tr data-transaction-row data-transaction-no="${row.no}" data-transaction-type="${row.type}" data-transaction-status="${row.status}" data-transaction-date="${row.time.slice(0, 10)}" data-transaction-search="${row.no} ${row.orderNo} ${row.refundNo || ''} ${row.buyer} ${row.packageName}" tabindex="0" aria-label="查看${row.type}交易 ${row.no}">
+    const assignment = scopeAssignmentAt(transactionRows.indexOf(row));
+    return `<tr data-transaction-row data-transaction-no="${row.no}" data-transaction-type="${row.type}" data-transaction-status="${row.status}" data-consortium="${assignment.consortium}" data-institution="${assignment.institution}" data-transaction-date="${row.time.slice(0, 10)}" data-transaction-search="${row.no} ${row.orderNo} ${row.refundNo || ''} ${row.buyer} ${row.packageName}" tabindex="0" aria-label="查看${row.type}交易 ${row.no}">
       <td title="${row.no}">${row.no}</td>
       <td><span class="transaction-type ${typeClass}">${row.type}</span></td>
       <td title="${row.orderNo}">${row.orderNo}</td>
@@ -852,7 +877,8 @@
 
   function renderServicePackageRow(row) {
     const [code, coverType, name, description, period, price, plan, subscriptions, status] = row;
-    return `<tr data-package-row data-package-code="${code}" data-package-status="${status}" data-package-search="${code} ${name} ${description} ${plan}" tabindex="0" aria-label="编辑服务包：${name}">
+    const assignment = scopeAssignmentAt(servicePackageRows.indexOf(row));
+    return `<tr data-package-row data-package-code="${code}" data-package-status="${status}" data-consortium="${assignment.consortium}" data-institution="${assignment.institution}" data-package-search="${code} ${name} ${description} ${plan}" tabindex="0" aria-label="编辑服务包：${name}">
       <td>${code}</td><td>${packageCoverIcon(coverType, row[9] || '')}</td>
       <td title="${name}">${name}</td><td title="${description}">${description}</td><td>${period}</td><td>${price}</td><td title="${plan}">${plan}</td><td>${subscriptions}</td>
       <td><span class="package-status${status === '已上架' ? '' : ' pending'}">${status}</span></td><td><span class="package-actions"><button type="button" data-package-subscriptions="${code}">服务记录</button><button type="button" data-package-more="${code}" aria-haspopup="menu" aria-expanded="false">更多</button></span></td>
@@ -1016,7 +1042,9 @@
   function setServiceActive(view) {
     const targetId = view === 'packages' ? 'servicePackageView' : view === 'orders' ? 'orderManagementView' : 'transactionRecordView';
     document.querySelectorAll('.list-main > .list-view').forEach(panel => panel.classList.toggle('active', panel.id === targetId));
-    document.getElementById('listPageTitle').textContent = view === 'packages' ? '服务包管理' : view === 'orders' ? '订单管理' : '交易记录';
+    const title = view === 'packages' ? '服务包管理' : view === 'orders' ? '订单管理' : '交易记录';
+    const titleText = document.getElementById('listPageTitleText');
+    if (titleText) titleText.textContent = title;
     document.querySelector('.list-main')?.classList.remove('workbench-main');
     document.querySelectorAll('.menu .submenu-item').forEach(item => item.classList.toggle('active', item.dataset.serviceView === view));
     document.querySelectorAll('.menu-section > .menu-item').forEach(item => item.classList.remove('active'));
@@ -1025,6 +1053,8 @@
     }
     if (view === 'orders') resetOrderFilters();
     if (view === 'transactions') resetTransactionFilters();
+    window.currentApplicationView = `service:${view}`;
+    window.dispatchEvent(new CustomEvent('applicationViewChange', { detail: { view: 'service', serviceView: view } }));
   }
 
   function applyPackageFilter() {
@@ -1035,7 +1065,8 @@
       const cells = row.children;
       const keywordHit = !keyword || `${row.dataset.packageCode || ''} ${cells[2]?.textContent || ''}`.toLowerCase().includes(keyword);
       const statusHit = !status || row.dataset.packageStatus === status;
-      const hit = keywordHit && statusHit;
+      const scopeHit = matchesOrganizationScope(row.dataset.consortium, row.dataset.institution);
+      const hit = keywordHit && statusHit && scopeHit;
       row.hidden = !hit;
       if (hit) visible += 1;
     });
@@ -1116,7 +1147,8 @@
       const keywordHit = keywordTerms.length === 0 || keywordTerms.every(term => searchText.includes(term));
       const orderDate = (row.children[6]?.textContent || '').trim().slice(0, 10).replaceAll('/', '-');
       const dateHit = (!startDate || orderDate >= startDate) && (!endDate || orderDate <= endDate);
-      const conditionHit = keywordHit && dateHit;
+      const scopeHit = matchesOrganizationScope(row.dataset.consortium, row.dataset.institution);
+      const conditionHit = keywordHit && dateHit && scopeHit;
       if (conditionHit) {
         statusCounts.all += 1;
         statusCounts[row.dataset.orderStatus] = (statusCounts[row.dataset.orderStatus] || 0) + 1;
@@ -1138,8 +1170,9 @@
       const label = tab.dataset.label || value;
       tab.innerHTML = `${label}<span class="order-tab-count">（${statusCounts[value] || 0}）</span>`;
     });
-    document.getElementById('orderTotalText').innerHTML = `<strong>${orderOverallCount}</strong> 个订单`;
-    document.getElementById('orderPayTotalText').innerHTML = `实付款合计：<strong>${orderOverallPayTotal.toLocaleString('zh-CN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</strong> 元`;
+    const scopedPayTotal = matchedRows.reduce((sum, row) => sum + (orderRows.find(item => item[0] === row.children[0]?.textContent)?.[6] || 0), 0);
+    document.getElementById('orderTotalText').innerHTML = `<strong>${matchedRows.length}</strong> 个订单`;
+    document.getElementById('orderPayTotalText').innerHTML = `实付款合计：<strong>${scopedPayTotal.toLocaleString('zh-CN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</strong> 元`;
     renderOrderPagination(matchedRows.length);
   }
 
@@ -1196,7 +1229,8 @@
       const statusHit = !status || row.dataset.transactionStatus === status;
       const date = row.dataset.transactionDate || '';
       const dateHit = (!startDate || date >= startDate) && (!endDate || date <= endDate);
-      if (!(keywordHit && typeHit && statusHit && dateHit)) return;
+      const scopeHit = matchesOrganizationScope(row.dataset.consortium, row.dataset.institution);
+      if (!(keywordHit && typeHit && statusHit && dateHit && scopeHit)) return;
       matchedRows.push(row);
       const transaction = transactionRows.find(item => item.no === row.dataset.transactionNo);
       if (transaction?.type === '支付' && transaction.status === '成功') paymentTotal += transaction.amount;
@@ -3772,6 +3806,14 @@
       closePackageSubscriptions();
       closeOrderDetail();
     }
+  });
+
+  window.addEventListener('organizationScopeChange', () => {
+    orderCurrentPage = 1;
+    transactionCurrentPage = 1;
+    if (document.getElementById('servicePackageView')?.classList.contains('active')) applyPackageFilter();
+    if (document.getElementById('orderManagementView')?.classList.contains('active')) applyOrderFilter(false);
+    if (document.getElementById('transactionRecordView')?.classList.contains('active')) applyTransactionFilter(false);
   });
 
   // These views are mounted after the original program. Clear any legacy
