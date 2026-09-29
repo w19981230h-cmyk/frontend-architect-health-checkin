@@ -86,6 +86,34 @@ body:has(.organization-department-drawer.ant-drawer-open) .ui-note-toolbar:not(.
 
 .organization-type-cards{flex-wrap:wrap}.organization-type-cards .ant-space-item{display:flex}
 
+.organization-import-modal .ant-modal{max-width:calc(100vw - 32px)}
+.organization-import-modal .ant-modal-content{padding:0;border-radius:8px;overflow:hidden;box-shadow:0 18px 56px rgba(18,32,60,.2)}
+.organization-import-modal .ant-modal-header{height:94px;margin:0;padding:0 30px;display:flex;align-items:center;border-bottom:1px solid #edf0f5;background:#fff}
+.organization-import-modal .ant-modal-title{color:#263752;font-size:24px!important;font-weight:800;line-height:1.25}
+.organization-import-modal .ant-modal-close{top:28px;right:24px;width:44px;height:44px;border-radius:50%;color:#263752;background:#f4f5f7}
+.organization-import-modal .ant-modal-close:hover{color:#1d4dff;background:#edf1ff}
+.organization-import-modal .ant-modal-close-x{font-size:22px!important}
+.organization-import-modal .ant-modal-body{max-height:none;padding:32px 30px 24px;overflow:visible}
+.organization-import-content{width:100%}
+.organization-import-modal .organization-import-dragger.ant-upload-wrapper .ant-upload-drag{height:404px;border:1px dashed #cfd5df;border-radius:2px;background:#fafbfc}
+.organization-import-modal .organization-import-dragger.ant-upload-wrapper .ant-upload-drag:hover{border-color:#3154ff;background:#f8f9ff}
+.organization-import-modal .organization-import-dragger .ant-upload{padding:0}
+.organization-import-modal .organization-import-dragger .ant-upload-btn{padding:0!important}
+.organization-import-modal .organization-import-dragger .ant-upload-drag-container{height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.organization-import-file-icon{width:68px;height:68px;margin-bottom:22px;color:#b9bec8}
+.organization-import-file-icon svg{display:block;width:100%;height:100%}
+.organization-import-modal .organization-import-select{height:44px;padding:0 20px;border-color:#3154ff;color:#3154ff;background:#f8f9ff;font-size:16px!important}
+.organization-import-modal .organization-import-select:hover{border-color:#1d4dff!important;color:#1d4dff!important;background:#f1f4ff!important}
+.organization-import-hint{margin:14px 0 0;color:#b4bac5;font-size:16px!important;line-height:1.5}
+.organization-import-notes{margin:26px 0 0;padding-left:24px;color:#8f99aa}
+.organization-import-notes li{padding-left:2px;font-size:14px!important;line-height:1.7}
+.organization-import-notes li+li{margin-top:12px}
+.organization-import-modal .ant-alert{margin-top:18px}
+.organization-import-modal .ant-modal-footer{margin:0;padding:18px 24px;border-top:1px solid #edf0f5}
+.organization-import-modal .ant-modal-footer .ant-btn{min-width:108px;height:44px;border-radius:4px;font-size:16px!important}
+.organization-import-modal .ant-modal-footer .ant-btn-default{border-color:transparent;background:#f7f8fa}
+@media(max-width:720px){.organization-import-modal .ant-modal-header{height:70px;padding:0 20px}.organization-import-modal .ant-modal-title{font-size:20px!important}.organization-import-modal .ant-modal-close{top:14px;right:14px}.organization-import-modal .ant-modal-body{padding:20px}.organization-import-modal .organization-import-dragger.ant-upload-wrapper .ant-upload-drag{height:300px}.organization-import-modal .ant-modal-footer .ant-btn{min-width:88px}}
+
 #listPageTitle.page-title{height:auto;min-height:44px;align-items:center;justify-content:space-between;gap:16px;flex:none}
 #listPageTitleText{font-size:16px;font-weight:800;white-space:nowrap}
 #globalOrganizationScope{margin-left:auto;min-width:0}

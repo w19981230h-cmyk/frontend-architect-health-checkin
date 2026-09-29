@@ -1,11 +1,5 @@
 (function () {
   const STORAGE_KEY = 'frontend-architect-system-roles-v1';
-  const seedRoles = [
-    { id: 1, name: '管理员', description: '', users: 'IP测试、白名单、王医生、真太、李铭锐、胡医生、欧舒朗', createdAt: '2026/09/14 16:27:46' },
-    { id: 2, name: '运营者', description: '拥有患者管理、方案与资源管理功能权限', users: '--', createdAt: '2025/12/12 15:47:36' },
-    { id: 3, name: '系统管理员', description: '拥有系统全部功能权限', users: 'IP测试、白名单、王医生、真太、李铭锐、胡医生、欧舒朗', createdAt: '2025/12/12 15:47:36' },
-    { id: 4, name: '科室管理员', description: '拥有患者管理、方案与资源管理功能权限，只能查看所在科室的数据', users: '科室权限、暴医生', createdAt: '2025/12/11 09:52:43' }
-  ];
   const permissionGroups = [
     { key: 'patients', label: '患者管理', children: ['全部患者', '团队患者', '患者档案'] },
     { key: 'dashboard', label: '数据看板', children: [] },
@@ -15,16 +9,28 @@
     { key: 'ai', label: 'AI医助', children: [] },
     { key: 'system', label: '系统管理', children: ['组织管理', '团队管理', '人员管理', '系统角色', '设备管理', '看板配置'] }
   ];
+  const allPermissions = permissionGroups.flatMap(group => [group.key, ...group.children.map((_, index) => `${group.key}:${index}`)]);
+  const seedRoles = [
+    { id: 101, name: '平台级管理员', description: '拥有全部功能权限，数据范围为全部平台数据', users: '平台技术人员', dataScope: 'platform', permissions: allPermissions, protected: true, createdAt: '2026/09/29 09:00:00' },
+    { id: 102, name: '医共体管理员', description: '拥有全部功能权限，数据范围为所属医共体数据', users: '王医生、李医生', dataScope: 'medicalConsortium', permissions: allPermissions, protected: true, createdAt: '2026/09/29 09:00:00' },
+    { id: 103, name: '系统管理员', description: '拥有全部功能权限，数据范围为所属机构数据', users: '张医生、陈医生', dataScope: 'all', permissions: allPermissions, protected: true, createdAt: '2026/09/29 09:00:00' },
+    { id: 104, name: '科室管理员', description: '拥有全部功能权限，数据范围为所属科室数据', users: '科室负责人、赵医生', dataScope: 'department', permissions: allPermissions, protected: true, createdAt: '2026/09/29 09:00:00' }
+  ];
+  const protectedRoleNames = new Set(seedRoles.map(role => role.name));
+  const legacyRoleNames = new Set(['管理员', '运营者', '系统管理员', '科室管理员']);
 
-  const state = { roles: loadRoles(), editingId: null, menuId: null };
+  const state = { roles: loadRoles(), editingId: null, menuId: null, readonly: false };
   const escapeHtml = value => String(value ?? '').replace(/[&<>'"]/g, char => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[char]));
 
   function loadRoles() {
     try {
       const saved = JSON.parse(localStorage.getItem(STORAGE_KEY));
-      return Array.isArray(saved) && saved.length ? saved : seedRoles.slice();
+      const customRoles = Array.isArray(saved) ? saved.filter(role => !role.protected && !legacyRoleNames.has(role.name) && !protectedRoleNames.has(role.name)) : [];
+      const roles = [...seedRoles.map(role => ({ ...role, permissions: [...allPermissions] })), ...customRoles];
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(roles));
+      return roles;
     } catch (_) {
-      return seedRoles.slice();
+      return seedRoles.map(role => ({ ...role, permissions: [...allPermissions] }));
     }
   }
 
@@ -44,7 +50,7 @@
         <td title="${escapeHtml(role.description || '')}">${escapeHtml(role.description || '')}</td>
         <td title="${escapeHtml(role.users || '--')}">${escapeHtml(role.users || '--')}</td>
         <td>${escapeHtml(role.createdAt)}</td>
-        <td><span class="system-role-actions"><button type="button" class="system-role-edit" data-role-edit="${role.id}">编辑</button><button type="button" class="system-role-more" data-role-more="${role.id}" aria-label="更多操作" aria-expanded="false">···</button></span></td>
+        <td><span class="system-role-actions">${role.protected ? `<button type="button" class="system-role-edit" data-role-view="${role.id}">查看</button>` : `<button type="button" class="system-role-edit" data-role-edit="${role.id}">编辑</button><button type="button" class="system-role-more" data-role-more="${role.id}" aria-label="更多操作" aria-expanded="false">···</button>`}</span></td>
       </tr>`).join('');
     document.getElementById('systemRoleEmpty')?.toggleAttribute('hidden', state.roles.length > 0);
     document.getElementById('systemRolePageTotal').textContent = `共 ${state.roles.length} 条`;
@@ -98,13 +104,18 @@
     }
   }
 
-  function openDialog(role) {
+  function openDialog(role, readonly = false) {
     state.editingId = role?.id ?? null;
+    state.readonly = readonly;
     const dialog = document.getElementById('systemRoleDialog');
-    document.getElementById('systemRoleDialogTitle').textContent = role ? '编辑角色' : '添加角色';
-    document.getElementById('systemRoleEditorHeading').textContent = role ? '编辑系统角色' : '添加系统角色';
-    document.getElementById('systemRoleName').value = role?.name || '';
-    document.getElementById('systemRoleDescription').value = role?.description || '';
+    document.getElementById('systemRoleDialogTitle').textContent = readonly ? '查看角色' : role ? '编辑角色' : '添加角色';
+    document.getElementById('systemRoleEditorHeading').textContent = readonly ? '系统内置角色' : role ? '编辑系统角色' : '添加系统角色';
+    const nameInput = document.getElementById('systemRoleName');
+    const descriptionInput = document.getElementById('systemRoleDescription');
+    nameInput.value = role?.name || '';
+    descriptionInput.value = role?.description || '';
+    nameInput.readOnly = readonly;
+    descriptionInput.readOnly = readonly;
     document.getElementById('systemRoleUsers').value = role?.users === '--' ? '' : role?.users || '';
     document.getElementById('systemRoleDescriptionCount').textContent = String((role?.description || '').length);
     document.getElementById('systemRoleNameError').textContent = '';
@@ -113,16 +124,19 @@
     const scope = role?.dataScope || 'all';
     const scopeInput = document.querySelector(`input[name="systemRoleDataScope"][value="${scope}"]`);
     if (scopeInput) scopeInput.checked = true;
+    dialog.querySelectorAll('#systemRolePermissionTree input, input[name="systemRoleDataScope"]').forEach(input => { input.disabled = readonly; });
+    document.querySelector('[data-role-dialog-submit]').hidden = readonly;
     setEditorTab('permissions');
     dialog.hidden = false;
     document.body.style.overflow = 'hidden';
-    requestAnimationFrame(() => document.getElementById('systemRoleName').focus());
+    if (!readonly) requestAnimationFrame(() => document.getElementById('systemRoleName').focus());
   }
 
   function closeDialog() {
     document.getElementById('systemRoleDialog').hidden = true;
     document.body.style.overflow = '';
     state.editingId = null;
+    state.readonly = false;
   }
 
   function showToast(message) {
@@ -134,6 +148,7 @@
   }
 
   function submitDialog() {
+    if (state.readonly) return;
     const nameInput = document.getElementById('systemRoleName');
     const name = nameInput.value.trim();
     if (!name) {
@@ -178,7 +193,7 @@
 
   function duplicateRole(id) {
     const source = state.roles.find(role => role.id === id);
-    if (!source) return;
+    if (!source || source.protected) return;
     const nextId = Math.max(0, ...state.roles.map(item => Number(item.id) || 0)) + 1;
     state.roles.push({ ...source, id: nextId, name: `${source.name}副本`, createdAt: nowText() });
     saveRoles();
@@ -188,7 +203,7 @@
 
   function deleteRole(id) {
     const source = state.roles.find(role => role.id === id);
-    if (!source || !window.confirm(`确认删除角色“${source.name}”吗？`)) return;
+    if (!source || source.protected || !window.confirm(`确认删除角色“${source.name}”吗？`)) return;
     state.roles = state.roles.filter(role => role.id !== id);
     saveRoles();
     render();
@@ -200,6 +215,8 @@
     if (add) { openDialog(); return; }
     const edit = event.target.closest('[data-role-edit]');
     if (edit) { openDialog(state.roles.find(role => role.id === Number(edit.dataset.roleEdit))); return; }
+    const view = event.target.closest('[data-role-view]');
+    if (view) { openDialog(state.roles.find(role => role.id === Number(view.dataset.roleView)), true); return; }
     const more = event.target.closest('[data-role-more]');
     if (more) {
       event.stopPropagation();
