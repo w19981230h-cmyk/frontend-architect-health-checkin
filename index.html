@@ -1228,6 +1228,9 @@
     .archive-report-status { display: inline-flex; align-items: center; gap: 6px; color: #8c8c8c; font-size: 14px; }
     .archive-report-status::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
     .archive-report-status.published { color: #52c41a; }
+    .archive-report-name-wrap { min-width: 0; display: flex; align-items: center; gap: 10px; }
+    .archive-report-list-icon { width: 30px; height: 30px; flex: 0 0 30px; display: inline-flex; align-items: center; justify-content: center; border-radius: 6px; color: #1677ff; background: #e6f4ff; }
+    .archive-report-list-icon svg { width: 17px; height: 17px; }
     .archive-report-name { display: block; overflow: hidden; color: rgba(0,0,0,.88); font-size: 14px; font-weight: 400; text-overflow: ellipsis; white-space: nowrap; }
     .archive-report-time { color: rgba(0,0,0,.65); font-size: 14px; }
     .archive-report-row-actions { display: flex; align-items: center; gap: 12px; white-space: nowrap; }
@@ -13787,7 +13790,7 @@
         const pageRows = filteredRows.slice((currentPage - 1) * pageSize, currentPage * pageSize);
         tableBody.innerHTML = pageRows.map(report => `
           <tr class="archive-report-card" data-report-id="${report.id}">
-            <td><span class="archive-report-name">${escapeHtml(report.name)}</span></td>
+            <td><div class="archive-report-name-wrap"><span class="archive-report-list-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3.5h8l4 4V20a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V4.5a1 1 0 0 1 1-1Z"/><path d="M14 3.5V8h4M8.5 12h7M8.5 15.5h7"/></svg></span><span class="archive-report-name">${escapeHtml(report.name)}</span></div></td>
             <td><time class="archive-report-time">${escapeHtml(report.time)}</time></td>
             <td><span class="archive-report-status${report.status === '已发布' ? ' published' : ''}">${report.status}</span></td>
             <td><div class="archive-report-row-actions">
