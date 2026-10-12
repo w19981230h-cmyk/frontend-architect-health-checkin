@@ -1195,9 +1195,9 @@
     .archive-report-generate:hover { color: #163cff; border-color: #163cff; background: #f7f9ff; }
     .archive-report-layout-btn:focus-visible, .archive-report-generate:focus-visible, .archive-report-more:focus-visible { outline: 2px solid rgba(49,84,255,.35); outline-offset: 2px; }
     .archive-report-actions svg { width: 16px; height: 16px; }
-    .archive-report-toolbar { margin: 16px 18px; padding: 16px; display: flex; align-items: flex-end; gap: 16px; border-radius: 8px; background: #fafafa; }
-    .archive-report-field { display: flex; flex-direction: column; gap: 8px; }
-    .archive-report-field label { color: rgba(0,0,0,.88); font-size: 14px; }
+    .archive-report-toolbar { margin: 16px 18px; padding: 16px; display: flex; align-items: center; gap: 20px; border-radius: 8px; background: #fafafa; }
+    .archive-report-field { display: flex; align-items: center; gap: 8px; }
+    .archive-report-field label { flex: 0 0 auto; color: rgba(0,0,0,.88); font-size: 14px; white-space: nowrap; }
     .archive-report-search-input, .archive-report-search-select { width: 240px; height: 32px; padding: 0 11px; border: 1px solid #d9d9d9; border-radius: 6px; color: rgba(0,0,0,.88); background: #fff; font-size: 14px; transition: border-color .2s, box-shadow .2s; }
     .archive-report-search-select { width: 180px; }
     .archive-report-search-input:hover, .archive-report-search-select:hover { border-color: #4096ff; }
@@ -1213,10 +1213,11 @@
     .archive-report-table td { height: 56px; padding: 0 16px; border-bottom: 1px solid #f0f0f0; background: #fff; vertical-align: middle; transition: background-color .2s; }
     .archive-report-table tbody tr:last-child td { border-bottom: 0; }
     .archive-report-table tbody tr:hover td { background: #fafafa; }
-    .archive-report-table .archive-report-name-cell { width: 34%; }
-    .archive-report-table .archive-report-time-cell { width: 21%; }
-    .archive-report-table .archive-report-status-cell { width: 13%; }
-    .archive-report-table .archive-report-operation-cell { width: 32%; }
+    .archive-report-table .archive-report-name-cell { width: 46%; }
+    .archive-report-table .archive-report-time-cell { width: 25%; }
+    .archive-report-table .archive-report-status-cell { width: 17%; }
+    .archive-report-table .archive-report-operation-cell { width: 12%; text-align: center; }
+    .archive-report-table td:last-child { text-align: center; }
     .archive-report-card { display: table-row; }
     .archive-report-file { position: relative; width: 38px; height: 42px; margin-bottom: 9px; border-radius: 4px; background: #d2fbfb; }
     .archive-report-file::before { content: ''; position: absolute; left: 5px; top: 8px; width: 24px; height: 27px; border-radius: 4px; background: #16c5c6; box-shadow: 0 2px 5px rgba(22,197,198,.18); }
@@ -1233,11 +1234,6 @@
     .archive-report-list-icon svg { width: 17px; height: 17px; }
     .archive-report-name { display: block; overflow: hidden; color: rgba(0,0,0,.88); font-size: 14px; font-weight: 400; text-overflow: ellipsis; white-space: nowrap; }
     .archive-report-time { color: rgba(0,0,0,.65); font-size: 14px; }
-    .archive-report-row-actions { display: flex; align-items: center; gap: 12px; white-space: nowrap; }
-    .archive-report-action-btn { padding: 0; color: #1677ff; background: transparent; font-size: 14px; }
-    .archive-report-action-btn:hover { color: #69b1ff; }
-    .archive-report-action-btn.danger { color: #ff4d4f; }
-    .archive-report-action-btn.danger:hover { color: #ff7875; }
     .archive-report-empty { display: none; min-height: 220px; align-items: center; justify-content: center; flex-direction: column; gap: 8px; color: rgba(0,0,0,.45); font-size: 14px; }
     .archive-report-empty.visible { display: flex; }
     .archive-report-empty-icon { width: 64px; height: 42px; border: 1px solid #d9d9d9; border-radius: 6px; background: #fafafa; }
@@ -1250,14 +1246,15 @@
     .archive-report-popover button { width: 100%; height: 36px; padding: 0 12px; display: flex; align-items: center; gap: 10px; border-radius: 4px; color: rgba(0,0,0,.88); background: #fff; font-size: 14px; text-align: left; }
     .archive-report-popover button:hover, .archive-report-popover button:focus-visible { background: rgba(0,0,0,.04); outline: 0; }
     .archive-report-popover-icon { width: 18px; color: #1677ff; font-weight: 700; text-align: center; }
-    .archive-report-more { position: absolute; right: 9px; bottom: 5px; width: 26px; height: 24px; color: #91a0b3; border-radius: 4px; background: transparent; font-size: 17px; line-height: 1; letter-spacing: 1px; }
-    .archive-report-more:hover { color: #3154ff; background: #f2f5fb; }
-    .archive-report-card.menu-open { z-index: 8; border-color: #3154ff; box-shadow: 0 0 0 1px rgba(49,84,255,.05); }
-    .archive-report-menu { position: absolute; right: 8px; top: calc(100% - 6px); z-index: 20; width: 112px; padding: 5px; border: 1px solid #e2e7ef; border-radius: 7px; background: #fff; box-shadow: 0 10px 28px rgba(31,51,82,.16); }
-    .archive-report-menu button { width: 100%; height: 32px; padding: 0 10px; border-radius: 4px; color: #42516a; background: #fff; font-size: 13px; text-align: left; }
-    .archive-report-menu button:hover, .archive-report-menu button:focus-visible { color: #3154ff; background: #f2f5ff; outline: 0; }
-    .archive-report-menu button.danger { color: #ff4d4f; }
-    .archive-report-menu button.danger:hover, .archive-report-menu button.danger:focus-visible { color: #d9363e; background: #fff2f0; }
+    .archive-report-more { height: 32px; padding: 0 11px; display: inline-flex; align-items: center; justify-content: center; gap: 5px; border: 1px solid #d9d9d9; border-radius: 6px; color: rgba(0,0,0,.88); background: #fff; font-size: 14px; transition: all .2s; }
+    .archive-report-more svg { width: 12px; height: 12px; transition: transform .2s; }
+    .archive-report-more[aria-expanded="true"] svg { transform: rotate(180deg); }
+    .archive-report-more:hover, .archive-report-more[aria-expanded="true"] { color: #1677ff; border-color: #4096ff; }
+    .archive-report-row-menu { position: fixed; z-index: 280; width: 128px; padding: 4px; border: 1px solid #f0f0f0; border-radius: 8px; background: #fff; box-shadow: 0 6px 16px 0 rgba(0,0,0,.08), 0 3px 6px -4px rgba(0,0,0,.12); }
+    .archive-report-row-menu button { width: 100%; height: 34px; padding: 0 12px; border-radius: 4px; color: rgba(0,0,0,.88); background: #fff; font-size: 14px; text-align: left; }
+    .archive-report-row-menu button:hover, .archive-report-row-menu button:focus-visible { color: #1677ff; background: rgba(0,0,0,.04); outline: 0; }
+    .archive-report-row-menu button.danger { color: #ff4d4f; }
+    .archive-report-row-menu button.danger:hover, .archive-report-row-menu button.danger:focus-visible { color: #ff7875; background: #fff2f0; }
     .archive-report-dialog-mask { position: fixed; inset: 0; z-index: 260; display: none; align-items: center; justify-content: center; padding: 24px; background: rgba(19,32,55,.42); }
     .archive-report-dialog-mask.open { display: flex; }
     .archive-report-dialog { width: min(440px, calc(100vw - 48px)); overflow: hidden; border-radius: 10px; background: #fff; box-shadow: 0 20px 56px rgba(18,38,75,.2); }
@@ -1284,7 +1281,7 @@
     .archive-report-dialog-btn.danger { color: #fff; border-color: #ff4d4f; background: #ff4d4f; }
     .archive-report-dialog-btn.danger:hover { border-color: #d9363e; background: #d9363e; }
     .archive-report-dialog-btn:focus-visible, .archive-report-dialog-close:focus-visible { outline: 2px solid rgba(49,84,255,.35); outline-offset: 2px; }
-    @media (max-width: 980px) { .archive-report-toolbar { align-items: stretch; flex-wrap: wrap; } .archive-report-field { flex: 1 1 220px; } .archive-report-search-input, .archive-report-search-select { width: 100%; } }
+    @media (max-width: 980px) { .archive-report-toolbar { flex-wrap: wrap; } .archive-report-field { flex: 1 1 300px; } .archive-report-search-input, .archive-report-search-select { flex: 1 1 auto; width: auto; } }
     @media (prefers-reduced-motion: reduce) { .archive-report-layout-btn, .archive-report-generate, .archive-report-table td { transition: none; } }
     .archive-page.history-document-mode { min-width: 0; overflow: auto; background: #eaf1fa; }
     .archive-page.history-document-mode .archive-shell { min-height: calc(100vh - 54px); padding: 0 14px 18px; display: grid; grid-template-columns: 276px minmax(0, 1fr); gap: 24px; }
@@ -3946,8 +3943,8 @@
             </div>
           </header>
           <form class="archive-report-toolbar" id="archiveReportSearchForm">
-            <div class="archive-report-field"><label for="archiveReportNameSearch">报告名称</label><input class="archive-report-search-input" id="archiveReportNameSearch" type="search" placeholder="请输入报告名称" autocomplete="off"></div>
-            <div class="archive-report-field"><label for="archiveReportStatusSearch">发布状态</label><select class="archive-report-search-select" id="archiveReportStatusSearch"><option value="">全部</option><option value="已发布">已发布</option><option value="待发布">待发布</option></select></div>
+            <div class="archive-report-field"><label for="archiveReportNameSearch">报告名称：</label><input class="archive-report-search-input" id="archiveReportNameSearch" type="search" placeholder="请输入报告名称" autocomplete="off"></div>
+            <div class="archive-report-field"><label for="archiveReportStatusSearch">发布状态：</label><select class="archive-report-search-select" id="archiveReportStatusSearch"><option value="">全部</option><option value="已发布">已发布</option><option value="待发布">待发布</option></select></div>
             <div class="archive-report-query-actions"><button class="archive-report-query-btn primary" type="submit">查询</button><button class="archive-report-query-btn" type="button" id="archiveReportReset">重置</button></div>
           </form>
           <div class="archive-report-table-wrap">
@@ -13736,18 +13733,18 @@
       const statusSelect = document.getElementById('archiveReportStatusSearch');
       const pageSize = 10;
       let reportRows = [
-        ['阶段日报 2026-07-20', '2026/07/21 00:00:01', '待发布'],
-        ['阶段日报 2026-07-19', '2026/07/20 00:00:01', '待发布'],
-        ['阶段日报 2026-07-18', '2026/07/19 00:00:01', '已发布'],
-        ['阶段日报 2026-07-17', '2026/07/18 00:00:02', '已发布'],
-        ['阶段日报 2026-07-16', '2026/07/17 00:00:02', '已发布'],
-        ['阶段日报 2026-07-15', '2026/07/16 00:00:02', '已发布'],
-        ['阶段日报 2026-07-14', '2026/07/15 00:00:02', '已发布'],
-        ['阶段日报 2026-07-13', '2026/07/15 17:17:27', '已发布'],
-        ['阶段日报测试模板（2026-07-08）', '2026/07/10 14:35:36', '已发布'],
-        ['阶段日报 2026-07-12', '2026/07/13 15:01:24', '已发布'],
-        ['阶段日报 2026-07-11', '2026/07/12 00:00:56', '已发布'],
-        ['阶段日报 2026-07-10', '2026/07/11 00:01:08', '已发布']
+        ['2026年第三季度健康管理总结', '2026/10/11 16:42:18', '待发布'],
+        ['心脑血管疾病风险评估报告', '2026/10/08 10:26:43', '已发布'],
+        ['血压管理阶段随访报告', '2026/09/26 15:18:07', '已发布'],
+        ['年度体检报告综合解读', '2026/09/12 09:35:26', '已发布'],
+        ['糖尿病风险筛查报告', '2026/08/29 14:07:51', '已发布'],
+        ['用药依从性评估报告', '2026/08/16 11:24:09', '待发布'],
+        ['营养与体重管理评估报告', '2026/07/30 17:05:32', '已发布'],
+        ['睡眠健康评估报告', '2026/07/09 13:46:20', '已发布'],
+        ['健康管理方案执行总结', '2026/06/18 10:12:44', '已发布'],
+        ['复诊前健康状况评估报告', '2026/05/27 16:31:05', '待发布'],
+        ['90天健康管理阶段报告', '2026/04/15 09:58:37', '已发布'],
+        ['入组综合健康评估报告', '2026/03/02 14:20:16', '已发布']
       ].map((item, index) => ({ id: index + 1, name: item[0], time: item[1], status: item[2] }));
       let filteredRows = reportRows.slice();
       let currentPage = 1;
@@ -13769,8 +13766,8 @@
       }
 
       function closeReportMenu() {
-        document.querySelectorAll('.archive-report-popover').forEach(menu => menu.remove());
-        document.querySelectorAll('[data-report-menu-trigger]').forEach(button => button.setAttribute('aria-expanded', 'false'));
+        document.querySelectorAll('.archive-report-popover, .archive-report-row-menu').forEach(menu => menu.remove());
+        document.querySelectorAll('[data-report-menu-trigger], [data-report-more]').forEach(button => button.setAttribute('aria-expanded', 'false'));
       }
 
       function getActiveReport() {
@@ -13793,13 +13790,7 @@
             <td><div class="archive-report-name-wrap"><span class="archive-report-list-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3.5h8l4 4V20a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V4.5a1 1 0 0 1 1-1Z"/><path d="M14 3.5V8h4M8.5 12h7M8.5 15.5h7"/></svg></span><span class="archive-report-name">${escapeHtml(report.name)}</span></div></td>
             <td><time class="archive-report-time">${escapeHtml(report.time)}</time></td>
             <td><span class="archive-report-status${report.status === '已发布' ? ' published' : ''}">${report.status}</span></td>
-            <td><div class="archive-report-row-actions">
-              <button class="archive-report-action-btn" type="button" data-report-action="preview">预览</button>
-              <button class="archive-report-action-btn" type="button" data-report-action="publish">${report.status === '已发布' ? '撤销发布' : '发布'}</button>
-              <button class="archive-report-action-btn" type="button" data-report-action="edit">编辑</button>
-              <button class="archive-report-action-btn" type="button" data-report-action="rename">重命名</button>
-              <button class="archive-report-action-btn danger" type="button" data-report-action="delete">删除</button>
-            </div></td>
+            <td><button class="archive-report-more" type="button" data-report-more aria-label="${escapeHtml(report.name)} 更多操作" aria-haspopup="menu" aria-expanded="false">更多<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m7 10 5 5 5-5"/></svg></button></td>
           </tr>`).join('');
         tableBody.closest('table').style.display = pageRows.length ? 'table' : 'none';
         emptyState.classList.toggle('visible', !pageRows.length);
@@ -13890,6 +13881,26 @@
         menu.querySelector('button')?.focus();
       }
 
+      function openRowReportMenu(button) {
+        const wasOpen = button.getAttribute('aria-expanded') === 'true';
+        const reportId = Number(button.closest('[data-report-id]')?.dataset.reportId);
+        const report = reportRows.find(item => item.id === reportId);
+        closeReportMenu();
+        if (wasOpen || !report) return;
+        const menu = document.createElement('div');
+        menu.className = 'archive-report-row-menu';
+        menu.setAttribute('role', 'menu');
+        menu.innerHTML = `<button role="menuitem" data-report-id="${reportId}" data-report-action="preview">预览</button><button role="menuitem" data-report-id="${reportId}" data-report-action="publish">${report.status === '已发布' ? '撤销发布' : '发布'}</button><button role="menuitem" data-report-id="${reportId}" data-report-action="edit">编辑</button><button role="menuitem" data-report-id="${reportId}" data-report-action="rename">重命名</button><button class="danger" role="menuitem" data-report-id="${reportId}" data-report-action="delete">删除</button>`;
+        document.body.append(menu);
+        const rect = button.getBoundingClientRect();
+        const menuWidth = 128;
+        const menuHeight = menu.offsetHeight;
+        menu.style.left = `${Math.max(8, Math.min(window.innerWidth - menuWidth - 8, rect.right - menuWidth))}px`;
+        menu.style.top = `${rect.bottom + menuHeight + 8 > window.innerHeight ? rect.top - menuHeight - 4 : rect.bottom + 4}px`;
+        button.setAttribute('aria-expanded', 'true');
+        menu.querySelector('button')?.focus();
+      }
+
       document.getElementById('archiveReportSearchForm').addEventListener('submit', event => { event.preventDefault(); runReportSearch(); });
       document.getElementById('archiveReportReset').addEventListener('click', () => { nameInput.value = ''; statusSelect.value = ''; runReportSearch(); });
 
@@ -13902,6 +13913,13 @@
           openTopReportMenu(menuTrigger);
           return;
         }
+        const rowMore = event.target.closest('[data-report-more]');
+        if (rowMore) {
+          event.preventDefault();
+          event.stopImmediatePropagation();
+          openRowReportMenu(rowMore);
+          return;
+        }
         const feature = event.target.closest('[data-report-feature]');
         if (feature) { closeReportMenu(); showReportToast(`已选择“${feature.dataset.reportFeature}”`); return; }
         const action = event.target.closest('[data-report-action]');
@@ -13909,8 +13927,9 @@
           event.preventDefault();
           event.stopImmediatePropagation();
           const row = action.closest('[data-report-id]');
-          const reportId = Number(row?.dataset.reportId);
+          const reportId = Number(action.dataset.reportId || row?.dataset.reportId);
           const report = reportRows.find(item => item.id === reportId);
+          closeReportMenu();
           if (action.dataset.reportAction === 'preview') openReportDialog('preview', reportId);
           if (action.dataset.reportAction === 'publish') toggleReportStatus(reportId);
           if (action.dataset.reportAction === 'edit') showReportToast(`已进入“${report?.name || '未命名报告'}”编辑`);
