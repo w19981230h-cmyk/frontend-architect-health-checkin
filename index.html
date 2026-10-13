@@ -1246,10 +1246,10 @@
     .archive-report-popover button { width: 100%; height: 36px; padding: 0 12px; display: flex; align-items: center; gap: 10px; border-radius: 4px; color: rgba(0,0,0,.88); background: #fff; font-size: 14px; text-align: left; }
     .archive-report-popover button:hover, .archive-report-popover button:focus-visible { background: rgba(0,0,0,.04); outline: 0; }
     .archive-report-popover-icon { width: 18px; color: #1677ff; font-weight: 700; text-align: center; }
-    .archive-report-more { height: 32px; padding: 0 11px; display: inline-flex; align-items: center; justify-content: center; gap: 5px; border: 1px solid #d9d9d9; border-radius: 6px; color: rgba(0,0,0,.88); background: #fff; font-size: 14px; transition: all .2s; }
+    .archive-report-more { height: 32px; padding: 0 4px; display: inline-flex; align-items: center; justify-content: center; gap: 4px; border: 0; border-radius: 4px; color: #1677ff; background: transparent; font-size: 14px; transition: color .2s; }
     .archive-report-more svg { width: 12px; height: 12px; transition: transform .2s; }
     .archive-report-more[aria-expanded="true"] svg { transform: rotate(180deg); }
-    .archive-report-more:hover, .archive-report-more[aria-expanded="true"] { color: #1677ff; border-color: #4096ff; }
+    .archive-report-more:hover, .archive-report-more[aria-expanded="true"] { color: #4096ff; background: transparent; }
     .archive-report-row-menu { position: fixed; z-index: 280; width: 128px; padding: 4px; border: 1px solid #f0f0f0; border-radius: 8px; background: #fff; box-shadow: 0 6px 16px 0 rgba(0,0,0,.08), 0 3px 6px -4px rgba(0,0,0,.12); }
     .archive-report-row-menu button { width: 100%; height: 34px; padding: 0 12px; border-radius: 4px; color: rgba(0,0,0,.88); background: #fff; font-size: 14px; text-align: left; }
     .archive-report-row-menu button:hover, .archive-report-row-menu button:focus-visible { color: #1677ff; background: rgba(0,0,0,.04); outline: 0; }
@@ -1281,6 +1281,68 @@
     .archive-report-dialog-btn.danger { color: #fff; border-color: #ff4d4f; background: #ff4d4f; }
     .archive-report-dialog-btn.danger:hover { border-color: #d9363e; background: #d9363e; }
     .archive-report-dialog-btn:focus-visible, .archive-report-dialog-close:focus-visible { outline: 2px solid rgba(49,84,255,.35); outline-offset: 2px; }
+    .archive-invite-mask { position: fixed; inset: 0; z-index: 300; display: none; align-items: center; justify-content: center; padding: 24px; background: rgba(19,32,55,.5); }
+    .archive-invite-mask.open { display: flex; }
+    .archive-invite-dialog { width: min(820px, calc(100vw - 48px)); max-height: calc(100vh - 48px); display: flex; flex-direction: column; overflow: hidden; border-radius: 10px; background: #fff; box-shadow: 0 20px 56px rgba(18,38,75,.22); }
+    .archive-invite-dialog.evaluation-mode { width: min(920px, calc(100vw - 48px)); min-height: min(680px, calc(100vh - 48px)); }
+    .archive-invite-dialog.evaluation-mode .archive-invite-body { min-height: 530px; padding-top: 26px; }
+    .archive-invite-dialog.evaluation-mode .archive-invite-selector { height: 510px; }
+    .archive-invite-dialog.evaluation-mode .archive-invite-scale-list,
+    .archive-invite-dialog.evaluation-mode .archive-invite-selected-list { height: 418px; }
+    .archive-invite-head { min-height: 60px; padding: 0 20px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid #f0f0f0; }
+    .archive-invite-title { display: flex; align-items: center; gap: 14px; }
+    .archive-invite-title h2 { margin: 0; color: rgba(0,0,0,.88); font-size: 16px; font-weight: 600; }
+    .archive-invite-patient { display: inline-flex; align-items: center; gap: 7px; color: rgba(0,0,0,.65); font-size: 14px; }
+    .archive-invite-avatar { width: 28px; height: 28px; display: inline-flex; align-items: center; justify-content: center; border-radius: 50%; color: #1677ff; background: #e6f4ff; font-size: 13px; font-weight: 600; }
+    .archive-invite-close { width: 32px; height: 32px; border-radius: 6px; color: rgba(0,0,0,.45); background: transparent; font-size: 22px; }
+    .archive-invite-close:hover { color: rgba(0,0,0,.88); background: rgba(0,0,0,.04); }
+    .archive-invite-steps { padding: 16px 20px 0; display: flex; align-items: center; justify-content: center; gap: 10px; color: rgba(0,0,0,.45); font-size: 13px; }
+    .archive-invite-step { display: inline-flex; align-items: center; gap: 7px; }
+    .archive-invite-step::before { content: attr(data-step); width: 24px; height: 24px; display: inline-flex; align-items: center; justify-content: center; border-radius: 50%; color: rgba(0,0,0,.45); background: rgba(0,0,0,.06); }
+    .archive-invite-step.active { color: #1677ff; font-weight: 600; }
+    .archive-invite-step.active::before { color: #fff; background: #1677ff; }
+    .archive-invite-step-line { width: 64px; height: 1px; background: #d9d9d9; }
+    .archive-invite-body { min-height: 430px; padding: 16px 20px 20px; overflow: auto; }
+    .archive-invite-selector { height: 410px; display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); overflow: hidden; border: 1px solid #f0f0f0; border-radius: 8px; }
+    .archive-invite-source, .archive-invite-selected { min-width: 0; padding: 16px; overflow: hidden; }
+    .archive-invite-source { border-right: 1px solid #f0f0f0; }
+    .archive-invite-search { position: relative; margin-bottom: 12px; }
+    .archive-invite-search::before { content: '⌕'; position: absolute; left: 11px; top: 5px; z-index: 1; color: rgba(0,0,0,.35); font-size: 20px; }
+    .archive-invite-search input { width: 100%; height: 36px; padding: 0 11px 0 34px; border: 1px solid #d9d9d9; border-radius: 6px; color: rgba(0,0,0,.88); background: #fff; font-size: 14px; }
+    .archive-invite-search input:hover { border-color: #4096ff; }
+    .archive-invite-search input:focus { border-color: #1677ff; outline: 0; box-shadow: 0 0 0 2px rgba(5,145,255,.1); }
+    .archive-invite-scale-list { height: 330px; overflow-y: auto; }
+    .archive-invite-scale-item { min-height: 54px; margin-bottom: 8px; padding: 10px 12px; display: flex; align-items: center; gap: 9px; border: 1px solid #f0f0f0; border-radius: 6px; color: rgba(0,0,0,.88); background: #fff; font-size: 13px; cursor: pointer; }
+    .archive-invite-scale-item:hover { border-color: #91caff; }
+    .archive-invite-scale-item:focus-within { border-color: #1677ff; box-shadow: 0 0 0 1px rgba(22,119,255,.08); }
+    .archive-invite-scale-item input { width: 16px; height: 16px; flex: 0 0 auto; accent-color: #1677ff; }
+    .archive-invite-scale-name { min-width: 0; flex: 1 1 auto; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .archive-invite-preview { flex: 0 0 auto; padding: 0; color: #1677ff; background: transparent; font-size: 13px; }
+    .archive-invite-selected-head { height: 36px; margin-bottom: 12px; display: flex; align-items: center; justify-content: space-between; color: rgba(0,0,0,.65); font-size: 13px; }
+    .archive-invite-clear { padding: 0; color: #1677ff; background: transparent; font-size: 13px; }
+    .archive-invite-selected-list { height: 330px; overflow-y: auto; }
+    .archive-invite-selected-item { min-height: 48px; margin-bottom: 8px; padding: 9px 10px 9px 12px; display: flex; align-items: center; gap: 8px; border: 1px solid #f0f0f0; border-radius: 6px; color: rgba(0,0,0,.88); background: #fafafa; font-size: 13px; }
+    .archive-invite-selected-item span { min-width: 0; flex: 1 1 auto; }
+    .archive-invite-remove { width: 26px; height: 26px; flex: 0 0 auto; border-radius: 4px; color: rgba(0,0,0,.45); background: transparent; font-size: 18px; }
+    .archive-invite-remove:hover { color: #ff4d4f; background: #fff2f0; }
+    .archive-invite-empty { height: 180px; display: flex; align-items: center; justify-content: center; color: rgba(0,0,0,.35); font-size: 13px; }
+    .archive-invite-form { max-width: 620px; margin: 12px auto 0; padding: 24px; border: 1px solid #f0f0f0; border-radius: 8px; background: #fafafa; }
+    .archive-invite-form-field { margin-bottom: 20px; }
+    .archive-invite-form-field:last-of-type { margin-bottom: 0; }
+    .archive-invite-form-field label { margin-bottom: 8px; display: block; color: rgba(0,0,0,.88); font-size: 14px; }
+    .archive-invite-form-field label.required::before { content: '*'; margin-right: 4px; color: #ff4d4f; }
+    .archive-invite-form-field input, .archive-invite-form-field textarea { width: 100%; padding: 0 11px; border: 1px solid #d9d9d9; border-radius: 6px; color: rgba(0,0,0,.88); background: #fff; font-size: 14px; }
+    .archive-invite-form-field input { height: 36px; }
+    .archive-invite-form-field textarea { min-height: 96px; padding-top: 9px; resize: vertical; }
+    .archive-invite-form-field input:focus, .archive-invite-form-field textarea:focus { border-color: #1677ff; outline: 0; box-shadow: 0 0 0 2px rgba(5,145,255,.1); }
+    .archive-invite-form-error { min-height: 20px; margin-top: 6px; color: #ff4d4f; font-size: 12px; }
+    .archive-invite-foot { min-height: 64px; padding: 12px 20px; display: flex; align-items: center; justify-content: flex-end; gap: 8px; border-top: 1px solid #f0f0f0; background: #fff; }
+    .archive-invite-btn { height: 32px; padding: 0 15px; border: 1px solid #d9d9d9; border-radius: 6px; color: rgba(0,0,0,.88); background: #fff; font-size: 14px; }
+    .archive-invite-btn:hover { color: #4096ff; border-color: #4096ff; }
+    .archive-invite-btn.primary { color: #fff; border-color: #1677ff; background: #1677ff; box-shadow: 0 2px 0 rgba(5,145,255,.1); }
+    .archive-invite-btn.primary:hover { color: #fff; border-color: #4096ff; background: #4096ff; }
+    .archive-invite-btn:disabled { color: rgba(0,0,0,.25); border-color: #d9d9d9; background: rgba(0,0,0,.04); cursor: not-allowed; }
+    @media (max-width: 720px) { .archive-invite-dialog { height: calc(100vh - 32px); } .archive-invite-selector { height: auto; grid-template-columns: 1fr; } .archive-invite-source { border-right: 0; border-bottom: 1px solid #f0f0f0; } .archive-invite-scale-list, .archive-invite-selected-list { height: 210px; } }
     @media (max-width: 980px) { .archive-report-toolbar { flex-wrap: wrap; } .archive-report-field { flex: 1 1 300px; } .archive-report-search-input, .archive-report-search-select { flex: 1 1 auto; width: auto; } }
     @media (prefers-reduced-motion: reduce) { .archive-report-layout-btn, .archive-report-generate, .archive-report-table td { transition: none; } }
     .archive-page.history-document-mode { min-width: 0; overflow: auto; background: #eaf1fa; }
@@ -2855,11 +2917,11 @@
   <link rel="stylesheet" href="./css/statistics-report.css?v=20260911-05">
   <link rel="stylesheet" href="./css/operations-statistics.css?v=20260910-01">
   <link rel="stylesheet" href="./css/operations-statistics-responsive.css?v=20260910-02">
-  <link rel="stylesheet" href="./css/patient-archive-reference.css?v=20260924-1">
+  <link rel="stylesheet" href="./css/patient-archive-reference.css?v=20261013-3">
   <link rel="stylesheet" href="./css/health-portrait.css?v=20260924-3">
 <link rel="stylesheet" href="./css/personnel-management.css?v=20260929-1">
 <link rel="stylesheet" href="./css/organization-management.css?v=20260929-1">
-<link rel="stylesheet" href="./css/workbench.css?v=20260918-4">
+<link rel="stylesheet" href="./css/workbench.css?v=20261013-10">
 <link rel="stylesheet" href="./css/system-role.css?v=20260916-1">
 <link rel="stylesheet" href="./css/dashboard-latest.css?v=20260913-40">
 <link rel="stylesheet" href="./css/dashboard-updated.css?v=20260913-2">
@@ -2889,7 +2951,7 @@
         <div class="sidebar-bottom"><div class="bottom-line"></div><div class="notice"><div class="notice-left"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M18 8a6 6 0 1 0-12 0c0 7-3 6-3 9h18c0-3-3-2-3-9"/><path d="M10 21h4"/></svg><span>消息通知</span></div><span class="badge">99+</span></div><div class="user-card"><div class="avatar"></div><strong>平台技术人员</strong><svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="m9 18 6-6-6-6"/></svg></div><div class="collapse"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M4 7h14M4 12h10M4 17h14"/></svg></div></div>
       </aside>
       <main class="list-main">
-        <header class="page-title" id="listPageTitle"><span id="listPageTitleText">团队管理</span><div id="globalOrganizationScope" data-persistence-ignore></div></header><section class="list-panel list-view personnel-management-view" id="personnelManagementView" data-persistence-ignore aria-label="人员管理"></section><section class="list-panel list-view organization-management-view" id="organizationManagementView" data-persistence-ignore aria-label="组织管理"></section>
+        <header class="page-title" id="listPageTitle"><span id="listPageTitleText">团队管理</span><button type="button" class="workbench-create-button" data-open-patient-create data-source="工作台" aria-label="新建患者档案"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true"><path d="M8 3v10M3 8h10"/></svg><span>建档</span></button><div id="globalOrganizationScope" data-persistence-ignore></div></header><section class="list-panel list-view personnel-management-view" id="personnelManagementView" data-persistence-ignore aria-label="人员管理"></section><section class="list-panel list-view organization-management-view" id="organizationManagementView" data-persistence-ignore aria-label="组织管理"></section>
         <section class="list-panel list-view system-role-view" id="systemRoleView" data-persistence-ignore aria-label="系统角色">
           <div class="system-role-shell">
             <div class="system-role-toolbar">
@@ -2943,73 +3005,6 @@
         <section class="list-panel list-view operations-statistics-view" id="operationsStatisticsView" tabindex="0" aria-label="统计报表"></section>
         <section class="list-panel list-view workbench-view" id="workbenchView">
           <div class="workbench-shell">
-            <section class="workbench-ai-card">
-              <div class="workbench-chat">
-                <div class="workbench-chat-head">
-                  <div class="workbench-chat-avatar" aria-hidden="true"><span></span><i></i></div>
-                  <div>
-                    <div class="workbench-chat-title">AI小助手</div>
-                    <div class="workbench-chat-subtitle">实时整理待办、随访和患者运营线索</div>
-                  </div>
-                </div>
-                <div class="workbench-chat-body" id="workbenchChatBody">
-                  <div class="workbench-ai-insight">
-                    <div class="workbench-ai-insight-title">今日智能洞察 <span>实时分析</span></div>
-                    <div class="workbench-ai-metrics">
-                      <div class="workbench-ai-metric"><b>5</b><small>重点待办</small></div>
-                      <div class="workbench-ai-metric"><b>3</b><small>高优任务</small></div>
-                      <div class="workbench-ai-metric"><b>32</b><small>逾期随访</small></div>
-                    </div>
-                  </div>
-                  <div class="workbench-risk-card"><strong>AI 风险提醒</strong>当前高优任务集中在入组审核、患者手机号补充和外呼失败处理，若延后处理会影响今日随访触达率。</div>
-                  <div class="workbench-suggestion-card">
-                    <h3>推荐处理路径</h3>
-                    <ol>
-                      <li>先审核待入组患者，避免预分组患者积压。</li>
-                      <li>补齐缺失手机号，再触发二次外呼。</li>
-                      <li>最后处理今日待办随访，保持完成率稳定。</li>
-                    </ol>
-                  </div>
-                  <div class="workbench-message ai"><strong>张医生，上午好！</strong>今日已为您整理 5 条重点待办，优先处理患者入组审核、手机号补充和 AI 外呼失败任务。</div>
-                  <div class="workbench-message user">帮我看一下今天最需要先处理什么？</div>
-                  <div class="workbench-message ai"><strong>建议优先顺序</strong>先处理高优任务：待审核患者入组、补充患者手机号、AI 外呼失败处理。完成后再进入今日待办随访任务。</div>
-                </div>
-                <div class="workbench-quick-row">
-                  <button type="button" data-workbench-quick="汇总今日待办">汇总今日待办</button>
-                  <button type="button" data-workbench-quick="查看高优任务">查看高优任务</button>
-                  <button type="button" data-workbench-quick="生成随访建议">生成随访建议</button>
-                </div>
-                <label class="workbench-chat-input">
-                  <input id="workbenchChatInput" placeholder="问问 AI 小助手今天需要处理什么..." />
-                  <button type="button" data-workbench-send aria-label="发送"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="m22 2-7 20-4-9-9-4 20-7Z"/><path d="M22 2 11 13"/></svg></button>
-                </label>
-              </div>
-              <div class="workbench-ai-badge">AI小助手</div>
-              <h1 class="workbench-greeting">张医生，上午好！</h1>
-              <p class="workbench-subtext">AI小助手已为您整理今日工作信息</p>
-              <div class="workbench-robot" aria-hidden="true">
-                <span class="robot-ghost-card"></span>
-                <span class="robot-ghost-chart"></span>
-                <span class="robot-ear left"></span>
-                <span class="robot-ear right"></span>
-                <span class="robot-arm left"></span>
-                <span class="robot-arm right"></span>
-                <span class="robot-hand left"></span>
-                <span class="robot-hand right"></span>
-                <span class="robot-body"></span>
-                <span class="robot-head"><span class="robot-face"></span></span>
-                <span class="robot-leg left"></span>
-                <span class="robot-leg right"></span>
-                <span class="robot-platform"></span>
-              </div>
-              <div class="workbench-auto-card">
-                <div class="workbench-auto-title">AI小助手今日已自动执行</div>
-                <div class="workbench-auto-grid">
-                  <div class="workbench-auto-item"><span>智能分组</span><strong>2431 <b>例患者</b></strong><small>累计 <em>154771</em></small></div>
-                  <div class="workbench-auto-item"><span>智能外呼</span><strong>2431 <b>次外呼</b></strong><small>累计 <em>154771</em></small></div>
-                </div>
-              </div>
-            </section>
             <section class="workbench-right">
               <div class="workbench-stats" id="workbenchStats" aria-label="当前机构范围关键指标"></div>
               <div class="workbench-section-heading">
@@ -4104,6 +4099,17 @@
       <footer class="archive-report-dialog-foot" id="archiveReportDialogFoot"></footer>
     </section>
   </div>
+  <div class="archive-invite-mask" id="archiveInviteDialog" aria-hidden="true">
+    <section class="archive-invite-dialog" role="dialog" aria-modal="true" aria-labelledby="archiveInviteDialogTitle">
+      <header class="archive-invite-head">
+        <div class="archive-invite-title"><h2 id="archiveInviteDialogTitle">邀请完善信息</h2><span class="archive-invite-patient"><span class="archive-invite-avatar" id="archiveInviteAvatar">黄</span><strong id="archiveInvitePatientName">黄尚忠</strong><span id="archiveInvitePatientMeta">男　73岁</span></span></div>
+        <button class="archive-invite-close" type="button" data-invite-close aria-label="关闭">×</button>
+      </header>
+      <div class="archive-invite-steps" id="archiveInviteSteps"></div>
+      <div class="archive-invite-body" id="archiveInviteBody"></div>
+      <footer class="archive-invite-foot" id="archiveInviteFoot"></footer>
+    </section>
+  </div>
   <div class="modal-mask" id="indicatorModal" aria-hidden="true">
     <div class="indicator-modal" role="dialog" aria-modal="true" aria-labelledby="indicatorModalTitle">
       <div class="modal-head"><h2 id="indicatorModalTitle">新建指标看板</h2><button class="modal-close" data-close-indicator-modal aria-label="关闭">×</button></div>
@@ -4270,17 +4276,16 @@
       <div class="archive-edit-modal-body patient-create-body">
         <form id="patientCreateForm" novalidate>
           <section class="patient-create-section"><h3>基础信息</h3><div class="patient-create-grid">
-            <label class="patient-create-field"><span>患者来源 <b>*</b></span><select name="source"><option value="">请选择患者来源</option><option>门诊</option><option>住院</option><option>体检中心</option><option>社区筛查</option><option>义诊</option><option>医护手工建档</option><option>其他</option></select><small data-create-error="source"></small></label>
             <label class="patient-create-field"><span>姓名 <b>*</b></span><input name="name" autocomplete="name" placeholder="请输入患者姓名"><small data-create-error="name"></small></label>
             <label class="patient-create-field"><span>证件类型 <b>*</b></span><select name="idType"><option>居民身份证</option><option>护照</option><option>港澳居民来往内地通行证</option><option>台湾居民来往大陆通行证</option><option>其他</option></select></label>
-            <label class="patient-create-field"><span>证件号码 <b>*</b></span><input name="idNumber" autocomplete="off" placeholder="请输入证件号码"><small data-create-error="idNumber"></small></label>
+            <label class="patient-create-field"><span>证件号码 <b>*</b></span><input name="idNumber" autocomplete="off" maxlength="18" placeholder="请输入18位居民身份证号" aria-describedby="patientCreateIdNumberError"><small id="patientCreateIdNumberError" data-create-error="idNumber" role="alert"></small></label>
             <div class="patient-create-duplicate" id="patientCreateDuplicate" hidden></div>
             <label class="patient-create-field">性别<select name="gender"><option value="">请选择</option><option>男</option><option>女</option></select></label>
-            <label class="patient-create-field">出生日期<input name="birthDate" type="date" max="2026-09-21"><small id="patientCreateAgeHint">年龄将根据出生日期自动计算</small></label>
-            <label class="patient-create-field"><span>手机号 <b>*</b></span><input name="phone" type="text" inputmode="numeric" autocomplete="tel" maxlength="11" placeholder="请输入11位手机号"><small data-create-error="phone"></small></label>
+            <label class="patient-create-field">出生日期<input name="birthDate" type="date" max="2026-09-21" aria-describedby="patientCreateAgeHint"><small id="patientCreateAgeHint" aria-live="polite">年龄将根据出生日期自动计算</small></label>
+            <label class="patient-create-field"><span>手机号 <b>*</b></span><input name="phone" type="text" inputmode="numeric" autocomplete="tel" maxlength="11" placeholder="请输入11位手机号" aria-describedby="patientCreatePhoneError"><small id="patientCreatePhoneError" data-create-error="phone" role="alert"></small></label>
             <p class="patient-create-phone-tip" id="patientCreatePhoneTip" hidden>该手机号已关联其他患者，请确认是否继续使用</p>
           </div>
-          <details class="patient-create-collapse patient-create-more-inline" id="patientCreateMore"><summary>更多基本信息（选填）</summary><div class="patient-create-grid">
+          <details class="patient-create-collapse patient-create-more-inline" id="patientCreateMore"><summary>更多信息（选填）</summary><div class="patient-create-grid">
             <label class="patient-create-field">民族<select name="ethnicity"><option value="">请选择</option><option>汉族</option><option>壮族</option><option>回族</option><option>满族</option><option>苗族</option><option>其他</option></select></label>
             <label class="patient-create-field">婚姻状况<select name="maritalStatus"><option value="">请选择</option><option>未婚</option><option>已婚</option><option>离异</option><option>丧偶</option><option>其他</option></select></label>
             <label class="patient-create-field">职业<input name="occupation" placeholder="请输入职业"></label>
@@ -4329,6 +4334,48 @@
       <section class="editor-section"><div class="editor-section-head"><h2>健康画像</h2><button class="section-toggle" data-section-toggle aria-label="折叠"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="m6 9 6 6 6-6"/></svg></button></div><div class="editor-section-body"><div class="portrait-editor-list" id="portraitEditorRows"></div><button class="portrait-add" data-add-portrait>+ 新增画像条目</button></div></section>
     </main>
   </section>
+
+  <div class="global-ai-assistant" id="globalAiAssistant">
+    <section class="global-ai-panel" id="globalAiPanel" role="dialog" aria-labelledby="globalAiTitle" hidden>
+      <div class="workbench-chat-head">
+        <span class="global-ai-avatar" aria-hidden="true"><svg viewBox="0 0 40 40" fill="none"><path d="M20 6.5 23 14l7.5 3-7.5 3-3 7.5-3-7.5-7.5-3 7.5-3 3-7.5Z" fill="currentColor"/><circle cx="30.5" cy="9.5" r="3.5" fill="currentColor" opacity=".72"/><path d="M8 25v9M3.5 29.5h9" stroke="currentColor" stroke-width="3" stroke-linecap="round"/></svg></span>
+        <div class="global-ai-heading">
+          <div class="workbench-chat-title"><span id="globalAiTitle" data-assistant-name>AI主理人</span><button type="button" class="global-ai-rename" data-global-ai-rename aria-label="修改助手名称" title="修改助手名称"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L8 18l-4 1 1-4Z"/></svg></button></div>
+          <div class="workbench-chat-subtitle" data-assistant-subtitle>可查询全局患者、任务与运营数据</div>
+          <span class="global-ai-scope-badge" data-assistant-scope>全局权限</span>
+        </div>
+        <button type="button" class="global-ai-close" data-global-ai-close aria-label="关闭AI主理人">×</button>
+      </div>
+      <div class="global-ai-name-editor" data-global-ai-name-editor hidden>
+        <label for="globalAiNameInput">自定义助手名称</label>
+        <input id="globalAiNameInput" data-assistant-name-input maxlength="12" autocomplete="off" placeholder="请输入助手名称">
+        <div><button type="button" data-assistant-name-cancel>取消</button><button type="button" class="primary" data-assistant-name-save>保存</button></div>
+      </div>
+      <div class="workbench-chat-body" id="workbenchChatBody" aria-live="polite">
+        <div class="global-chat-row ai" id="globalAiWelcomeRow">
+          <span class="global-ai-avatar global-chat-avatar" aria-hidden="true"><svg viewBox="0 0 40 40" fill="none"><path d="M20 6.5 23 14l7.5 3-7.5 3-3 7.5-3-7.5-7.5-3 7.5-3 3-7.5Z" fill="currentColor"/><circle cx="30.5" cy="9.5" r="3.5" fill="currentColor" opacity=".72"/><path d="M8 25v9M3.5 29.5h9" stroke="currentColor" stroke-width="3" stroke-linecap="round"/></svg></span>
+          <div class="global-ai-welcome">
+            <strong>你好，我是<span data-assistant-name>AI主理人</span></strong>
+            <p>可以帮你查询当前机构的待办、患者入组、随访、预警、外呼和完成情况。</p>
+          </div>
+        </div>
+      </div>
+      <div class="workbench-quick-row" id="globalAiQuickRow" aria-label="快捷提问">
+        <button type="button" data-workbench-quick="汇总今日待办">汇总今日待办</button>
+        <button type="button" data-workbench-quick="查看高优任务">查看高优任务</button>
+        <button type="button" data-workbench-quick="查询外呼情况">查询外呼情况</button>
+        <button type="button" data-workbench-quick="生成随访建议">生成随访建议</button>
+      </div>
+      <label class="workbench-chat-input">
+        <input id="workbenchChatInput" placeholder="输入你想查询的数据或问题..." autocomplete="off" />
+        <button type="button" data-workbench-send aria-label="发送"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="m22 2-7 20-4-9-9-4 20-7Z"/><path d="M22 2 11 13"/></svg></button>
+      </label>
+    </section>
+    <button type="button" class="global-ai-trigger" data-global-ai-toggle aria-expanded="false" aria-controls="globalAiPanel" aria-label="打开AI主理人">
+      <span class="global-ai-avatar" aria-hidden="true"><svg viewBox="0 0 40 40" fill="none"><path d="M20 6.5 23 14l7.5 3-7.5 3-3 7.5-3-7.5-7.5-3 7.5-3 3-7.5Z" fill="currentColor"/><circle cx="30.5" cy="9.5" r="3.5" fill="currentColor" opacity=".72"/><path d="M8 25v9M3.5 29.5h9" stroke="currentColor" stroke-width="3" stroke-linecap="round"/></svg></span>
+      <span class="global-ai-trigger-label" data-assistant-name>AI主理人</span>
+    </button>
+  </div>
 
   <script src="./js/referral-drawer.js?v=20260902-12"></script>
   <script>
@@ -7533,7 +7580,7 @@
       const weights = [7, 9, 10, 5, 8, 4, 2, 1, 6, 3, 7, 9, 10, 5, 8, 4, 2];
       const sum = [...number.slice(0, 17)].reduce((total, digit, index) => total + Number(digit) * weights[index], 0);
       if ('10X98765432'[sum % 11] !== number[17]) return { error: '证件号码校验位不正确' };
-      return { number, birthDate: birth.slice(0, 7), age, gender: Number(number[16]) % 2 ? '男' : '女' };
+      return { number, birthDate: birth.slice(0, 7), fullBirthDate: birth, age, gender: Number(number[16]) % 2 ? '男' : '女' };
     }
 
     function archiveBasicValues(modal) {
@@ -9675,6 +9722,14 @@
     let patientCreateCreated = null;
     const patientCreateForm = () => document.getElementById('patientCreateForm');
     const patientCreateValue = name => patientCreateForm().elements[name]?.value.trim() || '';
+    function setPatientCreateError(name, message = '') {
+      const form = patientCreateForm();
+      const control = form.elements[name];
+      const error = form.querySelector(`[data-create-error="${name}"]`);
+      if (error) error.textContent = message;
+      control?.setAttribute('aria-invalid', String(Boolean(message)));
+      return message;
+    }
     function renderPatientCreateHealth() {
       document.getElementById('patientCreateHealthGroups').innerHTML = patientCreateTypes.map(type => `<div class="patient-create-health-group" data-create-group="${type.key}"><div class="patient-create-health-head"><span>${type.title}</span><button type="button" data-create-add="${type.key}">＋ ${type.add}</button></div><div class="patient-create-health-rows"><span class="patient-create-health-empty">暂无相关记录</span></div></div>`).join('');
     }
@@ -9697,7 +9752,8 @@
       const form = patientCreateForm();
       form.reset();
       form.elements.idType.value = '居民身份证';
-      form.elements.source.value = source;
+      form.elements.idNumber.maxLength = 18;
+      form.elements.idNumber.placeholder = '请输入18位居民身份证号';
       form.elements.gender.disabled = false;
       form.elements.birthDate.disabled = false;
       form.elements.birthDate.max = new Date().toISOString().slice(0, 10);
@@ -9705,6 +9761,7 @@
       document.getElementById('patientCreateMore').open = false;
       document.getElementById('patientCreateHealth').open = false;
       document.querySelectorAll('[data-create-error]').forEach(node => node.textContent = '');
+      form.querySelectorAll('[aria-invalid]').forEach(control => control.setAttribute('aria-invalid', 'false'));
       document.getElementById('patientCreateAgeHint').textContent = '年龄将根据出生日期自动计算';
       document.getElementById('patientCreatePhoneTip').hidden = true;
       document.getElementById('patientCreateDuplicate').hidden = true;
@@ -9714,27 +9771,29 @@
       const modal = document.getElementById('patientCreateModal');
       modal.classList.add('open');
       modal.setAttribute('aria-hidden', 'false');
-      setTimeout(() => form.elements.source.focus(), 0);
+      setTimeout(() => form.elements.name.focus(), 0);
     }
     function closePatientCreate() {
       const modal = document.getElementById('patientCreateModal');
       modal.classList.remove('open');
       modal.setAttribute('aria-hidden', 'true');
     }
-    function checkPatientCreateIdentity(showFeedback = false) {
+    function checkPatientCreateIdentity(showFeedback = false, autoFill = true) {
       const form = patientCreateForm();
       const idType = patientCreateValue('idType');
       const idNumber = patientCreateValue('idNumber').toUpperCase();
+      form.elements.idNumber.maxLength = idType === '居民身份证' ? 18 : 32;
+      form.elements.idNumber.placeholder = idType === '居民身份证' ? '请输入18位居民身份证号' : '请输入证件号码';
       form.elements.idNumber.value = idNumber;
       const parsed = idType === '居民身份证' && idNumber ? parseArchiveIdentityNumber(idNumber) : null;
       if (parsed && !parsed.error) {
-        form.elements.gender.value = parsed.gender;
-        form.elements.birthDate.value = idNumber.slice(6, 10) + '-' + idNumber.slice(10, 12) + '-' + idNumber.slice(12, 14);
-        form.elements.gender.disabled = true;
-        form.elements.birthDate.disabled = true;
-      } else if (idType !== '居民身份证' || !idNumber || form.elements.gender.disabled) {
+        if (autoFill) {
+          form.elements.gender.value = parsed.gender;
+          form.elements.birthDate.value = parsed.fullBirthDate;
+        }
         form.elements.gender.disabled = false;
         form.elements.birthDate.disabled = false;
+      } else if (idType !== '居民身份证' || !idNumber || form.elements.birthDate.dataset.autoFilled === 'true') {
         if (form.elements.birthDate.dataset.autoFilled === 'true') {
           form.elements.gender.value = '';
           form.elements.birthDate.value = '';
@@ -9742,37 +9801,42 @@
       }
       form.elements.birthDate.dataset.autoFilled = String(Boolean(parsed && !parsed.error));
       const age = calculateArchiveAge(form.elements.birthDate.value);
-      document.getElementById('patientCreateAgeHint').textContent = age === null ? '年龄将根据出生日期自动计算' : `自动计算年龄：${age}岁`;
+      document.getElementById('patientCreateAgeHint').textContent = age === null ? '年龄将根据出生日期自动计算' : parsed && !parsed.error ? `已从身份证自动获取：${age}岁` : `自动计算年龄：${age}岁`;
       patientCreateDuplicate = idNumber ? allPatients.find(patient => (patient.idNumber || '').toUpperCase() === idNumber && (patient.idType || '居民身份证') === idType) || null : null;
       const duplicateBox = document.getElementById('patientCreateDuplicate');
       duplicateBox.hidden = !patientCreateDuplicate || !showFeedback;
       if (patientCreateDuplicate && showFeedback) duplicateBox.innerHTML = `<strong>该证件号码已存在患者档案</strong><p>${esc(patientCreateDuplicate.name)} · ${esc(patientCreateDuplicate.gender || '待补充')}｜${esc(patientCreateDuplicate.age || '待补充')}岁<br>手机号：${esc(maskArchiveSensitive('phone', patientCreateDuplicate.phoneFull || patientCreateDuplicate.phone))}</p><button type="button" data-create-view-duplicate>查看患者档案</button>`;
       document.getElementById('patientCreateSubmit').disabled = Boolean(patientCreateDuplicate);
-      if (showFeedback) document.querySelector('[data-create-error="idNumber"]').textContent = parsed?.error || (idNumber && idType !== '居民身份证' && !/^[A-Z0-9]{3,32}$/.test(idNumber) ? '证件号码格式不正确' : '');
+      const formatError = parsed?.error || (idNumber && idType !== '居民身份证' && !/^[A-Z0-9]{3,32}$/.test(idNumber) ? '证件号码格式不正确' : '');
+      if (showFeedback) setPatientCreateError('idNumber', idNumber ? formatError : '请输入证件号码');
+      else setPatientCreateError('idNumber', '');
     }
-    function checkPatientCreatePhone() {
+    function checkPatientCreatePhone(showFeedback = false) {
       const phone = patientCreateValue('phone');
-      document.getElementById('patientCreatePhoneTip').hidden = !(/^1[3-9]\d{9}$/.test(phone) && allPatients.some(patient => patient.phoneFull === phone));
+      const valid = /^1[3-9]\d{9}$/.test(phone);
+      document.getElementById('patientCreatePhoneTip').hidden = !(valid && allPatients.some(patient => patient.phoneFull === phone));
+      if (showFeedback) setPatientCreateError('phone', !phone ? '请输入手机号' : valid ? '' : '请输入正确的11位手机号');
+      else setPatientCreateError('phone', '');
     }
     function patientCreateRecords(type) {
       return [...document.querySelectorAll(`[data-create-row="${type}"]`)].map(row => ({ first: row.querySelector('[data-create-record="first"]').value.trim(), second: row.querySelector('[data-create-record="second"]').value.trim() }));
     }
     function submitPatientCreate() {
-      const required = { name: '请输入姓名', idNumber: '请输入证件号码', phone: '请输入手机号', source: '请选择患者来源' };
+      const required = { name: '请输入姓名', idNumber: '请输入证件号码', phone: '请输入手机号' };
       let invalid = false;
       Object.entries(required).forEach(([field, message]) => {
-        const error = document.querySelector(`[data-create-error="${field}"]`);
-        error.textContent = patientCreateValue(field) ? '' : message;
-        if (error.textContent) invalid = true;
+        const fieldError = patientCreateValue(field) ? '' : message;
+        setPatientCreateError(field, fieldError);
+        if (fieldError) invalid = true;
       });
       const idNumber = patientCreateValue('idNumber');
       const idType = patientCreateValue('idType');
       const idError = idNumber ? idType === '居民身份证' ? parseArchiveIdentityNumber(idNumber).error : !/^[A-Z0-9]{3,32}$/i.test(idNumber) ? '证件号码格式不正确' : '' : '';
-      if (idError) { document.querySelector('[data-create-error="idNumber"]').textContent = idError; invalid = true; }
-      if (!/^1[3-9]\d{9}$/.test(patientCreateValue('phone'))) { document.querySelector('[data-create-error="phone"]').textContent = '请输入正确的11位手机号'; invalid = true; }
+      if (idError) { setPatientCreateError('idNumber', idError); invalid = true; }
+      if (!/^1[3-9]\d{9}$/.test(patientCreateValue('phone'))) { setPatientCreateError('phone', '请输入正确的11位手机号'); invalid = true; }
       if (patientCreateValue('birthDate') && calculateArchiveAge(patientCreateValue('birthDate')) === null) { document.getElementById('patientCreateAgeHint').textContent = '请选择有效且不晚于今天的出生日期'; invalid = true; }
       if ((patientCreateValue('city') === '其他城市' || patientCreateValue('district') === '其他区县') && !patientCreateValue('addressDetail')) { document.getElementById('patientCreateMore').open = true; showToast('请在详细地址中补充具体城市或区县'); invalid = true; }
-      checkPatientCreateIdentity(true);
+      checkPatientCreateIdentity(true, false);
       if (patientCreateDuplicate) invalid = true;
       const health = {};
       patientCreateTypes.forEach(type => {
@@ -9792,7 +9856,7 @@
         name: patientCreateValue('name'), visitNo: `JD${Date.now()}`, idType, idNumber: idNumber.toUpperCase(),
         phoneFull: patientCreateValue('phone'), phone: maskArchiveSensitive('phone', patientCreateValue('phone')),
         gender: patientCreateValue('gender') || '待补充', birthDate, age: String(calculateArchiveAge(birthDate) ?? ''),
-        source: patientCreateValue('source'), ethnicity: patientCreateValue('ethnicity') || '--', maritalStatus: patientCreateValue('maritalStatus'),
+        ethnicity: patientCreateValue('ethnicity') || '--', maritalStatus: patientCreateValue('maritalStatus'),
         occupation: patientCreateValue('occupation') || '--', region: address || '--',
         department: '--', diagnosis: '--', managementInstitution: '--', visitDate: new Date().toLocaleDateString('zh-CN').replaceAll('/', '/'), team: '', tags: [], portraits: [],
         healthHistoryRecords: { ...health, familyHistory: [], medication: [], smoking: [], drinking: [] }
@@ -9810,19 +9874,23 @@
     document.addEventListener('input', event => {
       if (!event.target.closest('#patientCreateForm')) return;
       if (event.target.name === 'idNumber') checkPatientCreateIdentity(false);
-      if (event.target.name === 'birthDate') document.getElementById('patientCreateAgeHint').textContent = `自动计算年龄：${calculateArchiveAge(event.target.value) ?? '待补充'}岁`;
+      if (event.target.name === 'birthDate') {
+        event.target.dataset.autoFilled = 'false';
+        document.getElementById('patientCreateAgeHint').textContent = `自动计算年龄：${calculateArchiveAge(event.target.value) ?? '待补充'}岁`;
+      }
       if (event.target.name === 'phone') checkPatientCreatePhone();
-      if (event.target.name) document.querySelector(`[data-create-error="${event.target.name}"]`)?.replaceChildren();
+      if (event.target.name && event.target.name !== 'idNumber' && event.target.name !== 'phone') setPatientCreateError(event.target.name, '');
     });
     document.addEventListener('change', event => {
       if (!event.target.closest('#patientCreateForm')) return;
       if (event.target.name === 'idType') checkPatientCreateIdentity(false);
+      if (event.target.name === 'gender' || event.target.name === 'birthDate') patientCreateForm().elements.birthDate.dataset.autoFilled = 'false';
       if (event.target.name === 'province' || event.target.name === 'city') updatePatientCreateAddress(event.target.name);
     });
     document.addEventListener('focusout', event => {
       if (!event.target.closest('#patientCreateForm')) return;
-      if (event.target.name === 'idNumber') checkPatientCreateIdentity(true);
-      if (event.target.name === 'phone') checkPatientCreatePhone();
+      if (event.target.name === 'idNumber') checkPatientCreateIdentity(true, false);
+      if (event.target.name === 'phone') checkPatientCreatePhone(true);
     });
 
     document.addEventListener('click', e => {
@@ -9884,22 +9952,11 @@
         const body = document.getElementById('workbenchChatBody');
         const text = (input?.value || '').trim();
         if (!text || !body) return;
-        const userMessage = document.createElement('div');
-        userMessage.className = 'workbench-message user live-message';
-        userMessage.textContent = text;
-        const aiMessage = document.createElement('div');
-        aiMessage.className = 'workbench-message ai live-message';
-        aiMessage.innerHTML = '<strong>AI小助手</strong>已根据当前工作台数据生成建议：优先处理高优待办，并关注今日随访完成率和外呼失败任务。';
-        if (text.includes('高优')) {
-          aiMessage.innerHTML = '<strong>高优任务识别</strong>当前有 3 类高优任务：待审核患者入组、补充患者手机号、AI 外呼失败处理。建议按影响范围从入组审核开始处理。';
-        } else if (text.includes('汇总') || text.includes('待办')) {
-          aiMessage.innerHTML = '<strong>今日待办汇总</strong>今日共 5 条待办，其中 3 条高优；进行中随访 124 个，逾期 32 个。建议先处理高优，再清理逾期随访。';
-        } else if (text.includes('随访')) {
-          aiMessage.innerHTML = '<strong>随访建议</strong>优先联系昨日未触达与今日到期患者；对外呼失败患者先补齐手机号，再安排二次外呼，避免影响随访完成率。';
-        } else {
-          aiMessage.innerHTML = '<strong>AI小助手</strong>已根据当前工作台数据生成建议：优先处理高优待办，并关注今日随访完成率和外呼失败任务。';
+        const response = window.getGlobalAssistantResponse?.(text) || { title: 'AI主理人', content: '已收到你的问题，你可以继续查询今日待办、高优任务、随访、预警或外呼情况。' };
+        if (window.appendGlobalAssistantMessage) {
+          window.appendGlobalAssistantMessage('user', '', text);
+          window.appendGlobalAssistantMessage('ai', response.title, response.content);
         }
-        body.append(userMessage, aiMessage);
         input.value = '';
         body.scrollTop = body.scrollHeight;
         return;
@@ -13731,6 +13788,10 @@
       const pagination = document.getElementById('archiveReportPagination');
       const nameInput = document.getElementById('archiveReportNameSearch');
       const statusSelect = document.getElementById('archiveReportStatusSearch');
+      const inviteDialog = document.getElementById('archiveInviteDialog');
+      const inviteSteps = document.getElementById('archiveInviteSteps');
+      const inviteBody = document.getElementById('archiveInviteBody');
+      const inviteFoot = document.getElementById('archiveInviteFoot');
       const pageSize = 10;
       let reportRows = [
         ['2026年第三季度健康管理总结', '2026/10/11 16:42:18', '待发布'],
@@ -13751,6 +13812,27 @@
       let activeReportId = null;
       let reportDialogMode = '';
       let reportToastTimer = null;
+      const inviteScales = [
+        { id: 'copd', name: '慢性阻塞性肺疾病血氧饱和度监测评估表' },
+        { id: 'edema', name: '体重与下肢水肿评估表' },
+        { id: 'cardio', name: '心脑血管疾病风险评估表' },
+        { id: 'neuro', name: '糖尿病并发症筛查风险评估（NEURO-QOL）' },
+        { id: 'diabetes', name: '糖尿病风险评估量表（SDS）' },
+        { id: 'fall', name: '老年人跌倒风险评估表' },
+        { id: 'sleep', name: '匹兹堡睡眠质量指数评估表' }
+      ];
+      const evaluationItems = [
+        { id: 'test', name: '测试测试测试' },
+        { id: 'metric', name: '测试绑定指标' },
+        { id: 'weight', name: '体重管理' },
+        { id: 'pressure', name: '高血压' },
+        { id: 'one', name: '1' }
+      ];
+      let inviteSelected = new Set(['copd', 'edema']);
+      let evaluationSelected = new Set(['metric', 'weight']);
+      let inviteStep = 1;
+      let inviteMode = 'info';
+      let inviteDraft = { title: '', deadline: '', description: '请您按实际情况完成所选评估表，以便健康管理团队完善本次健康报告。' };
 
       function escapeHtml(value) {
         return String(value).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
@@ -13901,6 +13983,105 @@
         menu.querySelector('button')?.focus();
       }
 
+      function archiveInvitePatient() {
+        const name = document.querySelector('#patientArchivePage [data-archive-text="name"]')?.textContent.trim() || '当前患者';
+        const gender = document.querySelector('#patientArchivePage [data-archive-text="gender"]')?.textContent.trim() || '';
+        const age = document.querySelector('#patientArchivePage [data-archive-text="age"]')?.textContent.trim() || '';
+        return { name, meta: [gender, age ? `${age}岁` : ''].filter(Boolean).join('　') };
+      }
+
+      function inviteDefaultDeadline() {
+        const date = new Date();
+        date.setDate(date.getDate() + 7);
+        return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
+      }
+
+      function renderInviteDialog() {
+        inviteSteps.innerHTML = `<span class="archive-invite-step${inviteStep === 1 ? ' active' : ''}" data-step="1">选择评估表</span><span class="archive-invite-step-line"></span><span class="archive-invite-step${inviteStep === 2 ? ' active' : ''}" data-step="2">完善报告信息</span>`;
+        if (inviteStep === 1) {
+          inviteBody.innerHTML = `<div class="archive-invite-selector">
+            <section class="archive-invite-source">
+              <div class="archive-invite-search"><input type="search" data-invite-search placeholder="搜索量表名称" autocomplete="off"></div>
+              <div class="archive-invite-scale-list">${inviteScales.map(scale => `<div class="archive-invite-scale-item" data-scale-search-name="${escapeHtml(scale.name.toLowerCase())}"><input type="checkbox" data-invite-scale="${scale.id}" aria-label="选择${escapeHtml(scale.name)}" ${inviteSelected.has(scale.id) ? 'checked' : ''}><span class="archive-invite-scale-name" title="${escapeHtml(scale.name)}">${escapeHtml(scale.name)}</span><button class="archive-invite-preview" type="button" data-invite-preview="${scale.id}">预览</button></div>`).join('')}</div>
+            </section>
+            <section class="archive-invite-selected">
+              <div class="archive-invite-selected-head"><strong>已选量表：${inviteSelected.size} 篇</strong><button class="archive-invite-clear" type="button" data-invite-clear>清空</button></div>
+              <div class="archive-invite-selected-list">${inviteSelected.size ? inviteScales.filter(scale => inviteSelected.has(scale.id)).map(scale => `<div class="archive-invite-selected-item"><span>${escapeHtml(scale.name)}</span><button class="archive-invite-remove" type="button" data-invite-remove="${scale.id}" aria-label="移除${escapeHtml(scale.name)}">×</button></div>`).join('') : '<div class="archive-invite-empty">请从左侧选择需要患者填写的评估表</div>'}</div>
+            </section>
+          </div>`;
+          inviteFoot.innerHTML = `<button class="archive-invite-btn primary" type="button" data-invite-next ${inviteSelected.size ? '' : 'disabled'}>下一步</button>`;
+        } else {
+          inviteBody.innerHTML = `<div class="archive-invite-form">
+            <div class="archive-invite-form-field"><label class="required" for="archiveInviteReportTitle">报告名称</label><input id="archiveInviteReportTitle" maxlength="50" value="${escapeHtml(inviteDraft.title)}" placeholder="请输入报告名称"></div>
+            <div class="archive-invite-form-field"><label class="required" for="archiveInviteDeadline">完成截止时间</label><input id="archiveInviteDeadline" type="date" value="${escapeHtml(inviteDraft.deadline)}"></div>
+            <div class="archive-invite-form-field"><label for="archiveInviteDescription">填写说明</label><textarea id="archiveInviteDescription" maxlength="200" placeholder="请输入给患者的填写说明">${escapeHtml(inviteDraft.description)}</textarea></div>
+            <div class="archive-invite-form-error" id="archiveInviteFormError"></div>
+          </div>`;
+          inviteFoot.innerHTML = '<button class="archive-invite-btn" type="button" data-invite-back>上一步</button><button class="archive-invite-btn primary" type="button" data-invite-submit>发送邀请</button>';
+        }
+      }
+
+      function renderEvaluationInviteDialog() {
+        inviteSteps.hidden = true;
+        inviteBody.innerHTML = `<div class="archive-invite-selector">
+          <section class="archive-invite-source">
+            <div class="archive-invite-search"><input type="search" data-evaluation-search placeholder="搜索评估名称" autocomplete="off"></div>
+            <div class="archive-invite-scale-list">${evaluationItems.map(item => `<div class="archive-invite-scale-item" data-evaluation-search-name="${escapeHtml(item.name.toLowerCase())}"><input type="checkbox" data-evaluation-scale="${item.id}" aria-label="选择${escapeHtml(item.name)}" ${evaluationSelected.has(item.id) ? 'checked' : ''}><span class="archive-invite-scale-name">${escapeHtml(item.name)}</span></div>`).join('')}</div>
+          </section>
+          <section class="archive-invite-selected">
+            <div class="archive-invite-selected-head"><strong>已选评估：${evaluationSelected.size} 篇</strong><button class="archive-invite-clear" type="button" data-evaluation-clear>清空</button></div>
+            <div class="archive-invite-selected-list">${evaluationSelected.size ? evaluationItems.filter(item => evaluationSelected.has(item.id)).map(item => `<div class="archive-invite-selected-item"><span>${escapeHtml(item.name)}</span><button class="archive-invite-remove" type="button" data-evaluation-remove="${item.id}" aria-label="移除${escapeHtml(item.name)}">×</button></div>`).join('') : '<div class="archive-invite-empty">请从左侧选择需要患者完成的评估</div>'}</div>
+          </section>
+        </div>`;
+        inviteFoot.innerHTML = `<button class="archive-invite-btn primary" type="button" data-evaluation-next ${evaluationSelected.size ? '' : 'disabled'}>下一步</button>`;
+      }
+
+      function openInviteDialog() {
+        closeReportMenu();
+        const patient = archiveInvitePatient();
+        inviteMode = 'info';
+        inviteDialog.querySelector('.archive-invite-dialog').classList.remove('evaluation-mode');
+        document.getElementById('archiveInviteDialogTitle').textContent = '邀请完善信息';
+        document.getElementById('archiveInvitePatientName').textContent = patient.name;
+        document.getElementById('archiveInvitePatientMeta').textContent = patient.meta;
+        document.getElementById('archiveInviteAvatar').textContent = patient.name.slice(0, 1);
+        inviteSelected = new Set(['copd', 'edema']);
+        inviteStep = 1;
+        inviteDraft = { title: `${patient.name}健康评估资料补充`, deadline: inviteDefaultDeadline(), description: '请您按实际情况完成所选评估表，以便健康管理团队完善本次健康报告。' };
+        renderInviteDialog();
+        inviteDialog.classList.add('open');
+        inviteDialog.setAttribute('aria-hidden', 'false');
+        requestAnimationFrame(() => inviteDialog.querySelector('[data-invite-search]')?.focus());
+      }
+
+      function openEvaluationInviteDialog() {
+        closeReportMenu();
+        const patient = archiveInvitePatient();
+        inviteMode = 'evaluation';
+        evaluationSelected = new Set(['metric', 'weight']);
+        inviteDialog.querySelector('.archive-invite-dialog').classList.add('evaluation-mode');
+        document.getElementById('archiveInviteDialogTitle').textContent = '邀请完成评估';
+        document.getElementById('archiveInvitePatientName').textContent = patient.name;
+        document.getElementById('archiveInvitePatientMeta').textContent = patient.meta;
+        document.getElementById('archiveInviteAvatar').textContent = patient.name.slice(0, 1);
+        renderEvaluationInviteDialog();
+        inviteDialog.classList.add('open');
+        inviteDialog.setAttribute('aria-hidden', 'false');
+        requestAnimationFrame(() => inviteDialog.querySelector('[data-evaluation-search]')?.focus());
+      }
+
+      function closeInviteDialog() {
+        inviteDialog.classList.remove('open');
+        inviteDialog.setAttribute('aria-hidden', 'true');
+        inviteSteps.hidden = false;
+      }
+
+      function syncInviteDraft() {
+        inviteDraft.title = document.getElementById('archiveInviteReportTitle')?.value.trim() || inviteDraft.title;
+        inviteDraft.deadline = document.getElementById('archiveInviteDeadline')?.value || inviteDraft.deadline;
+        inviteDraft.description = document.getElementById('archiveInviteDescription')?.value.trim() || '';
+      }
+
       document.getElementById('archiveReportSearchForm').addEventListener('submit', event => { event.preventDefault(); runReportSearch(); });
       document.getElementById('archiveReportReset').addEventListener('click', () => { nameInput.value = ''; statusSelect.value = ''; runReportSearch(); });
 
@@ -13921,7 +14102,13 @@
           return;
         }
         const feature = event.target.closest('[data-report-feature]');
-        if (feature) { closeReportMenu(); showReportToast(`已选择“${feature.dataset.reportFeature}”`); return; }
+        if (feature) {
+          closeReportMenu();
+          if (feature.dataset.reportFeature === '邀请完善信息') openInviteDialog();
+          else if (feature.dataset.reportFeature === '邀请完成评估') openEvaluationInviteDialog();
+          else showReportToast(`已选择“${feature.dataset.reportFeature}”`);
+          return;
+        }
         const action = event.target.closest('[data-report-action]');
         if (action) {
           event.preventDefault();
@@ -13951,9 +14138,65 @@
         if (event.target === reportDialog) closeReportDialog();
       });
 
+      inviteDialog.addEventListener('input', event => {
+        const keyword = event.target.value.trim().toLowerCase();
+        if (event.target.matches('[data-invite-search]')) {
+          inviteDialog.querySelectorAll('[data-scale-search-name]').forEach(item => { item.hidden = Boolean(keyword && !item.dataset.scaleSearchName.includes(keyword)); });
+        }
+        if (event.target.matches('[data-evaluation-search]')) {
+          inviteDialog.querySelectorAll('[data-evaluation-search-name]').forEach(item => { item.hidden = Boolean(keyword && !item.dataset.evaluationSearchName.includes(keyword)); });
+        }
+      });
+
+      inviteDialog.addEventListener('change', event => {
+        const checkbox = event.target.closest('[data-invite-scale]');
+        if (checkbox) {
+          if (checkbox.checked) inviteSelected.add(checkbox.dataset.inviteScale);
+          else inviteSelected.delete(checkbox.dataset.inviteScale);
+          renderInviteDialog();
+          return;
+        }
+        const evaluationCheckbox = event.target.closest('[data-evaluation-scale]');
+        if (evaluationCheckbox) {
+          if (evaluationCheckbox.checked) evaluationSelected.add(evaluationCheckbox.dataset.evaluationScale);
+          else evaluationSelected.delete(evaluationCheckbox.dataset.evaluationScale);
+          renderEvaluationInviteDialog();
+        }
+      });
+
+      inviteDialog.addEventListener('click', event => {
+        if (event.target === inviteDialog || event.target.closest('[data-invite-close]')) { closeInviteDialog(); return; }
+        const preview = event.target.closest('[data-invite-preview]');
+        if (preview) {
+          const scale = inviteScales.find(item => item.id === preview.dataset.invitePreview);
+          showReportToast(`正在预览“${scale?.name || '评估表'}”`);
+          return;
+        }
+        const remove = event.target.closest('[data-invite-remove]');
+        if (remove) { inviteSelected.delete(remove.dataset.inviteRemove); renderInviteDialog(); return; }
+        if (event.target.closest('[data-invite-clear]')) { inviteSelected.clear(); renderInviteDialog(); return; }
+        const evaluationRemove = event.target.closest('[data-evaluation-remove]');
+        if (evaluationRemove) { evaluationSelected.delete(evaluationRemove.dataset.evaluationRemove); renderEvaluationInviteDialog(); return; }
+        if (event.target.closest('[data-evaluation-clear]')) { evaluationSelected.clear(); renderEvaluationInviteDialog(); return; }
+        if (event.target.closest('[data-evaluation-next]')) { showReportToast(`已选择 ${evaluationSelected.size} 项评估，请继续完善邀请设置`); return; }
+        if (event.target.closest('[data-invite-next]')) { inviteStep = 2; renderInviteDialog(); requestAnimationFrame(() => document.getElementById('archiveInviteReportTitle')?.focus()); return; }
+        if (event.target.closest('[data-invite-back]')) { syncInviteDraft(); inviteStep = 1; renderInviteDialog(); return; }
+        if (event.target.closest('[data-invite-submit]')) {
+          const title = document.getElementById('archiveInviteReportTitle').value.trim();
+          const deadline = document.getElementById('archiveInviteDeadline').value;
+          const error = document.getElementById('archiveInviteFormError');
+          if (!title) { error.textContent = '请输入报告名称'; document.getElementById('archiveInviteReportTitle').focus(); return; }
+          if (!deadline) { error.textContent = '请选择完成截止时间'; document.getElementById('archiveInviteDeadline').focus(); return; }
+          syncInviteDraft();
+          closeInviteDialog();
+          showReportToast(`已向${archiveInvitePatient().name}发送完善信息邀请`);
+        }
+      });
+
       document.addEventListener('keydown', event => {
         if (event.key === 'Escape') {
-          if (reportDialog.classList.contains('open')) closeReportDialog();
+          if (inviteDialog.classList.contains('open')) closeInviteDialog();
+          else if (reportDialog.classList.contains('open')) closeReportDialog();
           else closeReportMenu();
         }
         if (event.key === 'Enter' && reportDialogMode === 'rename' && event.target.id === 'archiveReportRenameInput') {
@@ -16071,7 +16314,7 @@
   <script src="./js/health-portrait.js?v=20260924-3"></script>
 <script src="./js/personnel-management.js?v=20260929-2"></script>
 <script src="./js/organization-management.js?v=20260929-4"></script>
-<script src="./js/workbench.js?v=20260918-3"></script>
+<script src="./js/workbench.js?v=20261013-8"></script>
 <script src="./js/system-role.js?v=20260929-1"></script>
 <script src="./js/scale-create.js?v=20260916-3"></script>
 <script src="./js/dashboard-latest-data.js?v=20260913-31"></script>

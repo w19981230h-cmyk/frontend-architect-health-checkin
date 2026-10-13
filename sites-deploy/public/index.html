@@ -2819,11 +2819,11 @@
   <link rel="stylesheet" href="./css/statistics-report.css?v=20260911-05">
   <link rel="stylesheet" href="./css/operations-statistics.css?v=20260910-01">
   <link rel="stylesheet" href="./css/operations-statistics-responsive.css?v=20260910-02">
-  <link rel="stylesheet" href="./css/patient-archive-reference.css?v=20260924-1">
+  <link rel="stylesheet" href="./css/patient-archive-reference.css?v=20261013-3">
   <link rel="stylesheet" href="./css/health-portrait.css?v=20260924-3">
 <link rel="stylesheet" href="./css/personnel-management.css?v=20260929-1">
 <link rel="stylesheet" href="./css/organization-management.css?v=20260929-1">
-<link rel="stylesheet" href="./css/workbench.css?v=20260918-4">
+<link rel="stylesheet" href="./css/workbench.css?v=20261013-10">
 <link rel="stylesheet" href="./css/system-role.css?v=20260916-1">
 <link rel="stylesheet" href="./css/dashboard-latest.css?v=20260913-40">
 <link rel="stylesheet" href="./css/dashboard-updated.css?v=20260913-2">
@@ -2853,7 +2853,7 @@
         <div class="sidebar-bottom"><div class="bottom-line"></div><div class="notice"><div class="notice-left"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M18 8a6 6 0 1 0-12 0c0 7-3 6-3 9h18c0-3-3-2-3-9"/><path d="M10 21h4"/></svg><span>消息通知</span></div><span class="badge">99+</span></div><div class="user-card"><div class="avatar"></div><strong>平台技术人员</strong><svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="m9 18 6-6-6-6"/></svg></div><div class="collapse"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M4 7h14M4 12h10M4 17h14"/></svg></div></div>
       </aside>
       <main class="list-main">
-        <header class="page-title" id="listPageTitle"><span id="listPageTitleText">团队管理</span><div id="globalOrganizationScope" data-persistence-ignore></div></header><section class="list-panel list-view personnel-management-view" id="personnelManagementView" data-persistence-ignore aria-label="人员管理"></section><section class="list-panel list-view organization-management-view" id="organizationManagementView" data-persistence-ignore aria-label="组织管理"></section>
+        <header class="page-title" id="listPageTitle"><span id="listPageTitleText">团队管理</span><button type="button" class="workbench-create-button" data-open-patient-create data-source="工作台" aria-label="新建患者档案"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true"><path d="M8 3v10M3 8h10"/></svg><span>建档</span></button><div id="globalOrganizationScope" data-persistence-ignore></div></header><section class="list-panel list-view personnel-management-view" id="personnelManagementView" data-persistence-ignore aria-label="人员管理"></section><section class="list-panel list-view organization-management-view" id="organizationManagementView" data-persistence-ignore aria-label="组织管理"></section>
         <section class="list-panel list-view system-role-view" id="systemRoleView" data-persistence-ignore aria-label="系统角色">
           <div class="system-role-shell">
             <div class="system-role-toolbar">
@@ -2907,73 +2907,6 @@
         <section class="list-panel list-view operations-statistics-view" id="operationsStatisticsView" tabindex="0" aria-label="统计报表"></section>
         <section class="list-panel list-view workbench-view" id="workbenchView">
           <div class="workbench-shell">
-            <section class="workbench-ai-card">
-              <div class="workbench-chat">
-                <div class="workbench-chat-head">
-                  <div class="workbench-chat-avatar" aria-hidden="true"><span></span><i></i></div>
-                  <div>
-                    <div class="workbench-chat-title">AI小助手</div>
-                    <div class="workbench-chat-subtitle">实时整理待办、随访和患者运营线索</div>
-                  </div>
-                </div>
-                <div class="workbench-chat-body" id="workbenchChatBody">
-                  <div class="workbench-ai-insight">
-                    <div class="workbench-ai-insight-title">今日智能洞察 <span>实时分析</span></div>
-                    <div class="workbench-ai-metrics">
-                      <div class="workbench-ai-metric"><b>5</b><small>重点待办</small></div>
-                      <div class="workbench-ai-metric"><b>3</b><small>高优任务</small></div>
-                      <div class="workbench-ai-metric"><b>32</b><small>逾期随访</small></div>
-                    </div>
-                  </div>
-                  <div class="workbench-risk-card"><strong>AI 风险提醒</strong>当前高优任务集中在入组审核、患者手机号补充和外呼失败处理，若延后处理会影响今日随访触达率。</div>
-                  <div class="workbench-suggestion-card">
-                    <h3>推荐处理路径</h3>
-                    <ol>
-                      <li>先审核待入组患者，避免预分组患者积压。</li>
-                      <li>补齐缺失手机号，再触发二次外呼。</li>
-                      <li>最后处理今日待办随访，保持完成率稳定。</li>
-                    </ol>
-                  </div>
-                  <div class="workbench-message ai"><strong>张医生，上午好！</strong>今日已为您整理 5 条重点待办，优先处理患者入组审核、手机号补充和 AI 外呼失败任务。</div>
-                  <div class="workbench-message user">帮我看一下今天最需要先处理什么？</div>
-                  <div class="workbench-message ai"><strong>建议优先顺序</strong>先处理高优任务：待审核患者入组、补充患者手机号、AI 外呼失败处理。完成后再进入今日待办随访任务。</div>
-                </div>
-                <div class="workbench-quick-row">
-                  <button type="button" data-workbench-quick="汇总今日待办">汇总今日待办</button>
-                  <button type="button" data-workbench-quick="查看高优任务">查看高优任务</button>
-                  <button type="button" data-workbench-quick="生成随访建议">生成随访建议</button>
-                </div>
-                <label class="workbench-chat-input">
-                  <input id="workbenchChatInput" placeholder="问问 AI 小助手今天需要处理什么..." />
-                  <button type="button" data-workbench-send aria-label="发送"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="m22 2-7 20-4-9-9-4 20-7Z"/><path d="M22 2 11 13"/></svg></button>
-                </label>
-              </div>
-              <div class="workbench-ai-badge">AI小助手</div>
-              <h1 class="workbench-greeting">张医生，上午好！</h1>
-              <p class="workbench-subtext">AI小助手已为您整理今日工作信息</p>
-              <div class="workbench-robot" aria-hidden="true">
-                <span class="robot-ghost-card"></span>
-                <span class="robot-ghost-chart"></span>
-                <span class="robot-ear left"></span>
-                <span class="robot-ear right"></span>
-                <span class="robot-arm left"></span>
-                <span class="robot-arm right"></span>
-                <span class="robot-hand left"></span>
-                <span class="robot-hand right"></span>
-                <span class="robot-body"></span>
-                <span class="robot-head"><span class="robot-face"></span></span>
-                <span class="robot-leg left"></span>
-                <span class="robot-leg right"></span>
-                <span class="robot-platform"></span>
-              </div>
-              <div class="workbench-auto-card">
-                <div class="workbench-auto-title">AI小助手今日已自动执行</div>
-                <div class="workbench-auto-grid">
-                  <div class="workbench-auto-item"><span>智能分组</span><strong>2431 <b>例患者</b></strong><small>累计 <em>154771</em></small></div>
-                  <div class="workbench-auto-item"><span>智能外呼</span><strong>2431 <b>次外呼</b></strong><small>累计 <em>154771</em></small></div>
-                </div>
-              </div>
-            </section>
             <section class="workbench-right">
               <div class="workbench-stats" id="workbenchStats" aria-label="当前机构范围关键指标"></div>
               <div class="workbench-section-heading">
@@ -4235,17 +4168,16 @@
       <div class="archive-edit-modal-body patient-create-body">
         <form id="patientCreateForm" novalidate>
           <section class="patient-create-section"><h3>基础信息</h3><div class="patient-create-grid">
-            <label class="patient-create-field"><span>患者来源 <b>*</b></span><select name="source"><option value="">请选择患者来源</option><option>门诊</option><option>住院</option><option>体检中心</option><option>社区筛查</option><option>义诊</option><option>医护手工建档</option><option>其他</option></select><small data-create-error="source"></small></label>
             <label class="patient-create-field"><span>姓名 <b>*</b></span><input name="name" autocomplete="name" placeholder="请输入患者姓名"><small data-create-error="name"></small></label>
             <label class="patient-create-field"><span>证件类型 <b>*</b></span><select name="idType"><option>居民身份证</option><option>护照</option><option>港澳居民来往内地通行证</option><option>台湾居民来往大陆通行证</option><option>其他</option></select></label>
-            <label class="patient-create-field"><span>证件号码 <b>*</b></span><input name="idNumber" autocomplete="off" placeholder="请输入证件号码"><small data-create-error="idNumber"></small></label>
+            <label class="patient-create-field"><span>证件号码 <b>*</b></span><input name="idNumber" autocomplete="off" maxlength="18" placeholder="请输入18位居民身份证号" aria-describedby="patientCreateIdNumberError"><small id="patientCreateIdNumberError" data-create-error="idNumber" role="alert"></small></label>
             <div class="patient-create-duplicate" id="patientCreateDuplicate" hidden></div>
             <label class="patient-create-field">性别<select name="gender"><option value="">请选择</option><option>男</option><option>女</option></select></label>
-            <label class="patient-create-field">出生日期<input name="birthDate" type="date" max="2026-09-21"><small id="patientCreateAgeHint">年龄将根据出生日期自动计算</small></label>
-            <label class="patient-create-field"><span>手机号 <b>*</b></span><input name="phone" type="text" inputmode="numeric" autocomplete="tel" maxlength="11" placeholder="请输入11位手机号"><small data-create-error="phone"></small></label>
+            <label class="patient-create-field">出生日期<input name="birthDate" type="date" max="2026-09-21" aria-describedby="patientCreateAgeHint"><small id="patientCreateAgeHint" aria-live="polite">年龄将根据出生日期自动计算</small></label>
+            <label class="patient-create-field"><span>手机号 <b>*</b></span><input name="phone" type="text" inputmode="numeric" autocomplete="tel" maxlength="11" placeholder="请输入11位手机号" aria-describedby="patientCreatePhoneError"><small id="patientCreatePhoneError" data-create-error="phone" role="alert"></small></label>
             <p class="patient-create-phone-tip" id="patientCreatePhoneTip" hidden>该手机号已关联其他患者，请确认是否继续使用</p>
           </div>
-          <details class="patient-create-collapse patient-create-more-inline" id="patientCreateMore"><summary>更多基本信息（选填）</summary><div class="patient-create-grid">
+          <details class="patient-create-collapse patient-create-more-inline" id="patientCreateMore"><summary>更多信息（选填）</summary><div class="patient-create-grid">
             <label class="patient-create-field">民族<select name="ethnicity"><option value="">请选择</option><option>汉族</option><option>壮族</option><option>回族</option><option>满族</option><option>苗族</option><option>其他</option></select></label>
             <label class="patient-create-field">婚姻状况<select name="maritalStatus"><option value="">请选择</option><option>未婚</option><option>已婚</option><option>离异</option><option>丧偶</option><option>其他</option></select></label>
             <label class="patient-create-field">职业<input name="occupation" placeholder="请输入职业"></label>
@@ -4294,6 +4226,48 @@
       <section class="editor-section"><div class="editor-section-head"><h2>健康画像</h2><button class="section-toggle" data-section-toggle aria-label="折叠"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="m6 9 6 6 6-6"/></svg></button></div><div class="editor-section-body"><div class="portrait-editor-list" id="portraitEditorRows"></div><button class="portrait-add" data-add-portrait>+ 新增画像条目</button></div></section>
     </main>
   </section>
+
+  <div class="global-ai-assistant" id="globalAiAssistant">
+    <section class="global-ai-panel" id="globalAiPanel" role="dialog" aria-labelledby="globalAiTitle" hidden>
+      <div class="workbench-chat-head">
+        <span class="global-ai-avatar" aria-hidden="true"><svg viewBox="0 0 40 40" fill="none"><path d="M20 6.5 23 14l7.5 3-7.5 3-3 7.5-3-7.5-7.5-3 7.5-3 3-7.5Z" fill="currentColor"/><circle cx="30.5" cy="9.5" r="3.5" fill="currentColor" opacity=".72"/><path d="M8 25v9M3.5 29.5h9" stroke="currentColor" stroke-width="3" stroke-linecap="round"/></svg></span>
+        <div class="global-ai-heading">
+          <div class="workbench-chat-title"><span id="globalAiTitle" data-assistant-name>AI主理人</span><button type="button" class="global-ai-rename" data-global-ai-rename aria-label="修改助手名称" title="修改助手名称"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L8 18l-4 1 1-4Z"/></svg></button></div>
+          <div class="workbench-chat-subtitle" data-assistant-subtitle>可查询全局患者、任务与运营数据</div>
+          <span class="global-ai-scope-badge" data-assistant-scope>全局权限</span>
+        </div>
+        <button type="button" class="global-ai-close" data-global-ai-close aria-label="关闭AI主理人">×</button>
+      </div>
+      <div class="global-ai-name-editor" data-global-ai-name-editor hidden>
+        <label for="globalAiNameInput">自定义助手名称</label>
+        <input id="globalAiNameInput" data-assistant-name-input maxlength="12" autocomplete="off" placeholder="请输入助手名称">
+        <div><button type="button" data-assistant-name-cancel>取消</button><button type="button" class="primary" data-assistant-name-save>保存</button></div>
+      </div>
+      <div class="workbench-chat-body" id="workbenchChatBody" aria-live="polite">
+        <div class="global-chat-row ai" id="globalAiWelcomeRow">
+          <span class="global-ai-avatar global-chat-avatar" aria-hidden="true"><svg viewBox="0 0 40 40" fill="none"><path d="M20 6.5 23 14l7.5 3-7.5 3-3 7.5-3-7.5-7.5-3 7.5-3 3-7.5Z" fill="currentColor"/><circle cx="30.5" cy="9.5" r="3.5" fill="currentColor" opacity=".72"/><path d="M8 25v9M3.5 29.5h9" stroke="currentColor" stroke-width="3" stroke-linecap="round"/></svg></span>
+          <div class="global-ai-welcome">
+            <strong>你好，我是<span data-assistant-name>AI主理人</span></strong>
+            <p>可以帮你查询当前机构的待办、患者入组、随访、预警、外呼和完成情况。</p>
+          </div>
+        </div>
+      </div>
+      <div class="workbench-quick-row" id="globalAiQuickRow" aria-label="快捷提问">
+        <button type="button" data-workbench-quick="汇总今日待办">汇总今日待办</button>
+        <button type="button" data-workbench-quick="查看高优任务">查看高优任务</button>
+        <button type="button" data-workbench-quick="查询外呼情况">查询外呼情况</button>
+        <button type="button" data-workbench-quick="生成随访建议">生成随访建议</button>
+      </div>
+      <label class="workbench-chat-input">
+        <input id="workbenchChatInput" placeholder="输入你想查询的数据或问题..." autocomplete="off" />
+        <button type="button" data-workbench-send aria-label="发送"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="m22 2-7 20-4-9-9-4 20-7Z"/><path d="M22 2 11 13"/></svg></button>
+      </label>
+    </section>
+    <button type="button" class="global-ai-trigger" data-global-ai-toggle aria-expanded="false" aria-controls="globalAiPanel" aria-label="打开AI主理人">
+      <span class="global-ai-avatar" aria-hidden="true"><svg viewBox="0 0 40 40" fill="none"><path d="M20 6.5 23 14l7.5 3-7.5 3-3 7.5-3-7.5-7.5-3 7.5-3 3-7.5Z" fill="currentColor"/><circle cx="30.5" cy="9.5" r="3.5" fill="currentColor" opacity=".72"/><path d="M8 25v9M3.5 29.5h9" stroke="currentColor" stroke-width="3" stroke-linecap="round"/></svg></span>
+      <span class="global-ai-trigger-label" data-assistant-name>AI主理人</span>
+    </button>
+  </div>
 
   <script src="./js/referral-drawer.js?v=20260902-12"></script>
   <script>
@@ -7498,7 +7472,7 @@
       const weights = [7, 9, 10, 5, 8, 4, 2, 1, 6, 3, 7, 9, 10, 5, 8, 4, 2];
       const sum = [...number.slice(0, 17)].reduce((total, digit, index) => total + Number(digit) * weights[index], 0);
       if ('10X98765432'[sum % 11] !== number[17]) return { error: '证件号码校验位不正确' };
-      return { number, birthDate: birth.slice(0, 7), age, gender: Number(number[16]) % 2 ? '男' : '女' };
+      return { number, birthDate: birth.slice(0, 7), fullBirthDate: birth, age, gender: Number(number[16]) % 2 ? '男' : '女' };
     }
 
     function archiveBasicValues(modal) {
@@ -9640,6 +9614,14 @@
     let patientCreateCreated = null;
     const patientCreateForm = () => document.getElementById('patientCreateForm');
     const patientCreateValue = name => patientCreateForm().elements[name]?.value.trim() || '';
+    function setPatientCreateError(name, message = '') {
+      const form = patientCreateForm();
+      const control = form.elements[name];
+      const error = form.querySelector(`[data-create-error="${name}"]`);
+      if (error) error.textContent = message;
+      control?.setAttribute('aria-invalid', String(Boolean(message)));
+      return message;
+    }
     function renderPatientCreateHealth() {
       document.getElementById('patientCreateHealthGroups').innerHTML = patientCreateTypes.map(type => `<div class="patient-create-health-group" data-create-group="${type.key}"><div class="patient-create-health-head"><span>${type.title}</span><button type="button" data-create-add="${type.key}">＋ ${type.add}</button></div><div class="patient-create-health-rows"><span class="patient-create-health-empty">暂无相关记录</span></div></div>`).join('');
     }
@@ -9662,7 +9644,8 @@
       const form = patientCreateForm();
       form.reset();
       form.elements.idType.value = '居民身份证';
-      form.elements.source.value = source;
+      form.elements.idNumber.maxLength = 18;
+      form.elements.idNumber.placeholder = '请输入18位居民身份证号';
       form.elements.gender.disabled = false;
       form.elements.birthDate.disabled = false;
       form.elements.birthDate.max = new Date().toISOString().slice(0, 10);
@@ -9670,6 +9653,7 @@
       document.getElementById('patientCreateMore').open = false;
       document.getElementById('patientCreateHealth').open = false;
       document.querySelectorAll('[data-create-error]').forEach(node => node.textContent = '');
+      form.querySelectorAll('[aria-invalid]').forEach(control => control.setAttribute('aria-invalid', 'false'));
       document.getElementById('patientCreateAgeHint').textContent = '年龄将根据出生日期自动计算';
       document.getElementById('patientCreatePhoneTip').hidden = true;
       document.getElementById('patientCreateDuplicate').hidden = true;
@@ -9679,27 +9663,29 @@
       const modal = document.getElementById('patientCreateModal');
       modal.classList.add('open');
       modal.setAttribute('aria-hidden', 'false');
-      setTimeout(() => form.elements.source.focus(), 0);
+      setTimeout(() => form.elements.name.focus(), 0);
     }
     function closePatientCreate() {
       const modal = document.getElementById('patientCreateModal');
       modal.classList.remove('open');
       modal.setAttribute('aria-hidden', 'true');
     }
-    function checkPatientCreateIdentity(showFeedback = false) {
+    function checkPatientCreateIdentity(showFeedback = false, autoFill = true) {
       const form = patientCreateForm();
       const idType = patientCreateValue('idType');
       const idNumber = patientCreateValue('idNumber').toUpperCase();
+      form.elements.idNumber.maxLength = idType === '居民身份证' ? 18 : 32;
+      form.elements.idNumber.placeholder = idType === '居民身份证' ? '请输入18位居民身份证号' : '请输入证件号码';
       form.elements.idNumber.value = idNumber;
       const parsed = idType === '居民身份证' && idNumber ? parseArchiveIdentityNumber(idNumber) : null;
       if (parsed && !parsed.error) {
-        form.elements.gender.value = parsed.gender;
-        form.elements.birthDate.value = idNumber.slice(6, 10) + '-' + idNumber.slice(10, 12) + '-' + idNumber.slice(12, 14);
-        form.elements.gender.disabled = true;
-        form.elements.birthDate.disabled = true;
-      } else if (idType !== '居民身份证' || !idNumber || form.elements.gender.disabled) {
+        if (autoFill) {
+          form.elements.gender.value = parsed.gender;
+          form.elements.birthDate.value = parsed.fullBirthDate;
+        }
         form.elements.gender.disabled = false;
         form.elements.birthDate.disabled = false;
+      } else if (idType !== '居民身份证' || !idNumber || form.elements.birthDate.dataset.autoFilled === 'true') {
         if (form.elements.birthDate.dataset.autoFilled === 'true') {
           form.elements.gender.value = '';
           form.elements.birthDate.value = '';
@@ -9707,37 +9693,42 @@
       }
       form.elements.birthDate.dataset.autoFilled = String(Boolean(parsed && !parsed.error));
       const age = calculateArchiveAge(form.elements.birthDate.value);
-      document.getElementById('patientCreateAgeHint').textContent = age === null ? '年龄将根据出生日期自动计算' : `自动计算年龄：${age}岁`;
+      document.getElementById('patientCreateAgeHint').textContent = age === null ? '年龄将根据出生日期自动计算' : parsed && !parsed.error ? `已从身份证自动获取：${age}岁` : `自动计算年龄：${age}岁`;
       patientCreateDuplicate = idNumber ? allPatients.find(patient => (patient.idNumber || '').toUpperCase() === idNumber && (patient.idType || '居民身份证') === idType) || null : null;
       const duplicateBox = document.getElementById('patientCreateDuplicate');
       duplicateBox.hidden = !patientCreateDuplicate || !showFeedback;
       if (patientCreateDuplicate && showFeedback) duplicateBox.innerHTML = `<strong>该证件号码已存在患者档案</strong><p>${esc(patientCreateDuplicate.name)} · ${esc(patientCreateDuplicate.gender || '待补充')}｜${esc(patientCreateDuplicate.age || '待补充')}岁<br>手机号：${esc(maskArchiveSensitive('phone', patientCreateDuplicate.phoneFull || patientCreateDuplicate.phone))}</p><button type="button" data-create-view-duplicate>查看患者档案</button>`;
       document.getElementById('patientCreateSubmit').disabled = Boolean(patientCreateDuplicate);
-      if (showFeedback) document.querySelector('[data-create-error="idNumber"]').textContent = parsed?.error || (idNumber && idType !== '居民身份证' && !/^[A-Z0-9]{3,32}$/.test(idNumber) ? '证件号码格式不正确' : '');
+      const formatError = parsed?.error || (idNumber && idType !== '居民身份证' && !/^[A-Z0-9]{3,32}$/.test(idNumber) ? '证件号码格式不正确' : '');
+      if (showFeedback) setPatientCreateError('idNumber', idNumber ? formatError : '请输入证件号码');
+      else setPatientCreateError('idNumber', '');
     }
-    function checkPatientCreatePhone() {
+    function checkPatientCreatePhone(showFeedback = false) {
       const phone = patientCreateValue('phone');
-      document.getElementById('patientCreatePhoneTip').hidden = !(/^1[3-9]\d{9}$/.test(phone) && allPatients.some(patient => patient.phoneFull === phone));
+      const valid = /^1[3-9]\d{9}$/.test(phone);
+      document.getElementById('patientCreatePhoneTip').hidden = !(valid && allPatients.some(patient => patient.phoneFull === phone));
+      if (showFeedback) setPatientCreateError('phone', !phone ? '请输入手机号' : valid ? '' : '请输入正确的11位手机号');
+      else setPatientCreateError('phone', '');
     }
     function patientCreateRecords(type) {
       return [...document.querySelectorAll(`[data-create-row="${type}"]`)].map(row => ({ first: row.querySelector('[data-create-record="first"]').value.trim(), second: row.querySelector('[data-create-record="second"]').value.trim() }));
     }
     function submitPatientCreate() {
-      const required = { name: '请输入姓名', idNumber: '请输入证件号码', phone: '请输入手机号', source: '请选择患者来源' };
+      const required = { name: '请输入姓名', idNumber: '请输入证件号码', phone: '请输入手机号' };
       let invalid = false;
       Object.entries(required).forEach(([field, message]) => {
-        const error = document.querySelector(`[data-create-error="${field}"]`);
-        error.textContent = patientCreateValue(field) ? '' : message;
-        if (error.textContent) invalid = true;
+        const fieldError = patientCreateValue(field) ? '' : message;
+        setPatientCreateError(field, fieldError);
+        if (fieldError) invalid = true;
       });
       const idNumber = patientCreateValue('idNumber');
       const idType = patientCreateValue('idType');
       const idError = idNumber ? idType === '居民身份证' ? parseArchiveIdentityNumber(idNumber).error : !/^[A-Z0-9]{3,32}$/i.test(idNumber) ? '证件号码格式不正确' : '' : '';
-      if (idError) { document.querySelector('[data-create-error="idNumber"]').textContent = idError; invalid = true; }
-      if (!/^1[3-9]\d{9}$/.test(patientCreateValue('phone'))) { document.querySelector('[data-create-error="phone"]').textContent = '请输入正确的11位手机号'; invalid = true; }
+      if (idError) { setPatientCreateError('idNumber', idError); invalid = true; }
+      if (!/^1[3-9]\d{9}$/.test(patientCreateValue('phone'))) { setPatientCreateError('phone', '请输入正确的11位手机号'); invalid = true; }
       if (patientCreateValue('birthDate') && calculateArchiveAge(patientCreateValue('birthDate')) === null) { document.getElementById('patientCreateAgeHint').textContent = '请选择有效且不晚于今天的出生日期'; invalid = true; }
       if ((patientCreateValue('city') === '其他城市' || patientCreateValue('district') === '其他区县') && !patientCreateValue('addressDetail')) { document.getElementById('patientCreateMore').open = true; showToast('请在详细地址中补充具体城市或区县'); invalid = true; }
-      checkPatientCreateIdentity(true);
+      checkPatientCreateIdentity(true, false);
       if (patientCreateDuplicate) invalid = true;
       const health = {};
       patientCreateTypes.forEach(type => {
@@ -9757,7 +9748,7 @@
         name: patientCreateValue('name'), visitNo: `JD${Date.now()}`, idType, idNumber: idNumber.toUpperCase(),
         phoneFull: patientCreateValue('phone'), phone: maskArchiveSensitive('phone', patientCreateValue('phone')),
         gender: patientCreateValue('gender') || '待补充', birthDate, age: String(calculateArchiveAge(birthDate) ?? ''),
-        source: patientCreateValue('source'), ethnicity: patientCreateValue('ethnicity') || '--', maritalStatus: patientCreateValue('maritalStatus'),
+        ethnicity: patientCreateValue('ethnicity') || '--', maritalStatus: patientCreateValue('maritalStatus'),
         occupation: patientCreateValue('occupation') || '--', region: address || '--',
         department: '--', diagnosis: '--', managementInstitution: '--', visitDate: new Date().toLocaleDateString('zh-CN').replaceAll('/', '/'), team: '', tags: [], portraits: [],
         healthHistoryRecords: { ...health, familyHistory: [], medication: [], smoking: [], drinking: [] }
@@ -9775,19 +9766,23 @@
     document.addEventListener('input', event => {
       if (!event.target.closest('#patientCreateForm')) return;
       if (event.target.name === 'idNumber') checkPatientCreateIdentity(false);
-      if (event.target.name === 'birthDate') document.getElementById('patientCreateAgeHint').textContent = `自动计算年龄：${calculateArchiveAge(event.target.value) ?? '待补充'}岁`;
+      if (event.target.name === 'birthDate') {
+        event.target.dataset.autoFilled = 'false';
+        document.getElementById('patientCreateAgeHint').textContent = `自动计算年龄：${calculateArchiveAge(event.target.value) ?? '待补充'}岁`;
+      }
       if (event.target.name === 'phone') checkPatientCreatePhone();
-      if (event.target.name) document.querySelector(`[data-create-error="${event.target.name}"]`)?.replaceChildren();
+      if (event.target.name && event.target.name !== 'idNumber' && event.target.name !== 'phone') setPatientCreateError(event.target.name, '');
     });
     document.addEventListener('change', event => {
       if (!event.target.closest('#patientCreateForm')) return;
       if (event.target.name === 'idType') checkPatientCreateIdentity(false);
+      if (event.target.name === 'gender' || event.target.name === 'birthDate') patientCreateForm().elements.birthDate.dataset.autoFilled = 'false';
       if (event.target.name === 'province' || event.target.name === 'city') updatePatientCreateAddress(event.target.name);
     });
     document.addEventListener('focusout', event => {
       if (!event.target.closest('#patientCreateForm')) return;
-      if (event.target.name === 'idNumber') checkPatientCreateIdentity(true);
-      if (event.target.name === 'phone') checkPatientCreatePhone();
+      if (event.target.name === 'idNumber') checkPatientCreateIdentity(true, false);
+      if (event.target.name === 'phone') checkPatientCreatePhone(true);
     });
 
     document.addEventListener('click', e => {
@@ -9849,22 +9844,11 @@
         const body = document.getElementById('workbenchChatBody');
         const text = (input?.value || '').trim();
         if (!text || !body) return;
-        const userMessage = document.createElement('div');
-        userMessage.className = 'workbench-message user live-message';
-        userMessage.textContent = text;
-        const aiMessage = document.createElement('div');
-        aiMessage.className = 'workbench-message ai live-message';
-        aiMessage.innerHTML = '<strong>AI小助手</strong>已根据当前工作台数据生成建议：优先处理高优待办，并关注今日随访完成率和外呼失败任务。';
-        if (text.includes('高优')) {
-          aiMessage.innerHTML = '<strong>高优任务识别</strong>当前有 3 类高优任务：待审核患者入组、补充患者手机号、AI 外呼失败处理。建议按影响范围从入组审核开始处理。';
-        } else if (text.includes('汇总') || text.includes('待办')) {
-          aiMessage.innerHTML = '<strong>今日待办汇总</strong>今日共 5 条待办，其中 3 条高优；进行中随访 124 个，逾期 32 个。建议先处理高优，再清理逾期随访。';
-        } else if (text.includes('随访')) {
-          aiMessage.innerHTML = '<strong>随访建议</strong>优先联系昨日未触达与今日到期患者；对外呼失败患者先补齐手机号，再安排二次外呼，避免影响随访完成率。';
-        } else {
-          aiMessage.innerHTML = '<strong>AI小助手</strong>已根据当前工作台数据生成建议：优先处理高优待办，并关注今日随访完成率和外呼失败任务。';
+        const response = window.getGlobalAssistantResponse?.(text) || { title: 'AI主理人', content: '已收到你的问题，你可以继续查询今日待办、高优任务、随访、预警或外呼情况。' };
+        if (window.appendGlobalAssistantMessage) {
+          window.appendGlobalAssistantMessage('user', '', text);
+          window.appendGlobalAssistantMessage('ai', response.title, response.content);
         }
-        body.append(userMessage, aiMessage);
         input.value = '';
         body.scrollTop = body.scrollHeight;
         return;
@@ -15936,7 +15920,7 @@
   <script src="./js/health-portrait.js?v=20260924-3"></script>
 <script src="./js/personnel-management.js?v=20260929-2"></script>
 <script src="./js/organization-management.js?v=20260929-4"></script>
-<script src="./js/workbench.js?v=20260918-3"></script>
+<script src="./js/workbench.js?v=20261013-8"></script>
 <script src="./js/system-role.js?v=20260929-1"></script>
 <script src="./js/scale-create.js?v=20260916-3"></script>
 <script src="./js/dashboard-latest-data.js?v=20260913-31"></script>

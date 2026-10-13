@@ -568,6 +568,8 @@
 .patient-create-field b { display: inline; color: #e34d59; }
 .patient-create-field input, .patient-create-field select, .patient-create-address input, .patient-create-address select { box-sizing: border-box; width: 100%; height: 38px; padding: 0 11px; border: 1px solid #d7e1f2; border-radius: 6px; background: #fff; color: #263752; font: inherit; font-weight: 400; }
 .patient-create-field input:focus, .patient-create-field select:focus, .patient-create-address input:focus, .patient-create-address select:focus { border-color: #315cff; outline: 2px solid #e4ebff; }
+.patient-create-field input[aria-invalid="true"], .patient-create-field select[aria-invalid="true"] { border-color: #ff4d4f; }
+.patient-create-field input[aria-invalid="true"]:focus, .patient-create-field select[aria-invalid="true"]:focus { outline-color: #fff1f0; }
 .patient-create-field input:disabled, .patient-create-field select:disabled { background: #f5f7fb; color: #61718b; }
 .patient-create-address select:disabled { background: #f5f7fb; color: #9aa7ba; }
 .patient-create-field small { min-height: 0; color: #dc4b53; font-size: 12px; font-weight: 400; }
@@ -584,7 +586,10 @@
 .patient-create-collapse > .patient-create-grid, .patient-create-collapse > #patientCreateHealthGroups { padding: 20px; }
 .patient-create-collapse > p { margin: 16px 20px 0; color: #7a889d; font-size: 12px; }
 .patient-create-more-inline { margin: 20px 0 0; border: 0; border-top: 1px solid #e9eef6; border-radius: 0; }
-.patient-create-more-inline summary { padding: 16px 0 0; color: #315cff; }
+.patient-create-more-inline summary { padding: 16px 0 0; display: flex; align-items: center; justify-content: center; gap: 6px; color: #315cff; text-align: center; list-style: none; }
+.patient-create-more-inline summary::-webkit-details-marker { display: none; }
+.patient-create-more-inline summary::before { content: '▸'; font-size: 12px; }
+.patient-create-more-inline[open] summary::before { content: '▾'; }
 .patient-create-more-inline[open] summary { border-bottom: 0; }
 .patient-create-more-inline > .patient-create-grid { padding: 18px 0 0; }
 .patient-create-address { grid-column: 1 / -1; display: grid; gap: 8px; color: #4d5f79; font-size: 13px; font-weight: 600; }
