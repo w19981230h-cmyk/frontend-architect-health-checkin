@@ -173,7 +173,7 @@
   ];
   const renderHistoryPanel = panel => {
     const conversations=store.conversations.filter(item=>isConversationInRange(item,historyRange));
-    panel.innerHTML=`<div class="ai-history-head"><strong>历史对话</strong><div><button data-ai-clear>清空当前对话</button><button data-ai-history-close>关闭</button></div></div><nav class="ai-history-ranges" aria-label="按时间筛选历史对话">${historyRanges.map(([key,label])=>`<button type="button" class="${historyRange===key?'active':''}" data-ai-history-range="${key}" aria-pressed="${historyRange===key}">${label}</button>`).join('')}</nav><div class="ai-history-list">${conversations.length?conversations.map(c=>`<button class="ai-history-item" data-ai-history-open="${c.id}" title="${esc(firstQuestion(c))}"><strong>${esc(firstQuestion(c))}</strong><small>${esc(formatConversationTime(c))}</small></button>`).join(''):'<div class="ai-history-empty">该时间范围暂无历史对话</div>'}</div>`;
+    panel.innerHTML=`<div class="ai-history-head"><strong>历史对话</strong></div><nav class="ai-history-ranges" aria-label="按时间筛选历史对话">${historyRanges.map(([key,label])=>`<button type="button" class="${historyRange===key?'active':''}" data-ai-history-range="${key}" aria-pressed="${historyRange===key}">${label}</button>`).join('')}</nav><div class="ai-history-list">${conversations.length?conversations.map(c=>`<button class="ai-history-item" data-ai-history-open="${c.id}" title="${esc(firstQuestion(c))}"><strong>${esc(firstQuestion(c))}</strong><small>${esc(formatConversationTime(c))}</small></button>`).join(''):'<div class="ai-history-empty">该时间范围暂无历史对话</div>'}</div>`;
   };
   const saveConversation = () => { const host=body(); if(!host||!host.children.length)return; const question=host.querySelector('.global-chat-row.user .workbench-message, .workbench-message.user')?.textContent?.trim()||''; const createdAt=Date.now(); store.conversations.unshift({id:createdAt,createdAt,question,title:question||'工作简报',time:new Date(createdAt).toISOString(),html:host.innerHTML}); store.conversations=store.conversations.slice(0,100); save('aiStewardConversations',store.conversations); };
   const showHistory = () => { let panel=document.querySelector('.ai-history-panel'); if(!panel){panel=document.createElement('section');panel.className='ai-history-panel';document.getElementById('globalAiPanel')?.append(panel);} panel.hidden=false; renderHistoryPanel(panel); };
@@ -194,9 +194,7 @@
       if(event.target.closest('[data-ai-expand]')){panel.classList.toggle('is-wide');event.target.closest('button').textContent=panel.classList.contains('is-wide')?'↙':'↗';return;}
       if(event.target.closest('[data-ai-new]')){saveConversation();store.currentCustomer=null;store.pendingIntent='';renderBrief();toast('已新建对话');return;}
       if(event.target.closest('[data-ai-history]')){showHistory();return;}
-      if(event.target.closest('[data-ai-history-close]')){event.target.closest('.ai-history-panel').hidden=true;return;}
       const historyRangeButton=event.target.closest('[data-ai-history-range]');if(historyRangeButton){historyRange=historyRangeButton.dataset.aiHistoryRange;renderHistoryPanel(historyRangeButton.closest('.ai-history-panel'));return;}
-      if(event.target.closest('[data-ai-clear]')){renderBrief();event.target.closest('.ai-history-panel').hidden=true;toast('当前对话已清空');return;}
       const history=event.target.closest('[data-ai-history-open]');if(history){const item=store.conversations.find(c=>c.id===Number(history.dataset.aiHistoryOpen));if(item){body().innerHTML=item.html;history.closest('.ai-history-panel').hidden=true;scrollEnd();}}
     });
   };
