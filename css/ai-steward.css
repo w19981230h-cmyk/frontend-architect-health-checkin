@@ -76,9 +76,14 @@
 .ai-history-panel[hidden]{display:none}
 .ai-history-head{padding:14px 16px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid #e5eaf3;background:#fff}
 .ai-history-head strong{color:#263752}.ai-history-head button{border:0;color:#1677ff;background:transparent;cursor:pointer}
+.ai-history-ranges{padding:12px 12px 4px;display:flex;flex-wrap:wrap;gap:8px;background:#f8faff}
+.ai-history-ranges button{min-height:30px;padding:4px 10px;border:1px solid #d9d9d9;border-radius:6px;color:#4b5b74;background:#fff;font-size:12px;line-height:20px;cursor:pointer;transition:all .2s}
+.ai-history-ranges button:hover{color:#1677ff;border-color:#69b1ff}.ai-history-ranges button:focus-visible{outline:2px solid rgba(22,119,255,.22);outline-offset:1px}
+.ai-history-ranges button.active{color:#fff;border-color:#1677ff;background:#1677ff;box-shadow:0 2px 6px rgba(22,119,255,.18)}
 .ai-history-list{padding:12px;display:grid;gap:8px;overflow:auto}
 .ai-history-item{padding:12px;border:1px solid #e1e7f2;border-radius:9px;text-align:left;background:#fff;cursor:pointer}
-.ai-history-item:hover{border-color:#91caff}.ai-history-item strong{display:block;color:#32425d;font-size:13px}.ai-history-item small{display:block;margin-top:4px;color:#8b97aa;font-size:11px}
+.ai-history-item:hover{border-color:#91caff}.ai-history-item strong{display:block;overflow:hidden;color:#32425d;font-size:13px;text-overflow:ellipsis;white-space:nowrap}.ai-history-item small{display:block;margin-top:4px;color:#8b97aa;font-size:11px}
+.ai-history-empty{padding:36px 12px;color:#8b97aa;font-size:13px;text-align:center}
 .ai-customer-picker{display:grid;gap:7px}.ai-customer-choice{padding:10px;border:1px solid #e3e8f2;border-radius:8px;text-align:left;color:#34435d;background:#fff;cursor:pointer}.ai-customer-choice:hover{border-color:#91caff;background:#f7fbff}
 .ai-proposal-row{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px;align-items:start;padding:9px;border:1px solid #e4e9f2;border-radius:8px}.ai-proposal-row input{width:100%;border:0;outline:0;color:#35445d;font-size:12px}.ai-proposal-row button{border:0;color:#cf1322;background:transparent;cursor:pointer}
 @media(max-width:720px){.global-ai-panel.is-wide{width:calc(100vw - 24px)}.ai-task-form{grid-template-columns:1fr}.ai-task-form label.full{grid-column:auto}.ai-brief-stats{grid-template-columns:1fr 1fr 1fr}.ai-steward-head-actions>button{width:28px}}
