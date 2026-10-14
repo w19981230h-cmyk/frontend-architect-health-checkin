@@ -31,26 +31,12 @@
     const host = document.getElementById('workbenchStats');
     if (!host) return;
     const stats = [
-      ['今日提醒', sumByKey(groups, 'reminder'), '项', `${groups.length}家机构今日需处理`, 'reminder', '醒'],
-      ['今日建档', sumScopeMetric(groups, 'created', 5), '人', '今日新增客户档案', 'created', '档'],
-      ['在管客户', sumScopeMetric(groups, 'managed', 86), '人', `${groups.length}家机构服务中`, 'managed', '客'],
-      ['服务完成客户', sumScopeMetric(groups, 'completedClients', 18), '人', '已完成服务路径', 'completed', '成']
+      ['今日提醒', sumByKey(groups, 'reminder'), '项', `${groups.length}家机构今日需处理`],
+      ['今日建档', sumScopeMetric(groups, 'created', 5), '人', '今日新增客户档案'],
+      ['在管客户', sumScopeMetric(groups, 'managed', 86), '人', `${groups.length}家机构服务中`],
+      ['服务完成客户', sumScopeMetric(groups, 'completedClients', 18), '人', '已完成服务路径']
     ];
-    host.innerHTML = stats.map(([label, value, unit, hint, tone, symbol]) => `<article class="workbench-stat tone-${tone}"><span class="workbench-stat-icon" aria-hidden="true">${symbol}</span><div><span>${label}</span><strong>${value}</strong><b>${unit}</b><small>${escapeHtml(hint)}</small></div></article>`).join('');
-  };
-  const renderOverview = groups => {
-    const total = groups.reduce((sum, group) => sum + group.tasks.reduce((taskSum, task) => taskSum + task.count, 0), 0);
-    const institutionLabel = groups.length === 1 ? groups[0].institution : `${groups.length}家机构`;
-    const hour = new Date().getHours();
-    const greeting = hour < 12 ? '上午好' : hour < 18 ? '下午好' : '晚上好';
-    const title = document.getElementById('workbenchOverviewTitle');
-    const summary = document.getElementById('workbenchOverviewSummary');
-    const date = document.getElementById('workbenchOverviewDate');
-    const attention = document.getElementById('workbenchAttentionTotal');
-    if (title) title.textContent = `${greeting}，今天也要照顾好每一位客户`;
-    if (summary) summary.textContent = `${institutionLabel}共有 ${total} 项服务任务待推进，建议优先处理有时效要求的客户提醒。`;
-    if (date) date.textContent = new Intl.DateTimeFormat('zh-CN', { month: 'long', day: 'numeric', weekday: 'long' }).format(new Date());
-    if (attention) attention.textContent = total;
+    host.innerHTML = stats.map(([label, value, unit, hint]) => `<div class="workbench-stat"><span>${label}</span><strong>${value}</strong><b>${unit}</b><small>${escapeHtml(hint)}</small></div>`).join('');
   };
   const renderTasks = groups => {
     const host = document.getElementById('workbenchTodos');
@@ -60,44 +46,6 @@
       const rows = group.tasks.map(task => `<button type="button" class="workbench-institution-task" data-workbench-institution="${escapeHtml(group.institution)}" data-workbench-target="${task.target}" aria-label="${escapeHtml(group.institution)} ${task.title} ${task.count}${task.unit}，${task.action}"><span class="workbench-task-symbol">${task.symbol}</span><span class="workbench-institution-task-main"><strong>${task.title}${task.high ? '<em class="workbench-priority">高优</em>' : ''}</strong><small>${escapeHtml(task.description(task.count))}</small></span><span class="workbench-institution-action">${task.action} ›</span></button>`).join('');
       return `<article class="workbench-institution-panel"><header class="workbench-institution-panel-head"><div><strong>${escapeHtml(group.institution)}</strong><small>当前机构待办事项</small></div><span>共${total}项</span></header><div class="workbench-institution-tasks">${rows}</div></article>`;
     }).join('');
-  };
-  const renderFocus = groups => {
-    const host = document.getElementById('workbenchFocus');
-    if (!host || !groups.length) return;
-    const group = groups[0];
-    const byKey = key => group.tasks.find(task => task.key === key)?.count || 0;
-    const scopeHint = groups.length === 1 ? group.institution : `优先展示：${group.institution}`;
-    host.innerHTML = `<header class="workbench-focus-head"><div><span>行动建议</span><h2>今日重点</h2></div><em>按时效排序</em></header>
-      <p class="workbench-focus-scope">${escapeHtml(scopeHint)}</p>
-      <button type="button" class="workbench-focus-primary" data-workbench-institution="${escapeHtml(group.institution)}" data-workbench-target="healthTasks">
-        <span class="workbench-focus-tag">优先处理</span><strong>${byKey('reminder')} 项客户待提醒</strong><small>先完成临近执行时间的客户触达，避免服务计划延误。</small><b>查看提醒 <span aria-hidden="true">›</span></b>
-      </button>
-      <div class="workbench-focus-list">
-        <button type="button" data-workbench-institution="${escapeHtml(group.institution)}" data-workbench-target="patients"><span><i class="archive">档</i><em>补齐客户档案</em></span><strong>${byKey('archive')} 人</strong></button>
-        <button type="button" data-workbench-institution="${escapeHtml(group.institution)}" data-workbench-target="evaluationReports"><span><i class="report">报</i><em>生成评估报告</em></span><strong>${byKey('report')} 份</strong></button>
-      </div>`;
-  };
-  const renderFeed = groups => {
-    const host = document.getElementById('workbenchFeed');
-    if (!host) return;
-    const created = sumScopeMetric(groups, 'created', 5);
-    const completed = sumScopeMetric(groups, 'completedClients', 18);
-    const archive = sumByKey(groups, 'archive');
-    const items = [
-      ['待处理', `${archive} 位客户档案等待补充`, '资料完善后可继续推进后续服务计划', 'pending'],
-      ['今日新增', `${created} 位客户已完成建档`, '客户档案已进入当前机构服务范围', 'new'],
-      ['已完成', `${completed} 位客户完成服务路径`, '可继续查看服务结果与后续安排', 'done']
-    ];
-    host.innerHTML = items.map(([state, title, detail, tone]) => `<article class="workbench-feed-item tone-${tone}"><span class="workbench-feed-dot" aria-hidden="true"></span><div><span>${state}</span><strong>${title}</strong><small>${detail}</small></div></article>`).join('');
-  };
-  const renderShortcuts = groups => {
-    const host = document.getElementById('workbenchShortcuts');
-    if (!host || !groups.length) return;
-    const institution = escapeHtml(groups[0].institution);
-    host.innerHTML = `<button type="button" class="primary" data-open-patient-create data-source="工作台快捷入口"><span aria-hidden="true">＋</span><strong>新建患者档案</strong><small>快速录入客户基础信息</small></button>
-      <button type="button" data-workbench-institution="${institution}" data-workbench-target="healthTasks"><span aria-hidden="true">任</span><strong>查看健康任务</strong><small>集中处理今日服务任务</small></button>
-      <button type="button" data-workbench-institution="${institution}" data-workbench-target="evaluationReports"><span aria-hidden="true">报</span><strong>生成评估报告</strong><small>进入待出具报告列表</small></button>
-      <button type="button" data-workbench-institution="${institution}" data-workbench-target="patients"><span aria-hidden="true">客</span><strong>浏览全部客户</strong><small>查看当前机构客户档案</small></button>`;
   };
   const renderAssistant = groups => {
     const summary = document.getElementById('workbenchScopeSummary');
@@ -116,12 +64,8 @@
   const render = detail => {
     if (detail) scope = detail;
     const groups = buildInstitutionTasks(currentInstitutions());
-    renderOverview(groups);
     renderStats(groups);
     renderTasks(groups);
-    renderFocus(groups);
-    renderFeed(groups);
-    renderShortcuts(groups);
     renderAssistant(groups);
   };
   const openInstitutionTask = (institutionName, target) => {
