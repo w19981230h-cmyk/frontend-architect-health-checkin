@@ -222,7 +222,6 @@
     panel.addEventListener('click',event=>{
       const reminderCheck=event.target.closest('[data-ai-reminder-check]'); if(reminderCheck){toggleReminder(reminderCheck);return;}
       const actionTarget=event.target.closest('[data-ai-action]');if(actionTarget){handleAction(actionTarget);return;}
-      if(event.target.closest('[data-ai-expand]')){panel.classList.toggle('is-wide');event.target.closest('button').textContent=panel.classList.contains('is-wide')?'↙':'↗';return;}
       if(event.target.closest('[data-ai-new]')){saveConversation();store.currentCustomer=null;store.pendingIntent='';renderBrief();toast('已新建对话');return;}
       if(event.target.closest('[data-ai-history]')){showHistory();return;}
       const history=event.target.closest('[data-ai-history-open]');if(history){const item=allHistoryConversations().find(c=>c.id===Number(history.dataset.aiHistoryOpen));if(item){body().innerHTML=item.html;history.closest('.ai-history-panel').hidden=true;scrollEnd();}}
