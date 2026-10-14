@@ -74,20 +74,13 @@
 .global-ai-rename:hover{color:#1677ff;background:#edf4ff}
 .global-ai-rename:focus-visible{outline:2px solid rgba(22,119,255,.3);outline-offset:1px}
 .global-ai-rename svg{width:14px;height:14px;stroke-width:1.8}
+#globalAiTitle{display:inline-block;max-width:170px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+#globalAiTitle.editing{min-width:88px;padding:2px 6px;margin:-3px -6px;border:1px solid #4096ff;border-radius:5px;background:#fff;outline:0;box-shadow:0 0 0 2px rgba(5,145,255,.1);text-overflow:clip}
+#globalAiTitle.editing+.global-ai-rename{opacity:0;pointer-events:none}
 .global-ai-close{width:32px;height:32px;display:grid;place-items:center;flex:0 0 auto;border:0;border-radius:6px;color:#66758e;background:transparent;font-size:24px;line-height:1;cursor:pointer;transition:color .2s,background .2s}
 .global-ai-close:hover{color:#1f3356;background:#f0f4fb}
 .global-ai-close:focus-visible,.global-ai-trigger:focus-visible{outline:2px solid rgba(22,119,255,.35);outline-offset:2px}
 .global-ai-panel .workbench-chat-body{background:linear-gradient(180deg,#f7f9ff,#f3f6fd)}
-.global-ai-name-editor[hidden]{display:none}
-.global-ai-name-editor{position:absolute;z-index:4;top:66px;right:46px;width:270px;padding:14px;border:1px solid #d9e2f2;border-radius:10px;background:#fff;box-shadow:0 12px 32px rgba(31,54,104,.18)}
-.global-ai-name-editor label{display:block;margin-bottom:8px;color:#253858;font-size:13px;font-weight:700}
-.global-ai-name-editor input{width:100%;height:34px;padding:0 10px;border:1px solid #d9d9d9;border-radius:6px;color:#243653;outline:none;font-size:13px}
-.global-ai-name-editor input:focus{border-color:#4096ff;box-shadow:0 0 0 2px rgba(5,145,255,.1)}
-.global-ai-name-editor>div{display:flex;justify-content:flex-end;gap:8px;margin-top:12px}
-.global-ai-name-editor button{height:30px;padding:0 12px;border:1px solid #d9d9d9;border-radius:6px;color:#33425c;background:#fff;cursor:pointer}
-.global-ai-name-editor button.primary{border-color:#1677ff;color:#fff;background:#1677ff}
-.global-ai-name-editor button:hover{border-color:#4096ff;color:#1677ff}
-.global-ai-name-editor button.primary:hover{color:#fff;background:#4096ff}
 .global-chat-row{width:100%;display:flex;align-items:flex-start;gap:9px}
 .global-chat-row.user{justify-content:flex-end}
 .global-chat-row .workbench-message{max-width:calc(100% - 44px)}

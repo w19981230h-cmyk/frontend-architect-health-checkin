@@ -10,7 +10,7 @@
     { key: 'evaluation', symbol: '估', title: '待办评价评估', base: 6, unit: '个', action: '前往处理', target: 'checkinEvaluation', description: count => `共${count}个评价评估待处理` }
   ];
   let scope = null;
-  let assistantName = 'AI主理人';
+  let assistantName = 'AI智能主理人';
   let assistantContextKey = 'global';
   let patientTaskStore = {};
   try { assistantName = localStorage.getItem('aiAssistantName')?.trim() || assistantName; } catch (_) {}
@@ -76,12 +76,43 @@
     window.setTimeout(() => document.querySelector(`[data-list-view="${target}"]`)?.click(), 80);
   };
   const applyAssistantName = (name, persist = false) => {
-    assistantName = name.trim().slice(0, 12) || 'AI主理人';
+    assistantName = name.trim().slice(0, 12) || 'AI智能主理人';
     document.querySelectorAll('[data-assistant-name]').forEach(node => { node.textContent = assistantName; });
     document.querySelector('[data-global-ai-close]')?.setAttribute('aria-label', `关闭${assistantName}`);
     const trigger = document.querySelector('[data-global-ai-toggle]');
     if (trigger) trigger.setAttribute('aria-label', trigger.getAttribute('aria-expanded') === 'true' ? `收起${assistantName}` : `打开${assistantName}`);
     if (persist) { try { localStorage.setItem('aiAssistantName', assistantName); } catch (_) {} }
+  };
+  const finishAssistantNameEdit = (save, refocus = false) => {
+    const title = document.getElementById('globalAiTitle');
+    if (!title?.classList.contains('editing')) return;
+    const originalName = title.dataset.originalName || assistantName;
+    const nextName = title.textContent.replace(/\s+/g, ' ').trim().slice(0, 12);
+    title.removeAttribute('contenteditable');
+    title.removeAttribute('role');
+    title.removeAttribute('spellcheck');
+    title.removeAttribute('aria-label');
+    title.classList.remove('editing');
+    delete title.dataset.originalName;
+    applyAssistantName(save && nextName ? nextName : originalName, save && Boolean(nextName));
+    if (refocus) document.querySelector('[data-global-ai-rename]')?.focus();
+  };
+  const startAssistantNameEdit = () => {
+    const title = document.getElementById('globalAiTitle');
+    if (!title || title.classList.contains('editing')) return;
+    title.dataset.originalName = assistantName;
+    title.textContent = assistantName;
+    title.setAttribute('contenteditable', 'true');
+    title.setAttribute('role', 'textbox');
+    title.setAttribute('spellcheck', 'false');
+    title.setAttribute('aria-label', '编辑助手名称，最多12个字符');
+    title.classList.add('editing');
+    title.focus();
+    const range = document.createRange();
+    range.selectNodeContents(title);
+    const selection = window.getSelection();
+    selection?.removeAllRanges();
+    selection?.addRange(range);
   };
   const assistantAvatar = () => {
     const avatar = document.createElement('span');
@@ -157,12 +188,12 @@
     if (patient) {
       if (subtitle) subtitle.textContent = '仅可查询与新增当前患者任务';
       if (scopeBadge) scopeBadge.textContent = `患者权限 · ${patient.name}`;
-      if (quickRow) quickRow.innerHTML = ['查看患者任务', '如何添加患者任务', '查询患者基本信息', '查看指标趋势'].map(quickPromptButton).join('');
+      if (quickRow) quickRow.innerHTML = ['查档案', '查医嘱', '定任务', '查报告'].map(quickPromptButton).join('');
       if (input) input.placeholder = `仅查询或新增${patient.name}患者的任务...`;
     } else {
       if (subtitle) subtitle.textContent = '可查询全局患者、任务与运营数据';
       if (scopeBadge) scopeBadge.textContent = '全局权限';
-      if (quickRow) quickRow.innerHTML = ['汇总今日待办', '查看高优任务', '查询外呼情况', '生成随访建议'].map(quickPromptButton).join('');
+      if (quickRow) quickRow.innerHTML = ['查档案', '查医嘱', '定任务', '查报告'].map(quickPromptButton).join('');
       if (input) input.placeholder = '输入你想查询的数据或问题...';
     }
     if (nextContextKey !== assistantContextKey) {
@@ -219,10 +250,7 @@
     if (!assistant || !panel || !trigger) return;
     panel.hidden = !open;
     assistant.classList.toggle('open', open);
-    if (!open) {
-      const editor = document.querySelector('[data-global-ai-name-editor]');
-      if (editor) editor.hidden = true;
-    }
+    if (!open) finishAssistantNameEdit(true);
     trigger.setAttribute('aria-expanded', String(open));
     trigger.setAttribute('aria-label', open ? `收起${assistantName}` : `打开${assistantName}`);
     if (open) {
@@ -245,30 +273,7 @@
 
   document.addEventListener('click', event => {
     if (event.target.closest('[data-global-ai-rename]')) {
-      const editor = document.querySelector('[data-global-ai-name-editor]');
-      const input = document.querySelector('[data-assistant-name-input]');
-      if (editor && input) {
-        editor.hidden = false;
-        input.value = assistantName;
-        window.setTimeout(() => { input.focus(); input.select(); }, 0);
-      }
-      return;
-    }
-    if (event.target.closest('[data-assistant-name-cancel]')) {
-      const editor = document.querySelector('[data-global-ai-name-editor]');
-      if (editor) editor.hidden = true;
-      document.querySelector('[data-global-ai-rename]')?.focus();
-      return;
-    }
-    if (event.target.closest('[data-assistant-name-save]')) {
-      const editor = document.querySelector('[data-global-ai-name-editor]');
-      const input = document.querySelector('[data-assistant-name-input]');
-      const value = input?.value.trim() || '';
-      if (!value) { input?.setCustomValidity('请输入助手名称'); input?.reportValidity(); return; }
-      input.setCustomValidity('');
-      applyAssistantName(value, true);
-      editor.hidden = true;
-      document.querySelector('[data-global-ai-rename]')?.focus();
+      startAssistantNameEdit();
       return;
     }
     const assistantToggle = event.target.closest('[data-global-ai-toggle]');
@@ -285,21 +290,35 @@
     if (row) openInstitutionTask(row.dataset.workbenchInstitution, row.dataset.workbenchTarget);
   });
   document.addEventListener('keydown', event => {
-    if (event.key === 'Enter' && event.target?.matches?.('[data-assistant-name-input]')) {
-      event.preventDefault();
-      document.querySelector('[data-assistant-name-save]')?.click();
+    if (event.target?.id === 'globalAiTitle' && event.target.classList.contains('editing')) {
+      if (event.key === 'Enter') {
+        event.preventDefault();
+        finishAssistantNameEdit(true, true);
+      } else if (event.key === 'Escape') {
+        event.preventDefault();
+        finishAssistantNameEdit(false, true);
+      }
       return;
     }
     if (event.key === 'Escape' && !document.getElementById('globalAiPanel')?.hidden) {
-      const editor = document.querySelector('[data-global-ai-name-editor]');
-      if (editor && !editor.hidden) {
-        editor.hidden = true;
-        document.querySelector('[data-global-ai-rename]')?.focus();
-        return;
-      }
       setAssistantOpen(false);
       document.querySelector('[data-global-ai-toggle]')?.focus();
     }
+  });
+  document.addEventListener('input', event => {
+    if (event.target?.id !== 'globalAiTitle' || !event.target.classList.contains('editing')) return;
+    const normalized = event.target.textContent.replace(/[\r\n]+/g, '').slice(0, 12);
+    if (event.target.textContent === normalized) return;
+    event.target.textContent = normalized;
+    const range = document.createRange();
+    range.selectNodeContents(event.target);
+    range.collapse(false);
+    const selection = window.getSelection();
+    selection?.removeAllRanges();
+    selection?.addRange(range);
+  });
+  document.addEventListener('focusout', event => {
+    if (event.target?.id === 'globalAiTitle' && event.target.classList.contains('editing')) finishAssistantNameEdit(true);
   });
   window.addEventListener('organizationScopeChange', event => render(event.detail));
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', () => render(window.organizationScope));

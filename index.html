@@ -2921,7 +2921,8 @@
   <link rel="stylesheet" href="./css/health-portrait.css?v=20260924-3">
 <link rel="stylesheet" href="./css/personnel-management.css?v=20260929-1">
 <link rel="stylesheet" href="./css/organization-management.css?v=20260929-1">
-<link rel="stylesheet" href="./css/workbench.css?v=20261013-10">
+<link rel="stylesheet" href="./css/workbench.css?v=20261014-1">
+<link rel="stylesheet" href="./css/ai-steward.css?v=20261014-1">
 <link rel="stylesheet" href="./css/system-role.css?v=20260916-1">
 <link rel="stylesheet" href="./css/dashboard-latest.css?v=20260913-40">
 <link rel="stylesheet" href="./css/dashboard-updated.css?v=20260913-2">
@@ -4340,22 +4341,17 @@
       <div class="workbench-chat-head">
         <span class="global-ai-avatar" aria-hidden="true"><svg viewBox="0 0 40 40" fill="none"><path d="M20 6.5 23 14l7.5 3-7.5 3-3 7.5-3-7.5-7.5-3 7.5-3 3-7.5Z" fill="currentColor"/><circle cx="30.5" cy="9.5" r="3.5" fill="currentColor" opacity=".72"/><path d="M8 25v9M3.5 29.5h9" stroke="currentColor" stroke-width="3" stroke-linecap="round"/></svg></span>
         <div class="global-ai-heading">
-          <div class="workbench-chat-title"><span id="globalAiTitle" data-assistant-name>AI主理人</span><button type="button" class="global-ai-rename" data-global-ai-rename aria-label="修改助手名称" title="修改助手名称"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L8 18l-4 1 1-4Z"/></svg></button></div>
+          <div class="workbench-chat-title"><span id="globalAiTitle" data-assistant-name>AI智能主理人</span><button type="button" class="global-ai-rename" data-global-ai-rename aria-label="修改助手名称" title="修改助手名称"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L8 18l-4 1 1-4Z"/></svg></button></div>
           <div class="workbench-chat-subtitle" data-assistant-subtitle>可查询全局患者、任务与运营数据</div>
           <span class="global-ai-scope-badge" data-assistant-scope>全局权限</span>
         </div>
-        <button type="button" class="global-ai-close" data-global-ai-close aria-label="关闭AI主理人">×</button>
-      </div>
-      <div class="global-ai-name-editor" data-global-ai-name-editor hidden>
-        <label for="globalAiNameInput">自定义助手名称</label>
-        <input id="globalAiNameInput" data-assistant-name-input maxlength="12" autocomplete="off" placeholder="请输入助手名称">
-        <div><button type="button" data-assistant-name-cancel>取消</button><button type="button" class="primary" data-assistant-name-save>保存</button></div>
+        <div class="ai-steward-head-actions"><button type="button" data-ai-new title="新建对话" aria-label="新建对话">＋</button><button type="button" data-ai-history title="历史对话" aria-label="历史对话">☷</button><button type="button" data-ai-expand title="宽屏模式" aria-label="切换宽屏模式">↗</button><button type="button" class="global-ai-close" data-global-ai-close aria-label="关闭AI智能主理人">×</button></div>
       </div>
       <div class="workbench-chat-body" id="workbenchChatBody" aria-live="polite">
         <div class="global-chat-row ai" id="globalAiWelcomeRow">
           <span class="global-ai-avatar global-chat-avatar" aria-hidden="true"><svg viewBox="0 0 40 40" fill="none"><path d="M20 6.5 23 14l7.5 3-7.5 3-3 7.5-3-7.5-7.5-3 7.5-3 3-7.5Z" fill="currentColor"/><circle cx="30.5" cy="9.5" r="3.5" fill="currentColor" opacity=".72"/><path d="M8 25v9M3.5 29.5h9" stroke="currentColor" stroke-width="3" stroke-linecap="round"/></svg></span>
           <div class="global-ai-welcome">
-            <strong>你好，我是<span data-assistant-name>AI主理人</span></strong>
+            <strong>你好，我是<span data-assistant-name>AI智能主理人</span></strong>
             <p>可以帮你查询当前机构的待办、患者入组、随访、预警、外呼和完成情况。</p>
           </div>
         </div>
@@ -4367,13 +4363,13 @@
         <button type="button" data-workbench-quick="生成随访建议">生成随访建议</button>
       </div>
       <label class="workbench-chat-input">
-        <input id="workbenchChatInput" placeholder="输入你想查询的数据或问题..." autocomplete="off" />
+        <textarea id="workbenchChatInput" rows="1" placeholder="输入你想查询的数据或问题..." autocomplete="off"></textarea>
         <button type="button" data-workbench-send aria-label="发送"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="m22 2-7 20-4-9-9-4 20-7Z"/><path d="M22 2 11 13"/></svg></button>
       </label>
     </section>
     <button type="button" class="global-ai-trigger" data-global-ai-toggle aria-expanded="false" aria-controls="globalAiPanel" aria-label="打开AI主理人">
       <span class="global-ai-avatar" aria-hidden="true"><svg viewBox="0 0 40 40" fill="none"><path d="M20 6.5 23 14l7.5 3-7.5 3-3 7.5-3-7.5-7.5-3 7.5-3 3-7.5Z" fill="currentColor"/><circle cx="30.5" cy="9.5" r="3.5" fill="currentColor" opacity=".72"/><path d="M8 25v9M3.5 29.5h9" stroke="currentColor" stroke-width="3" stroke-linecap="round"/></svg></span>
-      <span class="global-ai-trigger-label" data-assistant-name>AI主理人</span>
+      <span class="global-ai-trigger-label" data-assistant-name>AI智能主理人</span>
     </button>
   </div>
 
@@ -9654,7 +9650,7 @@
         generatePatientSmartConditions();
         return;
       }
-      if (e.key === 'Enter' && e.target?.id === 'workbenchChatInput') {
+      if (e.key === 'Enter' && e.target?.id === 'workbenchChatInput' && !e.shiftKey) {
         e.preventDefault();
         document.querySelector('[data-workbench-send]')?.click();
       }
@@ -9952,6 +9948,11 @@
         const body = document.getElementById('workbenchChatBody');
         const text = (input?.value || '').trim();
         if (!text || !body) return;
+        if (window.aiStewardSend) {
+          window.aiStewardSend(text);
+          input.value = '';
+          return;
+        }
         const response = window.getGlobalAssistantResponse?.(text) || { title: 'AI主理人', content: '已收到你的问题，你可以继续查询今日待办、高优任务、随访、预警或外呼情况。' };
         if (window.appendGlobalAssistantMessage) {
           window.appendGlobalAssistantMessage('user', '', text);
@@ -16314,7 +16315,8 @@
   <script src="./js/health-portrait.js?v=20260924-3"></script>
 <script src="./js/personnel-management.js?v=20260929-2"></script>
 <script src="./js/organization-management.js?v=20260929-4"></script>
-<script src="./js/workbench.js?v=20261013-8"></script>
+<script src="./js/workbench.js?v=20261014-1"></script>
+<script src="./js/ai-steward.js?v=20261014-1"></script>
 <script src="./js/system-role.js?v=20260929-1"></script>
 <script src="./js/scale-create.js?v=20260916-3"></script>
 <script src="./js/dashboard-latest-data.js?v=20260913-31"></script>
