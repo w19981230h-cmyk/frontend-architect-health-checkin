@@ -24,7 +24,6 @@
       {id:'T003',customer:'王五',name:'确认用药情况',type:'用药随访',time:'2026-10-14 16:00',assignee:'张老师（当前）',note:'电话确认今日用药情况',status:'待处理'}
     ])
   };
-  let historyRange = 'today';
   const esc = value => String(value ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
   const body = () => document.getElementById('workbenchChatBody');
   const assistantName = () => window.getGlobalAssistantName?.() || 'AI智能主理人';
@@ -154,13 +153,17 @@
     return Number.isNaN(parsed.getTime())?new Date(0):parsed;
   };
   const startOfDay = date => new Date(date.getFullYear(),date.getMonth(),date.getDate());
-  const isConversationInRange = (conversation,range) => {
+  const conversationBucket = conversation => {
     const date=conversationDate(conversation); if(!date.getTime())return false;
     const now=new Date(), day=Math.floor((startOfDay(now)-startOfDay(date))/86400000);
-    if(range==='today')return day===0;
-    if(range==='yesterday')return day===1;
-    if(range.startsWith('days-'))return day>=0&&day<Number(range.split('-')[1]);
-    return date.getFullYear()===Number(range.replace('year-',''));
+    if(day===0)return 'today';
+    if(day===1)return 'yesterday';
+    if(day>=2&&day<=3)return 'days-3';
+    if(day>=4&&day<=7)return 'days-7';
+    if(day>=8&&day<=30)return 'days-30';
+    if(date.getFullYear()===2026)return 'year-2026';
+    if(date.getFullYear()===2025)return 'year-2025';
+    return '';
   };
   const formatConversationTime = conversation => {
     const date=conversationDate(conversation), now=new Date();
@@ -168,12 +171,39 @@
     if(startOfDay(date).getTime()===startOfDay(now).getTime())return `${pad(date.getHours())}:${pad(date.getMinutes())}`;
     return `${date.getFullYear()}/${pad(date.getMonth()+1)}/${pad(date.getDate())}`;
   };
-  const historyRanges = [
+  const historyGroups = [
     ['today','今天'],['yesterday','昨天'],['days-3','最近3天'],['days-7','最近7天'],['days-30','最近30天'],['year-2026','2026年'],['year-2025','2025年']
   ];
+  const relativeHistoryDate = (days,hour,minute=0) => { const date=new Date(); date.setDate(date.getDate()-days); date.setHours(hour,minute,0,0); return date.getTime(); };
+  const fixedHistoryDate = (year,month,day,hour,minute=0) => new Date(year,month-1,day,hour,minute,0,0).getTime();
+  const demoHistoryItem = (id,createdAt,question,answer) => ({
+    id,createdAt,question,title:question,time:new Date(createdAt).toISOString(),
+    html:`<div class="global-chat-row user"><div class="workbench-message user live-message">${esc(question)}</div><span class="global-chat-user-avatar" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="8" r="4"/><path d="M4.5 20a7.5 7.5 0 0 1 15 0"/></svg></span></div><div class="global-chat-row ai">${avatar()}<div class="ai-rich-message"><div class="workbench-message ai live-message"><strong>查询结果</strong><div>${esc(answer)}</div></div></div></div>`
+  });
+  const demoHistoryConversations = () => [
+    demoHistoryItem(-101,relativeHistoryDate(0,15,28),'今天有哪些客户提醒需要处理？','今天共有12项客户提醒，建议优先处理临近执行时间的服务事项。'),
+    demoHistoryItem(-102,relativeHistoryDate(0,11,6),'哪些客户的健康档案还需要补充？','当前共有7位客户的健康档案待补充。'),
+    demoHistoryItem(-103,relativeHistoryDate(0,9,18),'汇总今天需要出具的健康评估报告','今天共有5份客户健康评估报告待生成。'),
+    demoHistoryItem(-111,relativeHistoryDate(1,16,42),'昨天完成了多少位客户的服务？','昨天共有16位客户完成服务路径。'),
+    demoHistoryItem(-112,relativeHistoryDate(1,10,15),'查看昨天新增的客户档案','昨天新增4位客户档案。'),
+    demoHistoryItem(-121,relativeHistoryDate(2,14,35),'张三最近的血糖指标是多少？','已找到张三最近三次空腹血糖记录。'),
+    demoHistoryItem(-122,relativeHistoryDate(3,9,50),'李四的复查提醒安排在什么时候？','李四的复查提醒已安排在下午14:30。'),
+    demoHistoryItem(-131,relativeHistoryDate(5,13,20),'查询王五的健康档案补充进度','王五的近期检查资料仍需补充。'),
+    demoHistoryItem(-132,relativeHistoryDate(7,10,5),'最近有哪些报告等待专家解读？','已汇总待专家解读的检查报告清单。'),
+    demoHistoryItem(-141,relativeHistoryDate(12,17,12),'汇总本月的客户提醒完成情况','本月客户提醒整体完成情况稳定。'),
+    demoHistoryItem(-142,relativeHistoryDate(24,8,46),'查看陈晨最近一次用药医嘱','已找到陈晨最近一次门诊用药记录。'),
+    demoHistoryItem(-151,fixedHistoryDate(2026,6,22,14,10),'查看2026年上半年在管客户变化','已汇总2026年上半年在管客户变化情况。'),
+    demoHistoryItem(-152,fixedHistoryDate(2026,3,6,10,26),'查询一季度服务完成客户数量','已汇总2026年第一季度服务完成客户数量。'),
+    demoHistoryItem(-153,fixedHistoryDate(2026,1,18,16,8),'查看年度健康服务计划','已找到2026年度健康服务计划。'),
+    demoHistoryItem(-161,fixedHistoryDate(2025,11,12,11,34),'查看2025年客户服务总结','已汇总2025年度客户服务情况。'),
+    demoHistoryItem(-162,fixedHistoryDate(2025,7,21,15,16),'查询2025年重点客户随访记录','已找到2025年重点客户随访记录。'),
+    demoHistoryItem(-163,fixedHistoryDate(2025,2,14,9,42),'查看2025年健康评估报告归档','已找到2025年健康评估报告归档记录。')
+  ];
+  const allHistoryConversations = () => [...store.conversations,...demoHistoryConversations()].sort((a,b)=>conversationDate(b)-conversationDate(a));
   const renderHistoryPanel = panel => {
-    const conversations=store.conversations.filter(item=>isConversationInRange(item,historyRange));
-    panel.innerHTML=`<div class="ai-history-head"><strong>历史对话</strong></div><nav class="ai-history-ranges" aria-label="按时间筛选历史对话">${historyRanges.map(([key,label])=>`<button type="button" class="${historyRange===key?'active':''}" data-ai-history-range="${key}" aria-pressed="${historyRange===key}">${label}</button>`).join('')}</nav><div class="ai-history-list">${conversations.length?conversations.map(c=>`<button class="ai-history-item" data-ai-history-open="${c.id}" title="${esc(firstQuestion(c))}"><strong>${esc(firstQuestion(c))}</strong><small>${esc(formatConversationTime(c))}</small></button>`).join(''):'<div class="ai-history-empty">该时间范围暂无历史对话</div>'}</div>`;
+    const conversations=allHistoryConversations();
+    const groups=historyGroups.map(([key,label])=>[key,label,conversations.filter(item=>conversationBucket(item)===key)]);
+    panel.innerHTML=`<div class="ai-history-head"><strong>历史对话</strong></div><div class="ai-history-list ai-history-timeline">${groups.map(([key,label,items])=>`<section class="ai-history-group" data-history-group="${key}"><div class="ai-history-timepoint"><i aria-hidden="true"></i><strong>${label}</strong><small>${items.length}条</small></div><div class="ai-history-group-items">${items.map(c=>`<button class="ai-history-item" data-ai-history-open="${c.id}" title="${esc(firstQuestion(c))}"><strong>${esc(firstQuestion(c))}</strong><small>${esc(formatConversationTime(c))}</small></button>`).join('')}</div></section>`).join('')}</div>`;
   };
   const saveConversation = () => { const host=body(); if(!host||!host.children.length)return; const question=host.querySelector('.global-chat-row.user .workbench-message, .workbench-message.user')?.textContent?.trim()||''; const createdAt=Date.now(); store.conversations.unshift({id:createdAt,createdAt,question,title:question||'工作简报',time:new Date(createdAt).toISOString(),html:host.innerHTML}); store.conversations=store.conversations.slice(0,100); save('aiStewardConversations',store.conversations); };
   const showHistory = () => { let panel=document.querySelector('.ai-history-panel'); if(!panel){panel=document.createElement('section');panel.className='ai-history-panel';document.getElementById('globalAiPanel')?.append(panel);} panel.hidden=false; renderHistoryPanel(panel); };
@@ -194,8 +224,7 @@
       if(event.target.closest('[data-ai-expand]')){panel.classList.toggle('is-wide');event.target.closest('button').textContent=panel.classList.contains('is-wide')?'↙':'↗';return;}
       if(event.target.closest('[data-ai-new]')){saveConversation();store.currentCustomer=null;store.pendingIntent='';renderBrief();toast('已新建对话');return;}
       if(event.target.closest('[data-ai-history]')){showHistory();return;}
-      const historyRangeButton=event.target.closest('[data-ai-history-range]');if(historyRangeButton){historyRange=historyRangeButton.dataset.aiHistoryRange;renderHistoryPanel(historyRangeButton.closest('.ai-history-panel'));return;}
-      const history=event.target.closest('[data-ai-history-open]');if(history){const item=store.conversations.find(c=>c.id===Number(history.dataset.aiHistoryOpen));if(item){body().innerHTML=item.html;history.closest('.ai-history-panel').hidden=true;scrollEnd();}}
+      const history=event.target.closest('[data-ai-history-open]');if(history){const item=allHistoryConversations().find(c=>c.id===Number(history.dataset.aiHistoryOpen));if(item){body().innerHTML=item.html;history.closest('.ai-history-panel').hidden=true;scrollEnd();}}
     });
   };
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);else init();
