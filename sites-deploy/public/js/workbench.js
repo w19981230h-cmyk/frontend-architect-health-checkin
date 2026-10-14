@@ -1,13 +1,9 @@
 (() => {
   const fallbackInstitutions = ['暨南大学附属顺德医院', '容桂社区卫生服务中心', '佛山市顺德区第三人民医院'];
   const tasks = [
-    { key: 'review', symbol: '审', title: '待审核患者入组', base: 20, unit: '个', high: true, action: '前往审核', target: 'patients', description: count => `共${count}个预分组患者待审核` },
-    { key: 'call', symbol: '呼', title: 'AI外呼失败处理', base: 2, unit: '个', high: true, action: '查看清单', target: 'healthTasks', description: count => `共${count}个AI外呼患者未接听，建议人工处理` },
-    { key: 'confirm', symbol: '确', title: 'AI外呼结果确认', base: 3, unit: '个', high: true, action: '前往确认', target: 'healthTasks', description: count => `共${count}个AI外呼已完成随访，请检查并确认回填结果` },
-    { key: 'followup', symbol: '随', title: '待办随访任务', base: 17, unit: '个', action: '前往处理', target: 'healthTasks', description: count => `共${count}个随访任务待处理，其中部分已逾期` },
-    { key: 'warning', symbol: '预', title: '待办预警任务', base: 11, unit: '个', action: '前往处理', target: 'healthTasks', description: count => `共${count}个待处理预警任务，请及时处理` },
-    { key: 'checkin', symbol: '评', title: '待办打卡评价', base: 8, unit: '个', action: '前往处理', target: 'checkinEvaluation', description: count => `共${count}个打卡评价待处理` },
-    { key: 'evaluation', symbol: '估', title: '待办评价评估', base: 6, unit: '个', action: '前往处理', target: 'checkinEvaluation', description: count => `共${count}个评价评估待处理` }
+    { key: 'archive', symbol: '档', title: '档案待补充', base: 7, unit: '人', action: '前往补充', target: 'patients', description: count => `共${count}位客户的健康档案需要主理人补充` },
+    { key: 'report', symbol: '报', title: '报告待出具', base: 5, unit: '份', action: '生成报告', target: 'evaluationReports', description: count => `共${count}份客户健康评估报告待生成` },
+    { key: 'reminder', symbol: '醒', title: '客户提醒', base: 12, unit: '项', action: '查看提醒', target: 'healthTasks', description: count => `共${count}项由SKU路径、专家建议或自定义设置产生的提醒` }
   ];
   let scope = null;
   let assistantName = 'AI智能主理人';
@@ -30,14 +26,15 @@
   };
   const buildInstitutionTasks = institutions => institutions.map((institution, institutionIndex) => ({ institution, tasks: tasks.map(task => ({ ...task, count: taskCount(task, institution, institutionIndex) })) }));
   const sumByKey = (groups, key) => groups.reduce((sum, group) => sum + (group.tasks.find(task => task.key === key)?.count || 0), 0);
+  const sumScopeMetric = (groups, key, base) => groups.reduce((sum, group, index) => sum + taskCount({ key, base }, group.institution, index), 0);
   const renderStats = groups => {
     const host = document.getElementById('workbenchStats');
     if (!host) return;
     const stats = [
-      ['待审核入组', sumByKey(groups, 'review'), '人', `${groups.length}家机构待处理`],
-      ['今日待随访', sumByKey(groups, 'followup'), '项', `${groups.length}家机构进行中`],
-      ['外呼失败', sumByKey(groups, 'call'), '次', '建议优先处理'],
-      ['今日已完成', Math.round((sumByKey(groups, 'checkin') + sumByKey(groups, 'evaluation')) * .68), '项', '完成率 68%']
+      ['今日提醒', sumByKey(groups, 'reminder'), '项', `${groups.length}家机构今日需处理`],
+      ['今日建档', sumScopeMetric(groups, 'created', 5), '人', '今日新增客户档案'],
+      ['在管客户', sumScopeMetric(groups, 'managed', 86), '人', `${groups.length}家机构服务中`],
+      ['服务完成客户', sumScopeMetric(groups, 'completedClients', 18), '人', '已完成服务路径']
     ];
     host.innerHTML = stats.map(([label, value, unit, hint]) => `<div class="workbench-stat"><span>${label}</span><strong>${value}</strong><b>${unit}</b><small>${escapeHtml(hint)}</small></div>`).join('');
   };
@@ -60,9 +57,9 @@
       badge.textContent = `${groups.length}家机构`;
     }
     const metrics = document.querySelectorAll('.workbench-ai-metric b');
-    [tasks.length * groups.length, tasks.filter(task => task.high).length * groups.length, sumByKey(groups, 'followup')].forEach((value, index) => { if (metrics[index]) metrics[index].textContent = value; });
+    [tasks.length * groups.length, sumByKey(groups, 'archive') + sumByKey(groups, 'report'), sumByKey(groups, 'reminder')].forEach((value, index) => { if (metrics[index]) metrics[index].textContent = value; });
     const risk = document.querySelector('.workbench-risk-card');
-    if (risk) risk.innerHTML = `<strong>AI 风险提醒</strong>${groups.length}家机构共有${sumByKey(groups, 'review')}个患者待审核入组，另有${sumByKey(groups, 'call')}次外呼失败，建议优先处理高优任务。`;
+    if (risk) risk.innerHTML = `<strong>今日服务提醒</strong>${groups.length}家机构共有${sumByKey(groups, 'archive')}位客户档案待补充、${sumByKey(groups, 'report')}份评估报告待出具，以及${sumByKey(groups, 'reminder')}项客户提醒待处理。`;
   };
   const render = detail => {
     if (detail) scope = detail;
@@ -207,7 +204,7 @@
   const assistantResponse = text => {
     const groups = buildInstitutionTasks(currentInstitutions());
     const total = groups.reduce((sum, group) => sum + group.tasks.reduce((taskSum, task) => taskSum + task.count, 0), 0);
-    const completed = Math.round((sumByKey(groups, 'checkin') + sumByKey(groups, 'evaluation')) * .68);
+    const completed = sumScopeMetric(groups, 'completedClients', 18);
     const institutions = groups.map(group => group.institution).join('、');
     const activeMenu = document.querySelector('#listPage .submenu-item.active, #listPage .menu-item.active span')?.textContent?.trim() || '当前页面';
     const patient = currentPatientContext();
@@ -231,17 +228,16 @@
       if (/全局|全部|所有|机构|医共体|运营|入组|外呼|高优/.test(text)) return { title: '患者权限限制', content: `当前处于${patient.name}患者的专属权限，只能查询或新增这位患者的任务，不能查看全局汇总、其他患者或机构运营数据。请退出患者档案后使用全局权限。` };
       return { title: `${patient.name}患者专属助手`, content: '当前仅支持查询这位患者的数据，以及查看或新增这位患者的任务。输入“能查什么”或“如何添加患者任务”可查看使用方式。' };
     }
-    if (/能做什么|帮助|怎么用|功能/.test(text)) return { title: '可查询内容', content: '你可以询问今日待办、高优任务、患者入组、随访、预警、AI 外呼、完成情况、当前机构和所在功能页面。' };
+    if (/能做什么|帮助|怎么用|功能/.test(text)) return { title: '可查询内容', content: '你可以询问今日提醒、今日建档、在管客户、服务完成客户，以及档案待补充、报告待出具和客户提醒。' };
     if (/机构|医共体|范围/.test(text)) return { title: '当前查询范围', content: `当前覆盖 ${groups.length} 家机构：${institutions}。后续回答会随顶部机构范围联动更新。` };
-    if (/审核|入组/.test(text)) return { title: '患者入组查询', content: `当前共有 ${sumByKey(groups, 'review')} 位患者待审核入组，建议优先处理，避免预分组患者积压。` };
-    if (/外呼|未接|触达/.test(text)) return { title: 'AI 外呼查询', content: `当前有 ${sumByKey(groups, 'call')} 次外呼失败、${sumByKey(groups, 'confirm')} 条外呼结果待确认。建议先补齐联系方式，再安排二次外呼。` };
-    if (/预警|风险/.test(text)) return { title: '预警任务查询', content: `当前共有 ${sumByKey(groups, 'warning')} 条预警任务待处理，建议结合高优患者和逾期随访顺序处理。` };
-    if (/完成|完成率/.test(text)) return { title: '今日完成情况', content: `今日已完成约 ${completed} 项，当前展示完成率为 68%。可继续询问待办或高优任务查看下一步。` };
-    if (/高优|优先|先处理/.test(text)) return { title: '高优任务识别', content: `当前高优任务集中在患者入组审核 ${sumByKey(groups, 'review')} 项、外呼失败 ${sumByKey(groups, 'call')} 项和外呼结果确认 ${sumByKey(groups, 'confirm')} 项，建议按此顺序处理。` };
-    if (/随访/.test(text)) return { title: '随访建议', content: `当前有 ${sumByKey(groups, 'followup')} 项随访待办。优先联系逾期与未触达患者，对外呼失败患者补齐手机号后安排二次外呼。` };
+    if (/档案|补充/.test(text)) return { title: '档案待补充', content: `当前共有 ${sumByKey(groups, 'archive')} 位客户的健康档案需要主理人补充。` };
+    if (/报告|出具/.test(text)) return { title: '报告待出具', content: `当前共有 ${sumByKey(groups, 'report')} 份客户健康评估报告待生成。` };
+    if (/提醒|SKU|专家建议|自定义/.test(text)) return { title: '客户提醒', content: `当前共有 ${sumByKey(groups, 'reminder')} 项客户提醒，来源包含SKU服务路径、专家建议和自定义设置。` };
+    if (/完成|完成客户/.test(text)) return { title: '服务完成客户', content: `当前机构范围内共有 ${completed} 位客户已完成服务路径。` };
+    if (/高优|优先|先处理/.test(text)) return { title: '待办处理建议', content: `建议先补充 ${sumByKey(groups, 'archive')} 位客户的健康档案，再出具 ${sumByKey(groups, 'report')} 份评估报告，并按提醒时间处理 ${sumByKey(groups, 'reminder')} 项客户提醒。` };
     if (/页面|模块|在哪/.test(text)) return { title: '当前位置', content: `你当前位于“${activeMenu}”。AI主理人会悬浮在系统右下角，切换其他菜单后仍可继续对话。` };
-    if (/汇总|待办|今日/.test(text)) return { title: '今日待办汇总', content: `当前 ${groups.length} 家机构共有 ${total} 项待办，其中待审核入组 ${sumByKey(groups, 'review')} 项、待随访 ${sumByKey(groups, 'followup')} 项、预警 ${sumByKey(groups, 'warning')} 项、外呼相关 ${sumByKey(groups, 'call') + sumByKey(groups, 'confirm')} 项。` };
-    return { title: '查询建议', content: `我已关联当前 ${groups.length} 家机构的数据。你可以继续询问今日待办、高优任务、患者入组、随访、预警、外呼或完成情况。` };
+    if (/汇总|待办|今日/.test(text)) return { title: '今日待办汇总', content: `当前 ${groups.length} 家机构共有 ${total} 项待办，其中档案待补充 ${sumByKey(groups, 'archive')} 人、报告待出具 ${sumByKey(groups, 'report')} 份、客户提醒 ${sumByKey(groups, 'reminder')} 项。` };
+    return { title: '查询建议', content: `我已关联当前 ${groups.length} 家机构的数据。你可以继续询问今日提醒、今日建档、在管客户、服务完成客户或三类今日待办。` };
   };
   const setAssistantOpen = open => {
     const assistant = document.getElementById('globalAiAssistant');
