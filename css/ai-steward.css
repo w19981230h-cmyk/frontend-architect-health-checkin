@@ -21,8 +21,18 @@
 .ai-brief-item{padding:12px;border:1px solid #e4eaf5;border-radius:10px;background:#fff}
 .ai-brief-item+.ai-brief-item{margin-top:8px}
 .ai-brief-item-head{display:flex;align-items:center;gap:7px;color:#263752;font-size:13px}
-.ai-brief-item-head em{padding:2px 6px;border-radius:4px;color:#d4380d;background:#fff2e8;font-style:normal;font-size:11px}
+.ai-brief-item-head strong{min-width:0;flex:1}
+.ai-brief-item-head time{color:#8a96a8;font-size:11px;white-space:nowrap}
 .ai-brief-item p{margin:6px 0 10px;color:#71809a;font-size:12px;line-height:1.55}
+.ai-service-reminder{display:grid;grid-template-columns:30px minmax(0,1fr);align-items:start;gap:10px;transition:border-color .2s,background .2s}
+.ai-service-reminder.completed{border-color:#d9f7be;background:#fbfff8}
+.ai-reminder-content{min-width:0}
+.ai-reminder-check{width:26px;height:26px;display:grid;place-items:center;margin-top:1px;border:1px solid #b7c4d8;border-radius:50%;color:transparent;background:#fff;cursor:pointer;transition:.2s}
+.ai-reminder-check span{font-size:15px;font-weight:800;line-height:1}
+.ai-reminder-check:hover{border-color:#52c41a;color:#9bdc7c;background:#f6ffed}
+.ai-reminder-check.checked{border-color:#52c41a;color:#fff;background:#52c41a}
+.ai-reminder-check:focus-visible{outline:2px solid rgba(82,196,26,.25);outline-offset:2px}
+.ai-service-reminder.completed .ai-brief-item-head strong,.ai-service-reminder.completed p{color:#98a2a3;text-decoration:line-through}
 .ai-card-actions{display:flex;flex-wrap:wrap;gap:8px}
 .ai-card-actions button,.ai-action-btn{height:30px;padding:0 11px;border:1px solid #b7ccff;border-radius:6px;color:#1677ff;background:#fff;font-size:12px;cursor:pointer}
 .ai-card-actions button.primary,.ai-action-btn.primary{border-color:#1677ff;color:#fff;background:#1677ff}

@@ -13,6 +13,11 @@
     currentCustomer: null,
     pendingIntent: '',
     conversations: read('aiStewardConversations', []),
+    reminders: read('aiServiceReminders', [
+      {id:'R001',taskId:'T001',customer:'张三',title:'完成基因检测报告解读跟进',time:'10:00',description:'确认专家解读安排，并向客户同步报告处理进度。',detail:'report',completed:false},
+      {id:'R002',taskId:'T002',customer:'李四',title:'联系客户确认复查安排',time:'14:30',description:'根据专家建议，与客户确认7天后复查时间。',detail:'expert-detail',completed:false},
+      {id:'R003',taskId:'T003',customer:'王五',title:'跟进健康档案资料补充',time:'16:00',description:'联系客户补充近期检查资料，完善健康档案。',detail:'profile',completed:false}
+    ]),
     tasks: read('aiStewardTasks', [
       {id:'T001',customer:'张三',name:'安排专家解读',type:'报告跟进',time:'2026-10-14 10:00',assignee:'张老师（当前）',note:'联系专家完成基因检测报告解读',status:'待处理',overdue:true},
       {id:'T002',customer:'李四',name:'健康服务复查',type:'复诊提醒',time:'2026-10-14 14:30',assignee:'张老师（当前）',note:'根据专家建议安排7天复查',status:'待处理'},
@@ -42,17 +47,24 @@
   const renderBrief = () => {
     const host=body(); if(!host)return;
     const todayAdded=store.tasks.filter(t=>t.status==='待处理' && /^T\d{10,}$/.test(t.id) && t.time.startsWith(new Date().toISOString().slice(0,10))).length;
+    const completedReminders=store.reminders.filter(item=>item.completed).length;
+    const reminderCards=store.reminders.map(item=>`<article class="ai-brief-item ai-service-reminder ${item.completed?'completed':''}" data-reminder-row="${esc(item.id)}"><button type="button" class="ai-reminder-check ${item.completed?'checked':''}" data-ai-reminder-check="${esc(item.id)}" aria-pressed="${item.completed}" aria-label="${item.completed?'取消完成':'标记完成'}：${esc(item.title)}"><span>✓</span></button><div class="ai-reminder-content"><div class="ai-brief-item-head"><strong>${esc(item.customer)}｜${esc(item.title)}</strong><time>${esc(item.time)}</time></div><p>${esc(item.description)}</p><div class="ai-card-actions">${action(item.detail==='profile'?'查看档案':item.detail==='report'?'查看报告':'查看服务计划',item.detail,item.customer)}</div></div></article>`).join('');
     host.innerHTML=`<div class="ai-steward-brief">
       <section class="ai-steward-welcome"><h3>上午好，我是你的${esc(assistantName())} 👋</h3><p>今天有一些客户服务事项需要你关注。以下数据来自本地模拟业务数据，用于交互演示。</p></section>
-      <div class="ai-brief-stats"><button class="ai-brief-stat" data-ai-action="list-today"><span>今日待办</span><strong>${12+todayAdded}</strong></button><button class="ai-brief-stat danger" data-ai-action="list-overdue"><span>逾期任务</span><strong>3</strong></button><button class="ai-brief-stat" data-ai-action="suggestions"><span>待处理建议</span><strong>2</strong></button></div>
-      <div><div class="ai-brief-section-title"><span>AI主动发现的重要事项</span><small>${esc(todayText())}</small></div>
-        <article class="ai-brief-item"><div class="ai-brief-item-head"><em>紧急</em><strong>张三｜基因检测服务</strong></div><p>检测报告已回传，尚未安排专家解读。</p><div class="ai-card-actions">${action('查看报告','report','张三')}${action('创建任务','task-form','张三',true)}</div></article>
-        <article class="ai-brief-item"><div class="ai-brief-item-head"><em>重要</em><strong>李四｜健康管理服务</strong></div><p>专家建议7天后复查，目前尚未安排复查提醒。</p><div class="ai-card-actions">${action('查看专家建议','expert-detail','李四')}${action('安排提醒','task-form','李四',true)}</div></article>
-        <article class="ai-brief-item"><div class="ai-brief-item-head"><strong>王五｜客户健康档案</strong></div><p>客户近期检查资料尚未完善。</p><div class="ai-card-actions">${action('查看档案','profile','王五')}${action('创建跟进任务','task-form','王五',true)}</div></article>
-      </div>
+      <div class="ai-brief-stats"><button class="ai-brief-stat" data-ai-action="list-today"><span>今日待办</span><strong data-ai-today-count>${Math.max(0,12+todayAdded-completedReminders)}</strong></button><button class="ai-brief-stat danger" data-ai-action="list-overdue"><span>逾期任务</span><strong>3</strong></button><button class="ai-brief-stat" data-ai-action="suggestions"><span>待处理建议</span><strong>2</strong></button></div>
+      <div><div class="ai-brief-section-title"><span>今日服务提醒</span><small>完成后直接勾选 · ${esc(todayText())}</small></div>${reminderCards}</div>
       <div class="ai-card-actions">${action('查看全部任务','task-list','',true)}${action('模拟专家报告回传','simulate-expert')}</div>
     </div>`;
     scrollEnd();
+  };
+  const toggleReminder = target => {
+    const item=store.reminders.find(reminder=>reminder.id===target.dataset.aiReminderCheck); if(!item)return;
+    item.completed=!item.completed; save('aiServiceReminders',store.reminders);
+    const task=store.tasks.find(current=>current.id===item.taskId); if(task){task.status=item.completed?'已完成':'待处理';save('aiStewardTasks',store.tasks);}
+    const row=target.closest('[data-reminder-row]'); row?.classList.toggle('completed',item.completed); target.classList.toggle('checked',item.completed); target.setAttribute('aria-pressed',String(item.completed)); target.setAttribute('aria-label',`${item.completed?'取消完成':'标记完成'}：${item.title}`);
+    const todayAdded=store.tasks.filter(current=>current.status==='待处理'&&/^T\d{10,}$/.test(current.id)&&current.time.startsWith(new Date().toISOString().slice(0,10))).length;
+    const count=document.querySelector('[data-ai-today-count]'); if(count)count.textContent=String(Math.max(0,12+todayAdded-store.reminders.filter(reminder=>reminder.completed).length));
+    toast(item.completed?'服务任务已完成':'已恢复为待处理');
   };
   const findCustomer = text => {
     const matches=customers.filter(c=>text.includes(c.name));
@@ -142,7 +154,16 @@
     const panel=document.getElementById('globalAiPanel'); if(!panel)return;
     document.getElementById('globalAiQuickRow').innerHTML=['查档案','查医嘱','定任务','查报告'].map(x=>`<button type="button" data-workbench-quick="${x}">${x}</button>`).join('');
     renderBrief(); window.aiStewardSend=send;
-    panel.addEventListener('click',event=>{ const actionTarget=event.target.closest('[data-ai-action]');if(actionTarget){handleAction(actionTarget);return;} if(event.target.closest('[data-ai-expand]')){panel.classList.toggle('is-wide');event.target.closest('button').textContent=panel.classList.contains('is-wide')?'↙':'↗';return;} if(event.target.closest('[data-ai-new]')){saveConversation();store.currentCustomer=null;store.pendingIntent='';renderBrief();toast('已新建对话');return;} if(event.target.closest('[data-ai-history]')){showHistory();return;} if(event.target.closest('[data-ai-history-close]')){event.target.closest('.ai-history-panel').hidden=true;return;} if(event.target.closest('[data-ai-clear]')){renderBrief();event.target.closest('.ai-history-panel').hidden=true;toast('当前对话已清空');return;} const history=event.target.closest('[data-ai-history-open]');if(history){const item=store.conversations.find(c=>c.id===Number(history.dataset.aiHistoryOpen));if(item){body().innerHTML=item.html;history.closest('.ai-history-panel').hidden=true;scrollEnd();}} });
+    panel.addEventListener('click',event=>{
+      const reminderCheck=event.target.closest('[data-ai-reminder-check]'); if(reminderCheck){toggleReminder(reminderCheck);return;}
+      const actionTarget=event.target.closest('[data-ai-action]');if(actionTarget){handleAction(actionTarget);return;}
+      if(event.target.closest('[data-ai-expand]')){panel.classList.toggle('is-wide');event.target.closest('button').textContent=panel.classList.contains('is-wide')?'↙':'↗';return;}
+      if(event.target.closest('[data-ai-new]')){saveConversation();store.currentCustomer=null;store.pendingIntent='';renderBrief();toast('已新建对话');return;}
+      if(event.target.closest('[data-ai-history]')){showHistory();return;}
+      if(event.target.closest('[data-ai-history-close]')){event.target.closest('.ai-history-panel').hidden=true;return;}
+      if(event.target.closest('[data-ai-clear]')){renderBrief();event.target.closest('.ai-history-panel').hidden=true;toast('当前对话已清空');return;}
+      const history=event.target.closest('[data-ai-history-open]');if(history){const item=store.conversations.find(c=>c.id===Number(history.dataset.aiHistoryOpen));if(item){body().innerHTML=item.html;history.closest('.ai-history-panel').hidden=true;scrollEnd();}}
+    });
   };
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);else init();
 })();
