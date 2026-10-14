@@ -2823,7 +2823,7 @@
   <link rel="stylesheet" href="./css/health-portrait.css?v=20260924-3">
 <link rel="stylesheet" href="./css/personnel-management.css?v=20260929-1">
 <link rel="stylesheet" href="./css/organization-management.css?v=20260929-1">
-<link rel="stylesheet" href="./css/workbench.css?v=20261014-1">
+<link rel="stylesheet" href="./css/workbench.css?v=20261014-2">
 <link rel="stylesheet" href="./css/ai-steward.css?v=20261014-5">
 <link rel="stylesheet" href="./css/system-role.css?v=20260916-1">
 <link rel="stylesheet" href="./css/dashboard-latest.css?v=20260913-40">
@@ -2909,12 +2909,38 @@
         <section class="list-panel list-view workbench-view" id="workbenchView">
           <div class="workbench-shell">
             <section class="workbench-right">
+              <section class="workbench-overview" aria-labelledby="workbenchOverviewTitle">
+                <div class="workbench-overview-copy">
+                  <span class="workbench-overview-kicker">今日运营概览</span>
+                  <h2 id="workbenchOverviewTitle">上午好，今天也要照顾好每一位客户</h2>
+                  <p id="workbenchOverviewSummary">正在汇总当前机构的客户服务任务</p>
+                  <span class="workbench-overview-date" id="workbenchOverviewDate"></span>
+                </div>
+                <div class="workbench-overview-total" aria-label="今日需关注事项">
+                  <span>今日需关注</span><strong id="workbenchAttentionTotal">0</strong><small>项任务</small>
+                </div>
+              </section>
               <div class="workbench-stats" id="workbenchStats" aria-label="当前机构范围关键指标"></div>
-              <div class="workbench-section-heading">
-                <div><h2 class="workbench-section-title">今日待办</h2><p id="workbenchScopeSummary">按当前机构范围汇总</p></div>
-                <span class="workbench-live-indicator">实时更新</span>
+              <div class="workbench-primary-grid">
+                <section class="workbench-task-section" aria-labelledby="workbenchTaskTitle">
+                  <div class="workbench-section-heading">
+                    <div><h2 class="workbench-section-title" id="workbenchTaskTitle">今日待办</h2><p id="workbenchScopeSummary">按当前机构范围汇总</p></div>
+                    <span class="workbench-live-indicator">实时更新</span>
+                  </div>
+                  <div class="workbench-todos" id="workbenchTodos" aria-live="polite"></div>
+                </section>
+                <aside class="workbench-focus-card" id="workbenchFocus" aria-label="今日重点"></aside>
               </div>
-              <div class="workbench-todos" id="workbenchTodos" aria-live="polite"></div>
+              <div class="workbench-secondary-grid">
+                <section class="workbench-feed-card" aria-labelledby="workbenchFeedTitle">
+                  <div class="workbench-card-heading"><div><span>服务进展</span><h2 id="workbenchFeedTitle">今日服务动态</h2></div><small>基于当前机构范围</small></div>
+                  <div class="workbench-feed" id="workbenchFeed"></div>
+                </section>
+                <section class="workbench-shortcuts-card" aria-labelledby="workbenchShortcutsTitle">
+                  <div class="workbench-card-heading"><div><span>常用功能</span><h2 id="workbenchShortcutsTitle">快捷入口</h2></div></div>
+                  <div class="workbench-shortcuts" id="workbenchShortcuts"></div>
+                </section>
+              </div>
             </section>
           </div>
         </section>
@@ -15921,7 +15947,7 @@
   <script src="./js/health-portrait.js?v=20260924-3"></script>
 <script src="./js/personnel-management.js?v=20260929-2"></script>
 <script src="./js/organization-management.js?v=20260929-4"></script>
-<script src="./js/workbench.js?v=20261014-3"></script>
+<script src="./js/workbench.js?v=20261014-4"></script>
 <script src="./js/ai-steward.js?v=20261014-7"></script>
 <script src="./js/system-role.js?v=20260929-1"></script>
 <script src="./js/scale-create.js?v=20260916-3"></script>
