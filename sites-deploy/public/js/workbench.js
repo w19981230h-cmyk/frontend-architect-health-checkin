@@ -36,14 +36,15 @@
       ['在管客户', sumScopeMetric(groups, 'managed', 86), '人', `${groups.length}家机构服务中`],
       ['服务完成客户', sumScopeMetric(groups, 'completedClients', 18), '人', '已完成服务路径']
     ];
-    host.innerHTML = stats.map(([label, value, unit, hint]) => `<div class="workbench-stat"><span>${label}</span><strong>${value}</strong><b>${unit}</b><small>${escapeHtml(hint)}</small></div>`).join('');
+    const tones = ['reminder', 'archive', 'managed', 'completed'];
+    host.innerHTML = stats.map(([label, value, unit, hint], index) => `<div class="workbench-stat" data-tone="${tones[index]}"><span>${label}</span><strong>${value}</strong><b>${unit}</b><small>${escapeHtml(hint)}</small></div>`).join('');
   };
   const renderTasks = groups => {
     const host = document.getElementById('workbenchTodos');
     if (!host) return;
     host.innerHTML = groups.map(group => {
       const total = group.tasks.reduce((sum, task) => sum + task.count, 0);
-      const rows = group.tasks.map(task => `<button type="button" class="workbench-institution-task" data-workbench-institution="${escapeHtml(group.institution)}" data-workbench-target="${task.target}" aria-label="${escapeHtml(group.institution)} ${task.title} ${task.count}${task.unit}，${task.action}"><span class="workbench-task-symbol">${task.symbol}</span><span class="workbench-institution-task-main"><strong>${task.title}${task.high ? '<em class="workbench-priority">高优</em>' : ''}</strong><small>${escapeHtml(task.description(task.count))}</small></span><span class="workbench-institution-action">${task.action} ›</span></button>`).join('');
+      const rows = group.tasks.map(task => `<button type="button" class="workbench-institution-task" data-task-tone="${task.key}" data-workbench-institution="${escapeHtml(group.institution)}" data-workbench-target="${task.target}" aria-label="${escapeHtml(group.institution)} ${task.title} ${task.count}${task.unit}，${task.action}"><span class="workbench-task-symbol">${task.symbol}</span><span class="workbench-institution-task-main"><strong>${task.title}${task.high ? '<em class="workbench-priority">高优</em>' : ''}</strong><small>${escapeHtml(task.description(task.count))}</small></span><span class="workbench-institution-action">${task.action} ›</span></button>`).join('');
       return `<article class="workbench-institution-panel"><header class="workbench-institution-panel-head"><div><strong>${escapeHtml(group.institution)}</strong><small>当前机构待办事项</small></div><span>共${total}项</span></header><div class="workbench-institution-tasks">${rows}</div></article>`;
     }).join('');
   };
