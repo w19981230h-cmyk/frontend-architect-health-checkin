@@ -141,11 +141,12 @@
     appendAI('专家报告上传成功','正在分析专家建议：“建议客户30天后进行复查，并在14天后了解近期健康状况。”');
     setTimeout(()=>appendAI('发现新的专家建议',`<section class="ai-business-card"><p>建议创建2项后续服务任务，创建前可修改或删除：</p><div class="ai-task-list" data-proposals><div class="ai-proposal-row"><input value="14天后联系张三了解健康状况"><button data-ai-action="delete-proposal">删除</button></div><div class="ai-proposal-row"><input value="30天后提醒张三安排复查"><button data-ai-action="delete-proposal">删除</button></div></div><div class="ai-demo-note" style="margin-top:10px">AI不会修改标准SKU服务路径，也不会未经确认新增任务。</div><div class="ai-card-actions" style="margin-top:12px"><button data-ai-action="expert-detail" data-customer="张三">查看建议</button><button class="primary" data-ai-action="confirm-proposals">生成任务</button></div></section>`),500);
   };
-  const firstQuestion = conversation => {
+  const questionFromConversation = conversation => {
     if(conversation.question?.trim())return conversation.question.trim();
     const template=document.createElement('template'); template.innerHTML=conversation.html||'';
-    return template.content.querySelector('.global-chat-row.user .workbench-message, .workbench-message.user')?.textContent?.trim()||conversation.title||'未命名对话';
+    return template.content.querySelector('.global-chat-row.user .workbench-message, .workbench-message.user')?.textContent?.trim()||'';
   };
+  const firstQuestion = conversation => questionFromConversation(conversation)||conversation.title||'未命名对话';
   const conversationDate = conversation => {
     const timestamp=Number(conversation.createdAt||conversation.id);
     if(Number.isFinite(timestamp)&&timestamp>0)return new Date(timestamp);
@@ -199,13 +200,13 @@
     demoHistoryItem(-162,fixedHistoryDate(2025,7,21,15,16),'查询2025年重点客户随访记录','已找到2025年重点客户随访记录。'),
     demoHistoryItem(-163,fixedHistoryDate(2025,2,14,9,42),'查看2025年健康评估报告归档','已找到2025年健康评估报告归档记录。')
   ];
-  const allHistoryConversations = () => [...store.conversations,...demoHistoryConversations()].sort((a,b)=>conversationDate(b)-conversationDate(a));
+  const allHistoryConversations = () => [...store.conversations.filter(questionFromConversation),...demoHistoryConversations()].sort((a,b)=>conversationDate(b)-conversationDate(a));
   const renderHistoryPanel = panel => {
     const conversations=allHistoryConversations();
     const groups=historyGroups.map(([key,label])=>[key,label,conversations.filter(item=>conversationBucket(item)===key)]);
     panel.innerHTML=`<div class="ai-history-head"><strong>历史对话</strong></div><div class="ai-history-list ai-history-timeline">${groups.map(([key,label,items])=>`<section class="ai-history-group" data-history-group="${key}"><div class="ai-history-timepoint"><i aria-hidden="true"></i><strong>${label}</strong><small>${items.length}条</small></div><div class="ai-history-group-items">${items.map(c=>`<button class="ai-history-item" data-ai-history-open="${c.id}" title="${esc(firstQuestion(c))}"><strong>${esc(firstQuestion(c))}</strong><small>${esc(formatConversationTime(c))}</small></button>`).join('')}</div></section>`).join('')}</div>`;
   };
-  const saveConversation = () => { const host=body(); if(!host||!host.children.length)return; const question=host.querySelector('.global-chat-row.user .workbench-message, .workbench-message.user')?.textContent?.trim()||''; const createdAt=Date.now(); store.conversations.unshift({id:createdAt,createdAt,question,title:question||'工作简报',time:new Date(createdAt).toISOString(),html:host.innerHTML}); store.conversations=store.conversations.slice(0,100); save('aiStewardConversations',store.conversations); };
+  const saveConversation = () => { const host=body(); if(!host||!host.children.length)return; const question=host.querySelector('.global-chat-row.user .workbench-message, .workbench-message.user')?.textContent?.trim()||''; if(!question)return; const createdAt=Date.now(); store.conversations.unshift({id:createdAt,createdAt,question,title:question,time:new Date(createdAt).toISOString(),html:host.innerHTML}); store.conversations=store.conversations.slice(0,100); save('aiStewardConversations',store.conversations); };
   const showHistory = () => { let panel=document.querySelector('.ai-history-panel'); if(!panel){panel=document.createElement('section');panel.className='ai-history-panel';document.getElementById('globalAiPanel')?.append(panel);} panel.hidden=false; renderHistoryPanel(panel); };
   const handleAction = target => {
     const type=target.dataset.aiAction, customer=customers.find(c=>c.id===target.dataset.customerId)||customers.find(c=>c.name===target.dataset.customer)||store.currentCustomer||customers[0];
