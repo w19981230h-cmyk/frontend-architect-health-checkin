@@ -3,7 +3,7 @@
   const tasks = [
     { key: 'archive', symbol: '档', title: '档案待补充', base: 7, unit: '人', action: '前往补充', target: 'patients', description: count => `共${count}位客户的健康档案需要主理人补充` },
     { key: 'report', symbol: '报', title: '报告待出具', base: 5, unit: '份', action: '生成报告', target: 'evaluationReports', description: count => `共${count}份客户健康评估报告待生成` },
-    { key: 'reminder', symbol: '醒', title: '客户提醒', base: 12, unit: '项', action: '查看提醒', target: 'healthTasks', description: count => `共${count}项由SKU路径、专家建议或自定义设置产生的提醒` }
+    { key: 'reminder', symbol: '醒', title: '客户待提醒', base: 12, unit: '项', action: '查看提醒', target: 'healthTasks', description: count => `当前存在${count}条待提醒的任务事项，需主理人完成客户提醒` }
   ];
   let scope = null;
   let assistantName = 'AI智能主理人';
