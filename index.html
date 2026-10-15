@@ -611,17 +611,38 @@
     .patient-list-table .diagnosis-col { width: 255px; }
     .patient-list-table .date-col { width: 145px; }
     .patient-list-table .team-col { width: 185px; }
-    .patient-list-table .patient-action-col { width: 145px; }
+    .patient-list-table .patient-action-col { position: sticky; right: 0; width: 145px; min-width: 145px; background: #fff; box-shadow: -10px 0 14px -14px rgba(31,45,72,.34); }
+    .patient-list-table thead .patient-action-col { z-index: 4; background: var(--head); }
+    .patient-list-table tbody .patient-action-col { z-index: 1; }
+    .patient-list-table tbody tr[data-patient-row]:hover .patient-action-col,
+    .patient-list-table tbody tr[data-patient-row]:focus-visible .patient-action-col { background: #f5f8ff; }
+    .patient-list-table tbody tr.selected .patient-action-col { background: #f4f7ff; }
+    .patient-list-table tbody tr:last-child .patient-action-col { background: #fafafa; }
+    .patient-list-table tbody tr.selected:last-child .patient-action-col { background: #f4f7ff; }
     .patient-phone-mask { display: inline-flex; align-items: center; gap: 7px; }
     .patient-phone-eye { color: #a0aaba; font-size: 15px; }
     .patient-tags { display: flex; align-items: center; flex-wrap: wrap; gap: 8px; }
     .patient-name-with-tags { min-width: 0; display: flex; align-items: center; gap: 16px; overflow: hidden; }
-    .patient-name-link { flex: 0 0 auto; padding: 0; border: 0; color: #263750; background: transparent; font: inherit; line-height: 1.5; cursor: pointer; }
+    .patient-name-link { min-width: 0; flex: 0 0 auto; padding: 0; border: 0; display: inline-flex; align-items: center; gap: 10px; color: #263750; background: transparent; font: inherit; line-height: 1.5; cursor: pointer; }
     .patient-name-link:hover, .patient-name-link:focus-visible { color: #3154ff; }
+    .patient-list-avatar { width: 32px; height: 32px; flex: 0 0 32px; border-radius: 50%; display: inline-grid; place-items: center; color: #3154ff; background: #edf2ff; font-size: 13px; font-weight: 600; box-shadow: inset 0 0 0 1px rgba(49,84,255,.08); transition: box-shadow .16s ease, transform .16s ease; }
+    .patient-name-link:hover .patient-list-avatar, .patient-name-link:focus-visible .patient-list-avatar { box-shadow: inset 0 0 0 1px rgba(49,84,255,.22), 0 0 0 3px rgba(49,84,255,.08); transform: translateY(-1px); }
+    .patient-name-text { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
     .patient-name-with-tags .patient-tags { min-width: 0; flex-wrap: nowrap; overflow: hidden; }
     .patient-tag { max-width: 112px; height: 24px; padding: 0 8px; border: 0; border-radius: 4px; display: inline-flex; align-items: center; overflow: hidden; color: #3154a8; background: #edf3ff; font-size: 12px; line-height: 24px; text-overflow: ellipsis; white-space: nowrap; }
-    .patient-row-actions { display: inline-flex; gap: 12px; }
-    .patient-row-actions button { color: #3154ff; font-size: 13px; white-space: nowrap; }
+    .patient-row-actions { position: relative; display: inline-flex; align-items: center; gap: 4px; }
+    .patient-row-actions > button { height: 32px; padding: 0 8px; border-radius: 4px; color: #3154ff; background: transparent; font-size: 13px; white-space: nowrap; }
+    .patient-row-actions > button:hover, .patient-row-actions > button:focus-visible, .patient-row-actions > button[aria-expanded="true"] { background: #f0f3ff; outline: none; }
+    .patient-mark-action { display: inline-flex; align-items: center; gap: 4px; }
+    .patient-mark-action svg { width: 14px; height: 14px; }
+    .patient-mark-action[aria-pressed="true"] svg { fill: currentColor; }
+    .patient-more-action { display: inline-flex; align-items: center; gap: 3px; }
+    .patient-more-action svg { width: 12px; height: 12px; transition: transform .16s ease; }
+    .patient-more-action[aria-expanded="true"] svg { transform: rotate(180deg); }
+    .patient-action-menu { position: fixed; z-index: 90; width: 132px; padding: 4px; border: 1px solid #e5e9f0; border-radius: 6px; background: #fff; box-shadow: 0 8px 24px rgba(31,45,72,.14); }
+    .patient-action-menu[hidden] { display: none; }
+    .patient-action-menu button { width: 100%; height: 32px; padding: 0 10px; border-radius: 4px; display: block; color: #34425a; background: #fff; text-align: left; font-size: 13px; white-space: nowrap; }
+    .patient-action-menu button:hover, .patient-action-menu button:focus-visible { color: #3154ff; background: #f2f5ff; outline: none; }
     .patient-diagnosis { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
     .patient-batch-modal { position: fixed; inset: 0; z-index: 95; display: flex; justify-content: flex-end; background: rgba(17,28,51,.32); opacity: 0; visibility: hidden; pointer-events: none; transition: opacity .2s cubic-bezier(.16,1,.3,1), visibility .2s; }
     .patient-batch-modal.open { opacity: 1; visibility: visible; pointer-events: auto; }
@@ -687,6 +708,72 @@
     @media (prefers-reduced-motion: reduce) {
       .patient-batch-modal, .patient-batch-dialog { transition: none; }
     }
+    .patient-mark-drawer { position: fixed; inset: 0; z-index: 950; display: flex; justify-content: flex-end; background: rgba(17,28,51,.32); opacity: 0; visibility: hidden; pointer-events: none; transition: opacity .2s cubic-bezier(.16,1,.3,1), visibility .2s; }
+    .patient-mark-drawer.open { opacity: 1; visibility: visible; pointer-events: auto; }
+    .patient-mark-panel { width: min(680px, 100vw); height: 100%; min-height: 0; display: flex; flex-direction: column; background: #fff; box-shadow: -12px 0 40px rgba(25,41,74,.18); transform: translateX(100%); transition: transform .28s cubic-bezier(.16,1,.3,1); }
+    .patient-mark-drawer.open .patient-mark-panel { transform: translateX(0); }
+    .patient-mark-head { min-height: 72px; flex: 0 0 auto; padding: 0 32px; border-bottom: 1px solid #edf0f5; display: flex; align-items: center; justify-content: space-between; }
+    .patient-mark-head h2 { margin: 0; color: #263752; font-size: 16px; }
+    .patient-mark-close { width: 32px; height: 32px; border-radius: 4px; display: grid; place-items: center; color: #7c8798; background: transparent; font-size: 22px; }
+    .patient-mark-close:hover, .patient-mark-close:focus-visible { color: #3154ff; background: #f2f5ff; outline: none; }
+    .patient-mark-body { flex: 1; min-height: 0; padding: 32px 32px 40px; overflow-y: auto; overscroll-behavior: contain; }
+    .patient-mark-patient { margin-bottom: 32px; padding: 16px; border-radius: 8px; display: flex; align-items: center; gap: 12px; color: #526078; background: #f5f7ff; }
+    .patient-mark-patient strong { display: block; color: #263752; font-size: 14px; }
+    .patient-mark-patient span:last-child { font-size: 12px; }
+    .patient-mark-section + .patient-mark-section { margin-top: 40px; }
+    .patient-mark-section-head { margin-bottom: 24px; display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; }
+    .patient-mark-section-title { color: #263752; font-size: 14px; font-weight: 700; }
+    .patient-mark-section-title::before { content: ''; width: 3px; height: 16px; margin-right: 8px; border-radius: 2px; display: inline-block; vertical-align: -3px; background: #3154ff; }
+    .patient-mark-section-note { margin-top: 8px; color: #8b96a7; font-size: 12px; line-height: 1.7; }
+    .patient-mark-field { margin-bottom: 24px; }
+    .patient-mark-section .patient-mark-field:last-child { margin-bottom: 0; }
+    .patient-mark-field-label { margin-bottom: 8px; display: block; color: #34425a; font-size: 13px; font-weight: 600; }
+    .patient-mark-required::before { content: '*'; margin-right: 4px; color: #ff4d4f; }
+    .patient-mark-types { display: grid; grid-template-columns: repeat(4, minmax(0,1fr)); gap: 12px; }
+    .patient-mark-type { position: relative; min-width: 0; }
+    .patient-mark-type input { position: absolute; opacity: 0; pointer-events: none; }
+    .patient-mark-type span { height: 44px; padding: 0 12px; border: 1px solid #dfe5ee; border-radius: 4px; display: flex; align-items: center; justify-content: center; color: #536079; background: #fff; font-size: 13px; cursor: pointer; transition: border-color .16s, color .16s, background .16s, box-shadow .16s; }
+    .patient-mark-type input:checked + span { color: #3154ff; border-color: #3154ff; background: #f2f5ff; box-shadow: 0 0 0 1px rgba(49,84,255,.06); }
+    .patient-mark-type input:focus-visible + span { outline: 2px solid rgba(49,84,255,.2); outline-offset: 2px; }
+    .patient-mark-control { position: relative; }
+    .patient-mark-control input { width: 100%; height: 44px; padding: 0 12px; border: 1px solid #dfe5ee; border-radius: 4px; color: #34425a; background: #fff; outline: none; }
+    .patient-mark-control input:focus { border-color: #3154ff; box-shadow: 0 0 0 2px rgba(49,84,255,.1); }
+    .patient-mark-control.amount input { padding-left: 30px; }
+    .patient-mark-currency { position: absolute; z-index: 1; left: 12px; top: 50%; color: #66748a; transform: translateY(-50%); }
+    .patient-mark-control input.invalid, .patient-mark-benefit-row input.invalid, .patient-mark-types.invalid span { border-color: #ff4d4f; }
+    .patient-mark-benefit-list { border: 1px solid #dfe5ee; border-radius: 8px; overflow: hidden; background: #fff; }
+    .patient-mark-benefit-head, .patient-mark-benefit-row { display: grid; grid-template-columns: minmax(0,1fr) 168px 34px; align-items: center; gap: 12px; }
+    .patient-mark-benefit-head { min-height: 44px; padding: 0 16px; color: #65738a; background: #f8fafc; font-size: 12px; font-weight: 600; }
+    .patient-mark-benefit-row { min-height: 72px; padding: 14px 16px; border-top: 1px solid #edf1f6; }
+    .patient-mark-benefit-row input { width: 100%; height: 42px; padding: 0 12px; border: 1px solid #dfe5ee; border-radius: 4px; color: #34425a; background: #fff; outline: none; }
+    .patient-mark-benefit-row input:focus { border-color: #3154ff; box-shadow: 0 0 0 2px rgba(49,84,255,.1); }
+    .patient-mark-benefit-remove { width: 30px; height: 30px; border-radius: 4px; display: grid; place-items: center; color: #ef4f5f; background: transparent; font-size: 18px; }
+    .patient-mark-benefit-remove:hover, .patient-mark-benefit-remove:focus-visible { background: #fff1f0; outline: none; }
+    .patient-mark-benefit-add { width: 100%; height: 44px; margin-top: 12px; border: 1px dashed #b8c8e5; border-radius: 6px; color: #3154ff; background: #f8faff; }
+    .patient-mark-benefit-add:hover, .patient-mark-benefit-add:focus-visible { border-color: #3154ff; background: #f2f5ff; outline: none; }
+    .patient-mark-error { min-height: 18px; margin-top: 8px; color: #ff4d4f; font-size: 12px; }
+    .patient-mark-foot { min-height: 72px; flex: 0 0 auto; padding: 0 32px; border-top: 1px solid #edf0f5; display: flex; align-items: center; justify-content: flex-end; gap: 12px; background: #fff; box-shadow: 0 -4px 14px rgba(31,45,72,.04); }
+    .patient-mark-foot button { height: 40px; min-width: 80px; padding: 0 16px; border-radius: 4px; }
+    .patient-mark-cancel { border: 1px solid #dfe5ee; color: #536079; background: #fff; }
+    .patient-mark-submit { color: #fff; background: #3154ff; }
+    body.patient-mark-open .ui-note-toolbar, body.patient-mark-open .interface-note-toolbar { right: calc(min(680px, 100vw) + 18px); }
+    @media (max-width: 720px) {
+      .patient-mark-head, .patient-mark-foot { padding-left: 24px; padding-right: 24px; }
+      .patient-mark-body { padding: 24px 24px 32px; }
+      .patient-mark-patient { margin-bottom: 24px; }
+      .patient-mark-section + .patient-mark-section { margin-top: 32px; }
+      .patient-mark-types { grid-template-columns: repeat(2, minmax(0,1fr)); }
+      .patient-mark-benefit-head { display: none; }
+      .patient-mark-benefit-row { grid-template-columns: minmax(0,1fr) 30px; gap: 12px; padding: 16px; }
+      .patient-mark-benefit-row input[data-patient-mark-duration] { grid-column: 1; }
+      .patient-mark-benefit-remove { grid-column: 2; grid-row: 1 / span 2; }
+      body.patient-mark-open .ui-note-toolbar, body.patient-mark-open .interface-note-toolbar { opacity: 0; pointer-events: none; }
+    }
+    @media (max-width: 420px) {
+      .patient-mark-head, .patient-mark-foot { padding-left: 16px; padding-right: 16px; }
+      .patient-mark-body { padding-left: 16px; padding-right: 16px; }
+    }
+    @media (prefers-reduced-motion: reduce) { .patient-mark-drawer, .patient-mark-panel { transition: none; } }
     .patient-list-pager { height: 64px; flex: 0 0 auto; align-items: center; }
     .patient-list-pager .total { margin-right: 4px; color: #637187; }
     .patient-advanced-panel { position: absolute; z-index: 8; left: 576px; top: 58px; width: 330px; padding: 16px; border: 1px solid #e1e7f0; border-radius: 7px; background: #fff; box-shadow: 0 12px 28px rgba(31,51,82,.14); display: none; }
@@ -1566,12 +1653,19 @@
     .history-search input::placeholder { color: #a6b2c3; }
     .history-empty-result { display: none; padding: 28px 8px; color: #8b97a8; font-size: 13px; text-align: center; }
     .history-empty-result.show { display: block; }
-    .history-tree { display: grid; gap: 12px; color: #2f3d55; }
-    .history-date { display: flex; align-items: center; justify-content: space-between; gap: 8px; min-height: 24px; color: #52617a; font-size: 13px; font-weight: 800; }
-    .history-date-line { min-width: 0; display: flex; align-items: center; gap: 8px; min-height: 22px; }
+    .history-tree { display: grid; gap: 8px; color: #2f3d55; }
+    .history-date { display: flex; align-items: center; justify-content: space-between; gap: 8px; min-height: 40px; padding: 4px 8px; color: #52617a; background: #f8faff; border-radius: 6px; font-size: 13px; font-weight: 800; }
+    .history-date-line { width: 100%; min-width: 0; display: flex; align-items: flex-start; gap: 8px; }
+    .history-date-content { flex: 1; min-width: 0; display: grid; gap: 3px; }
+    .history-date-main { min-width: 0; display: flex; align-items: center; gap: 8px; }
     .history-date-name { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-    .history-date .arrow { width: 12px; color: #b8c2d0; font-size: 12px; }
-    .history-date.active { color: #1d3fff; }
+    .history-date-time { color: #9aa6b6; font-size: 11px; font-weight: 400; line-height: 1.3; white-space: nowrap; }
+    .history-date .arrow, .history-category .arrow { width: 14px; height: 14px; flex: 0 0 14px; display: grid; place-items: center; color: #b8c2d0; font-size: 0; line-height: 1; }
+    .history-date .arrow { margin-top: 3px; }
+    .history-date .arrow::before, .history-category .arrow::before { content: '▶'; display: block; font-size: 9px; line-height: 1; transform-origin: center; transition: transform .16s ease; }
+    [data-history-toggle]:not(.collapsed) > .history-date-line > .arrow::before,
+    .history-category[data-history-toggle]:not(.collapsed) > .arrow::before { transform: rotate(90deg); }
+    .history-date.active { color: #1d3fff; background: #f2f6ff; }
     .history-date[data-history-toggle], .history-category[data-history-toggle] { cursor: pointer; user-select: none; }
     .history-type-tag { width: fit-content; height: 22px; padding: 0 8px; display: inline-flex; align-items: center; border-radius: 4px; font-size: 12px; font-weight: 700; line-height: 1; }
     .history-type-tag.inpatient { color: #3154ff; background: #eef3ff; }
@@ -1583,19 +1677,20 @@
     .history-upload-tag.nurse { color: #11a874; background: #eafaf4; }
     .history-upload-tag.sync { color: #7c5cff; background: #f2edff; }
     .history-file > .history-upload-tag { display: none; }
-    .history-children { margin: -4px 0 4px 17px; padding: 6px 0 6px 18px; display: grid; gap: 12px; border-left: 1px solid #edf1f6; }
+    .history-children { margin: -3px 0 3px 19px; padding: 4px 0 5px 16px; display: grid; gap: 7px; border-left: 1px solid #dfe7f2; }
     .history-date.collapsed + .history-children, .history-category.collapsed + .history-subchildren { display: none; }
-    .history-category { min-height: 24px; display: flex; align-items: center; gap: 8px; color: #2f3d55; font-size: 13px; font-weight: 800; }
-    .history-category .arrow { width: 12px; color: #b8c2d0; font-size: 12px; }
-    .history-subchildren { margin: -4px 0 2px 20px; padding: 4px 0 4px 14px; display: grid; gap: 10px; border-left: 1px solid #edf1f6; }
-    .history-file { min-height: 24px; display: flex; align-items: center; gap: 8px; color: #52617a; font-size: 13px; }
+    .history-category { min-height: 22px; display: flex; align-items: center; gap: 8px; color: #2f3d55; font-size: 13px; font-weight: 800; }
+    .history-subchildren { margin: -3px 0 1px 20px; padding: 2px 0 3px 14px; display: grid; gap: 4px; border-left: 1px solid #e8edf4; }
+    .history-file { min-height: 22px; display: flex; align-items: center; gap: 8px; color: #52617a; font-size: 13px; }
     .history-file[data-history-file] { cursor: pointer; }
     .history-file-name { min-width: 0; flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
     .history-file.active, .history-file.active .history-file-name { color: #1d3fff; font-weight: 800; }
-    .history-file-meta { flex: 1; min-width: 0; display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: center; gap: 8px; }
-    .history-file-time { color: #7a879a; font-size: 12px; font-weight: 700; white-space: nowrap; }
-    .history-external-file { min-height: 24px; padding: 0; display: flex; align-items: center; gap: 8px; color: #52617a; font-size: 13px; font-weight: 800; border-radius: 4px; cursor: pointer; }
-    .history-external-file.active, .history-external-file.active .history-file-name, .history-external-file.active .history-file-time { color: #1d3fff; font-weight: 800; }
+    .history-file-meta { flex: 1; min-width: 0; display: grid; gap: 3px; }
+    .history-file-primary { min-width: 0; display: flex; align-items: center; gap: 8px; }
+    .history-file-time { color: #9aa6b6; font-size: 11px; font-weight: 400; line-height: 1.3; white-space: nowrap; }
+    .history-external-file { min-height: 40px; padding: 4px 8px; display: flex; align-items: center; gap: 8px; color: #52617a; background: #f8faff; font-size: 13px; font-weight: 800; border-radius: 6px; cursor: pointer; }
+    .history-external-file.active, .history-external-file.active .history-file-name { color: #1d3fff; font-weight: 800; }
+    .history-external-file.active .history-file-time { color: #9aa6b6; font-weight: 400; }
     .history-file-tag { width: 22px; height: 22px; display: grid; place-items: center; border-radius: 4px; color: #3154ff; background: #eef3ff; font-size: 12px; font-weight: 800; }
     .history-date.selected { min-height: 32px; padding: 5px 0 5px 34px; border-radius: 4px; background: #f5f7fb; }
     .archive-history-viewer { position: relative; min-width: 0; min-height: 0; padding: 18px 18px 16px; overflow-y: auto; }
@@ -1623,9 +1718,10 @@
     .history-manual-meta-item span { display: block; margin-bottom: 5px; color: #7c889b; font-size: 12px; }
     .history-manual-meta-item strong { color: #22314c; font-size: 14px; font-weight: 800; }
     .history-manual-lock-note { margin: 0 16px 14px; padding: 10px 12px; border: 1px solid #d8e5ff; border-radius: 6px; color: #52617a; background: #f7faff; font-size: 13px; line-height: 1.6; }
-    .history-upload-title { margin: 2px 16px 10px; color: #22314c; font-size: 15px; font-weight: 800; }
-    .history-manual-thumbs { margin: 0 16px 18px; padding: 12px; display: flex; align-items: center; gap: 12px; border: 1px solid #e3ebf5; border-radius: 8px; background: #fbfcff; }
-    .history-manual-thumb { width: 72px; height: 88px; padding: 0; border: 1px solid #d7e1ee; border-radius: 6px; overflow: hidden; background: #fff; box-shadow: 0 2px 8px rgba(35,55,88,.06); cursor: zoom-in; }
+    .history-upload-title { margin: 2px 16px 8px; color: #22314c; font-size: 14px; font-weight: 800; }
+    .history-manual-thumbs { margin: 0 16px 14px; padding: 10px 12px; display: flex; align-items: flex-start; gap: 18px; border: 1px solid #e3ebf5; border-radius: 8px; background: #fbfcff; }
+    .history-manual-file { width: max-content; max-width: 220px; min-width: 0; display: grid; justify-items: center; gap: 6px; }
+    .history-manual-thumb { width: 58px; height: 70px; padding: 0; border: 1px solid #d7e1ee; border-radius: 6px; overflow: hidden; background: #fff; box-shadow: 0 2px 8px rgba(35,55,88,.06); cursor: zoom-in; }
     .history-manual-thumb.active { border-color: #3154ff; box-shadow: 0 0 0 1px #3154ff; }
     .history-manual-thumb i { display: block; width: 100%; height: 100%; background: linear-gradient(180deg, #f7fafc 0 18%, #fff 18% 100%); position: relative; }
     .history-manual-thumb i::before { content: ''; position: absolute; inset: 18px 10px 10px; background: repeating-linear-gradient(to bottom, #9da8b8 0 2px, transparent 2px 9px); opacity: .75; }
@@ -1636,6 +1732,7 @@
     .history-manual-thumb.pdf i { display: flex; align-items: center; justify-content: center; background: linear-gradient(180deg, #fff7f7, #fff); color: #ff4d4f; font-size: 16px; font-style: normal; font-weight: 900; }
     .history-manual-thumb.pdf i::before { content: 'PDF'; position: static; inset: auto; background: none; opacity: 1; }
     .history-manual-thumb.pdf i::after { content: ''; top: 0; right: 0; left: auto; width: 18px; height: 18px; border-radius: 0 0 0 6px; background: linear-gradient(135deg, #ffd7d8 50%, #fff 50%); opacity: 1; }
+    .history-manual-file-name { max-width: 220px; overflow: hidden; color: #52617a; font-size: 11px; line-height: 16px; text-align: center; text-overflow: ellipsis; white-space: nowrap; }
     .history-ai-summary { margin: 16px 16px 0; padding: 14px 16px; border: 1px solid #dbe8ff; border-radius: 8px; background: linear-gradient(135deg, #f8fbff, #f4f7ff); color: #34435f; font-size: 14px; line-height: 1.8; }
     .history-ai-summary strong { display: inline-flex; align-items: center; margin-right: 8px; color: #1d4dff; font-weight: 900; }
     .history-info-card, .history-interpret-card, .history-sync-card { margin-bottom: 16px; border: 1px solid #dfe7f2; border-radius: 8px; background: #fff; overflow: hidden; }
@@ -2918,11 +3015,12 @@
   <link rel="stylesheet" href="./css/operations-statistics.css?v=20260910-01">
   <link rel="stylesheet" href="./css/operations-statistics-responsive.css?v=20260910-02">
   <link rel="stylesheet" href="./css/patient-archive-reference.css?v=20261013-3">
+  <link rel="stylesheet" href="./css/customer-service.css?v=20261014-6">
   <link rel="stylesheet" href="./css/health-portrait.css?v=20260924-3">
 <link rel="stylesheet" href="./css/personnel-management.css?v=20260929-1">
 <link rel="stylesheet" href="./css/organization-management.css?v=20260929-1">
-<link rel="stylesheet" href="./css/workbench.css?v=20261014-1">
-<link rel="stylesheet" href="./css/ai-steward.css?v=20261014-5">
+<link rel="stylesheet" href="./css/workbench.css?v=20261014-3">
+<link rel="stylesheet" href="./css/ai-steward.css?v=20261014-10">
 <link rel="stylesheet" href="./css/system-role.css?v=20260916-1">
 <link rel="stylesheet" href="./css/dashboard-latest.css?v=20260913-40">
 <link rel="stylesheet" href="./css/dashboard-updated.css?v=20260913-2">
@@ -3380,6 +3478,28 @@
         </section>
       </div>
       <div class="patient-batch-foot"><button class="patient-batch-cancel" data-close-patient-batch-team>取消</button><button class="patient-batch-confirm" data-confirm-patient-batch-team disabled>确认入组</button></div>
+    </aside>
+  </div>
+
+  <div class="patient-mark-drawer" id="patientMarkDrawer" aria-hidden="true">
+    <aside class="patient-mark-panel" role="dialog" aria-modal="true" aria-labelledby="patientMarkTitle">
+      <div class="patient-mark-head"><h2 id="patientMarkTitle">标记患者</h2><button type="button" class="patient-mark-close" data-close-patient-mark aria-label="关闭标记患者抽屉">×</button></div>
+      <div class="patient-mark-body">
+        <div class="patient-mark-patient"><span class="patient-list-avatar" id="patientMarkAvatar" aria-hidden="true">患</span><div><strong id="patientMarkPatientName">患者</strong><span id="patientMarkPatientMeta">--</span></div></div>
+        <section class="patient-mark-section" aria-labelledby="patientMarkServiceTitle">
+          <div class="patient-mark-section-head"><div><div class="patient-mark-section-title" id="patientMarkServiceTitle">服务信息</div><div class="patient-mark-section-note">选择本次标记对应的管理类型，并填写患者服务信息。</div></div></div>
+          <div class="patient-mark-field"><span class="patient-mark-field-label patient-mark-required">标记类型</span><div class="patient-mark-types" id="patientMarkTypes" role="radiogroup" aria-label="标记类型"><label class="patient-mark-type"><input type="radio" name="patientMarkType" value="高血压"><span>高血压</span></label><label class="patient-mark-type"><input type="radio" name="patientMarkType" value="糖尿病"><span>糖尿病</span></label><label class="patient-mark-type"><input type="radio" name="patientMarkType" value="基因管理"><span>基因管理</span></label><label class="patient-mark-type"><input type="radio" name="patientMarkType" value="体重管理"><span>体重管理</span></label></div></div>
+          <label class="patient-mark-field"><span class="patient-mark-field-label patient-mark-required">服务名称</span><span class="patient-mark-control"><input id="patientMarkServiceName" maxlength="60" placeholder="请输入服务名称" autocomplete="off"></span></label>
+          <label class="patient-mark-field"><span class="patient-mark-field-label patient-mark-required">服务金额</span><span class="patient-mark-control amount"><span class="patient-mark-currency">¥</span><input id="patientMarkServiceAmount" type="number" min="0" step="0.01" inputmode="decimal" placeholder="请输入服务金额"></span></label>
+        </section>
+        <section class="patient-mark-section" aria-labelledby="patientMarkBenefitTitle">
+          <div class="patient-mark-section-head"><div><div class="patient-mark-section-title" id="patientMarkBenefitTitle">服务权益</div><div class="patient-mark-section-note">按服务包权益的方式逐条配置权益内容和使用期限。</div></div></div>
+          <div class="patient-mark-benefit-list"><div class="patient-mark-benefit-head"><span>权益内容</span><span>期限</span><span></span></div><div id="patientMarkBenefitRows"></div></div>
+          <button type="button" class="patient-mark-benefit-add" data-add-patient-mark-benefit>＋ 新增一条</button>
+          <div class="patient-mark-error" id="patientMarkError" role="alert" aria-live="polite"></div>
+        </section>
+      </div>
+      <div class="patient-mark-foot"><button type="button" class="patient-mark-cancel" data-close-patient-mark>取消</button><button type="button" class="patient-mark-submit" data-submit-patient-mark>确定标记</button></div>
     </aside>
   </div>
 
@@ -3969,7 +4089,7 @@
                 <button class="history-tab" data-history-tab-filter="report">报告单<small>5条</small></button>
               </div>
               <div class="history-tree">
-                <div class="history-date active" data-history-toggle data-history-group="visit"><span class="history-date-line"><span class="arrow">▼</span><span class="history-date-name">2024-02-02 住院病历</span><span class="history-type-tag inpatient">住院</span></span></div>
+                <div class="history-date" data-history-toggle data-history-group="visit"><span class="history-date-line"><span class="arrow">▼</span><span class="history-date-content"><span class="history-date-main"><span class="history-date-name">住院病历</span><span class="history-type-tag inpatient">住院</span></span><span class="history-date-time">2024-02-02</span></span></span></div>
                 <div class="history-children">
                   <div class="history-category" data-history-toggle><span class="arrow">▼</span><span>病案首页</span></div>
                   <div class="history-subchildren"><div class="history-file active"><span class="history-file-name">住院病案首页</span><span class="history-upload-tag patient">患者上传</span></div></div>
@@ -3980,18 +4100,17 @@
                   <div class="history-category" data-history-toggle><span class="arrow">▼</span><span>检查记录</span></div>
                   <div class="history-subchildren"><div class="history-file"><span class="history-file-name">胸部CT检查报告</span><span class="history-upload-tag sync">自动同步</span></div></div>
                 </div>
-                <div class="history-date" data-history-toggle data-history-group="visit"><span class="history-date-line"><span class="arrow">▼</span><span class="history-date-name">2024-02-02 门诊病历</span><span class="history-type-tag outpatient">门诊</span></span></div>
+                <div class="history-date" data-history-toggle data-history-group="visit"><span class="history-date-line"><span class="arrow">▼</span><span class="history-date-content"><span class="history-date-main"><span class="history-date-name">门诊病历</span><span class="history-type-tag outpatient">门诊</span></span><span class="history-date-time">2024-02-02</span></span></span></div>
                 <div class="history-children">
                   <div class="history-file"><span class="history-file-name">门诊病历记录</span><span class="history-upload-tag nurse">医护上传</span></div>
                   <div class="history-file"><span class="history-file-name">血常规检查检验报告</span><span class="history-upload-tag patient">患者上传</span></div>
                 </div>
-                <div class="history-date collapsed" data-history-toggle data-history-group="prescription"><span class="history-date-line"><span class="arrow">▶</span><span class="history-date-name">2024-02-01 用药处方</span><span class="history-type-tag outpatient">门诊</span></span></div>
+                <div class="history-date collapsed" data-history-toggle data-history-group="prescription"><span class="history-date-line"><span class="arrow">▶</span><span class="history-date-content"><span class="history-date-main"><span class="history-date-name">用药处方</span><span class="history-type-tag outpatient">门诊</span></span><span class="history-date-time">2024-02-01</span></span></span></div>
                 <div class="history-children"><div class="history-file"><span class="history-file-name">门诊处方笺</span><span class="history-upload-tag sync">自动同步</span></div><div class="history-file"><span class="history-file-name">用药清单</span><span class="history-upload-tag nurse">医护上传</span></div><div class="history-file"><span class="history-file-name">补充用药记录</span><span class="history-upload-tag patient">患者上传</span></div></div>
-                <div class="history-date collapsed" data-history-toggle data-history-group="report"><span class="history-date-line"><span class="arrow">▶</span><span class="history-date-name">2024-01-28 体检报告</span><span class="history-type-tag checkup">体检</span></span></div>
+                <div class="history-date collapsed" data-history-toggle data-history-group="report"><span class="history-date-line"><span class="arrow">▶</span><span class="history-date-content"><span class="history-date-main"><span class="history-date-name">体检报告</span><span class="history-type-tag checkup">体检</span></span><span class="history-date-time">2024-01-28</span></span></span></div>
                 <div class="history-children"><div class="history-file"><span class="history-file-name">体检报告</span><span class="history-upload-tag nurse">医护上传</span></div><div class="history-file"><span class="history-file-name">肝肾功能检验报告</span><span class="history-upload-tag sync">自动同步</span></div></div>
-                <div class="history-date collapsed" data-history-toggle data-history-group="report"><span class="history-date-line"><span class="arrow">▶</span><span class="history-date-name">2024-01-20 急诊资料</span><span class="history-type-tag emergency">急诊</span></span></div>
+                <div class="history-date collapsed" data-history-toggle data-history-group="report"><span class="history-date-line"><span class="arrow">▶</span><span class="history-date-content"><span class="history-date-main"><span class="history-date-name">急诊资料</span><span class="history-type-tag emergency">急诊</span></span><span class="history-date-time">2024-01-20</span></span></span></div>
                 <div class="history-children"><div class="history-file"><span class="history-file-name">急诊病历报告</span><span class="history-upload-tag patient">患者上传</span></div></div>
-                <div class="history-date selected"><span class="history-date-line"><span>2024-02-02</span></span></div>
               </div>
             </aside>
             <section class="archive-history-viewer">
@@ -4342,10 +4461,10 @@
         <span class="global-ai-avatar" aria-hidden="true"><svg viewBox="0 0 40 40" fill="none"><path d="M20 6.5 23 14l7.5 3-7.5 3-3 7.5-3-7.5-7.5-3 7.5-3 3-7.5Z" fill="currentColor"/><circle cx="30.5" cy="9.5" r="3.5" fill="currentColor" opacity=".72"/><path d="M8 25v9M3.5 29.5h9" stroke="currentColor" stroke-width="3" stroke-linecap="round"/></svg></span>
         <div class="global-ai-heading">
           <div class="workbench-chat-title"><span id="globalAiTitle" data-assistant-name>AI智能主理人</span><button type="button" class="global-ai-rename" data-global-ai-rename aria-label="修改助手名称" title="修改助手名称"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L8 18l-4 1 1-4Z"/></svg></button></div>
-          <div class="workbench-chat-subtitle" data-assistant-subtitle>可查询全局患者、任务与运营数据</div>
-          <span class="global-ai-scope-badge" data-assistant-scope>全局权限</span>
+          <div class="workbench-chat-subtitle" data-assistant-subtitle>可查询患者档案、医学资料、服务与提醒</div>
+          <span class="global-ai-scope-badge" data-assistant-scope></span>
         </div>
-        <div class="ai-steward-head-actions"><button type="button" data-ai-new title="新建对话" aria-label="新建对话"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></button><button type="button" data-ai-history title="历史对话" aria-label="历史对话"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 6h12M8 12h12M8 18h12"/><circle cx="4" cy="6" r="1"/><circle cx="4" cy="12" r="1"/><circle cx="4" cy="18" r="1"/></svg></button><button type="button" class="global-ai-close" data-global-ai-close title="关闭" aria-label="关闭AI智能主理人"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18"/></svg></button></div>
+        <div class="ai-steward-head-actions"><button type="button" data-ai-new title="新建对话" aria-label="新建对话"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 11.5A8.5 8.5 0 1 1 16.2 4.4"/><path d="M20 4v5h-5M9 12h6M12 9v6"/></svg></button><button type="button" data-ai-history title="历史对话" aria-label="历史对话"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3.5 9A9 9 0 1 1 3 14"/><path d="M3.5 4v5h5M12 7.5V12l3 2"/></svg></button><button type="button" class="global-ai-close" data-global-ai-close title="关闭" aria-label="关闭AI智能主理人"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6.5 6.5 11 11M17.5 6.5l-11 11"/></svg></button></div>
       </div>
       <div class="workbench-chat-body" id="workbenchChatBody" aria-live="polite">
         <div class="global-chat-row ai" id="globalAiWelcomeRow">
@@ -4523,6 +4642,7 @@
       businessTag: patientDemoProfiles.businessTags[index % patientDemoProfiles.businessTags.length]
     }));
     const patientListState = { keyword: '', team: '', page: 1, smartConditions: [], activeSmartTagId: '' };
+    let patientMarkTargetVisitNo = '';
     const patientBatchSelection = new Set();
     const patientBatchEnrollmentNotifications = [];
     const patientBatchTeams = ['呼吸内科随访团队', '小儿科随访团队', '妇科随访团队', '泌尿外科随访团队', '肿瘤科随访团队', '内分泌科慢病管理团队', '肾内科随访团队'];
@@ -5907,10 +6027,10 @@
       });
       document.getElementById('patientListRows').innerHTML = rows.length ? rows.map(patient => `<tr class="${patientBatchSelection.has(patient.visitNo) ? 'selected' : ''}" data-patient-row="${esc(patient.visitNo)}" tabindex="0" role="link" aria-label="查看${esc(patient.name)}的患者档案">
         <td class="patient-select-col"><input class="patient-row-check" type="checkbox" data-patient-select="${esc(patient.visitNo)}" aria-label="选择患者${esc(patient.name)}" ${patientBatchSelection.has(patient.visitNo) ? 'checked' : ''}></td>
-        <td class="patient-name-col"><div class="patient-name-with-tags"><button type="button" class="patient-name-link" data-open-patient-record="${esc(patient.visitNo)}" aria-label="查看${esc(patient.name)}的患者档案">${esc(patient.name)}</button>${renderPatientTags(patient.tags)}</div></td><td>${esc(patient.visitNo)}</td><td>${patient.age ? esc(patient.age) + '岁' : '--'}</td><td>${esc(patient.gender)}</td>
+        <td class="patient-name-col"><div class="patient-name-with-tags"><button type="button" class="patient-name-link" data-open-patient-record="${esc(patient.visitNo)}" aria-label="进入${esc(patient.name)}的患者档案"><span class="patient-list-avatar" aria-hidden="true">${esc(patient.name.slice(-1))}</span><span class="patient-name-text">${esc(patient.name)}</span></button>${renderPatientTags(patient.tags)}</div></td><td>${esc(patient.visitNo)}</td><td>${patient.age ? esc(patient.age) + '岁' : '--'}</td><td>${esc(patient.gender)}</td>
         <td><span class="patient-phone-mask">${esc(patient.phone)} <span class="patient-phone-eye">⌁</span></span></td><td class="institution-col" title="${esc(patient.managementInstitution || '--')}">${esc(patient.managementInstitution || '--')}</td><td>${esc(patient.department)}</td>
         <td class="patient-diagnosis" title="${esc(patient.diagnosis)}">${esc(patient.diagnosis)}</td><td>${esc(patient.visitDate)}</td><td title="${esc(patient.team)}">${esc(patient.team)}</td>
-        <td><span class="patient-row-actions"><button data-open-patient-record="${esc(patient.visitNo)}">档案</button><button data-select-patient-group="${esc(patient.visitNo)}">选择分组</button><button type="button" class="patient-referral-action" data-open-referral="${esc(patient.visitNo)}">转诊申请</button></span></td>
+        <td class="patient-action-col"><span class="patient-row-actions"><button type="button" class="patient-mark-action" data-mark-patient="${esc(patient.visitNo)}" aria-pressed="${Boolean(patient.marked)}" aria-label="${patient.marked ? '编辑标记' : '标记'}${esc(patient.name)}"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true"><path d="M3.5 14V2.25m.25.5h7.9l-1.45 2.5 1.45 2.5h-7.9" stroke-linecap="round" stroke-linejoin="round"/></svg><span>标记</span></button><button type="button" class="patient-more-action" data-toggle-patient-more="${esc(patient.visitNo)}" aria-haspopup="menu" aria-expanded="false">更多<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="m4 6 4 4 4-4" stroke-linecap="round" stroke-linejoin="round"/></svg></button><span class="patient-action-menu" role="menu" hidden><button type="button" role="menuitem" data-open-patient-record="${esc(patient.visitNo)}">查看档案</button><button type="button" role="menuitem" data-select-patient-group="${esc(patient.visitNo)}">选择分组</button><button type="button" role="menuitem" class="patient-referral-action" data-open-referral="${esc(patient.visitNo)}">转诊申请</button></span></span></td>
       </tr>`).join('') : `<tr><td colspan="12" style="height:220px;text-align:center;color:#9aa5b4">暂无符合条件的患者<br><button data-clear-smart-filter style="margin-top:10px;color:#3154ff">清除智能条件</button></td></tr>`;
       const summary = document.getElementById('patientFilterSummary');
       summary.hidden = !patientListState.smartConditions.length;
@@ -5922,6 +6042,116 @@
       if (total) total.textContent = patientListState.smartConditions.length || keyword || patientListState.team ? `共 ${rows.length} 条` : `共 ${78593 + allPatients.length - patientListInitialCount} 条`;
       updatePatientBatchSelectionUI(rows.map(patient => patient.visitNo));
       renderPatientSmartTags();
+    }
+
+    function closePatientActionMenus(exceptTrigger = null) {
+      document.querySelectorAll('[data-toggle-patient-more][aria-expanded="true"]').forEach(trigger => {
+        if (trigger === exceptTrigger) return;
+        trigger.setAttribute('aria-expanded', 'false');
+        const menu = trigger.parentElement?.querySelector('.patient-action-menu');
+        if (menu) menu.hidden = true;
+      });
+    }
+
+    function renderPatientMarkBenefits(benefits = [{ content: '', duration: '' }]) {
+      const rows = benefits.length ? benefits : [{ content: '', duration: '' }];
+      const container = document.getElementById('patientMarkBenefitRows');
+      if (!container) return;
+      container.innerHTML = rows.map((benefit, index) => `<div class="patient-mark-benefit-row" data-patient-mark-benefit-row><input data-patient-mark-benefit-content value="${esc(benefit.content || '')}" maxlength="100" placeholder="请输入权益内容" aria-label="第${index + 1}条权益内容"><input data-patient-mark-duration value="${esc(benefit.duration || '')}" maxlength="30" placeholder="如：90天内" aria-label="第${index + 1}条权益期限"><button type="button" class="patient-mark-benefit-remove" data-remove-patient-mark-benefit aria-label="删除第${index + 1}条服务权益">×</button></div>`).join('');
+    }
+
+    function collectPatientMarkBenefits() {
+      return Array.from(document.querySelectorAll('[data-patient-mark-benefit-row]')).map(row => ({
+        content: row.querySelector('[data-patient-mark-benefit-content]')?.value.trim() || '',
+        duration: row.querySelector('[data-patient-mark-duration]')?.value.trim() || ''
+      }));
+    }
+
+    function clearPatientMarkValidation() {
+      document.querySelectorAll('#patientMarkDrawer .invalid').forEach(node => node.classList.remove('invalid'));
+      document.querySelectorAll('#patientMarkDrawer [aria-invalid="true"]').forEach(node => node.removeAttribute('aria-invalid'));
+      const error = document.getElementById('patientMarkError');
+      if (error) error.textContent = '';
+    }
+
+    function openPatientMarkDrawer(visitNo) {
+      const patient = allPatients.find(item => item.visitNo === visitNo);
+      if (!patient) return;
+      patientMarkTargetVisitNo = visitNo;
+      closePatientActionMenus();
+      const saved = patient.markInfo || {};
+      document.getElementById('patientMarkPatientName').textContent = patient.name;
+      document.getElementById('patientMarkPatientMeta').textContent = `${patient.gender || '--'} · ${patient.age ? `${patient.age}岁` : '--'} · 就诊卡号 ${patient.visitNo}`;
+      document.getElementById('patientMarkAvatar').textContent = patient.name.slice(-1);
+      document.querySelectorAll('input[name="patientMarkType"]').forEach(input => { input.checked = input.value === saved.type; });
+      document.getElementById('patientMarkServiceName').value = saved.serviceName || '';
+      document.getElementById('patientMarkServiceAmount').value = saved.amount ?? '';
+      renderPatientMarkBenefits(saved.benefits || [{ content: '', duration: '' }]);
+      clearPatientMarkValidation();
+      const drawer = document.getElementById('patientMarkDrawer');
+      drawer.classList.add('open');
+      drawer.setAttribute('aria-hidden', 'false');
+      document.body.classList.add('patient-mark-open');
+      requestAnimationFrame(() => (document.querySelector('input[name="patientMarkType"]:checked') || document.querySelector('input[name="patientMarkType"]'))?.focus());
+    }
+
+    function closePatientMarkDrawer() {
+      const drawer = document.getElementById('patientMarkDrawer');
+      drawer?.classList.remove('open');
+      drawer?.setAttribute('aria-hidden', 'true');
+      document.body.classList.remove('patient-mark-open');
+      patientMarkTargetVisitNo = '';
+    }
+
+    function submitPatientMark() {
+      clearPatientMarkValidation();
+      const patient = allPatients.find(item => item.visitNo === patientMarkTargetVisitNo);
+      if (!patient) return;
+      const typeInput = document.querySelector('input[name="patientMarkType"]:checked');
+      const serviceNameInput = document.getElementById('patientMarkServiceName');
+      const amountInput = document.getElementById('patientMarkServiceAmount');
+      const benefits = collectPatientMarkBenefits();
+      let firstInvalid = null;
+      if (!typeInput) {
+        const types = document.getElementById('patientMarkTypes');
+        types.classList.add('invalid');
+        firstInvalid = document.querySelector('input[name="patientMarkType"]');
+      }
+      [serviceNameInput, amountInput].forEach(input => {
+        const invalid = !input.value.trim() || (input === amountInput && Number(input.value) < 0);
+        if (invalid) {
+          input.classList.add('invalid');
+          input.setAttribute('aria-invalid', 'true');
+          firstInvalid ||= input;
+        }
+      });
+      document.querySelectorAll('[data-patient-mark-benefit-row]').forEach((row, index) => {
+        const content = row.querySelector('[data-patient-mark-benefit-content]');
+        const duration = row.querySelector('[data-patient-mark-duration]');
+        [content, duration].forEach(input => {
+          if (!input.value.trim()) {
+            input.classList.add('invalid');
+            input.setAttribute('aria-invalid', 'true');
+            firstInvalid ||= input;
+          }
+        });
+        benefits[index] = { content: content.value.trim(), duration: duration.value.trim() };
+      });
+      if (firstInvalid) {
+        document.getElementById('patientMarkError').textContent = '请完整填写标记类型、服务信息和每条服务权益。';
+        firstInvalid.focus();
+        return;
+      }
+      patient.marked = true;
+      patient.markInfo = {
+        type: typeInput.value,
+        serviceName: serviceNameInput.value.trim(),
+        amount: Number(amountInput.value).toFixed(2),
+        benefits
+      };
+      closePatientMarkDrawer();
+      renderPatientList();
+      showToast(`已为${patient.name}添加${patient.markInfo.type}标记`);
     }
 
     function bindPatientArchiveEntries() {
@@ -9627,6 +9857,10 @@
     }
 
     document.addEventListener('keydown', e => {
+      if (e.key === 'Escape' && document.getElementById('patientMarkDrawer')?.classList.contains('open')) {
+        closePatientMarkDrawer();
+        return;
+      }
       if (e.key === 'Escape' && document.getElementById('patientBatchTeamModal')?.classList.contains('open')) {
         closePatientBatchTeamModal();
         return;
@@ -10130,6 +10364,50 @@
         renderIndicatorPreview();
         return;
       }
+      const patientMoreTrigger = e.target.closest('[data-toggle-patient-more]');
+      if (patientMoreTrigger) {
+        const willOpen = patientMoreTrigger.getAttribute('aria-expanded') !== 'true';
+        closePatientActionMenus(willOpen ? patientMoreTrigger : null);
+        patientMoreTrigger.setAttribute('aria-expanded', String(willOpen));
+        const menu = patientMoreTrigger.parentElement?.querySelector('.patient-action-menu');
+        if (menu) {
+          menu.hidden = !willOpen;
+          if (willOpen) {
+            const rect = patientMoreTrigger.getBoundingClientRect();
+            const menuHeight = 108;
+            menu.style.left = `${Math.max(8, rect.right - 132)}px`;
+            menu.style.top = `${rect.bottom + menuHeight > window.innerHeight ? Math.max(8, rect.top - menuHeight) : rect.bottom + 4}px`;
+          }
+        }
+        return;
+      }
+      if (!e.target.closest('.patient-row-actions')) closePatientActionMenus();
+      const markPatient = e.target.closest('[data-mark-patient]');
+      if (markPatient) {
+        openPatientMarkDrawer(markPatient.dataset.markPatient);
+        return;
+      }
+      if (e.target.closest('[data-close-patient-mark]') || e.target.id === 'patientMarkDrawer') {
+        closePatientMarkDrawer();
+        return;
+      }
+      if (e.target.closest('[data-add-patient-mark-benefit]')) {
+        renderPatientMarkBenefits([...collectPatientMarkBenefits(), { content: '', duration: '' }]);
+        document.querySelector('[data-patient-mark-benefit-row]:last-child [data-patient-mark-benefit-content]')?.focus();
+        return;
+      }
+      const removePatientMarkBenefit = e.target.closest('[data-remove-patient-mark-benefit]');
+      if (removePatientMarkBenefit) {
+        const rows = document.querySelectorAll('[data-patient-mark-benefit-row]');
+        if (rows.length <= 1) showToast('至少保留一条服务权益');
+        else removePatientMarkBenefit.closest('[data-patient-mark-benefit-row]')?.remove();
+        return;
+      }
+      if (e.target.closest('[data-submit-patient-mark]')) {
+        submitPatientMark();
+        return;
+      }
+      if (e.target.closest('.patient-action-menu [role="menuitem"]')) closePatientActionMenus();
       const openPatientRecord = e.target.closest('[data-open-patient-record]');
       if (openPatientRecord) {
         openPatientArchiveByVisitNo(openPatientRecord.dataset.openPatientRecord);
@@ -12853,7 +13131,7 @@
                   <button class="history-tab" data-history-tab-filter="report">报告单<small>5条</small></button>
                 </div>
                 <div class="history-tree">
-                  <div class="history-date active" data-history-toggle data-history-group="visit"><span class="history-date-line"><span class="arrow">▼</span><span class="history-date-name">2024-02-02 住院病历</span><span class="history-type-tag inpatient">住院</span><span class="history-upload-tag sync">自动同步</span></span></div>
+                  <div class="history-date" data-history-toggle data-history-group="visit"><span class="history-date-line"><span class="arrow">▼</span><span class="history-date-content"><span class="history-date-main"><span class="history-date-name">住院病历</span><span class="history-type-tag inpatient">住院</span><span class="history-upload-tag sync">自动同步</span></span><span class="history-date-time">2024-02-02</span></span></span></div>
                   <div class="history-children">
                     <div class="history-category" data-history-toggle><span class="arrow">▼</span><span>病案首页</span></div>
                     <div class="history-subchildren"><div class="history-file active"><span class="history-file-name">住院病案首页</span><span class="history-upload-tag patient">患者上传</span></div></div>
@@ -12864,18 +13142,17 @@
                     <div class="history-category" data-history-toggle><span class="arrow">▼</span><span>检查记录</span></div>
                     <div class="history-subchildren"><div class="history-file"><span class="history-file-name">胸部CT检查报告</span><span class="history-upload-tag sync">自动同步</span></div></div>
                   </div>
-                  <div class="history-date" data-history-toggle data-history-group="visit"><span class="history-date-line"><span class="arrow">▼</span><span class="history-date-name">2024-02-02 门诊病历</span><span class="history-type-tag outpatient">门诊</span><span class="history-upload-tag sync">自动同步</span></span></div>
+                  <div class="history-date" data-history-toggle data-history-group="visit"><span class="history-date-line"><span class="arrow">▼</span><span class="history-date-content"><span class="history-date-main"><span class="history-date-name">门诊病历</span><span class="history-type-tag outpatient">门诊</span><span class="history-upload-tag sync">自动同步</span></span><span class="history-date-time">2024-02-02</span></span></span></div>
                   <div class="history-children">
                     <div class="history-file"><span class="history-file-name">门诊病历记录</span><span class="history-upload-tag nurse">医护上传</span></div>
                     <div class="history-file"><span class="history-file-name">血常规检查检验报告</span><span class="history-upload-tag patient">患者上传</span></div>
                   </div>
-                  <div class="history-date collapsed" data-history-toggle data-history-group="prescription"><span class="history-date-line"><span class="arrow">▶</span><span class="history-date-name">2024-02-01 用药处方</span><span class="history-type-tag outpatient">门诊</span><span class="history-upload-tag sync">自动同步</span></span></div>
+                  <div class="history-date collapsed" data-history-toggle data-history-group="prescription"><span class="history-date-line"><span class="arrow">▶</span><span class="history-date-content"><span class="history-date-main"><span class="history-date-name">用药处方</span><span class="history-type-tag outpatient">门诊</span><span class="history-upload-tag sync">自动同步</span></span><span class="history-date-time">2024-02-01</span></span></span></div>
                   <div class="history-children"><div class="history-file"><span class="history-file-name">门诊处方笺</span><span class="history-upload-tag sync">自动同步</span></div><div class="history-file"><span class="history-file-name">用药清单</span><span class="history-upload-tag nurse">医护上传</span></div><div class="history-file"><span class="history-file-name">补充用药记录</span><span class="history-upload-tag patient">患者上传</span></div></div>
-                  <div class="history-date collapsed" data-history-toggle data-history-group="report"><span class="history-date-line"><span class="arrow">▶</span><span class="history-date-name">2024-01-28 体检报告</span><span class="history-type-tag checkup">体检</span><span class="history-upload-tag sync">自动同步</span></span></div>
+                  <div class="history-date collapsed" data-history-toggle data-history-group="report"><span class="history-date-line"><span class="arrow">▶</span><span class="history-date-content"><span class="history-date-main"><span class="history-date-name">体检报告</span><span class="history-type-tag checkup">体检</span><span class="history-upload-tag sync">自动同步</span></span><span class="history-date-time">2024-01-28</span></span></span></div>
                   <div class="history-children"><div class="history-file"><span class="history-file-name">体检报告</span><span class="history-upload-tag nurse">医护上传</span></div><div class="history-file"><span class="history-file-name">肝肾功能检验报告</span><span class="history-upload-tag sync">自动同步</span></div></div>
-                  <div class="history-date collapsed" data-history-toggle data-history-group="report"><span class="history-date-line"><span class="arrow">▶</span><span class="history-date-name">2024-01-20 急诊资料</span><span class="history-type-tag emergency">急诊</span><span class="history-upload-tag sync">自动同步</span></span></div>
+                  <div class="history-date collapsed" data-history-toggle data-history-group="report"><span class="history-date-line"><span class="arrow">▶</span><span class="history-date-content"><span class="history-date-main"><span class="history-date-name">急诊资料</span><span class="history-type-tag emergency">急诊</span><span class="history-upload-tag sync">自动同步</span></span><span class="history-date-time">2024-01-20</span></span></span></div>
                   <div class="history-children"><div class="history-file"><span class="history-file-name">急诊病历报告</span><span class="history-upload-tag patient">患者上传</span></div></div>
-                  <div class="history-date selected"><span class="history-date-line"><span>2024-02-02</span></span></div>
                 </div>
               </aside>
               <section class="archive-history-viewer">
@@ -12922,9 +13199,9 @@
         medicineList: { title: '用药清单', date: '2024/02/01 15:36', name: '陈患者', source: '门诊病历', note: '*本资料由院内系统同步', pages: 1 },
         checkupReport: { title: '体检报告', date: '2024/01/28 09:00', name: '陈患者', source: '体检报告', note: '*本资料由院内系统同步', pages: 4 },
         emergencyRecord: { title: '急诊病历报告', date: '2024/01/20 21:30', name: '陈患者', source: '急诊资料', note: '*本资料由院内系统同步', pages: 2 },
-        patientUploadDiet: { title: '饮食记录补充资料', date: '2024/02/02 18:40', name: '陈患者', source: '患者上传', reportType: '就诊记录', hospital: '南方社区门诊', note: '*本资料由患者上传<br>*非本院资料', pages: 2, interpretation: { ai: 'AI已对本次患者上传资料进行图文识别与随访语义分析。资料主要围绕近期饮食记录、餐次图片和患者自述展开，整体信息能支持医护初步判断患者近期膳食结构，但仍建议结合连续打卡、体重、血糖或血脂等数据共同评估。', abnormal: '从当前资料看，未发现需要立即处理的危急异常内容；但上传资料属于患者自填与图片补充，医学证据强度低于院内检验检查报告。图片中主食和动物性蛋白占比较明显，蔬菜、水果和饮水记录不够连续，若患者存在糖脂代谢异常，应关注总热量、精制碳水和晚餐后血糖波动。', analysis: '本资料可作为院外生活方式管理的补充依据。患者能够主动上传饮食信息，说明随访依从性较好；但单次资料不能直接判断长期饮食习惯。结合常规慢病管理经验，建议重点关注三点：一是每日主食量和烹饪方式是否稳定，二是蛋白质来源是否以鱼、禽、蛋、豆制品等优质蛋白为主，三是晚间是否存在加餐、甜饮或高盐加工食品摄入。', suggestion: '建议医护在下次随访中引导患者连续上传3到7天三餐图片，并同步记录饮水、运动和餐后不适情况。若患者合并高血糖、高血脂或体重管理目标，可优先建议减少油炸、煎烤和高糖饮品，增加深色蔬菜、全谷物和优质蛋白比例；如后续出现体重快速变化、餐后血糖持续升高或明显胃肠不适，应及时调整随访计划。' } },
-        nurseUploadPressure: { title: '家庭血压记录单', date: '2024/02/01 08:10', name: '陈患者', source: '医护上传', reportType: '报告单', hospital: '南方医科大学中西医结合医院', note: '*本资料由医护上传<br>*非本院资料', pages: 1, interpretation: { ai: 'AI已读取医护上传的家庭血压监测资料，并结合慢病随访场景完成初步解读。该资料由医护整理上传，字段规范性和可信度相对更高，可作为近期血压趋势判断的辅助依据。', abnormal: '记录中可见部分晨间血压存在轻度升高趋势，但暂未达到单次危急值提示。若患者伴随头痛、胸闷、心悸、视物模糊等症状，需要优先复核测量值并联系医生；若无症状，则建议结合至少连续7天的早晚血压均值进行判断。', analysis: '家庭血压受测量姿势、袖带位置、测量前活动、情绪紧张、咖啡因摄入和睡眠质量影响较大。当前资料显示医护已对记录进行整理，适合用于判断随访执行情况；但若缺少测量场景说明，仍可能存在偏差。建议重点看早晨起床后、服药前以及晚上睡前两个固定时段的数据变化。', suggestion: '建议继续要求患者固定时间测量，测量前安静休息5分钟，避免运动、吸烟、饮酒或饮用浓茶咖啡后立即测量。若连续多日家庭血压均值高于目标范围，应由医生评估是否需要调整用药或随访频次；医护可在系统内标记异常趋势，并提醒患者保留原始记录。' } },
-        patientUploadImage: { title: '院外检查照片', date: '2024/01/26 11:25', name: '陈患者', source: '患者上传', reportType: '报告单', hospital: '南方社区门诊', note: '*本资料由患者上传<br>*非本院资料', pages: 3, interpretation: { ai: 'AI已对患者上传的院外检查照片进行版面识别和文字抽取。当前照片能够辨认资料名称、报告日期和部分检查信息，但拍摄角度、清晰度和边缘完整性会影响识别准确率，因此该解读仅作为辅助参考。', abnormal: '由于原图存在局部反光和边缘裁切，部分字段识别置信度偏低。当前未能确认是否存在明确危急值；若报告涉及血常规、肝肾功能、影像结论或病理结果，建议医护核对原图中异常标记、参考范围和医生结论，避免遗漏关键风险。', analysis: '院外检查照片常见问题包括图片倾斜、字号过小、缺少完整页眉页脚、患者姓名或日期不完整等。当前资料可以作为初步归档线索，但不能替代正式报告。若后续用于健康画像、异常指标统计或随访决策，应优先以清晰原件、PDF或医院同步数据为准。', suggestion: '建议患者重新上传完整、正向、无遮挡的报告照片，并确保姓名、报告时间、资料类型、就诊医院和检查结论均可见。医护在确认资料真实有效后，可将关键异常项录入患者档案；若报告提示急性异常、疑似重大疾病或需要复查，应及时发起人工随访。' } }
+        patientUploadDiet: { title: '饮食记录补充资料', date: '2024/02/02 18:40', name: '陈患者', source: '患者上传', reportType: '就诊记录', hospital: '南方社区门诊', note: '*本资料由患者上传<br>*非本院资料', pages: 2, originalFiles: [{ name: 'IMG_20240202_183856.jpg', type: 'image' }, { name: '饮食记录补充资料.pdf', type: 'pdf' }], interpretation: { ai: 'AI已对本次患者上传资料进行图文识别与随访语义分析。资料主要围绕近期饮食记录、餐次图片和患者自述展开，整体信息能支持医护初步判断患者近期膳食结构，但仍建议结合连续打卡、体重、血糖或血脂等数据共同评估。', abnormal: '从当前资料看，未发现需要立即处理的危急异常内容；但上传资料属于患者自填与图片补充，医学证据强度低于院内检验检查报告。图片中主食和动物性蛋白占比较明显，蔬菜、水果和饮水记录不够连续，若患者存在糖脂代谢异常，应关注总热量、精制碳水和晚餐后血糖波动。', analysis: '本资料可作为院外生活方式管理的补充依据。患者能够主动上传饮食信息，说明随访依从性较好；但单次资料不能直接判断长期饮食习惯。结合常规慢病管理经验，建议重点关注三点：一是每日主食量和烹饪方式是否稳定，二是蛋白质来源是否以鱼、禽、蛋、豆制品等优质蛋白为主，三是晚间是否存在加餐、甜饮或高盐加工食品摄入。', suggestion: '建议医护在下次随访中引导患者连续上传3到7天三餐图片，并同步记录饮水、运动和餐后不适情况。若患者合并高血糖、高血脂或体重管理目标，可优先建议减少油炸、煎烤和高糖饮品，增加深色蔬菜、全谷物和优质蛋白比例；如后续出现体重快速变化、餐后血糖持续升高或明显胃肠不适，应及时调整随访计划。' } },
+        nurseUploadPressure: { title: '家庭血压记录单', date: '2024/02/01 08:10', name: '陈患者', source: '医护上传', reportType: '报告单', hospital: '南方医科大学中西医结合医院', note: '*本资料由医护上传<br>*非本院资料', pages: 1, originalFiles: [{ name: '家庭血压监测记录_20240201.pdf', type: 'pdf' }], interpretation: { ai: 'AI已读取医护上传的家庭血压监测资料，并结合慢病随访场景完成初步解读。该资料由医护整理上传，字段规范性和可信度相对更高，可作为近期血压趋势判断的辅助依据。', abnormal: '记录中可见部分晨间血压存在轻度升高趋势，但暂未达到单次危急值提示。若患者伴随头痛、胸闷、心悸、视物模糊等症状，需要优先复核测量值并联系医生；若无症状，则建议结合至少连续7天的早晚血压均值进行判断。', analysis: '家庭血压受测量姿势、袖带位置、测量前活动、情绪紧张、咖啡因摄入和睡眠质量影响较大。当前资料显示医护已对记录进行整理，适合用于判断随访执行情况；但若缺少测量场景说明，仍可能存在偏差。建议重点看早晨起床后、服药前以及晚上睡前两个固定时段的数据变化。', suggestion: '建议继续要求患者固定时间测量，测量前安静休息5分钟，避免运动、吸烟、饮酒或饮用浓茶咖啡后立即测量。若连续多日家庭血压均值高于目标范围，应由医生评估是否需要调整用药或随访频次；医护可在系统内标记异常趋势，并提醒患者保留原始记录。' } },
+        patientUploadImage: { title: '院外检查照片', date: '2024/01/26 11:25', name: '陈患者', source: '患者上传', reportType: '报告单', hospital: '南方社区门诊', note: '*本资料由患者上传<br>*非本院资料', pages: 3, originalFiles: [{ name: '院外检查报告_正面.jpg', type: 'image' }, { name: '院外检查报告_补充页.jpg', type: 'image' }, { name: '院外检查报告.pdf', type: 'pdf' }], interpretation: { ai: 'AI已对患者上传的院外检查照片进行版面识别和文字抽取。当前照片能够辨认资料名称、报告日期和部分检查信息，但拍摄角度、清晰度和边缘完整性会影响识别准确率，因此该解读仅作为辅助参考。', abnormal: '由于原图存在局部反光和边缘裁切，部分字段识别置信度偏低。当前未能确认是否存在明确危急值；若报告涉及血常规、肝肾功能、影像结论或病理结果，建议医护核对原图中异常标记、参考范围和医生结论，避免遗漏关键风险。', analysis: '院外检查照片常见问题包括图片倾斜、字号过小、缺少完整页眉页脚、患者姓名或日期不完整等。当前资料可以作为初步归档线索，但不能替代正式报告。若后续用于健康画像、异常指标统计或随访决策，应优先以清晰原件、PDF或医院同步数据为准。', suggestion: '建议患者重新上传完整、正向、无遮挡的报告照片，并确保姓名、报告时间、资料类型、就诊医院和检查结论均可见。医护在确认资料真实有效后，可将关键异常项录入患者档案；若报告提示急性异常、疑似重大疾病或需要复查，应及时发起人工随访。' } }
       };
 
       function archiveHistoryFile(id, title, uploadText) {
@@ -12937,7 +13214,7 @@
 
       function archiveHistoryExternalFile(id, time, title, uploadText) {
         return `<div class="history-external-file" data-history-file="${id}" data-history-group="report">
-          <span class="history-file-meta"><span class="history-file-time">${archiveReportDateOnly(time)}</span><span class="history-file-name">${title}</span><span class="history-upload-tag ${uploadText === '患者上传' ? 'patient' : 'nurse'}">${uploadText}</span></span>
+          <span class="history-file-meta"><span class="history-file-primary"><span class="history-file-name" title="${title}">${title}</span><span class="history-upload-tag ${uploadText === '患者上传' ? 'patient' : 'nurse'}">${uploadText}</span></span><span class="history-file-time">${archiveReportDateOnly(time)}</span></span>
         </div>`;
       }
 
@@ -13017,6 +13294,12 @@
           suggestion: '建议医护完成资料核验后，将关键结论同步到患者健康档案。'
         };
         const canEdit = record.source === '医护上传';
+        const defaultOriginalFiles = {
+          '饮食记录补充资料': [{ name: 'IMG_20240202_183856.jpg', type: 'image' }, { name: '饮食记录补充资料.pdf', type: 'pdf' }],
+          '家庭血压记录单': [{ name: '家庭血压监测记录_20240201.pdf', type: 'pdf' }],
+          '院外检查照片': [{ name: '院外检查报告_正面.jpg', type: 'image' }, { name: '院外检查报告_补充页.jpg', type: 'image' }, { name: '院外检查报告.pdf', type: 'pdf' }]
+        };
+        const originalFiles = record.originalFiles || defaultOriginalFiles[record.title] || [{ name: `${record.title}.jpg`, type: 'image' }];
         return `${archiveHistoryActionsMarkup(canEdit)}
           <section class="history-mode-page">
             <h2 class="history-manual-title">${record.title}</h2>
@@ -13029,9 +13312,11 @@
               </div>
               ${canEdit ? '' : '<div class="history-manual-lock-note">内容由患者自己上传，不允许修改删除。</div>'}
               <div class="history-upload-title">原件资料</div>
-              <div class="history-manual-thumbs" aria-label="报告图片缩略图">
-                <button class="history-manual-thumb image active" data-history-preview-thumb aria-label="查看上传图片"><i></i></button>
-                <button class="history-manual-thumb pdf" data-history-preview-thumb aria-label="查看PDF资料"><i></i></button>
+              <div class="history-manual-thumbs" aria-label="原件资料列表">
+                ${originalFiles.map((file, index) => `<div class="history-manual-file">
+                  <button class="history-manual-thumb ${file.type === 'pdf' ? 'pdf' : 'image'}${index === 0 ? ' active' : ''}" data-history-preview-thumb aria-label="查看原文件：${esc(file.name)}"><i></i></button>
+                  <span class="history-manual-file-name" title="${esc(file.name)}">${esc(file.name)}</span>
+                </div>`).join('')}
               </div>
             </section>
             <section class="history-interpret-card">
@@ -13293,7 +13578,7 @@
                   <input type="text" data-history-search placeholder="输入病历名称、时间、报告名称检索">
                 </label>
                 <div class="history-tree">
-                  <div class="history-date active" data-history-toggle data-history-group="visit"><span class="history-date-line"><span class="arrow">▼</span><span class="history-date-name">2024-02-02 住院病历</span><span class="history-type-tag inpatient">住院</span></span></div>
+                  <div class="history-date" data-history-toggle data-history-group="visit"><span class="history-date-line"><span class="arrow">▼</span><span class="history-date-content"><span class="history-date-main"><span class="history-date-name">住院病历</span><span class="history-type-tag inpatient">住院</span></span><span class="history-date-time">2024-02-02</span></span></span></div>
                   <div class="history-children">
                     <div class="history-category" data-history-toggle><span class="arrow">▼</span><span>病案首页</span></div>
                     <div class="history-subchildren">${archiveHistoryFile('inpatientHome', '住院病案首页')}</div>
@@ -13306,13 +13591,13 @@
                     <div class="history-category" data-history-toggle><span class="arrow">▼</span><span>检验记录</span></div>
                     <div class="history-subchildren">${archiveHistoryFile('bloodRoutine', '血常规检查检验报告')}${archiveHistoryFile('liverKidney', '肝肾功能检验报告')}</div>
                   </div>
-                  <div class="history-date" data-history-toggle data-history-group="visit"><span class="history-date-line"><span class="arrow">▼</span><span class="history-date-name">2024-02-02 门诊病历</span><span class="history-type-tag outpatient">门诊</span></span></div>
+                  <div class="history-date" data-history-toggle data-history-group="visit"><span class="history-date-line"><span class="arrow">▼</span><span class="history-date-content"><span class="history-date-main"><span class="history-date-name">门诊病历</span><span class="history-type-tag outpatient">门诊</span></span><span class="history-date-time">2024-02-02</span></span></span></div>
                   <div class="history-children">${archiveHistoryFile('outpatientRecord', '门诊病历记录')}${archiveHistoryFile('outpatientBlood', '血常规检查检验报告')}</div>
-                  <div class="history-date collapsed" data-history-toggle data-history-group="prescription"><span class="history-date-line"><span class="arrow">▶</span><span class="history-date-name">2024-02-01 用药处方</span><span class="history-type-tag outpatient">门诊</span></span></div>
+                  <div class="history-date collapsed" data-history-toggle data-history-group="prescription"><span class="history-date-line"><span class="arrow">▶</span><span class="history-date-content"><span class="history-date-main"><span class="history-date-name">用药处方</span><span class="history-type-tag outpatient">门诊</span></span><span class="history-date-time">2024-02-01</span></span></span></div>
                   <div class="history-children">${archiveHistoryFile('prescription', '门诊处方笺')}${archiveHistoryFile('medicineList', '用药清单')}${archiveHistoryFile('patientUploadDiet', '补充用药记录')}</div>
-                  <div class="history-date collapsed" data-history-toggle data-history-group="report"><span class="history-date-line"><span class="arrow">▶</span><span class="history-date-name">2024-01-28 体检报告</span><span class="history-type-tag checkup">体检</span></span></div>
+                  <div class="history-date collapsed" data-history-toggle data-history-group="report"><span class="history-date-line"><span class="arrow">▶</span><span class="history-date-content"><span class="history-date-main"><span class="history-date-name">体检报告</span><span class="history-type-tag checkup">体检</span></span><span class="history-date-time">2024-01-28</span></span></span></div>
                   <div class="history-children">${archiveHistoryFile('checkupReport', '体检报告')}${archiveHistoryFile('liverKidney', '肝肾功能检验报告')}</div>
-                  <div class="history-date collapsed" data-history-toggle data-history-group="report"><span class="history-date-line"><span class="arrow">▶</span><span class="history-date-name">2024-01-20 急诊资料</span><span class="history-type-tag emergency">急诊</span></span></div>
+                  <div class="history-date collapsed" data-history-toggle data-history-group="report"><span class="history-date-line"><span class="arrow">▶</span><span class="history-date-content"><span class="history-date-main"><span class="history-date-name">急诊资料</span><span class="history-type-tag emergency">急诊</span></span><span class="history-date-time">2024-01-20</span></span></span></div>
                   <div class="history-children">${archiveHistoryFile('emergencyRecord', '急诊病历报告')}</div>
                   ${archiveHistoryExternalFile('patientUploadDiet', '2024-02-02 18:40', '饮食记录补充资料', '患者上传')}
                   ${archiveHistoryExternalFile('nurseUploadPressure', '2024-02-01 08:10', '家庭血压记录单', '医护上传')}
@@ -16303,6 +16588,7 @@
 </script>
 
 <script src="./js/service-management.js?v=20260929-1"></script>
+<script src="./js/customer-service.js?v=20261014-6"></script>
 <script src="./js/interface-notes-snapshot.js?v=20260923-v3-17"></script>
 <script src="./js/interface-annotations-v3.js?v=20260924-v3-18"></script>
 <script src="./js/knowledge-base.js?v=knowledge-v15"></script>
@@ -16315,8 +16601,8 @@
   <script src="./js/health-portrait.js?v=20260924-3"></script>
 <script src="./js/personnel-management.js?v=20260929-2"></script>
 <script src="./js/organization-management.js?v=20260929-4"></script>
-<script src="./js/workbench.js?v=20261014-2"></script>
-<script src="./js/ai-steward.js?v=20261014-7"></script>
+<script src="./js/workbench.js?v=20261014-5"></script>
+<script src="./js/ai-steward.js?v=20261014-11"></script>
 <script src="./js/system-role.js?v=20260929-1"></script>
 <script src="./js/scale-create.js?v=20260916-3"></script>
 <script src="./js/dashboard-latest-data.js?v=20260913-31"></script>

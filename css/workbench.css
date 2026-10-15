@@ -66,6 +66,7 @@
 .global-ai-heading .workbench-chat-title{grid-column:1/-1}
 .global-ai-heading .workbench-chat-subtitle{min-width:0;margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .global-ai-scope-badge{height:22px;padding:0 8px;display:inline-flex;align-items:center;border:1px solid #adc6ff;border-radius:999px;color:#3154ff;background:#f0f5ff;font-size:11px;font-weight:700;white-space:nowrap}
+.global-ai-scope-badge:empty{display:none}
 .global-ai-assistant.patient-scope .global-ai-scope-badge{border-color:#ffd591;color:#ad6800;background:#fff7e6}
 .global-ai-assistant.patient-scope .global-ai-panel{border-color:#f3d7a7}
 .global-ai-avatar{width:48px;height:48px;display:grid;place-items:center;flex:0 0 48px;border-radius:15px;color:#fff;background:linear-gradient(145deg,#3154ff,#22b8cf);box-shadow:0 10px 24px rgba(49,84,255,.24),inset 0 0 0 1px rgba(255,255,255,.3)}

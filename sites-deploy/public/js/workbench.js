@@ -188,9 +188,9 @@
       if (quickRow) quickRow.innerHTML = ['查档案', '查医嘱', '定任务', '查报告'].map(quickPromptButton).join('');
       if (input) input.placeholder = `仅查询或新增${patient.name}患者的任务...`;
     } else {
-      if (subtitle) subtitle.textContent = '可查询全局患者、任务与运营数据';
-      if (scopeBadge) scopeBadge.textContent = '全局权限';
-      if (quickRow) quickRow.innerHTML = ['查档案', '查医嘱', '定任务', '查报告'].map(quickPromptButton).join('');
+      if (subtitle) subtitle.textContent = '可查询患者档案、医学资料、服务与提醒';
+      if (scopeBadge) scopeBadge.textContent = '';
+      if (quickRow) quickRow.innerHTML = ['今天有哪些客户需要联系？', '哪些客户的报告还没出具？'].map(quickPromptButton).join('');
       if (input) input.placeholder = '输入你想查询的数据或问题...';
     }
     if (nextContextKey !== assistantContextKey) {

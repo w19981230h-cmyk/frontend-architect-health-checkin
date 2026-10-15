@@ -24,6 +24,15 @@
       {id:'T003',customer:'王五',name:'确认用药情况',type:'用药随访',time:'2026-10-14 16:00',assignee:'张老师（当前）',note:'电话确认今日用药情况',status:'待处理'}
     ])
   };
+  const scenePrompts = [
+    ['01','每日工作简报','今天有哪些客户提醒需要处理？'],
+    ['02','查询客户档案','帮我查询张三的健康档案。'],
+    ['03','查询医嘱与用药','张三最近一次的用药医嘱是什么？'],
+    ['04','检查报告及指标','张三最近三次空腹血糖有什么变化？'],
+    ['05','客户服务进度','张三的基因检测服务进行到哪一步了？'],
+    ['06','通过AI创建提醒','明天下午3点提醒我联系张三复查。'],
+    ['07','分析专家建议','根据张三最新的专家建议安排后续提醒。']
+  ];
   const esc = value => String(value ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
   const body = () => document.getElementById('workbenchChatBody');
   const assistantName = () => window.getGlobalAssistantName?.() || 'AI智能主理人';
@@ -44,16 +53,17 @@
   const todayText = () => new Date().toLocaleDateString('zh-CN',{month:'long',day:'numeric',weekday:'short'});
   const tomorrow = (hour=15) => { const d=new Date(); d.setDate(d.getDate()+1); d.setHours(hour,0,0,0); const p=n=>String(n).padStart(2,'0'); return `${d.getFullYear()}-${p(d.getMonth()+1)}-${p(d.getDate())} ${p(d.getHours())}:00`; };
   const currentPending = () => store.tasks.filter(t => t.status === '待处理');
+  const briefMarkup = () => {
+    const stats=[['今日提醒','12'],['今日建档','5'],['客户待跟进','8'],['待确认专家建议','2']];
+    const matters=[['张三','联系客户确认基因检测安排','查看提醒','task-list'],['李四','提醒客户预约复查','查看客户','profile'],['王五','专家报告已上传，建议新增两条提醒','查看专家建议','suggestions']];
+    return `<section class="ai-business-card ai-brief-card"><span class="ai-intent-tag">已识别业务意图 · 工作简报与提醒聚合</span><h4>每日工作简报 <small>${esc(todayText())}</small></h4><div class="ai-brief-stats">${stats.map(([label,value])=>`<button data-ai-action="${label==='待确认专家建议'?'suggestions':'task-list'}"><span>${label}</span><strong>${value}</strong></button>`).join('')}</div><div class="ai-brief-matters">${matters.map(([name,text,label,type])=>`<article><div><strong>${name} · ${text}</strong><small>待提醒</small></div><button data-ai-action="${type}" data-customer="${name}">${label}</button></article>`).join('')}</div><div class="ai-card-actions">${action('查看更多','more-task','',true)}${action('模拟专家报告回传','simulate-expert')}</div></section>`;
+  };
+  const showBrief = () => appendAI('今日工作简报',briefMarkup());
   const renderBrief = () => {
     const host=body(); if(!host)return;
-    const todayAdded=store.tasks.filter(t=>t.status==='待处理' && /^T\d{10,}$/.test(t.id) && t.time.startsWith(new Date().toISOString().slice(0,10))).length;
-    const completedReminders=store.reminders.filter(item=>item.completed).length;
-    const reminderCards=store.reminders.map(item=>`<article class="ai-brief-item ai-service-reminder ${item.completed?'completed':''}" data-reminder-row="${esc(item.id)}"><button type="button" class="ai-reminder-check ${item.completed?'checked':''}" data-ai-reminder-check="${esc(item.id)}" aria-pressed="${item.completed}" aria-label="${item.completed?'取消完成':'标记完成'}：${esc(item.title)}"><span>✓</span></button><div class="ai-reminder-content"><div class="ai-brief-item-head"><strong>${esc(item.customer)}｜${esc(item.title)}</strong><time>${esc(item.time)}</time></div><p>${esc(item.description)}</p><div class="ai-card-actions">${action(item.detail==='profile'?'查看档案':item.detail==='report'?'查看报告':'查看服务计划',item.detail,item.customer)}</div></div></article>`).join('');
     host.innerHTML=`<div class="ai-steward-brief">
       <section class="ai-steward-welcome"><h3>上午好，我是你的${esc(assistantName())} 👋</h3><p>今天有一些客户服务事项需要你关注。以下数据来自本地模拟业务数据，用于交互演示。</p></section>
-      <div class="ai-brief-stats"><button class="ai-brief-stat" data-ai-action="list-today"><span>今日待办</span><strong data-ai-today-count>${Math.max(0,12+todayAdded-completedReminders)}</strong></button><button class="ai-brief-stat danger" data-ai-action="list-overdue"><span>逾期任务</span><strong>3</strong></button><button class="ai-brief-stat" data-ai-action="suggestions"><span>待处理建议</span><strong>2</strong></button></div>
-      <div><div class="ai-brief-section-title"><span>今日服务提醒</span><small>完成后直接勾选 · ${esc(todayText())}</small></div>${reminderCards}</div>
-      <div class="ai-card-actions">${action('查看全部任务','task-list','',true)}${action('模拟专家报告回传','simulate-expert')}</div>
+      ${briefMarkup()}
     </div>`;
     scrollEnd();
   };
@@ -81,13 +91,25 @@
     const name=value('name'); if(!name)return null;
     return customers.find(c=>c.name===name)||{id:`PAGE-${name}`,name,gender:value('gender')||'待补充',age:Number((value('age')||'0').replace(/\D/g,''))||'待补充',phone:value('phone')||'待补充',diseases:'请在患者健康档案中查看',allergy:'请在患者健康档案中查看',lastCheck:'暂无相关记录',summary:'当前为患者专属权限，仅可查询或新增这位患者的任务。',sku:'暂无相关记录',meds:[],glucose:[],report:'暂无相关记录'};
   };
-  const profileCard = customer => `<section class="ai-business-card"><div class="ai-profile-head"><span class="ai-profile-avatar">${esc(customer.name.slice(-1))}</span><div><strong>${esc(customer.name)}</strong><small>${customer.gender} · ${customer.age}岁 · ${esc(customer.phone)}</small></div></div><dl class="ai-detail-grid"><dt>既往疾病</dt><dd>${esc(customer.diseases||'暂无相关记录')}</dd><dt>过敏史</dt><dd>${esc(customer.allergy||'暂无相关记录')}</dd><dt>最近检查</dt><dd>${esc(customer.lastCheck)}</dd><dt>服务SKU</dt><dd>${esc(customer.sku)}</dd><dt>档案摘要</dt><dd>${esc(customer.summary)}</dd></dl></section>`;
-  const showProfile = customer => appendAI('客户健康档案',profileCard(customer),action('查看完整档案','profile-detail',customer.name)+action('查询检查报告','report',customer.name)+action('创建跟进任务','task-form',customer.name,true));
+  const profileCard = customer => `<section class="ai-business-card"><span class="ai-intent-tag">已识别业务意图 · 客户档案查询</span><div class="ai-profile-head"><span class="ai-profile-avatar">${esc(customer.name.slice(-1))}</span><div><strong>${esc(customer.name)}</strong><small>${customer.gender} · ${customer.age}岁 · ${esc(customer.phone)}</small></div></div><dl class="ai-detail-grid"><dt>健康史</dt><dd>${esc(customer.summary)}</dd><dt>既往疾病</dt><dd>${esc(customer.diseases||'暂无相关记录')}</dd><dt>过敏史</dt><dd>${esc(customer.allergy||'暂无相关记录')}</dd><dt>客户标签</dt><dd>重点随访 · 慢病管理</dd><dt>最近检查</dt><dd>${esc(customer.lastCheck)}</dd><dt>进行中服务</dt><dd>${esc(customer.sku)}</dd><dt>档案来源</dt><dd>主理人录入 · 最近更新 ${esc(customer.lastCheck)}</dd></dl></section>`;
+  const showProfile = customer => appendAI('客户健康档案',profileCard(customer),action('完整档案','profile-detail',customer.name)+action('查看报告','report',customer.name)+action('查看服务','service',customer.name,true));
   const showMedication = customer => {
     const rows=customer.meds.length?customer.meds.map(m=>`<tr><td>${esc(m[0])}</td><td>${esc(m[1])}</td><td>${esc(m[2])}</td></tr>`).join(''):'<tr><td colspan="3">暂无相关记录</td></tr>';
     appendAI(`${customer.name}最近一次用药医嘱`,`<section class="ai-business-card"><h4>门诊处方 · ${esc(customer.lastCheck)}</h4><table class="ai-med-table"><thead><tr><th>药品名称</th><th>剂量</th><th>频率</th></tr></thead><tbody>${rows}</tbody></table><p class="ai-source-note">来源：模拟门诊处方。历史医嘱不代表当前正在用药，AI不会调整剂量、频率或疗程。</p></section>`,action('查看原始医嘱','original-order',customer.name)+action('创建用药跟进任务','task-form',customer.name,true));
   };
   const showReport = customer => appendAI(`${customer.name}最近检查报告`,`<section class="ai-business-card"><h4>${esc(customer.report)}</h4><dl class="ai-detail-grid"><dt>报告类型</dt><dd>检查检验报告</dd><dt>检查日期</dt><dd>${esc(customer.lastCheck)}</dd><dt>上传日期</dt><dd>${esc(customer.lastCheck)} 16:20</dd><dt>上传来源</dt><dd>主理人手动上传（模拟）</dd><dt>报告摘要</dt><dd>${esc(customer.summary)}</dd></dl></section>`,action('查看报告详情','report-detail',customer.name)+action('查看指标','trend',customer.name,true));
+  const showService = customer => {
+    const steps=[['确认检测安排','已完成','标准SKU','2026-09-18'],['提醒客户完成检测','已完成','标准SKU','2026-09-24'],['跟进检测报告','已完成','自定义','2026-10-08'],['邀请专家解读','待提醒','专家建议','2026-10-16'],['反馈专家建议','待提醒','专家建议','2026-10-20']];
+    appendAI(`${customer.name}服务进度`,`<section class="ai-business-card"><h4>${esc(customer.sku)}</h4><dl class="ai-detail-grid"><dt>开始时间</dt><dd>2026-09-18</dd><dt>服务状态</dt><dd>进行中</dd><dt>关联提醒</dt><dd>5条（待提醒2条，已完成3条）</dd></dl><div class="ai-service-timeline">${steps.map(step=>`<div class="ai-service-step ${step[1]==='已完成'?'done':''}"><i></i><div><strong>${esc(step[0])}</strong><small>${esc(step[3])} · <span>${esc(step[2])}</span> · ${esc(step[1])}</small></div></div>`).join('')}</div><div class="ai-demo-note">服务状态独立于提醒状态，不会仅依据提醒数量自动判定服务完成。</div></section>`,action('查看服务详情','service-detail',customer.name)+action('新增提醒','task-form',customer.name,true));
+  };
+  const showContactList = () => {
+    const rows=[['张三','联系客户确认基因检测时间','09:00','待提醒'],['李四','提醒客户预约复查','10:00','待提醒'],['王五','发送生日祝福','14:00','已完成'],['陈晨','跟进检查资料补充','15:30','待提醒'],['赵六','确认年度复查计划','17:30','待提醒']];
+    appendAI('今日客户联系清单',`<section class="ai-business-card ai-global-list-card"><span class="ai-intent-tag">已识别业务意图 · 全局客户联系查询</span><h4>今日客户联系清单</h4><p class="ai-card-summary">共12条提醒，涉及8名客户。</p><div class="ai-global-table-wrap"><table class="ai-global-table"><thead><tr><th>客户</th><th>提醒事项</th><th>时间</th><th>状态</th></tr></thead><tbody>${rows.map(row=>`<tr><td>${row[0]}</td><td>${row[1]}</td><td>${row[2]}</td><td><span class="ai-list-status ${row[3]==='已完成'?'done':''}">${row[3]}</span></td></tr>`).join('')}</tbody></table></div><div class="ai-card-actions">${action('查看全部联系任务','task-list','',true)}</div></section>`);
+  };
+  const showPendingReports = () => {
+    const rows=[['张三','健康综合评估报告','待生成'],['李四','营养健康评估报告','待生成'],['王五','基因检测解读报告','待出具'],['陈晨','复查随访报告','待生成'],['赵六','年度健康评估报告','待出具'],['孙七','心血管风险评估报告','待生成']];
+    appendAI('待出具报告客户',`<section class="ai-business-card ai-global-list-card"><span class="ai-intent-tag">已识别业务意图 · 全局待出具报告查询</span><h4>待出具报告客户</h4><p class="ai-card-summary">共发现6名客户有待出具的报告。</p><div class="ai-global-table-wrap"><table class="ai-global-table"><thead><tr><th>客户</th><th>报告类型</th><th>当前情况</th><th>操作</th></tr></thead><tbody>${rows.map(row=>`<tr><td>${row[0]}</td><td>${row[1]}</td><td><span class="ai-list-status">${row[2]}</span></td><td><div class="ai-table-actions"><button data-ai-action="profile" data-customer="${row[0]}">查看客户</button><button data-ai-generate-report data-customer="${row[0]}">生成报告</button></div></td></tr>`).join('')}</tbody></table></div></section>`);
+  };
   const showTrend = customer => {
     if(!customer.glucose?.length){appendAI(`${customer.name}健康指标`,'暂无相关记录。当前患者档案中尚未录入可用于趋势分析的历史指标数据。');return;}
     const id=`aiTrend${Date.now()}`; const rows=customer.glucose.slice().reverse().map(v=>`<tr><td>${v[0]}</td><td>${v[1]}</td><td>3.9–6.1</td></tr>`).join('');
@@ -103,12 +125,19 @@
     const rows=list.length?list.map(t=>`<article class="ai-task-row" data-task-id="${esc(t.id)}"><div class="ai-task-row-head"><span>${esc(t.customer)} · ${esc(t.name)}</span><em class="ai-task-status ${t.status==='已完成'?'done':t.status==='已取消'?'cancelled':''}">${esc(t.status)}</em></div><p>${esc(t.time)} · ${esc(t.type)} · ${esc(t.assignee)}</p><div class="ai-card-actions">${t.status==='待处理'?`<button data-ai-action="complete-task" data-task="${esc(t.id)}">标记完成</button><button data-ai-action="edit-task" data-task="${esc(t.id)}">修改</button><button class="danger" data-ai-action="cancel-task" data-task="${esc(t.id)}">取消任务</button>`:''}</div></article>`).join(''):'<p>暂无相关任务</p>';
     appendAI(filter==='overdue'?'逾期任务':'任务列表',`<section class="ai-business-card"><div class="ai-task-list">${rows}</div></section>`);
   };
+  const renderMoreTask = () => {
+    const task={customer:'赵六',name:'确认年度复查计划',type:'复诊提醒',time:'2026-10-14 17:30',assignee:'张老师（当前）',note:'联系客户确认甲状腺年度复查时间，并同步服务计划。'};
+    appendAI('更多任务',`<section class="ai-business-card"><article class="ai-task-row"><div class="ai-task-row-head"><span>${esc(task.customer)} · ${esc(task.name)}</span><em class="ai-task-status">待处理</em></div><p>${esc(task.time)} · ${esc(task.type)} · ${esc(task.assignee)}</p><p>${esc(task.note)}</p><div class="ai-card-actions">${action('查看客户档案','profile',task.customer,true)}</div></article></section>`);
+  };
   const thinking = () => { const row=appendAI('正在查询','<span class="ai-thinking">正在分析本地模拟数据 <i></i><i></i><i></i></span>'); row.dataset.thinking='true'; return row; };
   const route = text => {
     const scopedPatient=activePatientScope();
     if(scopedPatient && (/(全局|全部客户|所有客户|机构|运营)/.test(text) || customers.some(c=>c.name!==scopedPatient.name&&text.includes(c.name)))){
       appendAI('患者权限限制',`当前处于${esc(scopedPatient.name)}患者档案，仅可查询这位患者的数据，或查看、新增这位患者的任务。退出患者档案后可恢复全局查询。`);return;
     }
+    if(/今天有哪些客户需要联系/.test(text)){showContactList();return;}
+    if(/哪些客户的报告还没出具|哪些客户.*报告.*没出具/.test(text)){showPendingReports();return;}
+    if(/每日工作简报|今天有哪些客户提醒/.test(text)){showBrief();return;}
     const match=findCustomer(text);
     if(Array.isArray(match)){appendAI('查询到同名客户，请选择',`<div class="ai-customer-picker">${match.map(c=>`<button class="ai-customer-choice" data-ai-action="choose-customer" data-customer-id="${esc(c.id)}">${esc(c.name)} · ${esc(c.phone)} · ${esc(c.diseases)}</button>`).join('')}</div>`);return;}
     let customer=scopedPatient||match||store.currentCustomer;
@@ -117,6 +146,8 @@
     if(/档案|既往疾病|过敏史|健康异常/.test(text)){ if(!customer){store.pendingIntent='profile';appendAI('查询客户档案','请告诉我需要查询哪位客户的健康档案？');return;} store.pendingIntent='';showProfile(customer);return; }
     if(/用药|医嘱|吃什么药/.test(text)){ if(!customer){store.pendingIntent='medication';appendAI('查询医嘱与用药','请告诉我需要查询哪位客户的医嘱记录？');return;} store.pendingIntent='';showMedication(customer);return; }
     if(/血糖|尿酸|指标|变化|趋势/.test(text)){ if(!customer){store.pendingIntent='trend';appendAI('查询健康指标','请告诉我需要查询哪位客户及哪项指标？');return;} store.pendingIntent='';showTrend(customer);return; }
+    if(/服务进度|服务进展|基因检测.*(进展|到哪|哪一步)/.test(text)){ if(!customer){store.pendingIntent='service';appendAI('查询服务进度','请告诉我需要查询哪位客户的服务进度？');return;} store.pendingIntent='';showService(customer);return; }
+    if(/专家建议/.test(text)){ simulateExpert(customer||customers[0]);return; }
     if(/报告|体检/.test(text)){ if(!customer){store.pendingIntent='report';appendAI('查询报告','请告诉我需要查询哪位客户的报告？');return;} store.pendingIntent='';showReport(customer);return; }
     if(/提醒|创建任务|新增任务|定任务|联系.*复查|每周|每个月|下周/.test(text)){
       if(!customer){store.pendingIntent='task';appendAI('创建任务','请先告诉我任务关联哪位客户？');return;}
@@ -124,8 +155,8 @@
       const hour=/下午\s*(\d{1,2})/.test(text)?Number(RegExp.$1)+12:/上午\s*(\d{1,2})/.test(text)?Number(RegExp.$1):15;
       taskForm(customer,{time:tomorrow(Math.min(hour,23)),name:`联系${customer.name}安排复查`}); store.pendingIntent='';return;
     }
-    if(store.pendingIntent && customer){ const intent=store.pendingIntent;store.pendingIntent=''; if(intent==='profile')showProfile(customer);else if(intent==='medication')showMedication(customer);else if(intent==='trend')showTrend(customer);else if(intent==='report')showReport(customer);else taskForm(customer);return; }
-    if(/今日|待办/.test(text)){renderTasks('today');return;} if(/逾期/.test(text)){renderTasks('overdue');return;} if(/任务列表|所有任务/.test(text)){renderTasks();return;}
+    if(store.pendingIntent && customer){ const intent=store.pendingIntent;store.pendingIntent=''; if(intent==='profile')showProfile(customer);else if(intent==='medication')showMedication(customer);else if(intent==='trend')showTrend(customer);else if(intent==='report')showReport(customer);else if(intent==='service')showService(customer);else taskForm(customer);return; }
+    if(/查看更多任务/.test(text)){renderMoreTask();return;} if(/今日|待办/.test(text)){showBrief();return;} if(/逾期/.test(text)){renderTasks('overdue');return;} if(/任务列表|所有任务/.test(text)){renderTasks();return;}
     appendAI('我还需要更明确的信息','你可以查询客户档案、用药医嘱、报告指标，或用自然语言创建任务。当前演示使用固定规则和本地模拟数据，不会编造未识别的结果。');
   };
   const send = text => { appendUser(text); const wait=thinking(); setTimeout(()=>{wait.remove();route(text);},420); };
@@ -137,9 +168,9 @@
     if(existing)Object.assign(existing,values);else store.tasks.unshift({id:`T${Date.now()}`,...values,status:'待处理'}); save('aiStewardTasks',store.tasks);
     form.innerHTML=`<h4>任务${existing?'修改':'创建'}成功</h4><p>${esc(get('name'))}</p><div class="ai-demo-note">已写入本地模拟任务列表，刷新页面后仍会保留。</div><div class="ai-card-actions" style="margin-top:12px">${action('进入任务详情','task-list','',true)}</div>`; toast(`任务${existing?'修改':'创建'}成功`);
   };
-  const simulateExpert = () => {
-    appendAI('专家报告上传成功','正在分析专家建议：“建议客户30天后进行复查，并在14天后了解近期健康状况。”');
-    setTimeout(()=>appendAI('发现新的专家建议',`<section class="ai-business-card"><p>建议创建2项后续服务任务，创建前可修改或删除：</p><div class="ai-task-list" data-proposals><div class="ai-proposal-row"><input value="14天后联系张三了解健康状况"><button data-ai-action="delete-proposal">删除</button></div><div class="ai-proposal-row"><input value="30天后提醒张三安排复查"><button data-ai-action="delete-proposal">删除</button></div></div><div class="ai-demo-note" style="margin-top:10px">AI不会修改标准SKU服务路径，也不会未经确认新增任务。</div><div class="ai-card-actions" style="margin-top:12px"><button data-ai-action="expert-detail" data-customer="张三">查看建议</button><button class="primary" data-ai-action="confirm-proposals">生成任务</button></div></section>`),500);
+  const simulateExpert = (customer=customers[0]) => {
+    appendAI(`${customer.name}专家建议分析`,'正在分析专家原文：“建议客户14天后跟进近期健康情况，30天后安排相关指标复查。”');
+    setTimeout(()=>appendAI('发现2条后续提醒',`<section class="ai-business-card"><dl class="ai-detail-grid"><dt>报告名称</dt><dd>${esc(customer.report)}</dd><dt>报告日期</dt><dd>${esc(customer.lastCheck)}</dd><dt>相似提醒</dt><dd>未发现</dd></dl><div class="ai-task-list" data-proposals><div class="ai-proposal-row"><input value="14天后联系${esc(customer.name)}了解健康状况"><button data-ai-action="delete-proposal">移除</button></div><div class="ai-proposal-row"><input value="30天后提醒${esc(customer.name)}安排复查"><button data-ai-action="delete-proposal">移除</button></div></div><div class="ai-demo-note" style="margin-top:10px">只有人工确认后才会创建提醒；AI不会修改标准SKU模板，也不会补充原文中没有的诊疗决定。</div><div class="ai-card-actions" style="margin-top:12px"><button data-ai-action="expert-detail" data-customer="${esc(customer.name)}">查看原文</button><button class="primary" data-ai-action="confirm-proposals" data-customer="${esc(customer.name)}">确认创建</button></div></section>`),500);
   };
   const questionFromConversation = conversation => {
     if(conversation.question?.trim())return conversation.question.trim();
@@ -210,20 +241,28 @@
   const showHistory = () => { let panel=document.querySelector('.ai-history-panel'); if(!panel){panel=document.createElement('section');panel.className='ai-history-panel';document.getElementById('globalAiPanel')?.append(panel);} panel.hidden=false; renderHistoryPanel(panel); };
   const handleAction = target => {
     const type=target.dataset.aiAction, customer=customers.find(c=>c.id===target.dataset.customerId)||customers.find(c=>c.name===target.dataset.customer)||store.currentCustomer||customers[0];
-    if(type==='profile'||type==='profile-detail')showProfile(customer); else if(type==='report'||type==='report-detail')showReport(customer); else if(type==='trend')showTrend(customer); else if(type==='task-form')taskForm(customer); else if(type==='task-list'||type==='list-today')renderTasks('today'); else if(type==='list-overdue')renderTasks('overdue'); else if(type==='suggestions')appendAI('待处理建议','发现2项尚未转为任务的专家建议。你可以模拟报告回传并确认生成任务。',action('模拟专家报告回传','simulate-expert','',true)); else if(type==='expert-detail')appendAI(`${customer.name}专家建议`,'建议客户30天后进行复查，并在14天后了解近期健康状况。',action('安排提醒','task-form',customer.name,true)); else if(type==='original-order')appendAI('原始医嘱详情',`<section class="ai-business-card"><h4>${customer.name} · 门诊处方</h4><p>记录日期：${customer.lastCheck}</p><p>来源：模拟门诊处方影像录入</p><div class="ai-demo-note">该内容仅用于原型演示，不构成医疗建议。</div></section>`); else if(type==='simulate-expert')simulateExpert(); else if(type==='cancel-card')target.closest('.global-chat-row')?.remove(); else if(type==='confirm-task')confirmTask(document.getElementById(target.dataset.form)); else if(type==='delete-proposal')target.closest('.ai-proposal-row')?.remove(); else if(type==='confirm-proposals'){ const inputs=[...target.closest('.ai-business-card').querySelectorAll('[data-proposals] input')]; inputs.forEach((input,i)=>store.tasks.unshift({id:`TP${Date.now()}${i}`,customer:'张三',name:input.value,type:'专家建议跟进',time:i?tomorrow(15):tomorrow(10),assignee:'张老师（当前）',note:'由专家建议生成，经主理人确认',status:'待处理'})); save('aiStewardTasks',store.tasks); target.closest('.ai-business-card').innerHTML='<h4>任务已生成</h4><p>已确认创建后续服务任务，可在任务列表中继续修改、完成或取消。</p>';toast('建议任务创建成功'); }
+    if(type==='profile'||type==='profile-detail')showProfile(customer); else if(type==='report'||type==='report-detail')showReport(customer); else if(type==='trend')showTrend(customer); else if(type==='service'||type==='service-detail')showService(customer); else if(type==='task-form')taskForm(customer); else if(type==='more-task')send('查看更多任务'); else if(type==='task-list'||type==='list-today')renderTasks('today'); else if(type==='list-overdue')renderTasks('overdue'); else if(type==='suggestions')appendAI('待处理建议','发现2项尚未转为任务的专家建议。你可以模拟报告回传并确认生成任务。',action('模拟专家报告回传','simulate-expert','',true)); else if(type==='expert-detail')appendAI(`${customer.name}专家建议原文`,'“建议客户14天后跟进近期健康情况，30天后安排相关指标复查。”',action('安排提醒','task-form',customer.name,true)); else if(type==='original-order')appendAI('原始医嘱详情',`<section class="ai-business-card"><h4>${customer.name} · 门诊处方</h4><p>记录日期：${customer.lastCheck}</p><p>来源：模拟门诊处方影像录入</p><div class="ai-demo-note">该内容仅用于原型演示，不构成医疗建议。</div></section>`); else if(type==='simulate-expert')simulateExpert(customer); else if(type==='cancel-card')target.closest('.global-chat-row')?.remove(); else if(type==='confirm-task')confirmTask(document.getElementById(target.dataset.form)); else if(type==='delete-proposal')target.closest('.ai-proposal-row')?.remove(); else if(type==='confirm-proposals'){ const inputs=[...target.closest('.ai-business-card').querySelectorAll('[data-proposals] input')]; inputs.forEach((input,i)=>store.tasks.unshift({id:`TP${Date.now()}${i}`,customer:customer.name,name:input.value,type:'专家建议跟进',time:i?tomorrow(15):tomorrow(10),assignee:'张老师（当前）',note:'由专家建议生成，经主理人确认',status:'待处理'})); save('aiStewardTasks',store.tasks); target.closest('.ai-business-card').innerHTML='<h4>提醒创建成功</h4><p>已加入该客户的统一提醒时间轴，可继续查看或标记完成。</p>';toast('建议提醒创建成功'); }
     else if(['complete-task','cancel-task'].includes(type)){ const task=store.tasks.find(t=>t.id===target.dataset.task);if(task){task.status=type==='complete-task'?'已完成':'已取消';save('aiStewardTasks',store.tasks);target.closest('.global-chat-row')?.remove();renderTasks();toast(`任务已${task.status==='已完成'?'完成':'取消'}`);} }
     else if(type==='edit-task'){const task=store.tasks.find(t=>t.id===target.dataset.task);const c=customers.find(x=>x.name===task?.customer)||customer;if(task)taskForm(c,{id:task.id,name:task.name,time:task.time,note:task.note});}
     else if(type==='choose-customer'){store.currentCustomer=customer;target.closest('.global-chat-row')?.remove();const intent=store.pendingIntent;store.pendingIntent='';if(intent==='medication')showMedication(customer);else if(intent==='trend')showTrend(customer);else if(intent==='report')showReport(customer);else showProfile(customer);}
   };
   const init = () => {
     const panel=document.getElementById('globalAiPanel'); if(!panel)return;
-    document.getElementById('globalAiQuickRow').innerHTML=['查档案','查医嘱','定任务','查报告'].map(x=>`<button type="button" data-workbench-quick="${x}">${x}</button>`).join('');
+    const assistant=document.getElementById('globalAiAssistant'), toggle=assistant?.querySelector('[data-global-ai-toggle]'), close=panel.querySelector('[data-global-ai-close]');
+    const setOpen=open=>{panel.hidden=!open;assistant?.classList.toggle('open',open);toggle?.setAttribute('aria-expanded',String(open));toggle?.setAttribute('aria-label',open?`收起${assistantName()}`:`打开${assistantName()}`);if(open)setTimeout(()=>document.getElementById('workbenchChatInput')?.focus(),60);};
+    toggle?.addEventListener('click',event=>{event.stopPropagation();setOpen(panel.hidden);});
+    close?.addEventListener('click',event=>{event.stopPropagation();setOpen(false);toggle?.focus();});
+    let sceneBar=panel.querySelector('.ai-scene-switch');
+    if(!sceneBar){sceneBar=document.createElement('div');sceneBar.className='ai-scene-switch';sceneBar.innerHTML=`<label><span>场景演示</span><select aria-label="选择智能助手业务场景">${scenePrompts.map(([id,label,prompt])=>`<option value="${esc(prompt)}">${id} ${label}</option>`).join('')}</select></label><button type="button" data-ai-run-scene>开始演示</button>`;panel.querySelector('.workbench-chat-body')?.before(sceneBar);}
+    document.getElementById('globalAiQuickRow').innerHTML=['今天有哪些客户需要联系？','哪些客户的报告还没出具？'].map(x=>`<button type="button" data-workbench-quick="${x}">${x}</button>`).join('');
     renderBrief(); window.aiStewardSend=send;
     panel.addEventListener('click',event=>{
+      const generateReport=event.target.closest('[data-ai-generate-report]');if(generateReport){const row=generateReport.closest('tr');const status=row?.querySelector('.ai-list-status');if(status)status.textContent='已生成';generateReport.textContent='已生成';generateReport.disabled=true;toast(`${generateReport.dataset.customer}的报告已生成`);return;}
       const reminderCheck=event.target.closest('[data-ai-reminder-check]'); if(reminderCheck){toggleReminder(reminderCheck);return;}
       const actionTarget=event.target.closest('[data-ai-action]');if(actionTarget){handleAction(actionTarget);return;}
       if(event.target.closest('[data-ai-new]')){saveConversation();store.currentCustomer=null;store.pendingIntent='';renderBrief();toast('已新建对话');return;}
       if(event.target.closest('[data-ai-history]')){showHistory();return;}
+      if(event.target.closest('[data-ai-run-scene]')){const select=panel.querySelector('.ai-scene-switch select');if(select?.value)send(select.value);return;}
       const history=event.target.closest('[data-ai-history-open]');if(history){const item=allHistoryConversations().find(c=>c.id===Number(history.dataset.aiHistoryOpen));if(item){body().innerHTML=item.html;history.closest('.ai-history-panel').hidden=true;scrollEnd();}}
     });
   };
