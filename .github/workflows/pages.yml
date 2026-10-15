@@ -28,6 +28,7 @@ jobs:
           mkdir _site
           cp *.html *.js *.css _site/
           cp -R assets css js data _site/
+          cp sites-deploy/public/prototype.html _site/prototype.html
           touch _site/.nojekyll
       - uses: actions/upload-pages-artifact@v4
         with:
