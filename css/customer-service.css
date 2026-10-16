@@ -121,8 +121,7 @@
 #patientArchivePage .customer-service-overview {
   padding: 16px 24px;
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(260px, 34%);
-  gap: 16px;
+  grid-template-columns: minmax(0, 1fr);
   border-bottom: 1px solid #edf1f6;
 }
 
@@ -174,6 +173,8 @@
 #patientArchivePage .customer-service-stat-copy span { display: block; margin-top: 2px; overflow: hidden; color: #5e6c83; font-size: 12px; text-overflow: ellipsis; white-space: nowrap; }
 
 #patientArchivePage .customer-service-tags { padding: 12px 16px; }
+#patientArchivePage .customer-service-heading > .customer-service-tags { width: min(480px, 44%); min-width: 320px; min-height: 32px; padding: 0; display: flex; align-items: center; justify-content: flex-end; gap: 8px; flex: 0 1 480px; border: 0; border-radius: 0; background: transparent; }
+#patientArchivePage .customer-service-heading > .customer-service-tags .customer-service-tag-list { margin-top: 0; justify-content: flex-end; }
 #patientArchivePage .customer-service-tags-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
 #patientArchivePage .customer-service-tags-head strong { color: #23344f; font-size: 14px; }
 #patientArchivePage .customer-service-link-button { padding: 2px 4px; border: 0; color: #1677ff; background: transparent; font: inherit; font-size: 12px; cursor: pointer; }
@@ -273,6 +274,8 @@
   align-items: center;
   gap: 5px;
   border-radius: 5px;
+  font-size: 14px;
+  font-weight: 400;
   line-height: 24px;
   white-space: nowrap;
 }
@@ -288,9 +291,9 @@
 #patientArchivePage .customer-service-actions .customer-service-link-button { min-height: 28px; padding: 0 6px; }
 #patientArchivePage .customer-service-row-more { width: 28px; height: 28px; display: grid; place-items: center; border: 0; border-radius: 5px; color: #1677ff; background: transparent; font-size: 18px; cursor: pointer; }
 #patientArchivePage .customer-service-row-more:hover { background: #e6f4ff; }
-#patientArchivePage .customer-service-row-menu { position: absolute; top: 30px; right: 0; z-index: 8; width: 104px; padding: 4px; border: 1px solid #e5e9f0; border-radius: 7px; background: #fff; box-shadow: 0 8px 24px rgba(31,52,91,.14); }
+#patientArchivePage .customer-service-row-menu { position: absolute; top: 30px; right: 0; z-index: 8; width: 104px; padding: 4px; display: flex; flex-direction: column; align-items: stretch; gap: 2px; border: 1px solid #e5e9f0; border-radius: 7px; background: #fff; box-shadow: 0 8px 24px rgba(31,52,91,.14); }
 #patientArchivePage .customer-service-row-menu[hidden] { display: none; }
-#patientArchivePage .customer-service-row-menu button { width: 100%; height: 32px; padding: 0 9px; border: 0; border-radius: 4px; color: #42526b; background: transparent; font: inherit; font-size: 12px; text-align: left; cursor: pointer; }
+#patientArchivePage .customer-service-row-menu button { width: 100%; height: 32px; min-height: 32px; padding: 0 9px; display: block; flex: 0 0 32px; border: 0; border-radius: 4px; color: #42526b; background: transparent; font: inherit; font-size: 12px; text-align: left; cursor: pointer; }
 #patientArchivePage .customer-service-row-menu button:hover { color: #1677ff; background: #f0f7ff; }
 #patientArchivePage .customer-service-row-menu button.danger:hover { color: #ff4d4f; background: #fff2f0; }
 
@@ -303,9 +306,9 @@
 #patientArchivePage .customer-service-timeline { padding: 0 24px 16px; }
 #patientArchivePage .customer-service-timeline-group h3 { height: 36px; margin: 0 -24px; padding: 0 24px; display: flex; align-items: center; gap: 6px; color: #20324f; background: #f4f8fd; font-size: 13px; }
 #patientArchivePage .customer-service-timeline-group h3 span { color: #1677ff; font-size: 16px; transform: rotate(90deg); }
-#patientArchivePage .customer-service-timeline-item { min-height: 76px; display: grid; grid-template-columns: 28px 72px 28px minmax(220px,1fr) minmax(150px,auto) 170px 32px; align-items: center; gap: 8px; border-bottom: 1px solid #edf1f6; transition: background .16s ease; }
+#patientArchivePage .customer-service-timeline-item { min-height: 76px; display: grid; grid-template-columns: 28px 88px 28px minmax(240px,1.7fr) minmax(180px,1fr) minmax(260px,1.25fr) 32px; align-items: center; gap: 12px; border-bottom: 1px solid #edf1f6; transition: background .16s ease; }
 #patientArchivePage .customer-service-timeline-item.completed { background: #f7fcf9; }
-#patientArchivePage .customer-service-timeline-item.completed .customer-service-timeline-content strong { color: #597367; text-decoration: line-through; text-decoration-color: #9bb7a8; }
+#patientArchivePage .customer-service-timeline-item.completed .customer-service-timeline-content strong { color: #365b49; }
 #patientArchivePage .customer-service-quick-complete { width: 20px; height: 20px; margin: 0 4px; padding: 0; display: grid; place-items: center; border: 2px solid #69b1ff; border-radius: 50%; color: #fff; background: #fff; font: inherit; font-size: 11px; line-height: 1; cursor: pointer; transition: border-color .16s, background .16s, box-shadow .16s; }
 #patientArchivePage .customer-service-quick-complete:hover { border-color: #1677ff; background: #e6f4ff; }
 #patientArchivePage .customer-service-quick-complete:focus-visible { outline: 0; box-shadow: 0 0 0 3px rgba(22,119,255,.18); }
@@ -323,8 +326,12 @@
 #patientArchivePage .customer-service-timeline-content strong { display: block; overflow: hidden; color: #1d2c44; text-overflow: ellipsis; white-space: nowrap; }
 #patientArchivePage .customer-service-timeline-content p { margin: 4px 0 0; overflow: hidden; color: #708098; font-size: 11px; text-overflow: ellipsis; white-space: nowrap; }
 #patientArchivePage .customer-service-timeline-tags { min-width: 0; display: flex; gap: 6px; overflow: hidden; }
-#patientArchivePage .customer-service-timeline-status { min-width: 0; display: flex; flex-direction: column; align-items: flex-start; gap: 4px; }
-#patientArchivePage .customer-service-timeline-status time { color: #6b7f72; font-size: 10px; line-height: 14px; white-space: nowrap; }
+#patientArchivePage .customer-service-task-tag { color: #315b98; background: #edf5ff; white-space: nowrap; }
+#patientArchivePage .customer-service-task-tag:nth-child(2) { color: #3f6b53; background: #edf8f1; }
+#patientArchivePage .customer-service-timeline-status { min-width: 0; display: flex; align-items: center; gap: 8px; }
+#patientArchivePage .customer-service-timeline-status time { color: #66758a; font-size: 12px; font-weight: 400; line-height: 20px; white-space: nowrap; }
+#patientArchivePage .customer-service-timeline-actions { width: 32px; justify-content: flex-end; }
+#patientArchivePage .customer-service-action-placeholder { width: 32px; height: 32px; display: block; }
 
 #patientArchivePage .customer-service-calendar-layout { min-height: 520px; padding: 12px 24px 20px; display: grid; grid-template-columns: minmax(520px,1fr) 300px; gap: 12px; }
 #patientArchivePage .customer-service-calendar,
@@ -374,6 +381,21 @@
   box-shadow: 0 18px 60px rgba(13, 32, 66, .24);
   animation: customer-service-dialog-in .2s cubic-bezier(.16,1,.3,1);
 }
+#customerServiceDialog.drawer-mode { place-items: stretch end; padding: 0; }
+#customerServiceDialog.drawer-mode .customer-service-dialog {
+  width: min(640px, 100vw);
+  height: 100vh;
+  max-height: none;
+  margin-left: auto;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  border-radius: 0;
+  animation: customer-service-drawer-in .28s cubic-bezier(.16,1,.3,1);
+}
+#customerServiceDialog.drawer-mode .customer-service-dialog-head { min-height: 64px; padding: 0 24px; flex: 0 0 auto; }
+#customerServiceDialog.drawer-mode .customer-service-dialog-body { padding: 24px; flex: 1 1 auto; overflow: auto; overscroll-behavior: contain; }
+#customerServiceDialog.drawer-mode .customer-service-dialog-foot { min-height: 64px; padding: 12px 24px; flex: 0 0 auto; background: #fff; box-shadow: 0 -4px 16px rgba(31,52,91,.05); }
 #customerServiceDialog .customer-service-dialog-head { min-height: 56px; padding: 0 20px; display: flex; align-items: center; justify-content: space-between; gap: 16px; border-bottom: 1px solid #f0f0f0; }
 #customerServiceDialog .customer-service-dialog-head h2 { margin: 0; color: rgba(0,0,0,.88); font-size: 16px; }
 #customerServiceDialog .customer-service-dialog-close { width: 32px; height: 32px; display: grid; place-items: center; border: 0; border-radius: 6px; color: rgba(0,0,0,.45); background: transparent; font-size: 22px; cursor: pointer; }
@@ -391,15 +413,63 @@
 #customerServiceDialog .customer-service-field input:hover,
 #customerServiceDialog .customer-service-field select:hover,
 #customerServiceDialog .customer-service-field textarea:hover { border-color: #4096ff; }
+#customerServiceDialog .customer-service-field input:focus-visible,
+#customerServiceDialog .customer-service-field select:focus-visible,
+#customerServiceDialog .customer-service-field textarea:focus-visible { border-color: #1677ff; outline: 0; box-shadow: 0 0 0 2px rgba(5,145,255,.1); }
+#customerServiceDialog .customer-service-reminder-schedule { padding: 16px; display: grid; gap: 18px; border: 1px solid #d9e2ef; border-radius: 8px; background: #fff; }
+#customerServiceDialog .customer-service-schedule-field { display: grid; gap: 8px; }
+#customerServiceDialog .customer-service-schedule-field label { color: rgba(0,0,0,.88); font-size: 13px; }
+#customerServiceDialog .customer-service-schedule-field input { width: min(100%, 280px); height: 36px; }
+#customerServiceDialog .customer-service-repeat-switch { position: relative; min-height: 32px; display: flex; align-items: center; justify-content: space-between; gap: 16px; cursor: pointer; }
+#customerServiceDialog .customer-service-repeat-switch input { position: absolute; width: 1px; height: 1px; min-height: 1px; padding: 0; opacity: 0; pointer-events: none; }
+#customerServiceDialog .customer-service-repeat-switch i { position: relative; width: 36px; height: 20px; flex: 0 0 36px; border-radius: 10px; background: rgba(0,0,0,.25); transition: background .16s ease; }
+#customerServiceDialog .customer-service-repeat-switch i::after { content: ''; position: absolute; top: 2px; left: 2px; width: 16px; height: 16px; border-radius: 50%; background: #fff; box-shadow: 0 1px 3px rgba(0,0,0,.2); transition: transform .16s ease; }
+#customerServiceDialog .customer-service-repeat-switch input:checked + i { background: #1677ff; }
+#customerServiceDialog .customer-service-repeat-switch input:checked + i::after { transform: translateX(16px); }
+#customerServiceDialog .customer-service-repeat-switch input:focus-visible + i { outline: 2px solid rgba(22,119,255,.28); outline-offset: 2px; }
+#customerServiceDialog .customer-service-repeat-config { min-height: 36px; display: flex; align-items: center; flex-wrap: wrap; gap: 8px; color: #34445c; font-size: 13px; }
+#customerServiceDialog .customer-service-repeat-config[hidden] { display: none; }
+#customerServiceDialog .customer-service-repeat-config input { width: 68px; height: 34px; text-align: center; }
+#customerServiceDialog .customer-service-repeat-config select { width: 76px; height: 34px; padding: 0 28px 0 10px; }
+#customerServiceDialog .customer-service-schedule-summary { min-height: 52px; padding: 12px; display: flex; align-items: flex-start; gap: 8px; border-radius: 6px; color: #42526b; background: #f5f7fa; font-size: 13px; line-height: 22px; }
+#customerServiceDialog .customer-service-schedule-summary > span { width: 16px; height: 16px; margin-top: 3px; display: grid; place-items: center; flex: 0 0 16px; border-radius: 3px; color: #fff; background: #69b1ff; font-size: 11px; font-weight: 700; font-style: normal; }
+#customerServiceDialog .customer-service-schedule-summary p { margin: 0; }
+#customerServiceDialog .customer-service-reminder-schedule .checkin-config-grid { margin-bottom: 16px; }
+#customerServiceDialog .customer-service-reminder-schedule .checkin-config-field select { width: 100%; height: 36px; }
+#customerServiceDialog .customer-service-reminder-schedule .checkin-time-panel { padding-top: 16px; }
+#customerServiceDialog .customer-service-reminder-schedule .checkin-count-control { display: flex; align-items: center; gap: 8px; }
+#customerServiceDialog .customer-service-reminder-schedule .checkin-count-control input { width: 72px; height: 34px; text-align: center; }
+#customerServiceDialog .customer-service-reminder-schedule .checkin-time-list { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; }
+#customerServiceDialog .customer-service-reminder-schedule .checkin-time-list input { width: 100%; height: 34px; padding: 0 8px; }
+#customerServiceDialog .customer-service-reminder-schedule .checkin-weekday-list,
+#customerServiceDialog .customer-service-reminder-schedule .checkin-monthday-list { display: flex; flex-wrap: wrap; gap: 8px; }
+#customerServiceDialog .customer-service-reminder-schedule .checkin-weekday-list label { min-height: 30px; padding: 0 10px; display: inline-flex; align-items: center; gap: 5px; border: 1px solid #dfe5ef; border-radius: 5px; color: #43516a; background: #fff; cursor: pointer; }
+#customerServiceDialog .customer-service-reminder-schedule .checkin-weekday-list label:has(input:checked),
+#customerServiceDialog .customer-service-reminder-schedule .checkin-monthday-list label:has(input:checked) { color: #3154ff; border-color: #3154ff; background: #f7f9ff; }
+#customerServiceDialog .customer-service-reminder-schedule .checkin-weekday-list label:has(input:focus-visible),
+#customerServiceDialog .customer-service-reminder-schedule .checkin-monthday-list label:has(input:focus-visible) { outline: 2px solid rgba(22,119,255,.28); outline-offset: 2px; }
+#customerServiceDialog .customer-service-reminder-schedule .checkin-weekday-list input { width: auto; min-height: auto; padding: 0; accent-color: #3154ff; box-shadow: none; }
+#customerServiceDialog .customer-service-reminder-schedule .checkin-monthday-list label { width: 38px; height: 30px; display: inline-flex; align-items: center; justify-content: center; border: 1px solid #dfe5ef; border-radius: 5px; color: #43516a; background: #fff; cursor: pointer; }
+#customerServiceDialog .customer-service-reminder-schedule .checkin-monthday-list input { position: absolute; width: 1px; min-height: 1px; padding: 0; opacity: 0; pointer-events: none; }
+#customerServiceDialog.drawer-mode #customerReminderNote { min-height: 112px; resize: vertical; }
 #customerServiceDialog .customer-service-dialog-foot { min-height: 56px; padding: 10px 20px; display: flex; align-items: center; justify-content: flex-end; gap: 8px; border-top: 1px solid #f0f0f0; }
 #customerServiceDialog .customer-service-tag-options { display: flex; flex-wrap: wrap; gap: 8px; }
 #customerServiceDialog .customer-service-tag-option { min-height: 30px; padding: 0 10px; border: 1px solid #d9d9d9; border-radius: 6px; color: #42526b; background: #fff; font: inherit; font-size: 12px; cursor: pointer; }
 #customerServiceDialog .customer-service-tag-option.selected { border-color: #91caff; color: #1677ff; background: #e6f4ff; }
+#customerServiceDialog .customer-service-tag-option.locked { display: inline-flex; align-items: center; cursor: default; user-select: none; }
+#customerServiceDialog .customer-service-custom-tag-form { margin-top: 18px; padding-top: 16px; display: grid; gap: 8px; border-top: 1px solid #f0f0f0; }
+#customerServiceDialog .customer-service-custom-tag-form > label { color: rgba(0,0,0,.88); font-size: 13px; }
+#customerServiceDialog .customer-service-custom-tag-control { display: flex; align-items: center; gap: 8px; }
+#customerServiceDialog .customer-service-custom-tag-control input { min-width: 0; height: 32px; flex: 1 1 auto; }
+#customerServiceDialog .customer-service-custom-tag-control button { min-width: 64px; flex: 0 0 auto; }
+#customerServiceDialog .customer-service-custom-tag-help { color: rgba(0,0,0,.45); font-size: 12px; line-height: 20px; }
+#customerServiceDialog .customer-service-custom-tag-help.error { color: #ff4d4f; }
 #customerServiceToast { position: fixed; top: 24px; left: 50%; z-index: 1300; padding: 9px 14px; display: flex; align-items: center; gap: 8px; border: 1px solid #d9f7be; border-radius: 7px; color: rgba(0,0,0,.88); background: #f6ffed; box-shadow: 0 6px 24px rgba(27,49,88,.14); font-size: 13px; transform: translate(-50%, -18px); opacity: 0; pointer-events: none; transition: transform .2s, opacity .2s; }
 #customerServiceToast.visible { transform: translate(-50%, 0); opacity: 1; }
 #customerServiceToast::before { content: '✓'; color: #52c41a; font-weight: 700; }
 
 @keyframes customer-service-dialog-in { from { opacity: 0; transform: scale(.96) translateY(8px); } to { opacity: 1; transform: scale(1) translateY(0); } }
+@keyframes customer-service-drawer-in { from { opacity: .7; transform: translateX(32px); } to { opacity: 1; transform: translateX(0); } }
 
 @media (max-width: 1320px) {
   #patientArchivePage .customer-service-overview { grid-template-columns: 1fr; }
@@ -413,6 +483,7 @@
 @media (max-width: 1080px) {
   #patientArchivePage .customer-service-heading { align-items: stretch; flex-direction: column; }
   #patientArchivePage .customer-service-heading-actions { justify-content: flex-end; }
+  #patientArchivePage .customer-service-heading > .customer-service-tags { width: 100%; min-width: 0; flex-basis: auto; }
 }
 
 @media (max-width: 760px) {
@@ -423,7 +494,7 @@
   #patientArchivePage .customer-service-filter,
   #patientArchivePage .customer-service-search { width: 100%; max-width: none; flex: 1 1 100%; }
   #patientArchivePage .customer-service-toolbar-add { width: 100%; margin-left: 0; }
-  #patientArchivePage .customer-service-timeline-item { grid-template-columns: 28px 60px 24px minmax(180px,1fr) 128px 28px; }
+  #patientArchivePage .customer-service-timeline-item { grid-template-columns: 28px 60px 24px minmax(180px,1fr) minmax(190px,auto) 28px; }
   #patientArchivePage .customer-service-timeline-tags { display: none; }
   #patientArchivePage .customer-service-calendar-layout { padding-right: 12px; padding-left: 12px; }
   #patientArchivePage .customer-service-calendar { overflow-x: auto; }
@@ -431,6 +502,9 @@
   #patientArchivePage .customer-service-calendar-grid { min-width: 620px; }
   #customerServiceDialog .customer-service-form-grid { grid-template-columns: 1fr; }
   #customerServiceDialog .customer-service-field.full { grid-column: auto; }
+  #customerServiceDialog.drawer-mode .customer-service-dialog { width: 100vw; }
+  #customerServiceDialog.drawer-mode .customer-service-dialog-body { padding: 20px 16px; }
+  #customerServiceDialog .customer-service-reminder-schedule .checkin-time-list { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
 
 @media (prefers-reduced-motion: reduce) {

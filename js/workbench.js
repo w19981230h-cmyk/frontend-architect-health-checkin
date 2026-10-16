@@ -6,10 +6,13 @@
     { key: 'reminder', symbol: '醒', title: '客户待提醒', base: 12, unit: '项', action: '查看提醒', target: 'healthTasks', description: count => `当前存在${count}条待提醒的任务事项，需主理人完成客户提醒` }
   ];
   let scope = null;
-  let assistantName = 'AI智能主理人';
+  let assistantName = 'AI主理人';
   let assistantContextKey = 'global';
   let patientTaskStore = {};
-  try { assistantName = localStorage.getItem('aiAssistantName')?.trim() || assistantName; } catch (_) {}
+  try {
+    const savedAssistantName = localStorage.getItem('aiAssistantName')?.trim();
+    assistantName = !savedAssistantName || ['AI智能主理人', 'AI个案管理助手'].includes(savedAssistantName) ? 'AI主理人' : savedAssistantName;
+  } catch (_) {}
   try { patientTaskStore = JSON.parse(localStorage.getItem('aiPatientTasks') || '{}') || {}; } catch (_) { patientTaskStore = {}; }
 
   const escapeHtml = value => String(value).replace(/[&<>'"]/g, char => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' })[char]);
@@ -74,7 +77,7 @@
     window.setTimeout(() => document.querySelector(`[data-list-view="${target}"]`)?.click(), 80);
   };
   const applyAssistantName = (name, persist = false) => {
-    assistantName = name.trim().slice(0, 12) || 'AI智能主理人';
+    assistantName = name.trim().slice(0, 12) || 'AI主理人';
     document.querySelectorAll('[data-assistant-name]').forEach(node => { node.textContent = assistantName; });
     document.querySelector('[data-global-ai-close]')?.setAttribute('aria-label', `关闭${assistantName}`);
     const trigger = document.querySelector('[data-global-ai-toggle]');
@@ -251,7 +254,8 @@
     trigger.setAttribute('aria-expanded', String(open));
     trigger.setAttribute('aria-label', open ? `收起${assistantName}` : `打开${assistantName}`);
     if (open) {
-      syncAssistantMode();
+      const patient = syncAssistantMode();
+      if (patient) window.openPatientCaseManagerHome?.();
       window.setTimeout(() => document.getElementById('workbenchChatInput')?.focus(), 60);
     }
   };

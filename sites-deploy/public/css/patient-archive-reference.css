@@ -24,7 +24,7 @@
 
 #patientArchivePage .archive-title { color: #2b3952; font-size: 20px; letter-spacing: .01em; }
 
-#patientArchivePage .archive-more-actions { position: relative; margin-left: auto; z-index: 12; }
+#patientArchivePage .archive-more-actions { position: absolute; top: 20px; right: 24px; z-index: 12; }
 #patientArchivePage .archive-more-button {
   min-height: 34px;
   padding: 0 13px;
@@ -178,7 +178,7 @@
   box-shadow: 0 10px 28px rgba(44, 72, 123, .035);
 }
 
-#patientArchivePage .archive-info-head { gap: 12px; margin-bottom: 24px; }
+#patientArchivePage .archive-info-head { padding-right: 120px; gap: 12px; margin-bottom: 24px; }
 #patientArchivePage .archive-info-head::before { content: none; }
 #patientArchivePage .archive-info-head strong { color: #26354e; font-size: 28px; line-height: 1; }
 #patientArchivePage .archive-info-head > span { color: #2f3d56; font-size: 16px; font-weight: 700; }
@@ -882,6 +882,126 @@ body:has(#archiveChangesModal.open) .interface-note-toolbar { display: none; }
   .archive-edit-modal { animation: none; }
 }
 
+/* Expert reports reuse the report-document interaction pattern and Ant Design sizing. */
+#patientArchivePage .expert-report-head {
+  min-height: 72px;
+  height: auto;
+  padding: 14px 18px;
+}
+#patientArchivePage .expert-report-head > div { min-width: 0; }
+#patientArchivePage .expert-report-head p { margin: 5px 0 0; color: #7b8799; font-size: 13px; line-height: 1.5; }
+#patientArchivePage .expert-report-toolbar { flex-wrap: wrap; gap: 16px 20px; }
+#patientArchivePage .expert-report-toolbar .archive-report-field:first-child { flex: 1 1 280px; }
+#patientArchivePage .expert-report-toolbar .archive-report-field:not(:first-child) { flex: 0 1 235px; }
+#patientArchivePage .expert-report-table { min-width: 1040px; }
+#patientArchivePage .expert-report-table .expert-report-name-cell { width: 31%; }
+#patientArchivePage .expert-report-table .expert-report-operation-cell { width: 11%; }
+#patientArchivePage .expert-report-table td:nth-child(2) strong,
+#patientArchivePage .expert-report-table td:nth-child(2) small { display: block; }
+#patientArchivePage .expert-report-table td:nth-child(2) strong { color: #273752; font-size: 14px; font-weight: 600; }
+#patientArchivePage .expert-report-table td:nth-child(2) small { margin-top: 3px; color: #8a95a6; font-size: 12px; }
+#patientArchivePage .expert-report-avatar {
+  width: 34px;
+  height: 34px;
+  flex: 0 0 34px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  color: #315cff;
+  background: #edf2ff;
+  font-size: 13px;
+  font-weight: 700;
+}
+#patientArchivePage .expert-report-avatar.tone-green { color: #279164; background: #eaf8f1; }
+#patientArchivePage .expert-report-avatar.tone-orange { color: #c77718; background: #fff5e7; }
+#patientArchivePage .expert-report-status {
+  min-height: 24px;
+  padding: 2px 9px;
+  display: inline-flex;
+  align-items: center;
+  border-radius: 4px;
+  font-size: 13px;
+}
+#patientArchivePage .expert-report-status.completed { color: #248e60; background: #edf8f2; }
+#patientArchivePage .expert-report-status.processing { color: #1677ff; background: #eaf4ff; }
+#patientArchivePage .expert-report-status.pending { color: #c77718; background: #fff6e8; }
+#patientArchivePage .expert-report-action {
+  padding: 4px 6px;
+  border: 0;
+  border-radius: 4px;
+  color: #1677ff;
+  background: transparent;
+  font-size: 14px;
+  cursor: pointer;
+}
+#patientArchivePage .expert-report-action:hover { color: #4096ff; background: #f0f6ff; }
+#patientArchivePage .expert-report-action:focus-visible { outline: 2px solid rgba(22, 119, 255, .28); outline-offset: 2px; }
+#patientArchivePage .expert-report-action.muted,
+#patientArchivePage .expert-report-action:disabled { color: rgba(0, 0, 0, .25); background: transparent; cursor: not-allowed; }
+#patientArchivePage .expert-report-empty { min-height: 260px; flex-direction: column; justify-content: center; gap: 8px; color: #8c8c8c; }
+#patientArchivePage .expert-report-empty strong { color: rgba(0, 0, 0, .65); font-weight: 500; }
+
+.expert-report-dialog-mask {
+  position: fixed;
+  inset: 0;
+  z-index: 4200;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  background: rgba(15, 26, 45, .42);
+}
+.expert-report-dialog-mask.open { display: flex; }
+.expert-report-dialog {
+  width: min(600px, 100%);
+  max-height: calc(100vh - 48px);
+  overflow: auto;
+  border-radius: 10px;
+  background: #fff;
+  box-shadow: 0 18px 48px rgba(25, 43, 76, .22);
+}
+.expert-report-dialog-head,
+.expert-report-dialog-foot { min-height: 56px; padding: 0 20px; display: flex; align-items: center; }
+.expert-report-dialog-head { justify-content: space-between; border-bottom: 1px solid #f0f0f0; }
+.expert-report-dialog-head h2 { margin: 0; color: rgba(0, 0, 0, .88); font-size: 16px; }
+.expert-report-dialog-close { width: 32px; height: 32px; border: 0; border-radius: 4px; color: #8c8c8c; background: transparent; font-size: 22px; cursor: pointer; }
+.expert-report-dialog-close:hover { color: rgba(0, 0, 0, .88); background: rgba(0, 0, 0, .04); }
+.expert-report-dialog-body { padding: 20px; color: #3a4659; font-size: 14px; line-height: 1.7; }
+.expert-report-dialog-body p { margin: 0 0 16px; }
+.expert-report-dialog-body label { margin-bottom: 16px; display: block; color: #3d4960; }
+.expert-report-dialog-body label > span { margin-bottom: 7px; display: block; font-weight: 600; }
+.expert-report-dialog-body select,
+.expert-report-dialog-body textarea { width: 100%; border: 1px solid #d9d9d9; border-radius: 6px; color: rgba(0, 0, 0, .88); background: #fff; font: inherit; outline: none; }
+.expert-report-dialog-body select { height: 36px; padding: 0 11px; }
+.expert-report-dialog-body textarea { min-height: 92px; padding: 8px 11px; resize: vertical; }
+.expert-report-dialog-body select:focus,
+.expert-report-dialog-body textarea:focus { border-color: #4096ff; box-shadow: 0 0 0 2px rgba(5, 145, 255, .1); }
+.expert-report-summary { padding: 14px 16px; border-radius: 6px; background: #f6f8fc; }
+.expert-report-summary + .expert-report-summary { margin-top: 12px; }
+.expert-report-summary strong { margin-bottom: 4px; display: block; color: #273752; }
+.expert-report-dialog-foot { justify-content: flex-end; gap: 8px; border-top: 1px solid #f0f0f0; }
+.expert-report-dialog-foot button { height: 34px; padding: 0 15px; border: 1px solid #d9d9d9; border-radius: 6px; color: rgba(0, 0, 0, .88); background: #fff; cursor: pointer; }
+.expert-report-dialog-foot button.primary { color: #fff; border-color: #1677ff; background: #1677ff; box-shadow: 0 2px 0 rgba(5, 145, 255, .1); }
+.expert-report-dialog-foot button:hover { border-color: #4096ff; color: #4096ff; }
+.expert-report-dialog-foot button.primary:hover { color: #fff; border-color: #4096ff; background: #4096ff; }
+
+@media (max-width: 1100px) {
+  #patientArchivePage .expert-report-toolbar .archive-report-field { flex: 1 1 280px; }
+  #patientArchivePage .expert-report-query-actions { width: 100%; justify-content: flex-end; }
+}
+
+@media (max-width: 720px) {
+  #patientArchivePage .expert-report-head { align-items: flex-start; gap: 12px; }
+  #patientArchivePage .expert-report-head .archive-report-generate { flex: 0 0 auto; }
+  #patientArchivePage .expert-report-toolbar { margin: 12px; padding: 12px; }
+  #patientArchivePage .expert-report-table-wrap { margin: 0 12px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #patientArchivePage .expert-report-action { transition: none; }
+}
+
 @media (max-width: 640px) {
   .archive-edit-modal-mask { padding: 16px; }
   .archive-edit-modal { width: calc(100vw - 32px); max-height: calc(100vh - 32px); }
@@ -893,4 +1013,253 @@ body:has(#archiveChangesModal.open) .interface-note-toolbar { display: none; }
   .archive-health-detail-body { padding-inline: 14px; }
   .archive-health-editor-grid { grid-template-columns: 1fr; }
   .archive-health-record-card dl > div { grid-template-columns: 100px minmax(0, 1fr); }
+}
+ /* Expert report reference workspace */
+#patientArchivePage .expert-reference-panel { min-height: calc(100vh - 100px); overflow: hidden; border: 0; border-radius: 10px; background: transparent; }
+#patientArchivePage .expert-reference { min-height: calc(100vh - 100px); display: grid; grid-template-columns: 310px minmax(0, 1fr); gap: 12px; color: #142348; }
+#patientArchivePage .expert-reference > aside,
+#patientArchivePage .expert-ref-detail { border: 1px solid #dfe8f5; border-radius: 10px; background: rgba(255,255,255,.96); }
+#patientArchivePage .expert-reference > aside { padding: 20px 14px; }
+#patientArchivePage .expert-ref-search { height: 40px; padding: 0 10px 0 14px; display: flex; align-items: center; border: 1px solid #d8e2ef; border-radius: 6px; background: #fff; }
+#patientArchivePage .expert-ref-search input { width: 100%; min-width: 0; border: 0; outline: 0; color: #263754; background: transparent; font-size: 14px; }
+#patientArchivePage .expert-ref-search input::placeholder { color: #98a5b9; }
+#patientArchivePage .expert-ref-search span { width: 28px; height: 28px; display: grid; place-items: center; color: #23385c; }
+#patientArchivePage .expert-ref-search svg { width: 19px; height: 19px; }
+#patientArchivePage .expert-ref-filters { margin-top: 12px; display: grid; grid-template-columns: 1fr; gap: 8px; }
+#patientArchivePage .expert-ref-filters select { width: 100%; height: 40px; padding: 0 38px 0 14px; appearance: none; border: 1px solid #d8e2ef; border-radius: 6px; color: #253653; background: #fff; font-size: 14px; line-height: 40px; outline: 0; cursor: pointer; transition: border-color .16s, box-shadow .16s; }
+#patientArchivePage .expert-ref-filters select:hover { border-color: #4096ff; }
+#patientArchivePage .expert-ref-filters select:focus { border-color: #1677ff; box-shadow: 0 0 0 2px rgba(5,145,255,.1); }
+#patientArchivePage .expert-ref-filters label { position: relative; }
+#patientArchivePage .expert-ref-filters label span { position: absolute; right: 12px; top: 50%; width: 16px; height: 16px; display: grid; place-items: center; color: #8ca0be; pointer-events: none; transform: translateY(-50%); }
+#patientArchivePage .expert-ref-filters label svg { width: 14px; height: 14px; }
+#patientArchivePage .expert-ref-list { margin-top: 20px; display: grid; gap: 16px; }
+#patientArchivePage .expert-ref-item { position: relative; min-height: 74px; padding: 16px; display: block; border: 1px solid #e4ebf4; border-radius: 8px; color: #17294c; background: #fff; text-align: left; cursor: pointer; transition: border-color .16s, background .16s, box-shadow .16s; }
+#patientArchivePage .expert-ref-item:hover { border-color: #b7cdf8; background: #f8fbff; }
+#patientArchivePage .expert-ref-item.active { border-color: transparent; background: linear-gradient(100deg,#f1f6ff,#eaf2ff); box-shadow: inset 2px 0 0 #246bff; }
+#patientArchivePage .expert-ref-item strong { display: block; overflow: hidden; font-size: 14px; line-height: 22px; text-overflow: ellipsis; white-space: nowrap; }
+#patientArchivePage .expert-ref-item > span { margin-top: 8px; display: block; color: #71809a; font-size: 12px; }
+#patientArchivePage .expert-ref-item i { overflow: hidden; font-style: normal; text-overflow: ellipsis; white-space: nowrap; }
+#patientArchivePage .expert-ref-item em,
+#patientArchivePage .expert-ref-status { padding: 3px 8px; border-radius: 4px; font-style: normal; white-space: nowrap; }
+#patientArchivePage .expert-ref-item em.blue,
+#patientArchivePage .expert-ref-status.blue { color: #1261e9; background: #dbeaff; }
+#patientArchivePage .expert-ref-item em.green,
+#patientArchivePage .expert-ref-status.green { color: #15996a; background: #ddf7ed; }
+#patientArchivePage .expert-ref-item em.orange,
+#patientArchivePage .expert-ref-status.orange { color: #e47718; background: #fff0df; }
+#patientArchivePage .expert-ref-item em.gray,
+#patientArchivePage .expert-ref-status.gray { color: #66758c; background: #e7edf5; }
+#patientArchivePage .expert-ref-item b { color: #4c76be; font-size: 19px; font-weight: 400; }
+#patientArchivePage .expert-ref-empty { padding: 50px 10px; color: #8a98ad; font-size: 13px; text-align: center; }
+#patientArchivePage .expert-ref-detail { min-width: 0; padding: 20px; }
+#patientArchivePage .expert-ref-header { min-height: 42px; margin-bottom: 16px; display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; }
+#patientArchivePage .expert-ref-header > div { min-width: 0; display: flex; align-items: center; gap: 14px; }
+#patientArchivePage .expert-ref-header h2 { margin: 0; overflow: hidden; color: #0f2146; font-size: 21px; line-height: 34px; text-overflow: ellipsis; white-space: nowrap; }
+#patientArchivePage .expert-ref-status { font-size: 12px; }
+#patientArchivePage .expert-ref-header nav { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 8px; }
+#patientArchivePage .expert-ref-header nav button,
+#patientArchivePage .expert-ref-related > header button,
+#patientArchivePage .expert-ref-ai > header > button { height: 34px; padding: 0 12px; display: inline-flex; align-items: center; gap: 7px; border: 1px solid #d6e1ef; border-radius: 6px; color: #233858; background: #fff; font-size: 13px; cursor: pointer; }
+#patientArchivePage .expert-ref-header nav button:hover,
+#patientArchivePage .expert-ref-related > header button:hover,
+#patientArchivePage .expert-ref-ai > header > button:hover { color: #1768ed; border-color: #7eabf8; background: #f7fbff; }
+#patientArchivePage .expert-ref-header nav svg,
+#patientArchivePage .expert-ref-related header svg { width: 17px; height: 17px; }
+#patientArchivePage .expert-ref-header nav .archive-upload-btn { color: #fff; border-color: #1677ff; background: #1677ff; box-shadow: 0 2px 0 rgba(5,145,255,.1); }
+#patientArchivePage .expert-ref-header nav .archive-upload-btn:hover { color: #fff; border-color: #4096ff; background: #4096ff; }
+#patientArchivePage .expert-ref-header nav .archive-parse-btn { position: relative; }
+#patientArchivePage .expert-ref-header nav .archive-parse-badge { margin-left: 1px; }
+.archive-upload-modal.expert-upload-mode .archive-upload-body > .archive-upload-merge { display: none; }
+.expert-parse-mode .archive-parse-field.has-error { border-color: #ff4d4f; box-shadow: 0 0 0 2px rgba(255,77,79,.1); }
+.expert-parse-related-field { grid-column: 1 / -1; min-width: 0; margin: 0; padding: 10px 11px 11px; border: 1px solid #d9d9d9; border-radius: 6px; background: #fff; }
+.expert-parse-related-field legend { padding: 0 4px; color: #7b8799; font-size: 12px; }
+.expert-parse-related-field legend em { margin-left: 5px; color: #a1abb9; font-style: normal; }
+.expert-parse-related-field > div { display: flex; flex-wrap: wrap; gap: 8px; }
+.expert-parse-related-field label { min-height: 30px; padding: 5px 9px; display: inline-flex; align-items: center; gap: 6px; border: 1px solid #dfe7f4; border-radius: 6px; color: #334158; background: #f8fbff; font-size: 12px; cursor: pointer; }
+.expert-parse-related-field label:has(input:checked) { color: #1677ff; border-color: #91caff; background: #e6f4ff; }
+.expert-parse-related-field input { width: 14px; height: 14px; margin: 0; accent-color: #1677ff; }
+.expert-parse-complete-summary { display: grid; gap: 6px; }
+.expert-parse-complete-summary span { color: #7b8799; font-size: 12px; }
+.expert-parse-complete-summary strong { color: #334158; font-size: 13px; font-weight: 600; }
+#patientArchivePage .expert-ref-basic,
+#patientArchivePage .expert-ref-files,
+#patientArchivePage .expert-ref-related,
+#patientArchivePage .expert-ref-ai { border-radius: 7px; background: linear-gradient(120deg,#f8fbff,#f3f7fc); }
+#patientArchivePage .expert-ref-basic { padding: 16px; }
+#patientArchivePage .expert-ref-basic > header { min-height: 34px; display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+#patientArchivePage .expert-ref-basic > header nav { display: flex; align-items: center; gap: 8px; }
+#patientArchivePage .expert-ref-basic > header nav button { height: 32px; padding: 0 12px; display: inline-flex; align-items: center; gap: 7px; border: 1px solid #d6e1ef; border-radius: 6px; color: #233858; background: #fff; font-size: 13px; cursor: pointer; }
+#patientArchivePage .expert-ref-basic > header nav button:hover { color: #1768ed; border-color: #7eabf8; background: #f7fbff; }
+#patientArchivePage .expert-ref-basic > header nav svg { width: 16px; height: 16px; }
+#patientArchivePage .expert-ref-basic h3,
+#patientArchivePage .expert-ref-files h3,
+#patientArchivePage .expert-ref-related h3,
+#patientArchivePage .expert-ref-ai h3 { margin: 0; color: #14264a; font-size: 14px; }
+#patientArchivePage .expert-ref-basic h3,
+#patientArchivePage .expert-ref-files h3,
+#patientArchivePage .expert-ref-related h3 { padding-left: 9px; border-left: 2px solid #2169ff; }
+#patientArchivePage .expert-ref-basic dl { margin: 14px 0 0; display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 10px; }
+#patientArchivePage .expert-ref-basic dl > div { min-height: 66px; padding: 10px 12px; border: 1px solid #dfe7f1; border-radius: 6px; background: rgba(255,255,255,.72); font-size: 13px; line-height: 20px; }
+#patientArchivePage .expert-ref-basic dl > div:last-child { grid-column: 1 / -1; }
+#patientArchivePage .expert-ref-basic dt { color: #71809a; }
+#patientArchivePage .expert-ref-basic dd { margin: 3px 0 0; overflow: hidden; color: #263858; font-weight: 600; text-overflow: ellipsis; white-space: nowrap; }
+#patientArchivePage .expert-ref-basic dl > div:last-child dd { white-space: normal; }
+#patientArchivePage .expert-ref-files { margin-top: 16px; padding: 12px; }
+#patientArchivePage .expert-ref-files > header { min-height: 34px; display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+#patientArchivePage .expert-ref-files > header > span { color: #7b899e; font-size: 12px; }
+#patientArchivePage .expert-ref-file-grid { margin-top: 8px; display: grid; grid-template-columns: repeat(5,minmax(0,1fr)); gap: 8px; }
+#patientArchivePage .expert-ref-file-card { min-width: 0; min-height: 96px; padding: 12px 8px; display: grid; grid-template-rows: 36px minmax(0,1fr); justify-items: center; gap: 8px; border: 1px solid #dfe7f1; border-radius: 6px; color: #263858; background: rgba(255,255,255,.82); text-align: center; cursor: pointer; transition: border-color .16s cubic-bezier(.16,1,.3,1), box-shadow .16s cubic-bezier(.16,1,.3,1), transform .16s cubic-bezier(.16,1,.3,1); }
+#patientArchivePage .expert-ref-file-card:hover { border-color: #91b9fa; box-shadow: 0 4px 12px rgba(39,94,178,.1); transform: translateY(-1px); }
+#patientArchivePage .expert-ref-file-card:focus-visible { outline: 2px solid #1677ff; outline-offset: 2px; }
+#patientArchivePage .expert-ref-file-card .file-icon { width: 32px; height: 36px; display: grid; place-items: center; border-radius: 4px; color: #fff; background: #ff5b62; font-size: 9px; font-weight: 700; }
+#patientArchivePage .expert-ref-file-card .file-icon.image { background: #35b7da; }
+#patientArchivePage .expert-ref-file-card .file-icon.doc { background: #4d7fe8; }
+#patientArchivePage .expert-ref-file-card .file-copy { width: 100%; min-width: 0; }
+#patientArchivePage .expert-ref-file-card strong,
+#patientArchivePage .expert-ref-file-card small { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+#patientArchivePage .expert-ref-file-card strong { font-size: 12px; line-height: 18px; }
+#patientArchivePage .expert-ref-file-card small { margin-top: 2px; color: #8491a5; font-size: 11px; }
+#patientArchivePage .expert-ref-file-card .file-action { color: #1677ff; font-size: 12px; }
+#patientArchivePage .expert-file-preview-mask { position: fixed; inset: 0; z-index: 2300; padding: 32px; display: grid; place-items: center; background: rgba(15,30,55,.5); backdrop-filter: blur(2px); }
+#patientArchivePage .expert-file-preview-dialog { width: min(720px,92vw); max-height: calc(100vh - 64px); overflow: hidden; border-radius: 10px; background: #fff; box-shadow: 0 22px 60px rgba(15,35,70,.24); }
+#patientArchivePage .expert-file-preview-dialog > header { min-height: 72px; padding: 0 20px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid #e3eaf4; }
+#patientArchivePage .expert-file-preview-dialog > header > div { min-width: 0; display: flex; align-items: center; gap: 12px; }
+#patientArchivePage .expert-file-preview-dialog .preview-type { width: 36px; height: 42px; display: grid; place-items: center; flex: 0 0 auto; border-radius: 4px; color: #fff; background: #ff5b62; font-size: 9px; font-weight: 700; }
+#patientArchivePage .expert-file-preview-dialog .preview-type.image { background: #35b7da; }
+#patientArchivePage .expert-file-preview-dialog .preview-type.doc { background: #4d7fe8; }
+#patientArchivePage .expert-file-preview-dialog .preview-type.report { background: #30a6d5; }
+#patientArchivePage .expert-file-preview-dialog h3 { margin: 0; overflow: hidden; color: #17294c; font-size: 16px; text-overflow: ellipsis; white-space: nowrap; }
+#patientArchivePage .expert-file-preview-dialog p { margin: 4px 0 0; color: #7e8ba0; font-size: 12px; }
+#patientArchivePage .expert-file-preview-dialog > header > button { width: 34px; height: 34px; border: 0; border-radius: 6px; color: #52627e; background: transparent; font-size: 24px; cursor: pointer; }
+#patientArchivePage .expert-file-preview-dialog > header > button:hover { color: #14264a; background: #f0f4f9; }
+#patientArchivePage .expert-file-preview-dialog > main { height: min(560px,calc(100vh - 168px)); padding: 24px; overflow: auto; display: grid; place-items: center; background: #edf2f8; }
+#patientArchivePage .expert-file-paper-preview { width: min(440px,100%); min-height: 500px; padding: 48px 44px; border: 1px solid #dbe3ee; background: #fff; box-shadow: 0 8px 24px rgba(26,51,90,.1); }
+#patientArchivePage .expert-file-paper-preview strong { display: block; margin-bottom: 34px; color: #203453; font-size: 18px; text-align: center; }
+#patientArchivePage .expert-file-paper-preview span { height: 8px; margin-top: 18px; display: block; border-radius: 4px; background: #dce4ef; }
+#patientArchivePage .expert-file-paper-preview span:nth-of-type(2) { width: 88%; }
+#patientArchivePage .expert-file-paper-preview span:nth-of-type(3) { width: 94%; }
+#patientArchivePage .expert-file-paper-preview span:nth-of-type(4) { width: 72%; }
+#patientArchivePage .expert-file-paper-preview span:nth-of-type(5) { width: 84%; }
+#patientArchivePage .expert-file-image-preview { width: min(520px,100%); aspect-ratio: 4/3; padding: 32px; display: grid; align-content: end; gap: 10px; border: 8px solid #fff; color: #1c5c7b; background: linear-gradient(160deg,#bee9f4 0 45%,#78c7a4 46% 66%,#5ba276 67%); box-shadow: 0 8px 24px rgba(26,51,90,.12); }
+#patientArchivePage .expert-file-image-preview span { padding: 8px 10px; border-radius: 4px; background: rgba(255,255,255,.88); font-size: 13px; font-weight: 600; }
+#patientArchivePage .expert-manage-mask { position: fixed; inset: 0; z-index: 2147482100; padding: 32px; display: grid; place-items: center; background: rgba(15,30,55,.46); backdrop-filter: blur(2px); }
+#patientArchivePage .expert-manage-dialog { width: min(720px,92vw); max-height: calc(100vh - 64px); overflow: hidden; display: grid; grid-template-rows: 64px minmax(0,1fr) 64px; border-radius: 8px; background: #fff; box-shadow: 0 22px 60px rgba(15,35,70,.24); }
+#patientArchivePage .expert-manage-dialog.expert-edit-drawer { position: absolute; inset: 0 0 0 auto; width: min(560px,calc(100vw - 32px)); height: 100vh; max-height: none; border-radius: 0; box-shadow: -20px 0 48px rgba(15,23,42,.22); animation: expertDrawerIn .22s cubic-bezier(.16,1,.3,1); }
+body:has(.expert-edit-drawer) .ui-note-toolbar,
+body:has(.expert-edit-drawer) .interface-note-toolbar,
+body:has(.expert-edit-drawer) .global-ai-assistant { display: none !important; }
+#patientArchivePage .expert-edit-drawer .expert-edit-grid { grid-template-columns: 1fr; }
+#patientArchivePage .expert-edit-drawer .expert-edit-related { grid-template-columns: 1fr; }
+#patientArchivePage .expert-edit-drawer .expert-edit-related label { align-items: center; min-height: 60px; background: #fff; }
+#patientArchivePage .expert-edit-drawer .expert-edit-related label:has(input:checked) { border-color: #91caff; background: #f0f7ff; }
+#patientArchivePage .expert-edit-drawer .expert-edit-related input { width: 16px; height: 16px; margin: 0; }
+#patientArchivePage .expert-edit-drawer legend { width: 100%; }
+#patientArchivePage .expert-edit-drawer legend small { margin-left: 8px; color: #8b98aa; font-size: 12px; font-weight: 400; }
+@keyframes expertDrawerIn { from { transform: translateX(100%); } to { transform: translateX(0); } }
+#patientArchivePage .expert-manage-dialog > header { padding: 0 24px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid #e8edf4; }
+#patientArchivePage .expert-manage-dialog > header h3 { margin: 0; color: #1d2f4d; font-size: 18px; }
+#patientArchivePage .expert-manage-dialog > header button { width: 32px; height: 32px; border: 0; border-radius: 50%; color: #64748b; background: #f3f6fb; font-size: 22px; cursor: pointer; }
+#patientArchivePage .expert-manage-body { min-height: 0; padding: 24px; overflow: auto; }
+#patientArchivePage .expert-edit-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+#patientArchivePage .expert-manage-body label > span,
+#patientArchivePage .expert-manage-body legend { display: block; margin-bottom: 8px; color: #44536b; font-size: 13px; font-weight: 600; }
+#patientArchivePage .expert-manage-body label > span i { margin-right: 4px; color: #ff4d4f; font-style: normal; }
+#patientArchivePage .expert-manage-body input[type="text"],
+#patientArchivePage .expert-manage-body input[type="date"],
+#patientArchivePage .expert-manage-body textarea { width: 100%; padding: 0 12px; border: 1px solid #d9e1ec; border-radius: 6px; color: #243653; background: #fff; font: inherit; outline: 0; }
+#patientArchivePage .expert-manage-body input[type="text"],
+#patientArchivePage .expert-manage-body input[type="date"] { height: 40px; }
+#patientArchivePage .expert-manage-body textarea { min-height: 96px; padding-top: 10px; resize: vertical; }
+#patientArchivePage .expert-manage-body input:focus,
+#patientArchivePage .expert-manage-body textarea:focus { border-color: #1677ff; box-shadow: 0 0 0 2px rgba(5,145,255,.1); }
+#patientArchivePage .expert-manage-body fieldset { margin: 20px 0 0; padding: 0; border: 0; }
+#patientArchivePage .expert-edit-related { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 10px; }
+#patientArchivePage .expert-edit-related label { min-width: 0; padding: 12px; display: flex; align-items: flex-start; gap: 9px; border: 1px solid #dfe7f1; border-radius: 6px; background: #f8fbff; cursor: pointer; }
+#patientArchivePage .expert-edit-related input { margin: 3px 0 0; accent-color: #1677ff; }
+#patientArchivePage .expert-edit-related label > span { min-width: 0; margin: 0; overflow: hidden; color: #283a59; text-overflow: ellipsis; white-space: nowrap; }
+#patientArchivePage .expert-edit-related small { margin-top: 4px; display: block; color: #8794a7; font-weight: 400; }
+#patientArchivePage .expert-edit-note { margin-top: 20px; display: block; }
+#patientArchivePage .expert-manage-dialog > footer,
+#patientArchivePage .expert-confirm-dialog > footer { padding: 0 24px; display: flex; align-items: center; justify-content: flex-end; gap: 12px; border-top: 1px solid #e8edf4; }
+#patientArchivePage .expert-manage-dialog > footer button,
+#patientArchivePage .expert-confirm-dialog > footer button { min-width: 84px; height: 36px; padding: 0 16px; border: 1px solid #d9e1ec; border-radius: 6px; color: #34445e; background: #fff; cursor: pointer; }
+#patientArchivePage .expert-manage-dialog > footer button.primary { color: #fff; border-color: #1677ff; background: #1677ff; }
+#patientArchivePage .expert-confirm-dialog { width: min(420px,92vw); padding-top: 28px; overflow: hidden; border-radius: 8px; background: #fff; text-align: center; box-shadow: 0 22px 60px rgba(15,35,70,.24); }
+#patientArchivePage .expert-confirm-icon { width: 44px; height: 44px; margin: 0 auto; display: grid; place-items: center; border-radius: 50%; color: #fa8c16; background: #fff2e8; font-size: 22px; font-weight: 700; }
+#patientArchivePage .expert-confirm-dialog h3 { margin: 14px 24px 0; color: #1d2f4d; font-size: 18px; }
+#patientArchivePage .expert-confirm-dialog p { margin: 10px 28px 24px; color: #6c7b91; font-size: 13px; line-height: 21px; }
+#patientArchivePage .expert-confirm-dialog > footer { height: 64px; }
+#patientArchivePage .expert-confirm-dialog > footer button.danger { color: #fff; border-color: #ff4d4f; background: #ff4d4f; }
+#patientArchivePage .expert-ref-pdf { margin-top: 8px; min-height: 82px; padding: 14px; display: grid; grid-template-columns: 40px minmax(0,1fr) auto; align-items: center; gap: 12px; border: 1px solid #dfe7f1; border-radius: 6px; background: rgba(255,255,255,.78); }
+#patientArchivePage .expert-ref-pdf > span { width: 36px; height: 42px; display: grid; place-items: center; border-radius: 4px; color: #fff; background: linear-gradient(145deg,#ff786d,#e62d3e); font-size: 9px; font-weight: 700; }
+#patientArchivePage .expert-ref-pdf strong,
+#patientArchivePage .expert-ref-pdf small { display: block; }
+#patientArchivePage .expert-ref-pdf strong { overflow: hidden; color: #1f3152; font-size: 13px; text-overflow: ellipsis; white-space: nowrap; }
+#patientArchivePage .expert-ref-pdf small { margin-top: 4px; color: #8390a5; font-size: 12px; }
+#patientArchivePage .expert-ref-pdf button { padding: 4px 8px; border: 0; border-radius: 4px; color: #0867ed; background: transparent; font-size: 13px; cursor: pointer; }
+#patientArchivePage .expert-ref-related { margin-top: 16px; padding: 10px 12px 14px; }
+#patientArchivePage .expert-ref-related > header,
+#patientArchivePage .expert-ref-ai > header { min-height: 36px; display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+#patientArchivePage .expert-ref-related h3 { padding-left: 9px; border-left: 2px solid #2169ff; }
+#patientArchivePage .expert-ref-related h3 span { color: #405170; font-weight: 400; }
+#patientArchivePage .expert-ref-related > header button { height: 30px; color: #1567ee; }
+#patientArchivePage .expert-ref-related > div { margin-top: 7px; display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 12px; }
+#patientArchivePage .expert-ref-related-card { min-width: 0; min-height: 64px; padding: 10px 12px; display: grid; grid-template-columns: 32px minmax(0,1fr); align-items: center; gap: 9px; border: 1px solid #dce5f1; border-radius: 6px; color: #243554; background: rgba(255,255,255,.72); text-align: left; cursor: pointer; transition: border-color .16s cubic-bezier(.16,1,.3,1), box-shadow .16s cubic-bezier(.16,1,.3,1); }
+#patientArchivePage .expert-ref-related-card:hover { border-color: #91b9fa; box-shadow: 0 4px 12px rgba(39,94,178,.08); }
+#patientArchivePage .expert-ref-related-card:focus-visible { outline: 2px solid #1677ff; outline-offset: 2px; }
+#patientArchivePage .expert-ref-related .doc { width: 28px; height: 34px; display: grid; place-items: center; border-radius: 4px; color: #fff; background: linear-gradient(145deg,#53bdf5,#73d0f6); }
+#patientArchivePage .expert-ref-related .doc.tone-1 { background: linear-gradient(145deg,#4f8df5,#82aefb); }
+#patientArchivePage .expert-ref-related strong,
+#patientArchivePage .expert-ref-related time { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+#patientArchivePage .expert-ref-related strong { color: #243554; font-size: 13px; }
+#patientArchivePage .expert-ref-related time { margin-top: 3px; color: #7e8ba0; font-size: 12px; }
+#patientArchivePage .expert-ref-ai { margin-top: 16px; overflow: hidden; border: 1px solid #e2e9f4; background: #fff; }
+#patientArchivePage .expert-ref-ai > header { min-height: 52px; padding: 0 12px; border-bottom: 1px solid #e1e8f2; background: linear-gradient(100deg,#f8fbff,#f4f8fd); }
+#patientArchivePage .expert-ref-ai > header > div { display: flex; align-items: center; gap: 9px; }
+#patientArchivePage .expert-ref-ai h3 span { color: #60708c; font-weight: 400; }
+#patientArchivePage .expert-ref-ai .ai-badge { width: 30px; height: 30px; display: grid; place-items: center; border-radius: 5px; color: #fff; background: linear-gradient(135deg,#31d5ba,#31a8f5 54%,#705ef4); font-size: 15px; font-weight: 700; }
+#patientArchivePage .expert-ref-ai > header p { margin: 0 0 0 auto; color: #77859c; font-size: 12px; }
+#patientArchivePage .expert-ref-ai > header > button { height: 30px; margin-left: 8px; color: #1567ee; }
+#patientArchivePage .expert-ref-ai > header > button:disabled { color: #9ba8ba; background: #f4f5f7; cursor: wait; }
+#patientArchivePage .expert-ref-table { overflow-x: auto; }
+#patientArchivePage .expert-ref-table table { width: 100%; min-width: 760px; border-collapse: collapse; table-layout: fixed; font-size: 12px; }
+#patientArchivePage .expert-ref-table th { height: 38px; padding: 0 12px; color: #63718a; background: #f8faff; text-align: left; font-weight: 500; }
+#patientArchivePage .expert-ref-table th:nth-child(1) { width: 21%; }
+#patientArchivePage .expert-ref-table th:nth-child(2) { width: 38%; }
+#patientArchivePage .expert-ref-table th:nth-child(3) { width: 23%; }
+#patientArchivePage .expert-ref-table th:nth-child(4) { width: 18%; }
+#patientArchivePage .expert-ref-table td { height: 44px; padding: 0 12px; border-top: 1px solid #e5ebf3; color: #52627e; }
+#patientArchivePage .expert-ref-reminder { display: flex; align-items: center; gap: 10px; color: #263858; }
+#patientArchivePage .expert-ref-reminder > i { width: 24px; height: 24px; display: grid; place-items: center; border-radius: 4px; color: #fff; background: #60a5fa; font-style: normal; }
+#patientArchivePage .expert-ref-reminder > i.indigo { background: #637bf4; }
+#patientArchivePage .expert-ref-reminder > i.purple { background: #9870ef; }
+#patientArchivePage .expert-ref-reminder > i.green { background: #37ce9d; }
+#patientArchivePage .expert-ref-reminder > i.violet { background: #895ee9; }
+#patientArchivePage .expert-ref-task-status { display: inline-flex; align-items: center; gap: 6px; font-weight: 600; white-space: nowrap; }
+#patientArchivePage .expert-ref-task-status > i { width: 7px; height: 7px; border-radius: 50%; background: currentColor; }
+#patientArchivePage .expert-ref-task-status.pending { color: #1677ff; }
+#patientArchivePage .expert-ref-task-status.completed { color: #13a36e; }
+#patientArchivePage .expert-ref-task-status.deleted { color: #8a96a8; }
+#patientArchivePage .expert-ref-note { min-height: 44px; margin: 16px 0 0; padding: 0 14px; display: flex; align-items: center; gap: 9px; border-radius: 6px; color: #1768e8; background: #eaf2ff; font-size: 12px; }
+#patientArchivePage .expert-ref-note svg { width: 17px; height: 17px; flex: 0 0 17px; }
+#patientArchivePage .expert-ref-no-detail { min-height: 500px; display: grid; place-items: center; color: #8b98aa; font-size: 14px; }
+
+@media (max-width: 1300px) {
+  #patientArchivePage .expert-reference { grid-template-columns: 270px minmax(0,1fr); }
+  #patientArchivePage .expert-ref-basic dl { grid-template-columns: repeat(2,minmax(0,1fr)); }
+  #patientArchivePage .expert-ref-related > div { grid-template-columns: 1fr; }
+  #patientArchivePage .expert-ref-ai > header p { display: none; }
+}
+@media (max-width: 900px) {
+  #patientArchivePage .expert-reference { grid-template-columns: 1fr; }
+  #patientArchivePage .expert-reference > aside { max-height: 420px; overflow: auto; }
+  #patientArchivePage .expert-ref-basic dl { grid-template-columns: 1fr; }
+  #patientArchivePage .expert-ref-file-grid { grid-template-columns: repeat(2,minmax(0,1fr)); }
+  #patientArchivePage .expert-edit-grid,
+  #patientArchivePage .expert-edit-related { grid-template-columns: 1fr; }
+}
+@media (prefers-reduced-motion: reduce) {
+  #patientArchivePage .expert-ref-item,
+  #patientArchivePage .expert-ref-file-card { transition: none; }
+  #patientArchivePage .expert-manage-dialog.expert-edit-drawer { animation: none; }
 }
