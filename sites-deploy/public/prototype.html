@@ -3017,7 +3017,7 @@
   <link rel="stylesheet" href="./css/health-portrait.css?v=20260924-3">
 <link rel="stylesheet" href="./css/personnel-management.css?v=20260929-1">
 <link rel="stylesheet" href="./css/organization-management.css?v=20260929-1">
-<link rel="stylesheet" href="./css/workbench.css?v=20261016-2">
+<link rel="stylesheet" href="./css/workbench.css?v=20261016-3">
 <link rel="stylesheet" href="./css/ai-steward.css?v=20261016-12">
 <link rel="stylesheet" href="./css/system-role.css?v=20260916-1">
 <link rel="stylesheet" href="./css/dashboard-latest.css?v=20260913-40">
@@ -3048,7 +3048,7 @@
         <div class="sidebar-bottom"><div class="bottom-line"></div><div class="notice"><div class="notice-left"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M18 8a6 6 0 1 0-12 0c0 7-3 6-3 9h18c0-3-3-2-3-9"/><path d="M10 21h4"/></svg><span>消息通知</span></div><span class="badge">99+</span></div><div class="user-card"><div class="avatar"></div><strong>平台技术人员</strong><svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="m9 18 6-6-6-6"/></svg></div><div class="collapse"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M4 7h14M4 12h10M4 17h14"/></svg></div></div>
       </aside>
       <main class="list-main">
-        <header class="page-title" id="listPageTitle"><span id="listPageTitleText">团队管理</span><button type="button" class="workbench-create-button" data-open-patient-create data-source="工作台" aria-label="新建患者档案"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true"><path d="M8 3v10M3 8h10"/></svg><span>建档</span></button><div id="globalOrganizationScope" data-persistence-ignore></div></header><section class="list-panel list-view personnel-management-view" id="personnelManagementView" data-persistence-ignore aria-label="人员管理"></section><section class="list-panel list-view organization-management-view" id="organizationManagementView" data-persistence-ignore aria-label="组织管理"></section>
+        <header class="page-title" id="listPageTitle"><span id="listPageTitleText">团队管理</span><div id="globalOrganizationScope" data-persistence-ignore></div></header><section class="list-panel list-view personnel-management-view" id="personnelManagementView" data-persistence-ignore aria-label="人员管理"></section><section class="list-panel list-view organization-management-view" id="organizationManagementView" data-persistence-ignore aria-label="组织管理"></section>
         <section class="list-panel list-view system-role-view" id="systemRoleView" data-persistence-ignore aria-label="系统角色">
           <div class="system-role-shell">
             <div class="system-role-toolbar">
@@ -3103,6 +3103,10 @@
         <section class="list-panel list-view workbench-view" id="workbenchView">
           <div class="workbench-shell">
             <section class="workbench-right">
+              <div class="workbench-overview-heading">
+                <h2>数据统计</h2>
+                <button type="button" class="workbench-create-button" data-open-patient-create data-source="工作台" aria-label="新建患者档案"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true"><path d="M8 3v10M3 8h10"/></svg><span>建档</span></button>
+              </div>
               <div class="workbench-stats" id="workbenchStats" aria-label="当前机构范围关键指标"></div>
               <div class="workbench-section-heading">
                 <div><h2 class="workbench-section-title">今日待办</h2><p id="workbenchScopeSummary">按当前机构范围汇总</p></div>
