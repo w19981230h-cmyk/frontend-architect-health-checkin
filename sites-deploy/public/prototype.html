@@ -723,17 +723,17 @@
     .patient-mark-section-title { color: #263752; font-size: 14px; font-weight: 700; }
     .patient-mark-section-title::before { content: ''; width: 3px; height: 16px; margin-right: 8px; border-radius: 2px; display: inline-block; vertical-align: -3px; background: #3154ff; }
     .patient-mark-section-note { margin-top: 8px; color: #8b96a7; font-size: 12px; line-height: 1.7; }
-    .patient-mark-field { margin-bottom: 24px; }
+    .patient-mark-field { margin-bottom: 24px; display: block; }
     .patient-mark-section .patient-mark-field:last-child { margin-bottom: 0; }
     .patient-mark-field-label { margin-bottom: 8px; display: block; color: #34425a; font-size: 13px; font-weight: 600; }
     .patient-mark-required::before { content: '*'; margin-right: 4px; color: #ff4d4f; }
-    .patient-mark-types { display: grid; grid-template-columns: repeat(4, minmax(0,1fr)); gap: 12px; }
+    .patient-mark-types { display: grid; grid-template-columns: repeat(5, minmax(0,1fr)); gap: 12px; }
     .patient-mark-type { position: relative; min-width: 0; }
     .patient-mark-type input { position: absolute; opacity: 0; pointer-events: none; }
     .patient-mark-type span { height: 44px; padding: 0 12px; border: 1px solid #dfe5ee; border-radius: 4px; display: flex; align-items: center; justify-content: center; color: #536079; background: #fff; font-size: 13px; cursor: pointer; transition: border-color .16s, color .16s, background .16s, box-shadow .16s; }
     .patient-mark-type input:checked + span { color: #3154ff; border-color: #3154ff; background: #f2f5ff; box-shadow: 0 0 0 1px rgba(49,84,255,.06); }
     .patient-mark-type input:focus-visible + span { outline: 2px solid rgba(49,84,255,.2); outline-offset: 2px; }
-    .patient-mark-control { position: relative; }
+    .patient-mark-control { position: relative; display: block; }
     .patient-mark-control input { width: 100%; height: 44px; padding: 0 12px; border: 1px solid #dfe5ee; border-radius: 4px; color: #34425a; background: #fff; outline: none; }
     .patient-mark-control input:focus { border-color: #3154ff; box-shadow: 0 0 0 2px rgba(49,84,255,.1); }
     .patient-mark-control.amount input { padding-left: 30px; }
@@ -3017,8 +3017,8 @@
   <link rel="stylesheet" href="./css/health-portrait.css?v=20260924-3">
 <link rel="stylesheet" href="./css/personnel-management.css?v=20260929-1">
 <link rel="stylesheet" href="./css/organization-management.css?v=20260929-1">
-<link rel="stylesheet" href="./css/workbench.css?v=20261015-1">
-<link rel="stylesheet" href="./css/ai-steward.css?v=20261015-1">
+<link rel="stylesheet" href="./css/workbench.css?v=20261016-2">
+<link rel="stylesheet" href="./css/ai-steward.css?v=20261016-12">
 <link rel="stylesheet" href="./css/system-role.css?v=20260916-1">
 <link rel="stylesheet" href="./css/dashboard-latest.css?v=20260913-40">
 <link rel="stylesheet" href="./css/dashboard-updated.css?v=20260913-2">
@@ -3486,7 +3486,7 @@
         <div class="patient-mark-patient"><span class="patient-list-avatar" id="patientMarkAvatar" aria-hidden="true">患</span><div><strong id="patientMarkPatientName">患者</strong><span id="patientMarkPatientMeta">--</span></div></div>
         <section class="patient-mark-section" aria-labelledby="patientMarkServiceTitle">
           <div class="patient-mark-section-head"><div><div class="patient-mark-section-title" id="patientMarkServiceTitle">服务信息</div><div class="patient-mark-section-note">选择本次标记对应的管理类型，并填写患者服务信息。</div></div></div>
-          <div class="patient-mark-field"><span class="patient-mark-field-label patient-mark-required">标记类型</span><div class="patient-mark-types" id="patientMarkTypes" role="radiogroup" aria-label="标记类型"><label class="patient-mark-type"><input type="radio" name="patientMarkType" value="高血压"><span>高血压</span></label><label class="patient-mark-type"><input type="radio" name="patientMarkType" value="糖尿病"><span>糖尿病</span></label><label class="patient-mark-type"><input type="radio" name="patientMarkType" value="基因管理"><span>基因管理</span></label><label class="patient-mark-type"><input type="radio" name="patientMarkType" value="体重管理"><span>体重管理</span></label></div></div>
+          <div class="patient-mark-field"><span class="patient-mark-field-label patient-mark-required">标记类型</span><div class="patient-mark-types" id="patientMarkTypes" role="radiogroup" aria-label="标记类型"><label class="patient-mark-type"><input type="radio" name="patientMarkType" value="基因/分子检测"><span>基因/分子检测</span></label><label class="patient-mark-type"><input type="radio" name="patientMarkType" value="就医协同"><span>就医协同</span></label><label class="patient-mark-type"><input type="radio" name="patientMarkType" value="体检/健康检查"><span>体检/健康检查</span></label><label class="patient-mark-type"><input type="radio" name="patientMarkType" value="营养健康产品"><span>营养健康产品</span></label><label class="patient-mark-type"><input type="radio" name="patientMarkType" value="专项检测/影像"><span>专项检测/影像</span></label></div></div>
           <label class="patient-mark-field"><span class="patient-mark-field-label patient-mark-required">服务名称</span><span class="patient-mark-control"><input id="patientMarkServiceName" maxlength="60" placeholder="请输入服务名称" autocomplete="off"></span></label>
           <label class="patient-mark-field"><span class="patient-mark-field-label patient-mark-required">服务金额</span><span class="patient-mark-control amount"><span class="patient-mark-currency">¥</span><input id="patientMarkServiceAmount" type="number" min="0" step="0.01" inputmode="decimal" placeholder="请输入服务金额"></span></label>
         </section>
@@ -4482,35 +4482,37 @@
       <div class="workbench-chat-head">
         <span class="global-ai-avatar" aria-hidden="true"><svg viewBox="0 0 40 40" fill="none"><path d="M20 6.5 23 14l7.5 3-7.5 3-3 7.5-3-7.5-7.5-3 7.5-3 3-7.5Z" fill="currentColor"/><circle cx="30.5" cy="9.5" r="3.5" fill="currentColor" opacity=".72"/><path d="M8 25v9M3.5 29.5h9" stroke="currentColor" stroke-width="3" stroke-linecap="round"/></svg></span>
         <div class="global-ai-heading">
-          <div class="workbench-chat-title"><span id="globalAiTitle" data-assistant-name>AI智能主理人</span><button type="button" class="global-ai-rename" data-global-ai-rename aria-label="修改助手名称" title="修改助手名称"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L8 18l-4 1 1-4Z"/></svg></button></div>
+          <div class="workbench-chat-title"><span id="globalAiTitle" data-assistant-name>AI主理人</span><button type="button" class="global-ai-rename" data-global-ai-rename aria-label="修改助手名称" title="修改助手名称"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L8 18l-4 1 1-4Z"/></svg></button></div>
           <div class="workbench-chat-subtitle" data-assistant-subtitle>可查询患者档案、医学资料、服务与提醒</div>
           <span class="global-ai-scope-badge" data-assistant-scope></span>
         </div>
-        <div class="ai-steward-head-actions"><button type="button" data-ai-new title="新建对话" aria-label="新建对话"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 11.5A8.5 8.5 0 1 1 16.2 4.4"/><path d="M20 4v5h-5M9 12h6M12 9v6"/></svg></button><button type="button" data-ai-history title="历史对话" aria-label="历史对话"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3.5 9A9 9 0 1 1 3 14"/><path d="M3.5 4v5h5M12 7.5V12l3 2"/></svg></button><button type="button" class="global-ai-close" data-global-ai-close title="关闭" aria-label="关闭AI智能主理人"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6.5 6.5 11 11M17.5 6.5l-11 11"/></svg></button></div>
+        <div class="ai-steward-head-actions"><button type="button" data-ai-new title="新建对话" aria-label="新建对话"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 11.5A8.5 8.5 0 1 1 16.2 4.4"/><path d="M20 4v5h-5M9 12h6M12 9v6"/></svg></button><button type="button" data-ai-history title="历史对话" aria-label="历史对话"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3.5 9A9 9 0 1 1 3 14"/><path d="M3.5 4v5h5M12 7.5V12l3 2"/></svg></button><button type="button" class="global-ai-close" data-global-ai-close title="关闭" aria-label="关闭AI主理人"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6.5 6.5 11 11M17.5 6.5l-11 11"/></svg></button></div>
       </div>
       <div class="workbench-chat-body" id="workbenchChatBody" aria-live="polite">
         <div class="global-chat-row ai" id="globalAiWelcomeRow">
-          <span class="global-ai-avatar global-chat-avatar" aria-hidden="true"><svg viewBox="0 0 40 40" fill="none"><path d="M20 6.5 23 14l7.5 3-7.5 3-3 7.5-3-7.5-7.5-3 7.5-3 3-7.5Z" fill="currentColor"/><circle cx="30.5" cy="9.5" r="3.5" fill="currentColor" opacity=".72"/><path d="M8 25v9M3.5 29.5h9" stroke="currentColor" stroke-width="3" stroke-linecap="round"/></svg></span>
           <div class="global-ai-welcome">
-            <strong>你好，我是<span data-assistant-name>AI智能主理人</span></strong>
-            <p>可以帮你查询当前机构的待办、患者入组、随访、预警、外呼和完成情况。</p>
+            <strong>上午好！👋</strong>
+            <p>已为你整理今日客户服务动态，包括待办提醒、客户回访及专家建议等重要事项。你可以通过下方工作简报快速了解情况，及时处理重点任务。</p>
           </div>
         </div>
       </div>
-      <div class="workbench-quick-row" id="globalAiQuickRow" aria-label="快捷提问">
-        <button type="button" data-workbench-quick="汇总今日待办">汇总今日待办</button>
-        <button type="button" data-workbench-quick="查看高优任务">查看高优任务</button>
-        <button type="button" data-workbench-quick="查询外呼情况">查询外呼情况</button>
-        <button type="button" data-workbench-quick="生成随访建议">生成随访建议</button>
-      </div>
-      <label class="workbench-chat-input">
+      <div class="workbench-chat-input">
+        <span class="ai-home-input-spark" aria-hidden="true">✦</span>
         <textarea id="workbenchChatInput" rows="1" placeholder="输入你想查询的数据或问题..." autocomplete="off"></textarea>
         <button type="button" data-workbench-send aria-label="发送"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="m22 2-7 20-4-9-9-4 20-7Z"/><path d="M22 2 11 13"/></svg></button>
-      </label>
+        <div class="workbench-model-switch">
+          <label for="workbenchModelSelect">当前模型</label>
+          <select class="ai-model-select" id="workbenchModelSelect" aria-label="选择AI模型" title="选择AI模型">
+            <option value="smart">智能模型</option>
+            <option value="medical">医学模型</option>
+            <option value="general">通用模型</option>
+          </select>
+        </div>
+      </div>
     </section>
     <button type="button" class="global-ai-trigger" data-global-ai-toggle aria-expanded="false" aria-controls="globalAiPanel" aria-label="打开AI主理人">
       <span class="global-ai-avatar" aria-hidden="true"><svg viewBox="0 0 40 40" fill="none"><path d="M20 6.5 23 14l7.5 3-7.5 3-3 7.5-3-7.5-7.5-3 7.5-3 3-7.5Z" fill="currentColor"/><circle cx="30.5" cy="9.5" r="3.5" fill="currentColor" opacity=".72"/><path d="M8 25v9M3.5 29.5h9" stroke="currentColor" stroke-width="3" stroke-linecap="round"/></svg></span>
-      <span class="global-ai-trigger-label" data-assistant-name>AI智能主理人</span>
+      <span class="global-ai-trigger-label" data-assistant-name>AI主理人</span>
     </button>
   </div>
 
@@ -8391,6 +8393,30 @@
       }
       openPatientArchive(patient);
     }
+
+    window.openPatientArchiveFromAssistant = function(profile = {}) {
+      const name = String(profile.name || '').trim();
+      if (!name) return;
+      const existing = allPatients.find(patient => patient.name === name);
+      const patient = existing || {
+        name,
+        visitNo: `AI${Date.now()}`,
+        age: String(profile.age || '--'),
+        gender: profile.gender || '--',
+        birthDate: '', phone: '--', idType: '', idNumber: '', ethnicity: '汉族', maritalStatus: '', occupation: '', region: '--',
+        pastHistory: '', surgeryHistory: '', personalHistory: '', allergyHistory: '', familyHistory: '', drinking: '', smoking: '',
+        department: '健康管理科', diagnosis: '健康档案待完善', tags: ['今日新建', '待完善'], visitDate: '2026/10/15', team: '待分配', portraits: []
+      };
+      openPatientArchive(patient);
+      if (profile.tab) document.querySelector(`#patientArchivePage [data-archive-tab="${profile.tab}"]`)?.click();
+      const panel = document.getElementById('globalAiPanel');
+      const assistant = document.getElementById('globalAiAssistant');
+      const trigger = assistant?.querySelector('[data-global-ai-toggle]');
+      if (panel) panel.hidden = true;
+      assistant?.classList.remove('open');
+      trigger?.setAttribute('aria-expanded', 'false');
+      trigger?.setAttribute('aria-label', '打开AI主理人');
+    };
 
     function closePatientArchive() {
       document.getElementById('patientArchivePage').classList.remove('history-document-mode');
@@ -16632,8 +16658,8 @@
   <script src="./js/health-portrait.js?v=20260924-3"></script>
 <script src="./js/personnel-management.js?v=20260929-2"></script>
 <script src="./js/organization-management.js?v=20260929-4"></script>
-<script src="./js/workbench.js?v=20261015-1"></script>
-<script src="./js/ai-steward.js?v=20261015-1"></script>
+<script src="./js/workbench.js?v=20261016-3"></script>
+<script src="./js/ai-steward.js?v=20261016-12"></script>
 <script src="./js/system-role.js?v=20260929-1"></script>
 <script src="./js/scale-create.js?v=20260916-3"></script>
 <script src="./js/dashboard-latest-data.js?v=20260913-31"></script>
