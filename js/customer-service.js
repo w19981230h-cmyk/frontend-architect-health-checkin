@@ -40,6 +40,7 @@
   const state = {
     reminders: normalizeReminders(loadJson(STORAGE_KEY, reminderSeed)),
     tags: loadCustomerTags(),
+    section: 'reminders',
     tab: 'all',
     time: 'all',
     type: 'all',
@@ -172,6 +173,11 @@
     const count = counts();
     const sources = sourceOptions();
     return `<section class="archive-panel customer-service-panel" data-archive-panel="customer-service" data-persistence-ignore hidden>
+      <nav class="customer-service-section-tabs" role="tablist" aria-label="客户服务内容">
+        <button type="button" class="active" role="tab" aria-selected="true" data-customer-section="reminders">服务提醒</button>
+        <button type="button" role="tab" aria-selected="false" data-customer-section="expert">专家建议</button>
+      </nav>
+      <div class="customer-service-section-view" data-customer-section-view="reminders">
       <article class="customer-service-card">
         <header class="customer-service-heading">
           <div class="customer-service-title"><h2>客户服务</h2><p>基于客户标签和服务需求生成个性化提醒任务，统一展示所有类型的服务提醒，帮助持续跟进客户健康管理。</p></div>
@@ -186,7 +192,23 @@
         <div class="customer-service-selection-bar" data-customer-selection><strong>已选择 <span>0</span> 项</strong><button type="button" data-customer-selected-complete>标记完成</button><button type="button" data-customer-clear-selection>取消选择</button></div>
         <div data-customer-results></div>
       </article>
+      </div>
+      <div class="customer-service-section-view customer-service-expert-view" data-customer-section-view="expert" hidden></div>
     </section>`;
+  }
+
+  function selectCustomerSection(section) {
+    state.section = section === 'expert' ? 'expert' : 'reminders';
+    panel?.querySelectorAll('[data-customer-section]').forEach(button => {
+      const active = button.dataset.customerSection === state.section;
+      button.classList.toggle('active', active);
+      button.setAttribute('aria-selected', String(active));
+      button.tabIndex = active ? 0 : -1;
+    });
+    panel?.querySelectorAll('[data-customer-section-view]').forEach(view => {
+      view.hidden = view.dataset.customerSectionView !== state.section;
+    });
+    panel?.classList.toggle('showing-expert-section', state.section === 'expert');
   }
 
   function statMarkup(status, label, number) {
@@ -437,6 +459,8 @@
 
   function onPanelClick(event) {
     const target = event.target;
+    const sectionTab = target.closest('[data-customer-section]');
+    if (sectionTab) { selectCustomerSection(sectionTab.dataset.customerSection); return; }
     const stat = target.closest('[data-customer-stat]');
     const pageButton = target.closest('[data-customer-page]');
     const quickComplete = target.closest('[data-customer-quick-complete]');
@@ -652,7 +676,17 @@
     if (checkinPanel) checkinPanel.insertAdjacentHTML('beforebegin', buildPanel());
     else main.insertAdjacentHTML('beforeend', buildPanel());
     panel = main.querySelector('[data-archive-panel="customer-service"]');
+    const expertNav = nav.querySelector('[data-archive-tab="expert-reports"]');
+    const expertPanel = main.querySelector('[data-archive-panel="expert-reports"]');
+    expertNav?.remove();
+    if (expertPanel) {
+      expertPanel.removeAttribute('data-archive-panel');
+      expertPanel.classList.add('customer-service-expert-content');
+      expertPanel.hidden = false;
+      panel.querySelector('[data-customer-section-view="expert"]')?.appendChild(expertPanel);
+    }
     ensureDialog();
+    selectCustomerSection(state.section);
     renderViewControls();
     renderResults();
     panel.addEventListener('click', onPanelClick);

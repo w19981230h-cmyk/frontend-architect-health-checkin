@@ -10,6 +10,51 @@
   font-size: 14px;
 }
 
+#patientArchivePage .customer-service-section-tabs {
+  height: 52px;
+  margin-bottom: 12px;
+  padding: 0 20px;
+  display: flex;
+  align-items: flex-end;
+  gap: 28px;
+  border: 1px solid #e5ebf4;
+  border-radius: 12px;
+  background: #fff;
+  box-shadow: 0 6px 24px rgba(37, 66, 117, .04);
+}
+
+#patientArchivePage .customer-service-section-tabs button {
+  position: relative;
+  height: 51px;
+  padding: 0 2px;
+  border: 0;
+  color: #59687f;
+  background: transparent;
+  font: inherit;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+#patientArchivePage .customer-service-section-tabs button::after {
+  content: "";
+  position: absolute;
+  right: 0;
+  bottom: -1px;
+  left: 0;
+  height: 2px;
+  border-radius: 2px 2px 0 0;
+  background: transparent;
+}
+
+#patientArchivePage .customer-service-section-tabs button:hover { color: #1677ff; }
+#patientArchivePage .customer-service-section-tabs button.active { color: #1677ff; }
+#patientArchivePage .customer-service-section-tabs button.active::after { background: #1677ff; }
+#patientArchivePage .customer-service-section-view[hidden] { display: none !important; }
+#patientArchivePage .customer-service-expert-view { min-width: 0; }
+#patientArchivePage .customer-service-expert-content { min-height: calc(100vh - 164px); }
+#patientArchivePage .customer-service-expert-content .expert-reference { min-height: calc(100vh - 164px); }
+
 #patientArchivePage .customer-service-card {
   min-height: calc(100vh - 100px);
   overflow: hidden;
@@ -88,6 +133,7 @@
 #patientArchivePage .customer-service-search input:focus-visible,
 #patientArchivePage .customer-service-view-button:focus-visible,
 #patientArchivePage .customer-service-tabs button:focus-visible,
+#patientArchivePage .customer-service-section-tabs button:focus-visible,
 #patientArchivePage .customer-service-calendar-day:focus-visible,
 #patientArchivePage .customer-service-link-button:focus-visible,
 #patientArchivePage .customer-service-page-button:focus-visible,
