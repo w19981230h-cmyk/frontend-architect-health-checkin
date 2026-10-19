@@ -8,10 +8,13 @@
 .workbench-view.active{display:block;flex:1 1 auto;min-height:0;overflow:hidden}
 .workbench-main .workbench-shell{height:calc(100% - 18px);min-height:0;display:block;padding:16px;overflow:hidden}
 .workbench-main .workbench-right{height:100%;display:flex;min-height:0;flex-direction:column;overflow-y:auto;overscroll-behavior:contain;scrollbar-gutter:stable;padding-right:6px}
-.workbench-overview-heading{min-height:32px;margin:0 2px 12px;display:flex;align-items:center;justify-content:space-between;gap:16px}
-.workbench-overview-heading h2{margin:0;display:flex;align-items:center;gap:10px;color:#17336f;font-size:18px;line-height:32px;font-weight:800}
+.workbench-overview-heading{min-height:40px;margin:0 2px 12px;display:flex;align-items:center;justify-content:space-between;gap:16px}
+.workbench-overview-heading h2{margin:0;display:flex;align-items:center;gap:10px;color:#17336f;font-size:18px;line-height:40px;font-weight:800}
 .workbench-overview-heading h2::before{content:"";width:4px;height:18px;border-radius:4px;background:#1677ff;box-shadow:0 0 0 4px rgba(22,119,255,.08)}
-.workbench-overview-heading .workbench-create-button{flex:0 0 auto}
+.list-main.workbench-main .workbench-overview-heading .workbench-create-button{min-width:112px;height:40px;padding:0 20px;flex:0 0 auto;border-color:#0958d9;border-radius:8px;background:linear-gradient(135deg,#1677ff,#0958d9);box-shadow:0 6px 16px rgba(9,88,217,.28),inset 0 1px 0 rgba(255,255,255,.24);font-size:14px;font-weight:700;letter-spacing:.2px;transition:transform .18s cubic-bezier(.16,1,.3,1),box-shadow .18s cubic-bezier(.16,1,.3,1),background .18s}
+.list-main.workbench-main .workbench-overview-heading .workbench-create-button:hover{border-color:#0958d9;background:linear-gradient(135deg,#4096ff,#1677ff);box-shadow:0 9px 22px rgba(9,88,217,.34);transform:translateY(-1px)}
+.list-main.workbench-main .workbench-overview-heading .workbench-create-button:active{background:#0958d9;box-shadow:0 3px 8px rgba(9,88,217,.24);transform:translateY(0)}
+.list-main.workbench-main .workbench-overview-heading .workbench-create-button svg{width:18px;height:18px;stroke-width:1.8}
 .workbench-main .workbench-stats{height:auto;min-height:88px;padding:12px;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;border-color:#dce5f7;background:linear-gradient(135deg,rgba(255,255,255,.74),rgba(242,246,255,.68));box-shadow:0 8px 24px rgba(49,84,152,.05)}
 .workbench-main .workbench-stat{--stat-accent:#3154ff;--stat-wash:#eef3ff;position:relative;min-width:0;padding:12px 14px 12px 18px;overflow:hidden;border:1px solid color-mix(in srgb,var(--stat-accent) 16%,#fff);border-radius:10px;background:linear-gradient(135deg,#fff 42%,var(--stat-wash));box-shadow:0 6px 16px color-mix(in srgb,var(--stat-accent) 8%,transparent);transition:transform .18s cubic-bezier(.16,1,.3,1),box-shadow .18s cubic-bezier(.16,1,.3,1),border-color .18s}
 .workbench-main .workbench-stat::before{content:"";position:absolute;inset:0 auto 0 0;width:4px;background:var(--stat-accent)}
