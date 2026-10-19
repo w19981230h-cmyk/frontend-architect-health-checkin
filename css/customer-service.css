@@ -11,12 +11,12 @@
 }
 
 #patientArchivePage .customer-service-section-tabs {
-  height: 52px;
-  margin-bottom: 12px;
-  padding: 0 20px;
+  min-height: 68px;
+  margin-bottom: 14px;
+  padding: 10px 14px;
   display: flex;
-  align-items: flex-end;
-  gap: 28px;
+  align-items: center;
+  gap: 12px;
   border: 1px solid #e5ebf4;
   border-radius: 12px;
   background: #fff;
@@ -25,11 +25,17 @@
 
 #patientArchivePage .customer-service-section-tabs button {
   position: relative;
-  height: 51px;
-  padding: 0 2px;
+  min-width: 172px;
+  height: 48px;
+  padding: 0 22px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 11px;
   border: 0;
+  border-radius: 10px;
   color: #59687f;
-  background: transparent;
+  background: #f7f9fc;
   font: inherit;
   font-size: 15px;
   font-weight: 600;
@@ -39,17 +45,19 @@
 #patientArchivePage .customer-service-section-tabs button::after {
   content: "";
   position: absolute;
-  right: 0;
-  bottom: -1px;
-  left: 0;
-  height: 2px;
-  border-radius: 2px 2px 0 0;
+  right: 22px;
+  bottom: 0;
+  left: 22px;
+  height: 3px;
+  border-radius: 3px 3px 0 0;
   background: transparent;
 }
 
-#patientArchivePage .customer-service-section-tabs button:hover { color: #1677ff; }
-#patientArchivePage .customer-service-section-tabs button.active { color: #1677ff; }
+#patientArchivePage .customer-service-section-tabs button:hover { color: #3154ff; background: #f1f4ff; }
+#patientArchivePage .customer-service-section-tabs button.active { color: #3154ff; background: linear-gradient(135deg, #edf2ff 0%, #f5f0ff 100%); box-shadow: inset 0 0 0 1px rgba(49,84,255,.06); }
 #patientArchivePage .customer-service-section-tabs button.active::after { background: #1677ff; }
+#patientArchivePage .customer-service-section-tab-icon { width: 24px; height: 24px; display: grid; place-items: center; color: currentColor; }
+#patientArchivePage .customer-service-section-tab-icon svg { width: 22px; height: 22px; }
 #patientArchivePage .customer-service-section-view[hidden] { display: none !important; }
 #patientArchivePage .customer-service-expert-view { min-width: 0; }
 #patientArchivePage .customer-service-expert-content { min-height: calc(100vh - 164px); }
@@ -165,7 +173,7 @@
 #patientArchivePage .customer-service-heading-menu button:hover { color: #1677ff; background: #f0f7ff; }
 
 #patientArchivePage .customer-service-overview {
-  padding: 16px 24px;
+  padding: 20px 24px;
   display: grid;
   grid-template-columns: minmax(0, 1fr);
   border-bottom: 1px solid #edf1f6;
@@ -181,7 +189,7 @@
 
 #patientArchivePage .customer-service-stats {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(3, minmax(150px, 1fr)) minmax(310px, 1.35fr);
 }
 
 #patientArchivePage .customer-service-stat {
@@ -196,7 +204,8 @@
   cursor: pointer;
 }
 
-#patientArchivePage .customer-service-stat + .customer-service-stat { border-left: 1px solid #edf1f6; }
+#patientArchivePage .customer-service-stat + .customer-service-stat,
+#patientArchivePage .customer-service-tags + .customer-service-stat { border-left: 1px solid #edf1f6; }
 #patientArchivePage .customer-service-stat:hover { background: #fafcff; }
 #patientArchivePage .customer-service-stat:focus-visible { position: relative; z-index: 1; outline: 3px solid rgba(22,119,255,.18); outline-offset: -3px; }
 
@@ -218,14 +227,14 @@
 #patientArchivePage .customer-service-stat-copy strong { display: block; color: #17243d; font-size: 22px; line-height: 26px; }
 #patientArchivePage .customer-service-stat-copy span { display: block; margin-top: 2px; overflow: hidden; color: #5e6c83; font-size: 12px; text-overflow: ellipsis; white-space: nowrap; }
 
-#patientArchivePage .customer-service-tags { padding: 12px 16px; }
+#patientArchivePage .customer-service-stats > .customer-service-tags { min-height: 84px; padding: 12px 18px; border: 0; border-radius: 0; background: transparent; }
 #patientArchivePage .customer-service-heading > .customer-service-tags { width: min(480px, 44%); min-width: 320px; min-height: 32px; padding: 0; display: flex; align-items: center; justify-content: flex-end; gap: 8px; flex: 0 1 480px; border: 0; border-radius: 0; background: transparent; }
 #patientArchivePage .customer-service-heading > .customer-service-tags .customer-service-tag-list { margin-top: 0; justify-content: flex-end; }
 #patientArchivePage .customer-service-tags-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
-#patientArchivePage .customer-service-tags-head strong { color: #23344f; font-size: 14px; }
+#patientArchivePage .customer-service-tags-head strong { color: #17243d; font-size: 14px; }
 #patientArchivePage .customer-service-link-button { padding: 2px 4px; border: 0; color: #1677ff; background: transparent; font: inherit; font-size: 12px; cursor: pointer; }
-#patientArchivePage .customer-service-tag-list { margin-top: 10px; display: flex; flex-wrap: wrap; gap: 6px; }
-#patientArchivePage .customer-service-tag { min-height: 24px; padding: 0 8px; display: inline-flex; align-items: center; border-radius: 5px; color: #315b98; background: #edf5ff; font-size: 12px; }
+#patientArchivePage .customer-service-tag-list { margin-top: 9px; display: flex; flex-wrap: wrap; gap: 8px; }
+#patientArchivePage .customer-service-tag { min-height: 28px; padding: 0 11px; display: inline-flex; align-items: center; border-radius: 6px; color: #315b98; background: #edf5ff; font-size: 13px; font-weight: 600; }
 #patientArchivePage .customer-service-tag:nth-child(4n) { color: #4e5c72; background: #f1f3f6; }
 
 #patientArchivePage .customer-service-toolbar {
@@ -503,6 +512,9 @@
 #customerServiceDialog .customer-service-tag-option { min-height: 30px; padding: 0 10px; border: 1px solid #d9d9d9; border-radius: 6px; color: #42526b; background: #fff; font: inherit; font-size: 12px; cursor: pointer; }
 #customerServiceDialog .customer-service-tag-option.selected { border-color: #91caff; color: #1677ff; background: #e6f4ff; }
 #customerServiceDialog .customer-service-tag-option.locked { display: inline-flex; align-items: center; cursor: default; user-select: none; }
+#customerServiceDialog button.customer-service-tag-option:hover { border-color: #69b1ff; color: #1677ff; }
+#customerServiceDialog button.customer-service-tag-option:focus-visible { outline: 2px solid rgba(22,119,255,.28); outline-offset: 2px; }
+#customerServiceDialog .customer-service-tag-domain-help { margin-top: 10px; display: block; color: rgba(0,0,0,.45); font-size: 12px; line-height: 20px; }
 #customerServiceDialog .customer-service-custom-tag-form { margin-top: 18px; padding-top: 16px; display: grid; gap: 8px; border-top: 1px solid #f0f0f0; }
 #customerServiceDialog .customer-service-custom-tag-form > label { color: rgba(0,0,0,.88); font-size: 13px; }
 #customerServiceDialog .customer-service-custom-tag-control { display: flex; align-items: center; gap: 8px; }
@@ -519,6 +531,9 @@
 
 @media (max-width: 1320px) {
   #patientArchivePage .customer-service-overview { grid-template-columns: 1fr; }
+  #patientArchivePage .customer-service-stats { grid-template-columns: repeat(3, minmax(140px, 1fr)); }
+  #patientArchivePage .customer-service-stats > .customer-service-tags { grid-column: 1 / -1; border-bottom: 1px solid #edf1f6; }
+  #patientArchivePage .customer-service-tags + .customer-service-stat { border-left: 0; }
   #patientArchivePage .customer-service-toolbar { flex-wrap: wrap; }
   #patientArchivePage .customer-service-toolbar-spacer { display: none; }
   #patientArchivePage .customer-service-search { max-width: none; }
@@ -533,6 +548,10 @@
 }
 
 @media (max-width: 760px) {
+  #patientArchivePage .customer-service-section-tabs { align-items: stretch; }
+  #patientArchivePage .customer-service-section-tabs button { min-width: 0; flex: 1 1 0; padding: 0 12px; }
+  #patientArchivePage .customer-service-stats { grid-template-columns: 1fr; }
+  #patientArchivePage .customer-service-stat + .customer-service-stat { border-top: 1px solid #edf1f6; border-left: 0; }
   #patientArchivePage .customer-service-heading,
   #patientArchivePage .customer-service-overview,
   #patientArchivePage .customer-service-toolbar,

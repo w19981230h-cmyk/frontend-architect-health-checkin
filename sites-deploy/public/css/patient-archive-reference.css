@@ -120,7 +120,7 @@
 #patientArchivePage .archive-side-avatar::after { display: none; }
 #patientArchivePage .archive-side-line { gap: 12px; font-size: 14px; }
 #patientArchivePage .archive-side-line strong { font-size: 16px; }
-#patientArchivePage .archive-side-phone { margin-top: -17px; font-size: 13px; }
+#patientArchivePage .archive-side-visit-no { margin-top: -17px; font-size: 13px; }
 #patientArchivePage .archive-side-nav { padding: 28px 18px; }
 
 #patientArchivePage .archive-nav-item {

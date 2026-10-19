@@ -4,6 +4,7 @@
   const EXAMPLE_CONTENT_VERSION_KEY = 'patient-customer-service-reminder-examples-v3';
   const TAG_CONTENT_VERSION_KEY = 'patient-customer-service-tags-v2';
   const defaultCustomerTags = ['基因/分子检测', '营养健康产品'];
+  const allowedCustomerTags = ['基因/分子检测', '就医协同', '体检/健康检查', '营养健康产品', '专项检测/影像'];
   const TODAY = new Date('2026-10-14T00:00:00');
   const reminderSeed = [
     { id: 'r-01', dueAt: '2026-10-16T09:00', content: '联系客户确认检测目的及资料', type: 'custom', source: '客户标签', relation: '基因/分子检测标签生成', customerTags: ['基因/分子检测'], status: 'upcoming', createdAt: '2026-10-01', note: '确认检测目的，并提醒客户准备所需资料。' },
@@ -77,7 +78,8 @@
       localStorage.setItem(TAG_CONTENT_VERSION_KEY, '2026-10-16-v1');
       return [...defaultCustomerTags];
     }
-    return loadJson(TAGS_KEY, defaultCustomerTags);
+    const storedTags = loadJson(TAGS_KEY, defaultCustomerTags);
+    return allowedCustomerTags.filter(tag => storedTags.includes(tag));
   }
 
   function normalizeReminders(items) {
@@ -124,7 +126,6 @@
     }, { all: 0, upcoming: 0, completed: 0 });
   }
 
-  function sourceOptions() { return [...new Set(state.reminders.map(item => item.source))].sort((a, b) => a.localeCompare(b, 'zh-CN')); }
   function withinTime(item) {
     const due = new Date(item.dueAt);
     if (state.time === 'overdue') return item.status !== 'completed' && due < TODAY;
@@ -154,6 +155,8 @@
       all: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="4" y="3" width="6" height="8" rx="1"/><rect x="14" y="3" width="6" height="5" rx="1"/><rect x="4" y="15" width="6" height="6" rx="1"/><rect x="14" y="12" width="6" height="9" rx="1"/></svg>',
       upcoming: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="4" y="5" width="16" height="15" rx="2"/><path d="M8 3v4m8-4v4M4 10h16m-8 3v4m-2-2h4"/></svg>',
       completed: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="m8 12 2.5 2.5L16 9"/></svg>',
+      reminder: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M18 9a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9"/><path d="M10 21h4"/></svg>',
+      expert: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="12" cy="8" r="4"/><path d="M5 21v-2a7 7 0 0 1 14 0v2M18 4l.7 1.4L20 6l-1.3.6L18 8l-.7-1.4L16 6l1.3-.6L18 4Z"/></svg>',
       search: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="11" cy="11" r="7"/><path d="m16 16 5 5"/></svg>',
       list: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M9 6h11M9 12h11M9 18h11"/><circle cx="4" cy="6" r="1" fill="currentColor"/><circle cx="4" cy="12" r="1" fill="currentColor"/><circle cx="4" cy="18" r="1" fill="currentColor"/></svg>',
       timeline: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M7 4v16M7 7h11M7 17h11"/><circle cx="7" cy="7" r="2" fill="white"/><circle cx="7" cy="17" r="2" fill="white"/></svg>',
@@ -171,20 +174,16 @@
 
   function buildPanel() {
     const count = counts();
-    const sources = sourceOptions();
     return `<section class="archive-panel customer-service-panel" data-archive-panel="customer-service" data-persistence-ignore hidden>
       <nav class="customer-service-section-tabs" role="tablist" aria-label="客户服务内容">
-        <button type="button" class="active" role="tab" aria-selected="true" data-customer-section="reminders">服务提醒</button>
-        <button type="button" role="tab" aria-selected="false" data-customer-section="expert">专家建议</button>
+        <button type="button" class="active" role="tab" aria-selected="true" data-customer-section="reminders"><span class="customer-service-section-tab-icon">${icon('reminder')}</span><span>客户提醒</span></button>
+        <button type="button" role="tab" aria-selected="false" data-customer-section="expert"><span class="customer-service-section-tab-icon">${icon('expert')}</span><span>专家建议</span></button>
       </nav>
       <div class="customer-service-section-view" data-customer-section-view="reminders">
       <article class="customer-service-card">
-        <header class="customer-service-heading">
-          <div class="customer-service-title"><h2>客户服务</h2><p>基于客户标签和服务需求生成个性化提醒任务，统一展示所有类型的服务提醒，帮助持续跟进客户健康管理。</p></div>
-          <div class="customer-service-tags"><div class="customer-service-tag-list" data-customer-tags>${state.tags.map(tag => `<span class="customer-service-tag">${escapeHtml(tag)}</span>`).join('')}</div><button type="button" class="customer-service-link-button" data-customer-edit-tags>添加标签</button></div>
-        </header>
         <section class="customer-service-overview">
           <div class="customer-service-stats" aria-label="提醒任务概览">
+            <div class="customer-service-tags" aria-label="客户标签"><div class="customer-service-tags-head"><strong>客户标签</strong><button type="button" class="customer-service-link-button" data-customer-edit-tags>管理标签</button></div><div class="customer-service-tag-list" data-customer-tags>${state.tags.map(tag => `<span class="customer-service-tag">${escapeHtml(tag)}</span>`).join('')}</div></div>
             ${statMarkup('all', '全部提醒', count.all)}${statMarkup('upcoming', '待提醒', count.upcoming)}${statMarkup('completed', '已完成', count.completed)}
           </div>
         </section>
@@ -219,10 +218,8 @@
   }
 
   function commonFilters({ time = true, status = true } = {}) {
-    const sources = sourceOptions();
     return `${time ? selectMarkup('time', [['all','全部时间'],['week','未来7天'],['month','本月'],['overdue','已逾期']], state.time) : ''}
       ${selectMarkup('type', [['all','全部类型'],['standard','标准SKU'],['expert','专家建议'],['custom','自定义']], state.type)}
-      ${selectMarkup('source', [['all','全部来源'], ...sources.map(value => [value, value])], state.source)}
       ${status ? selectMarkup('status', [['all','全部状态'],['upcoming','待提醒'],['completed','已完成']], state.status) : ''}`;
   }
 
@@ -428,7 +425,7 @@
 
   function openTags() {
     state.dialogAction = { type: 'tags' };
-    openDialog('添加客户标签', `<div class="customer-service-field"><label>已有标签（添加后不可修改）</label><div class="customer-service-tag-options" data-customer-tag-options>${state.tags.map(tag => `<span class="customer-service-tag-option selected locked" data-customer-existing-tag="${escapeHtml(tag)}">${escapeHtml(tag)}</span>`).join('')}</div></div><form class="customer-service-custom-tag-form" data-customer-custom-tag-form><label for="customerCustomTagInput">新增标签</label><div class="customer-service-custom-tag-control"><input id="customerCustomTagInput" maxlength="10" autocomplete="off" placeholder="请输入标签名称" data-customer-custom-tag-input><button type="submit" class="customer-service-dialog-secondary">添加</button></div><span class="customer-service-custom-tag-help" data-customer-custom-tag-help aria-live="polite">最多输入10个字符，标签添加后不可修改</span></form>`, `<button type="button" class="customer-service-dialog-secondary" data-customer-dialog-close>取消</button><button type="button" class="customer-service-dialog-primary" data-customer-save-tags>保存标签</button>`);
+    openDialog('添加客户标签', `<div class="customer-service-field"><label>选择标签（已添加标签不可移除）</label><div class="customer-service-tag-options" data-customer-tag-options>${allowedCustomerTags.map(tag => state.tags.includes(tag) ? `<span class="customer-service-tag-option selected locked" data-customer-existing-tag="${escapeHtml(tag)}">${escapeHtml(tag)}</span>` : `<button type="button" class="customer-service-tag-option" data-customer-available-tag="${escapeHtml(tag)}" aria-pressed="false">${escapeHtml(tag)}</button>`).join('')}</div><span class="customer-service-tag-domain-help">仅支持从以上预设标签中选择，不支持手动新增</span></div>`, `<button type="button" class="customer-service-dialog-secondary" data-customer-dialog-close>取消</button><button type="button" class="customer-service-dialog-primary" data-customer-save-tags>保存标签</button>`);
   }
 
   function openConfirm(title, message, onConfirm) {
@@ -601,8 +598,18 @@
   function onDialogClick(event) {
     const target = event.target;
     if (target.closest('[data-customer-dialog-close]')) { closeDialog(); return; }
+    const availableTag = target.closest('[data-customer-available-tag]');
+    if (availableTag) {
+      const selected = availableTag.classList.toggle('selected');
+      availableTag.setAttribute('aria-pressed', String(selected));
+      return;
+    }
     if (target.closest('[data-customer-save-tags]')) {
-      state.tags = [...dialog.querySelectorAll('[data-customer-existing-tag]')].map(tag => tag.dataset.customerExistingTag);
+      const selectedTags = new Set([
+        ...[...dialog.querySelectorAll('[data-customer-existing-tag]')].map(tag => tag.dataset.customerExistingTag),
+        ...[...dialog.querySelectorAll('[data-customer-available-tag].selected')].map(tag => tag.dataset.customerAvailableTag)
+      ]);
+      state.tags = allowedCustomerTags.filter(tag => selectedTags.has(tag));
       saveTags();
       panel.querySelector('[data-customer-tags]').innerHTML = state.tags.map(value => `<span class="customer-service-tag">${escapeHtml(value)}</span>`).join('');
       renderResults();
@@ -611,39 +618,7 @@
     if (target.closest('[data-customer-confirm]') && state.dialogAction?.type === 'confirm') { const action = state.dialogAction.onConfirm; closeDialog(); action?.(); }
   }
 
-  function addCustomTag(form) {
-    const input = form.querySelector('[data-customer-custom-tag-input]');
-    const help = form.querySelector('[data-customer-custom-tag-help]');
-    const value = input?.value.trim() || '';
-    if (!value) {
-      help.textContent = '请输入标签名称';
-      help.classList.add('error');
-      input?.focus();
-      return;
-    }
-    const tagNodes = [...dialog.querySelectorAll('[data-customer-existing-tag]')];
-    const existing = tagNodes.find(tag => tag.dataset.customerExistingTag.toLocaleLowerCase() === value.toLocaleLowerCase());
-    if (existing) {
-      help.textContent = '该标签已存在，无需重复添加';
-    } else {
-      const tag = document.createElement('span');
-      tag.className = 'customer-service-tag-option selected locked';
-      tag.dataset.customerExistingTag = value;
-      tag.textContent = value;
-      dialog.querySelector('[data-customer-tag-options]')?.appendChild(tag);
-      help.textContent = '标签已添加，保存后生效';
-    }
-    help.classList.remove('error');
-    input.value = '';
-    input.focus();
-  }
-
   function onDialogSubmit(event) {
-    if (event.target.matches('[data-customer-custom-tag-form]')) {
-      event.preventDefault();
-      addCustomTag(event.target);
-      return;
-    }
     if (event.target.id !== 'customerServiceReminderForm') return;
     event.preventDefault();
     const form = new FormData(event.target);
