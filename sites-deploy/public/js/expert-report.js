@@ -9,11 +9,11 @@
   ];
 
   const reminders = [
-    ['blue', '血压监测提醒', '建议每日早晚监测血压，连续记录2周。', '每日 08:00、20:00', '待提醒', 'pending'],
-    ['indigo', '复查提醒', '2周后携带血压记录复诊。', '2024-10-29 09:00', '待提醒', 'pending'],
-    ['purple', '低盐饮食提醒', '建议低盐饮食，控制每日盐摄入量。', '每隔 3 天，共 4 次', '已完成', 'completed'],
-    ['green', '用药依从性提醒', '按医嘱规律服用降压药物。', '每日 09:00', '已完成', 'completed'],
-    ['violet', '症状关注提醒', '如出现头晕、头痛等症状及时就医。', '每隔 7 天，共 4 次', '已删除', 'deleted']
+    ['blue', '血压监测提醒', '建议每日早晚监测血压，连续记录2周。', '每日 08:00、20:00', '待提醒', 'pending', '高血压管理'],
+    ['indigo', '复查提醒', '2周后携带血压记录复诊。', '2024-10-29 09:00', '待提醒', 'pending', '复查管理'],
+    ['purple', '低盐饮食提醒', '建议低盐饮食，控制每日盐摄入量。', '每隔 3 天，共 4 次', '已完成', 'completed', '饮食管理'],
+    ['green', '用药依从性提醒', '按医嘱规律服用降压药物。', '每日 09:00', '已完成', 'completed', '用药管理'],
+    ['violet', '症状关注提醒', '如出现头晕、头痛等症状及时就医。', '每隔 7 天，共 4 次', '已删除', 'deleted', '症状关注']
   ];
 
   const sourceFiles = [
@@ -62,7 +62,7 @@
   }
 
   function reminderMarkup() {
-    return reminders.map((item) => '<tr><td><span class="expert-ref-reminder"><i class="' + item[0] + '">▦</i><strong>' + item[1] + '</strong></span></td><td>' + item[2] + '</td><td>' + item[3] + '</td><td><span class="expert-ref-task-status ' + item[5] + '"><i></i>' + item[4] + '</span></td></tr>').join('');
+    return reminders.map((item) => '<tr><td>' + item[3] + '</td><td><span class="expert-ref-reminder"><i class="' + item[0] + '">▦</i><span><strong>' + item[1] + '</strong><small>' + item[2] + '</small></span></span></td><td><span class="expert-ref-customer-tag">' + item[6] + '</span></td><td><span class="expert-ref-task-status ' + item[5] + '"><i></i>' + item[4] + '</span></td></tr>').join('');
   }
 
   function sourceFileMarkup(item) {
@@ -83,7 +83,7 @@
       '<section class="expert-ref-basic"><header><h3>基本信息</h3><nav><button data-expert-edit>' + icons.edit + '编辑</button><button data-expert-delete>' + icons.trash + '删除</button></nav></header><dl><div><dt>名称</dt><dd>' + item.title + '</dd></div><div><dt>报告时间</dt><dd>' + item.date + '</dd></div><div><dt>备注</dt><dd>' + (item.note || defaultNote) + '</dd></div></dl></section>' +
       '<section class="expert-ref-files"><header><h3>原始文件</h3><span>共 5 个文件</span></header><div class="expert-ref-file-grid">' + sourceFileMarkup(item) + '</div></section>' +
       relatedSection +
-      '<section class="expert-ref-ai"><header><div><span class="ai-badge">AI</span><h3>AI服务提醒</h3></div><p>提醒任务已自动生成，状态与任务中心同步</p></header><div class="expert-ref-table"><table><thead><tr><th>提醒事项</th><th>建议内容摘要</th><th>推荐提醒规则</th><th>任务状态</th></tr></thead><tbody>' + reminderMarkup() + '</tbody></table></div></section>' +
+      '<section class="expert-ref-ai"><header><div><span class="ai-badge">AI</span><h3>AI服务提醒</h3></div><p>提醒任务已自动生成，状态与任务中心同步</p></header><div class="expert-ref-table"><table><thead><tr><th>提醒时间</th><th>提醒内容</th><th>客户标签</th><th>状态</th></tr></thead><tbody>' + reminderMarkup() + '</tbody></table></div></section>' +
       '<p class="expert-ref-note">' + icons.info + '<span>提醒事项由系统根据专家资料自动生成，本页面仅展示任务内容及同步状态。</span></p>';
   }
 

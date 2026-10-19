@@ -1224,17 +1224,22 @@ body:has(.expert-edit-drawer) .global-ai-assistant { display: none !important; }
 #patientArchivePage .expert-ref-table { overflow-x: auto; }
 #patientArchivePage .expert-ref-table table { width: 100%; min-width: 760px; border-collapse: collapse; table-layout: fixed; font-size: 12px; }
 #patientArchivePage .expert-ref-table th { height: 38px; padding: 0 12px; color: #63718a; background: #f8faff; text-align: left; font-weight: 500; }
-#patientArchivePage .expert-ref-table th:nth-child(1) { width: 21%; }
-#patientArchivePage .expert-ref-table th:nth-child(2) { width: 38%; }
-#patientArchivePage .expert-ref-table th:nth-child(3) { width: 23%; }
-#patientArchivePage .expert-ref-table th:nth-child(4) { width: 18%; }
-#patientArchivePage .expert-ref-table td { height: 44px; padding: 0 12px; border-top: 1px solid #e5ebf3; color: #52627e; }
+#patientArchivePage .expert-ref-table th:nth-child(1) { width: 22%; }
+#patientArchivePage .expert-ref-table th:nth-child(2) { width: 44%; }
+#patientArchivePage .expert-ref-table th:nth-child(3) { width: 18%; }
+#patientArchivePage .expert-ref-table th:nth-child(4) { width: 16%; }
+#patientArchivePage .expert-ref-table td { height: 54px; padding: 6px 12px; border-top: 1px solid #e5ebf3; color: #52627e; }
 #patientArchivePage .expert-ref-reminder { display: flex; align-items: center; gap: 10px; color: #263858; }
-#patientArchivePage .expert-ref-reminder > i { width: 24px; height: 24px; display: grid; place-items: center; border-radius: 4px; color: #fff; background: #60a5fa; font-style: normal; }
+#patientArchivePage .expert-ref-reminder > i { width: 24px; height: 24px; flex: 0 0 24px; display: grid; place-items: center; border-radius: 4px; color: #fff; background: #60a5fa; font-style: normal; }
+#patientArchivePage .expert-ref-reminder > span { min-width: 0; }
+#patientArchivePage .expert-ref-reminder strong,
+#patientArchivePage .expert-ref-reminder small { display: block; }
+#patientArchivePage .expert-ref-reminder small { margin-top: 3px; overflow: hidden; color: #7e8ba0; font-weight: 400; text-overflow: ellipsis; white-space: nowrap; }
 #patientArchivePage .expert-ref-reminder > i.indigo { background: #637bf4; }
 #patientArchivePage .expert-ref-reminder > i.purple { background: #9870ef; }
 #patientArchivePage .expert-ref-reminder > i.green { background: #37ce9d; }
 #patientArchivePage .expert-ref-reminder > i.violet { background: #895ee9; }
+#patientArchivePage .expert-ref-customer-tag { min-height: 24px; padding: 0 8px; display: inline-flex; align-items: center; border-radius: 5px; color: #315b98; background: #edf5ff; white-space: nowrap; }
 #patientArchivePage .expert-ref-task-status { display: inline-flex; align-items: center; gap: 6px; font-weight: 600; white-space: nowrap; }
 #patientArchivePage .expert-ref-task-status > i { width: 7px; height: 7px; border-radius: 50%; background: currentColor; }
 #patientArchivePage .expert-ref-task-status.pending { color: #1677ff; }
