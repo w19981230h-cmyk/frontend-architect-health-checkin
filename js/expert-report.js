@@ -315,7 +315,8 @@
           window.setTimeout(() => {
             search.value = '';
             render();
-            document.querySelector('[data-archive-tab="expert-reports"]')?.click();
+            document.querySelector('[data-archive-tab="customer-service"]')?.click();
+            document.querySelector('[data-customer-section="expert"]')?.click();
           }, 80);
         }, 0);
       }, 0);
