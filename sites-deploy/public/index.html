@@ -1366,6 +1366,37 @@
     .archive-report-dialog-btn.danger { color: #fff; border-color: #ff4d4f; background: #ff4d4f; }
     .archive-report-dialog-btn.danger:hover { border-color: #d9363e; background: #d9363e; }
     .archive-report-dialog-btn:focus-visible, .archive-report-dialog-close:focus-visible { outline: 2px solid rgba(49,84,255,.35); outline-offset: 2px; }
+    .archive-report-dialog.preview-document { width: min(920px, calc(100vw - 32px)); max-height: calc(100vh - 32px); display: flex; flex-direction: column; }
+    .archive-report-dialog.preview-document .archive-report-dialog-body { padding: 18px; overflow-y: auto; background: #f5f7fa; }
+    .archive-report-dialog.preview-document .archive-report-dialog-foot { display: none; }
+    .generated-report-paper { overflow: hidden; border-radius: 8px; color: #14233c; background: #fff; box-shadow: 0 4px 18px rgba(31,51,82,.08); }
+    .generated-report-cover { position: relative; min-height: 680px; padding: 48px 56px; overflow: hidden; display: flex; flex-direction: column; background: linear-gradient(180deg,#effcff 0%,#f9feff 66%,#edf9ff 100%); }
+    .generated-report-cover::before, .generated-report-cover::after { content: ''; position: absolute; border-radius: 50%; filter: blur(1px); }
+    .generated-report-cover::before { width: 360px; height: 360px; right: -90px; top: 170px; border: 32px solid rgba(34,197,194,.12); transform: rotate(-28deg); }
+    .generated-report-cover::after { width: 520px; height: 180px; left: -80px; bottom: -80px; border: 30px solid rgba(70,165,232,.1); }
+    .generated-report-hospital { position: relative; z-index: 1; display: flex; align-items: center; justify-content: center; gap: 14px; color: #087b66; }
+    .generated-report-hospital-mark { width: 58px; height: 58px; display: grid; place-items: center; border: 6px solid currentColor; border-radius: 50%; font-size: 30px; font-weight: 900; line-height: 1; }
+    .generated-report-hospital strong { display: block; font-size: 25px; letter-spacing: .08em; }
+    .generated-report-hospital small { display: block; margin-top: 4px; font-size: 10px; letter-spacing: .05em; }
+    .generated-report-dna { position: absolute; top: 150px; left: 50%; width: 430px; height: 380px; transform: translateX(-50%) rotate(-8deg); opacity: .82; }
+    .generated-report-cover-meta { position: relative; z-index: 1; margin: auto auto 46px; text-align: center; }
+    .generated-report-cover-meta h3 { margin: 0 0 26px; color: #27343d; font-size: 24px; }
+    .generated-report-cover-meta p { margin: 10px 0; color: #344554; font-size: 15px; }
+    .generated-report-body { padding: 54px 46px 70px; }
+    .generated-report-body h3 { margin: 0 0 34px; text-align: center; font-size: 24px; }
+    .generated-report-toc { margin: 0 0 60px; padding: 28px 32px; border: 1px solid #edf0f5; border-radius: 8px; background: #fafcff; }
+    .generated-report-toc strong { display: block; margin-bottom: 22px; }
+    .generated-report-toc span { display: block; margin-top: 18px; font-weight: 700; }
+    .generated-report-section h4 { margin: 0 0 18px; font-size: 20px; }
+    .generated-report-section p { margin: 0 0 12px; font-size: 15px; line-height: 1.9; }
+    .generated-report-section ul { margin: 14px 0 0; padding-left: 22px; }
+    .generated-report-section li { margin: 9px 0; line-height: 1.7; }
+    @media (max-width: 720px) {
+      .generated-report-cover { min-height: 560px; padding: 30px 22px; }
+      .generated-report-hospital strong { font-size: 18px; }
+      .generated-report-dna { width: 330px; height: 310px; top: 140px; }
+      .generated-report-body { padding: 36px 24px 48px; }
+    }
     .archive-invite-mask { position: fixed; inset: 0; z-index: 300; display: none; align-items: center; justify-content: center; padding: 24px; background: rgba(19,32,55,.5); }
     .archive-invite-mask.open { display: flex; }
     .archive-invite-dialog { width: min(820px, calc(100vw - 48px)); max-height: calc(100vh - 48px); display: flex; flex-direction: column; overflow: hidden; border-radius: 10px; background: #fff; box-shadow: 0 20px 56px rgba(18,38,75,.22); }
@@ -4056,12 +4087,12 @@
             <h2 class="archive-report-title">报告文档</h2>
             <div class="archive-report-actions">
               <button class="archive-report-layout-btn" type="button" data-report-menu-trigger="invite" aria-label="患者信息与评估邀请" title="患者信息与评估邀请" aria-expanded="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="4" y="4" width="6" height="6"/><rect x="14" y="4" width="6" height="6"/><rect x="4" y="14" width="6" height="6"/><rect x="14" y="14" width="6" height="6"/></svg></button>
-              <button class="archive-report-generate" type="button" data-report-menu-trigger="generate" aria-expanded="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="m12 3 1.3 3.7L17 8l-3.7 1.3L12 13l-1.3-3.7L7 8l3.7-1.3L12 3Z"/><path d="m18 14 .8 2.2L21 17l-2.2.8L18 20l-.8-2.2L15 17l2.2-.8L18 14Z"/></svg>生成报告</button>
+              <button class="archive-report-generate" type="button" data-report-menu-trigger="generate" aria-haspopup="menu" aria-expanded="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="m12 3 1.3 3.7L17 8l-3.7 1.3L12 13l-1.3-3.7L7 8l3.7-1.3L12 3Z"/><path d="m18 14 .8 2.2L21 17l-2.2.8L18 20l-.8-2.2L15 17l2.2-.8L18 14Z"/></svg><span>生成报告</span><svg class="archive-report-chevron" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="m4 6 4 4 4-4" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
             </div>
           </header>
-          <form class="archive-report-toolbar" id="archiveReportSearchForm">
-            <div class="archive-report-field"><label for="archiveReportNameSearch">报告名称：</label><input class="archive-report-search-input" id="archiveReportNameSearch" type="search" placeholder="请输入报告名称" autocomplete="off"></div>
-            <div class="archive-report-field"><label for="archiveReportStatusSearch">发布状态：</label><select class="archive-report-search-select" id="archiveReportStatusSearch"><option value="">全部</option><option value="已发布">已发布</option><option value="待发布">待发布</option></select></div>
+          <form class="archive-report-toolbar" id="archiveReportSearchForm" data-persistence-ignore>
+            <div class="archive-report-field"><label for="archiveReportNameSearch">报告名称：</label><input class="archive-report-search-input" id="archiveReportNameSearch" type="search" value="" placeholder="请输入报告名称" autocomplete="off" data-persistence-ignore></div>
+            <div class="archive-report-field"><label for="archiveReportStatusSearch">发布状态：</label><select class="archive-report-search-select" id="archiveReportStatusSearch" data-persistence-ignore><option value="">全部</option><option value="已发布">已发布</option><option value="待发布">待发布</option></select></div>
             <div class="archive-report-query-actions"><button class="archive-report-query-btn primary" type="submit">查询</button><button class="archive-report-query-btn" type="button" id="archiveReportReset">重置</button></div>
           </form>
           <div class="archive-report-table-wrap">
@@ -14265,8 +14296,38 @@
       function closeReportDialog() {
         reportDialog.classList.remove('open');
         reportDialog.setAttribute('aria-hidden', 'true');
+        reportDialog.querySelector('.archive-report-dialog')?.classList.remove('preview-document');
         activeReportId = null;
         reportDialogMode = '';
+      }
+
+      function buildGeneratedReportPreview(reportName, reportDate) {
+        const patient = archiveInvitePatient();
+        return `<article class="generated-report-paper" aria-label="${escapeHtml(reportName)}预览">
+          <section class="generated-report-cover">
+            <div class="generated-report-hospital"><span class="generated-report-hospital-mark">✚</span><span><strong>暨南大学附属顺德医院</strong><small>THE AFFILIATED SHUNDE HOSPITAL OF JINAN UNIVERSITY</small></span></div>
+            <svg class="generated-report-dna" viewBox="0 0 430 380" fill="none" aria-hidden="true"><defs><linearGradient id="reportDnaGradient" x1="70" y1="320" x2="360" y2="50" gradientUnits="userSpaceOnUse"><stop stop-color="#56B7EC"/><stop offset=".5" stop-color="#14C7C0"/><stop offset="1" stop-color="#047E96"/></linearGradient></defs><path d="M82 332C188 288 240 238 278 160C307 102 340 70 375 50" stroke="url(#reportDnaGradient)" stroke-width="24" stroke-linecap="round"/><path d="M55 294C160 261 213 213 246 142C274 83 309 51 354 30" stroke="url(#reportDnaGradient)" stroke-width="17" stroke-linecap="round" opacity=".8"/><g stroke="#74DCE1" stroke-width="8" stroke-linecap="round" opacity=".9"><path d="m91 285 75 12"/><path d="m126 255 73 9"/><path d="m166 219 69 6"/><path d="m202 181 62 5"/><path d="m237 139 55 7"/><path d="m273 98 45 10"/><path d="m308 65 36 10"/></g></svg>
+            <div class="generated-report-cover-meta"><h3>${escapeHtml(reportName)}</h3><p>用户： ${escapeHtml(patient.name || '/')}</p><p>日期： ${escapeHtml(reportDate)}</p></div>
+          </section>
+          <section class="generated-report-body"><h3>目录</h3><div class="generated-report-toc"><strong>一、本周期数据情况</strong><span>请注意</span></div><div class="generated-report-section"><h4>一、本周期数据情况</h4><p>本报告周期为 ${escapeHtml(reportDate)}（单日数据）。本周期内未采集到任何打卡记录与量表记录，<strong>暂无法生成健康数据分析。</strong></p><p>为保证报告的真实性与安全性，本报告不对未采集的指标做任何推测或估算。待有实际打卡与量表数据后，将重新生成完整的阶段分析报告。</p><h4>请注意</h4><p><strong>说明：</strong></p><ul><li>本报告基于患者本周期内的实际打卡与量表数据生成；当前周期无数据，故未包含健康指标分析内容。</li><li>报告内容仅供参考，<strong>不替代执业医师线下诊断与临床医疗建议。</strong></li><li>如在管理过程中出现身体不适或指标异常波动，请及时就医。</li><li>如已完成打卡或量表填写但此处仍显示无数据，请联系健康管理师核对。</li></ul></div></section>
+        </article>`;
+      }
+
+      function openGeneratedReportPreview(reportName) {
+        closeReportMenu();
+        const now = new Date();
+        const reportDate = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
+        reportDialogMode = 'generated-preview';
+        dialogTitle.textContent = `${reportName} ${reportDate}`;
+        dialogBody.innerHTML = buildGeneratedReportPreview(reportName, reportDate);
+        dialogFoot.innerHTML = '';
+        reportDialog.querySelector('.archive-report-dialog')?.classList.add('preview-document');
+        reportDialog.classList.add('open');
+        reportDialog.setAttribute('aria-hidden', 'false');
+        reportDialog.querySelectorAll('[data-report-dialog-close]').forEach(button => {
+          button.onclick = event => { event.preventDefault(); event.stopPropagation(); closeReportDialog(); };
+        });
+        requestAnimationFrame(() => reportDialog.querySelector('[data-report-dialog-close]')?.focus());
       }
 
       function renderReportTable() {
@@ -14316,6 +14377,7 @@
 
       function openReportDialog(mode, reportId) {
         closeReportMenu();
+        reportDialog.querySelector('.archive-report-dialog')?.classList.remove('preview-document');
         activeReportId = reportId;
         reportDialogMode = mode;
         const report = getActiveReport();
@@ -14363,7 +14425,7 @@
         menu.setAttribute('role', 'menu');
         menu.innerHTML = type === 'invite'
           ? '<button role="menuitem" data-report-feature="邀请完善信息"><span class="archive-report-popover-icon">＋</span>邀请完善信息</button><button role="menuitem" data-report-feature="邀请完成评估"><span class="archive-report-popover-icon">✓</span>邀请完成评估</button>'
-          : ['总检报告生成', '体检报告解读', '新-体检报告解读', '定制体检方案', '新-定制体检方案', '定制健康管理方案'].map((label, index) => `<button role="menuitem" data-report-feature="${label}"><span class="archive-report-popover-icon">${index < 3 ? '▣' : '▤'}</span>${label}</button>`).join('');
+          : ['阶段日报', '总检报告生成', '体检报告解读', '新-体检报告解读', '定制体检方案', '新-定制体检方案', '定制健康管理方案'].map((label, index) => `<button role="menuitem" data-report-feature="${label}" data-generated-report-preview="${label}"><span class="archive-report-popover-icon">${index < 4 ? '▣' : '▤'}</span>${label}</button>`).join('');
         button.parentElement.append(menu);
         button.setAttribute('aria-expanded', 'true');
         menu.querySelector('button')?.focus();
@@ -14512,6 +14574,7 @@
           closeReportMenu();
           if (feature.dataset.reportFeature === '邀请完善信息') openInviteDialog();
           else if (feature.dataset.reportFeature === '邀请完成评估') openEvaluationInviteDialog();
+          else if (feature.dataset.generatedReportPreview) openGeneratedReportPreview(feature.dataset.generatedReportPreview);
           else showReportToast(`已选择“${feature.dataset.reportFeature}”`);
           return;
         }
@@ -14611,7 +14674,9 @@
         }
       });
 
-      renderReportTable();
+      nameInput.value = '';
+      statusSelect.value = '';
+      runReportSearch();
     })();
   </script>
   <!-- Upload modal patch scripts are intentionally disabled on initial page load.
