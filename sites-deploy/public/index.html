@@ -4371,7 +4371,7 @@
           <label class="archive-edit-field"><span>年龄 <b aria-hidden="true">*</b></span><input type="number" min="0" max="130" step="1" data-archive-modal-field="age" placeholder="请输入年龄" aria-required="true"><small data-archive-modal-error="age"></small></label>
           <label class="archive-edit-field"><span>出生日期</span><input type="month" data-archive-modal-field="birthDate"><small data-archive-modal-error="birthDate"></small></label>
           <label class="archive-edit-field"><span>手机号 <b aria-hidden="true">*</b></span><input type="text" data-archive-modal-field="phone" placeholder="请输入手机号" aria-required="true"><small data-archive-modal-error="phone"></small></label>
-          <label class="archive-edit-field"><span>证件类型 <b aria-hidden="true">*</b></span><select data-archive-modal-field="idType" aria-required="true"><option value="">请选择</option><option>居民身份证</option><option>护照</option><option>港澳居民来往内地通行证</option><option>台湾居民来往大陆通行证</option><option>其他</option></select><small data-archive-modal-error="idType"></small></label>
+          <label class="archive-edit-field"><span>证件类型 <b aria-hidden="true">*</b></span><select data-archive-modal-field="idType" aria-required="true"><option value="">请选择</option><option>居民身份证</option><option>护照</option><option>港澳居民内地居住证</option><option>台湾居民来往大陆通行证</option><option>其他</option></select><small data-archive-modal-error="idType"></small></label>
           <label class="archive-edit-field"><span>证件号 <b aria-hidden="true">*</b></span><input type="text" maxlength="32" data-archive-modal-field="idNumber" placeholder="请输入证件号" aria-required="true"><small data-archive-modal-error="idNumber"></small></label>
           <label class="archive-edit-field"><span>民族</span><select data-archive-modal-field="ethnicity"><option value="">请选择</option><option>汉族</option><option>壮族</option><option>回族</option><option>满族</option><option>其他</option></select></label>
           <label class="archive-edit-field"><span>婚姻状况</span><select data-archive-modal-field="maritalStatus"><option value="">请选择</option><option>未婚</option><option>已婚</option><option>离异</option><option>丧偶</option><option>其他</option></select></label>
@@ -4422,7 +4422,7 @@
         <form id="patientCreateForm" novalidate>
           <section class="patient-create-section"><h3>基础信息</h3><div class="patient-create-grid">
             <label class="patient-create-field"><span>姓名 <b>*</b></span><input name="name" autocomplete="name" placeholder="请输入患者姓名"><small data-create-error="name"></small></label>
-            <label class="patient-create-field"><span>证件类型 <b>*</b></span><select name="idType"><option>居民身份证</option><option>护照</option><option>港澳居民来往内地通行证</option><option>台湾居民来往大陆通行证</option><option>其他</option></select></label>
+            <label class="patient-create-field"><span>证件类型 <b>*</b></span><select name="idType"><option>居民身份证</option><option>护照</option><option>港澳居民内地居住证</option><option>台湾居民来往大陆通行证</option><option>其他</option></select></label>
             <label class="patient-create-field"><span>证件号码 <b>*</b></span><input name="idNumber" autocomplete="off" maxlength="18" placeholder="请输入18位居民身份证号" aria-describedby="patientCreateIdNumberError"><small id="patientCreateIdNumberError" data-create-error="idNumber" role="alert"></small></label>
             <div class="patient-create-duplicate" id="patientCreateDuplicate" hidden></div>
             <label class="patient-create-field">性别<select name="gender"><option value="">请选择</option><option>男</option><option>女</option></select></label>
@@ -4464,7 +4464,7 @@
         <div class="archive-field"><label>职业</label><input class="archive-input" data-patient-field="occupation" placeholder="请输入职业"></div>
         <div class="archive-field"><label>常住地址</label><input class="archive-input" data-patient-field="region" placeholder="请输入常住地址"></div>
         <div class="archive-field required"><label>手机号码</label><input class="archive-input" data-patient-field="phone" placeholder="请输入手机号码"><div class="field-error" data-error-for="phone"></div></div>
-        <div class="archive-field"><label>证件类型</label><select class="archive-select" data-patient-field="idType"><option value="">请选择</option><option>居民身份证</option><option>护照</option><option>港澳居民来往内地通行证</option><option>台湾居民来往大陆通行证</option><option>其他</option></select></div>
+        <div class="archive-field"><label>证件类型</label><select class="archive-select" data-patient-field="idType"><option value="">请选择</option><option>居民身份证</option><option>护照</option><option>港澳居民内地居住证</option><option>台湾居民来往大陆通行证</option><option>其他</option></select></div>
         <div class="archive-field"><label>证件号</label><input class="archive-input" data-patient-field="idNumber" placeholder="请输入证件号码"></div>
         <div class="archive-field"><label>就诊号</label><input class="archive-input" data-patient-field="visitNo" readonly></div>
       </div></div></section>
