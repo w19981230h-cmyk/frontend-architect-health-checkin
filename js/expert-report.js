@@ -135,6 +135,7 @@
 
     function expertParseItemMarkup(item, index) {
       const displayTime = item.time || '未识别';
+      const viewable = item.status === 'done';
       let body = '';
       if (item.status === 'running') {
         body = '<div class="archive-parse-loading"><span class="archive-parse-spinner"></span><span>' + item.text + '</span></div><div class="archive-parse-progress"><i></i></div>';
@@ -145,7 +146,7 @@
       } else {
         body = '<div class="archive-parse-field"><span>失败原因</span><strong>' + item.reason + '</strong></div><div class="archive-parse-actions"><button class="archive-parse-primary" data-expert-parse-retry="' + index + '">重新解析</button></div>';
       }
-      return '<article class="archive-parse-card" data-expert-parse-card="' + index + '"><div class="archive-parse-card-head"><div class="archive-parse-title"><strong>' + (item.title || '待补充资料') + '</strong>' + (item.status === 'running' ? '' : '<span>报告时间：' + displayTime + '</span>') + '</div><span class="archive-parse-status ' + item.status + '">' + expertParseStatusText[item.status] + '</span></div><div class="archive-parse-card-body">' + body + '</div></article>';
+      return '<article class="archive-parse-card' + (viewable ? ' is-viewable' : '') + '" data-expert-parse-card="' + index + '"' + (viewable ? ' data-expert-parse-view="' + index + '" role="button" tabindex="0" aria-label="查看专家资料：' + item.title + '"' : '') + '><div class="archive-parse-card-head"><div class="archive-parse-title"><strong>' + (item.title || '待补充资料') + '</strong>' + (item.status === 'running' ? '' : '<span>报告时间：' + displayTime + '</span>') + '</div><span class="archive-parse-status ' + item.status + '">' + expertParseStatusText[item.status] + '</span></div><div class="archive-parse-card-body">' + body + '</div></article>';
     }
 
     function renderExpertParseDrawer(tab) {
@@ -161,6 +162,43 @@
       });
       const rows = expertParseItems.map((item, index) => ({ item, index })).filter(({ item }) => tab === 'all' || item.status === tab);
       body.innerHTML = rows.length ? rows.map(({ item, index }) => expertParseItemMarkup(item, index)).join('') : '<div class="archive-parse-empty">暂无解析资料</div>';
+    }
+
+    function showParsedExpertReport(index) {
+      const parsed = expertParseItems[index];
+      if (!parsed || parsed.status !== 'done') return;
+      let target = suggestions.find((item) => item.title === parsed.title);
+      if (!target) {
+        target = {
+          title: parsed.title,
+          date: parsed.time,
+          doctor: '',
+          status: '已处理',
+          tone: 'green',
+          relatedReports: [...(parsed.related || [])]
+        };
+        suggestions.unshift(target);
+      } else {
+        target.date = parsed.time || target.date;
+        target.relatedReports = [...(parsed.related || target.relatedReports || [])];
+      }
+      active = target;
+      search.value = '';
+      timeFilter.value = 'all';
+      render();
+      const drawer = document.getElementById('archiveParseDrawer');
+      const backdrop = document.getElementById('archiveParseBackdrop');
+      drawer?.classList.remove('open');
+      drawer?.setAttribute('aria-hidden', 'true');
+      backdrop?.classList.remove('open');
+      backdrop?.setAttribute('aria-hidden', 'true');
+      window.setTimeout(() => {
+        const selected = Array.from(list.querySelectorAll('[data-expert-title]')).find((button) => button.dataset.expertTitle === parsed.title);
+        selected?.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+        selected?.focus({ preventScroll: true });
+        detail.scrollTo({ top: 0, behavior: 'smooth' });
+      }, 0);
+      toast('已定位到对应专家资料');
     }
 
     function openFilePreview(trigger) {
@@ -205,6 +243,13 @@
         event.stopImmediatePropagation();
         return;
       }
+      const expertParseView = event.target.closest('[data-expert-parse-view]');
+      if (expertParseView) {
+        showParsedExpertReport(Number(expertParseView.dataset.expertParseView));
+        event.preventDefault();
+        event.stopImmediatePropagation();
+        return;
+      }
       const expertParseSave = event.target.closest('[data-expert-parse-save]');
       if (expertParseSave) {
         const card = expertParseSave.closest('[data-expert-parse-card]');
@@ -238,6 +283,14 @@
         event.preventDefault();
         event.stopImmediatePropagation();
       }
+    }, true);
+
+    document.addEventListener('keydown', (event) => {
+      const expertParseView = event.target.closest?.('[data-expert-parse-view]');
+      if (!expertParseView || (event.key !== 'Enter' && event.key !== ' ')) return;
+      showParsedExpertReport(Number(expertParseView.dataset.expertParseView));
+      event.preventDefault();
+      event.stopImmediatePropagation();
     }, true);
 
     panel.addEventListener('click', (event) => {

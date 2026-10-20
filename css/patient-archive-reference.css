@@ -1081,6 +1081,9 @@ body:has(#archiveChangesModal.open) .interface-note-toolbar { display: none; }
 .expert-parse-complete-summary { display: grid; gap: 6px; }
 .expert-parse-complete-summary span { color: #7b8799; font-size: 12px; }
 .expert-parse-complete-summary strong { color: #334158; font-size: 13px; font-weight: 600; }
+.expert-parse-mode .archive-parse-card.is-viewable { cursor: pointer; transition: border-color .2s, box-shadow .2s, transform .2s; }
+.expert-parse-mode .archive-parse-card.is-viewable:hover { border-color: #91caff; box-shadow: 0 10px 26px rgba(22,119,255,.12); transform: translateY(-1px); }
+.expert-parse-mode .archive-parse-card.is-viewable:focus-visible { border-color: #1677ff; outline: 3px solid rgba(22,119,255,.18); outline-offset: 2px; }
 #patientArchivePage .expert-ref-basic,
 #patientArchivePage .expert-ref-files,
 #patientArchivePage .expert-ref-related,

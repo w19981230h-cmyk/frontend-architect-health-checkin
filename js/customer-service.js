@@ -3,6 +3,7 @@
   const TAGS_KEY = 'patient-customer-service-tags-v1';
   const EXAMPLE_CONTENT_VERSION_KEY = 'patient-customer-service-reminder-examples-v3';
   const TAG_CONTENT_VERSION_KEY = 'patient-customer-service-tags-v2';
+  const EXAMPLE_CONTENT_VERSION = '2026-10-20-v3';
   const defaultCustomerTags = ['基因/分子检测', '营养健康产品'];
   const allowedCustomerTags = ['基因/分子检测', '就医协同', '体检/健康检查', '营养健康产品', '专项检测/影像'];
   const TODAY = new Date('2026-10-14T00:00:00');
@@ -11,9 +12,9 @@
     { id: 'r-02', dueAt: '2026-10-20T09:00', content: '提醒主理人核对采样安排', type: 'custom', source: '客户标签', relation: '基因/分子检测标签生成', customerTags: ['基因/分子检测'], status: 'upcoming', createdAt: '2026-10-01', note: '核对采样时间、地点及负责人。' },
     { id: 'r-03', dueAt: '2026-10-25T10:00', content: '联系客户确认采样情况', type: 'custom', source: '客户标签', relation: '基因/分子检测标签生成', customerTags: ['基因/分子检测'], status: 'upcoming', createdAt: '2026-10-10', note: '确认客户是否已完成采样及样本状态。' },
     { id: 'r-04', dueAt: '2026-11-01T09:00', content: '跟进机构检测报告', type: 'custom', source: '客户标签', relation: '基因/分子检测标签生成', customerTags: ['基因/分子检测'], status: 'upcoming', createdAt: '2026-10-10', note: '向检测机构确认报告进度及预计出具时间。' },
-    { id: 'r-05', dueAt: '2026-11-10T09:00', content: '联系专家安排报告解读', type: 'custom', source: '客户标签', relation: '基因/分子检测标签生成', customerTags: ['基因/分子检测'], status: 'upcoming', createdAt: '2026-10-12', note: '协调专家解读时间，并准备检测报告。' },
-    { id: 'r-06', dueAt: '2026-11-15T09:00', content: '联系客户反馈专家建议', type: 'custom', source: '客户标签', relation: '基因/分子检测标签生成', customerTags: ['基因/分子检测'], status: 'upcoming', createdAt: '2026-10-12', note: '向客户同步专家解读结论与健康建议。' },
-    { id: 'r-07', dueAt: '2026-12-01T09:00', content: '提醒客户完成专家建议中的后续事项', type: 'custom', source: '客户标签', relation: '基因/分子检测标签生成', customerTags: ['基因/分子检测'], status: 'upcoming', createdAt: '2026-09-01', note: '跟进客户完成专家建议中的复查或干预事项。' },
+    { id: 'r-05', dueAt: '2026-11-10T09:00', content: '联系专家安排报告解读', type: 'expert', source: '专家建议', relation: '专家报告生成', customerTags: ['专家建议'], status: 'upcoming', createdAt: '2026-10-12', note: '协调专家解读时间，并准备检测报告。' },
+    { id: 'r-06', dueAt: '2026-11-15T09:00', content: '联系客户反馈专家建议', type: 'expert', source: '专家建议', relation: '专家报告生成', customerTags: ['专家建议'], status: 'upcoming', createdAt: '2026-10-12', note: '向客户同步专家解读结论与健康建议。' },
+    { id: 'r-07', dueAt: '2026-12-01T09:00', content: '提醒客户完成专家建议中的后续事项', type: 'expert', source: '专家建议', relation: '专家报告生成', customerTags: ['专家建议'], status: 'upcoming', createdAt: '2026-09-01', note: '跟进客户完成专家建议中的复查或干预事项。' },
     { id: 'r-08', dueAt: '2026-12-10T09:00', content: '提醒客户调整饮食', type: 'custom', source: '生活方式管理', relation: '生活方式管理', status: 'upcoming', createdAt: '2026-10-14', note: '减少高盐、高糖和油炸食物。' },
     { id: 'r-09', dueAt: '2026-12-15T09:00', content: '评估用药效果', type: 'standard', source: '慢病管理服务', relation: '慢病管理服务', status: 'completed', completedAt: '2026-10-14T15:20', createdAt: '2026-09-01', note: '已完成阶段性用药效果评估。' },
     { id: 'r-10', dueAt: '2026-12-20T09:00', content: '发送节日问候', type: 'custom', source: '客户关怀', relation: '客户关怀', status: 'completed', completedAt: '2026-10-14T16:45', createdAt: '2026-10-14', note: '已发送节日关怀消息。' },
@@ -83,7 +84,7 @@
   }
 
   function normalizeReminders(items) {
-    const shouldUpgradeExamples = localStorage.getItem(EXAMPLE_CONTENT_VERSION_KEY) !== '2026-10-16-v2';
+    const shouldUpgradeExamples = localStorage.getItem(EXAMPLE_CONTENT_VERSION_KEY) !== EXAMPLE_CONTENT_VERSION;
     const normalized = items.map(item => {
       const status = item.status === 'completed' ? 'completed' : 'upcoming';
       const exampleUpdate = shouldUpgradeExamples ? reminderExampleUpdates[item.id] : null;
@@ -101,7 +102,7 @@
     if (shouldUpgradeExamples || items.some(item => (item.status !== 'completed' && item.status !== 'upcoming') || (item.status === 'completed' && !item.completedAt))) {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(normalized));
     }
-    if (shouldUpgradeExamples) localStorage.setItem(EXAMPLE_CONTENT_VERSION_KEY, '2026-10-16-v2');
+    if (shouldUpgradeExamples) localStorage.setItem(EXAMPLE_CONTENT_VERSION_KEY, EXAMPLE_CONTENT_VERSION);
     return normalized;
   }
 
@@ -255,7 +256,7 @@
 
   function reminderCustomerTags(item) {
     if (item.source === '客户标签' && item.relation === '客户标签生成') return ['自定义'];
-    if (Array.isArray(item.customerTags) && item.customerTags.length) return item.customerTags.slice(0, 2);
+    if (Array.isArray(item.customerTags) && item.customerTags.length) return [item.customerTags[0]];
     const text = `${item.content || ''} ${item.source || ''} ${item.relation || ''} ${item.note || ''}`;
     const matched = state.tags.filter(tag => {
       if (text.includes(tag)) return true;
@@ -267,7 +268,7 @@
       if (tag === '中老年健康') return /生日|节日|复查|体检/.test(text);
       return false;
     });
-    return (matched.length ? matched : state.tags).slice(0, 2);
+    return (matched.length ? matched : state.tags).slice(0, 1);
   }
 
   function reminderCustomerTagsMarkup(item) {
@@ -425,7 +426,7 @@
 
   function openTags() {
     state.dialogAction = { type: 'tags' };
-    openDialog('添加客户标签', `<div class="customer-service-field"><label>选择标签（已添加标签不可移除）</label><div class="customer-service-tag-options" data-customer-tag-options>${allowedCustomerTags.map(tag => state.tags.includes(tag) ? `<span class="customer-service-tag-option selected locked" data-customer-existing-tag="${escapeHtml(tag)}">${escapeHtml(tag)}</span>` : `<button type="button" class="customer-service-tag-option" data-customer-available-tag="${escapeHtml(tag)}" aria-pressed="false">${escapeHtml(tag)}</button>`).join('')}</div><span class="customer-service-tag-domain-help">仅支持从以上预设标签中选择，不支持手动新增</span></div>`, `<button type="button" class="customer-service-dialog-secondary" data-customer-dialog-close>取消</button><button type="button" class="customer-service-dialog-primary" data-customer-save-tags>保存标签</button>`);
+    openDialog('添加客户标签', `<div class="customer-service-field"><label>选择标签（已选标签不可重复点击）</label><div class="customer-service-tag-options" data-customer-tag-options>${allowedCustomerTags.map(tag => state.tags.includes(tag) ? `<span class="customer-service-tag-option selected locked" data-customer-existing-tag="${escapeHtml(tag)}" aria-disabled="true" title="已选中，不能重复点击">${escapeHtml(tag)}</span>` : `<button type="button" class="customer-service-tag-option" data-customer-available-tag="${escapeHtml(tag)}" aria-pressed="false">${escapeHtml(tag)}</button>`).join('')}</div><span class="customer-service-tag-domain-help">灰色标签表示已选中，不能重复点击</span></div>`, `<button type="button" class="customer-service-dialog-secondary" data-customer-dialog-close>取消</button><button type="button" class="customer-service-dialog-primary" data-customer-save-tags>保存标签</button>`);
   }
 
   function openConfirm(title, message, onConfirm) {
@@ -600,8 +601,12 @@
     if (target.closest('[data-customer-dialog-close]')) { closeDialog(); return; }
     const availableTag = target.closest('[data-customer-available-tag]');
     if (availableTag) {
-      const selected = availableTag.classList.toggle('selected');
-      availableTag.setAttribute('aria-pressed', String(selected));
+      availableTag.classList.add('selected', 'locked');
+      availableTag.setAttribute('aria-pressed', 'true');
+      availableTag.setAttribute('aria-disabled', 'true');
+      availableTag.disabled = true;
+      availableTag.title = '已选中，不能重复点击';
+      showToast('已选中，该标签不能重复点击');
       return;
     }
     if (target.closest('[data-customer-save-tags]')) {
@@ -667,6 +672,7 @@
     panel.addEventListener('click', onPanelClick);
     panel.addEventListener('change', onPanelChange);
     panel.addEventListener('input', onPanelInput);
+    window.addEventListener('customerServiceSectionOpen', () => selectCustomerSection('reminders'));
     document.addEventListener('click', event => {
       if (state.headerMenuOpen && !event.target.closest('.customer-service-more-wrap')) { state.headerMenuOpen = false; syncHeaderMenu(); }
       if (state.rowMenuId && !event.target.closest('.customer-service-actions')) { state.rowMenuId = ''; renderResults(); }

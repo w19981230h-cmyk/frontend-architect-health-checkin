@@ -4,6 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="./css/team-management.css?v=20260923-4">
+  <link rel="stylesheet" href="./css/team-patients.css?v=20261020-1">
   <link rel="stylesheet" href="./css/plan-form-mode.css?v=20260924-2">
   <link rel="stylesheet" href="./css/interface-annotations-v3.css?v=20260924-v3-18">
   <link rel="stylesheet" href="./css/referral-drawer.css?v=20260902-8">
@@ -319,7 +320,9 @@
     .patient-list-toolbar { min-height: 54px; display: flex; align-items: flex-start; gap: 10px; }
     .patient-list-toolbar-actions { margin-left: auto; display: flex; align-items: center; gap: 10px; }
     .patient-list-search { width: 278px; }
-    .patient-team-filter { width: 280px; height: 36px; padding: 0 12px; border: 1px solid #e6eaf1; border-radius: 4px; color: #9ba5b4; background: #fff; }
+    .patient-team-filter, .patient-mark-status-filter { height: 36px; padding: 0 12px; border: 1px solid #e6eaf1; border-radius: 4px; color: #65738a; background: #fff; }
+    .patient-team-filter { width: 280px; }
+    .patient-mark-status-filter { width: 150px; }
     .patient-filter-btn { height: 36px; padding: 0 13px; border: 1px solid #e6eaf1; border-radius: 4px; background: #fff; color: #40506a; display: inline-flex; align-items: center; gap: 7px; }
     .patient-filter-btn svg { width: 16px; height: 16px; }
     .patient-batch-team-btn { height: 36px; padding: 0 14px; border: 1px solid #3154ff; border-radius: 4px; display: inline-flex; align-items: center; gap: 7px; color: #3154ff; background: #fff; font-weight: 600; }
@@ -573,7 +576,7 @@
     .patient-smart-apply:disabled { cursor: not-allowed; color: rgba(0,0,0,.25); border-color: #d9d9d9; background: rgba(0,0,0,.04); }
     @media (max-width: 900px) {
       .patient-list-toolbar { flex-wrap: wrap; }
-      .patient-list-search, .patient-team-filter { width: calc(50% - 5px); }
+      .patient-list-search, .patient-team-filter, .patient-mark-status-filter { width: calc(50% - 5px); }
       .patient-list-toolbar-actions { width: 100%; justify-content: flex-end; }
       .patient-ai-actions { align-items: flex-start; flex-direction: column; }
       .patient-ai-buttons { align-self: flex-end; }
@@ -590,7 +593,7 @@
     }
     @media (hover: none) { .patient-template-delete { opacity: 1; pointer-events: auto; transform: none; } }
     .patient-list-table-wrap { flex: 1; min-height: 0; overflow: auto; }
-    .patient-list-table { min-width: 2050px; table-layout: fixed; }
+    .patient-list-table { min-width: 2160px; table-layout: fixed; }
     .patient-list-table thead { position: sticky; top: 0; z-index: 2; }
     .patient-list-table thead tr { height: 52px; }
     .patient-list-table tbody tr { height: 68px; cursor: pointer; transition: background-color .16s ease; }
@@ -611,6 +614,7 @@
     .patient-list-table .diagnosis-col { width: 255px; }
     .patient-list-table .date-col { width: 145px; }
     .patient-list-table .team-col { width: 185px; }
+    .patient-list-table .mark-status-col { width: 110px; }
     .patient-list-table .patient-action-col { position: sticky; right: 0; width: 145px; min-width: 145px; background: #fff; box-shadow: -10px 0 14px -14px rgba(31,45,72,.34); }
     .patient-list-table thead .patient-action-col { z-index: 4; background: var(--head); }
     .patient-list-table tbody .patient-action-col { z-index: 1; }
@@ -630,6 +634,10 @@
     .patient-name-text { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
     .patient-name-with-tags .patient-tags { min-width: 0; flex-wrap: nowrap; overflow: hidden; }
     .patient-tag { max-width: 112px; height: 24px; padding: 0 8px; border: 0; border-radius: 4px; display: inline-flex; align-items: center; overflow: hidden; color: #3154a8; background: #edf3ff; font-size: 12px; line-height: 24px; text-overflow: ellipsis; white-space: nowrap; }
+    .patient-mark-status { height: 24px; padding: 0 9px; border: 1px solid #e4e8ef; border-radius: 12px; display: inline-flex; align-items: center; gap: 6px; color: #7b8799; background: #f7f8fa; font-size: 12px; white-space: nowrap; }
+    .patient-mark-status::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: #a8b1c0; }
+    .patient-mark-status.marked { color: #16845b; border-color: #b7ebd3; background: #f1fbf6; }
+    .patient-mark-status.marked::before { background: #24b47e; }
     .patient-row-actions { position: relative; display: inline-flex; align-items: center; gap: 4px; }
     .patient-row-actions > button { height: 32px; padding: 0 8px; border-radius: 4px; color: #3154ff; background: transparent; font-size: 13px; white-space: nowrap; }
     .patient-row-actions > button:hover, .patient-row-actions > button:focus-visible, .patient-row-actions > button[aria-expanded="true"] { background: #f0f3ff; outline: none; }
@@ -725,13 +733,17 @@
     .patient-mark-section-note { margin-top: 8px; color: #8b96a7; font-size: 12px; line-height: 1.7; }
     .patient-mark-field { margin-bottom: 24px; display: block; }
     .patient-mark-section .patient-mark-field:last-child { margin-bottom: 0; }
+    .patient-mark-field-label-row { margin-bottom: 8px; display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+    .patient-mark-field-label-row .patient-mark-field-label { margin-bottom: 0; }
     .patient-mark-field-label { margin-bottom: 8px; display: block; color: #34425a; font-size: 13px; font-weight: 600; }
     .patient-mark-required::before { content: '*'; margin-right: 4px; color: #ff4d4f; }
+    .patient-mark-type-limit { color: #8b96a7; font-size: 12px; }
     .patient-mark-types { display: grid; grid-template-columns: repeat(5, minmax(0,1fr)); gap: 12px; }
     .patient-mark-type { position: relative; min-width: 0; }
     .patient-mark-type input { position: absolute; opacity: 0; pointer-events: none; }
     .patient-mark-type span { height: 44px; padding: 0 12px; border: 1px solid #dfe5ee; border-radius: 4px; display: flex; align-items: center; justify-content: center; color: #536079; background: #fff; font-size: 13px; cursor: pointer; transition: border-color .16s, color .16s, background .16s, box-shadow .16s; }
     .patient-mark-type input:checked + span { color: #3154ff; border-color: #3154ff; background: #f2f5ff; box-shadow: 0 0 0 1px rgba(49,84,255,.06); }
+    .patient-mark-type input:disabled + span { cursor: not-allowed; color: #a8b1c0; border-color: #e7eaf0; background: #f7f8fa; }
     .patient-mark-type input:focus-visible + span { outline: 2px solid rgba(49,84,255,.2); outline-offset: 2px; }
     .patient-mark-control { position: relative; display: block; }
     .patient-mark-control input { width: 100%; height: 44px; padding: 0 12px; border: 1px solid #dfe5ee; border-radius: 4px; color: #34425a; background: #fff; outline: none; }
@@ -754,6 +766,39 @@
     .patient-mark-foot button { height: 40px; min-width: 80px; padding: 0 16px; border-radius: 4px; }
     .patient-mark-cancel { border: 1px solid #dfe5ee; color: #536079; background: #fff; }
     .patient-mark-submit { color: #fff; background: #3154ff; }
+
+    /* 标记抽屉视觉精修：强化层级与反馈，同时保持 Ant Design 的结构与尺寸体系 */
+    .patient-mark-panel { background: #f7f9fc; box-shadow: -20px 0 56px rgba(31, 48, 75, .18); }
+    .patient-mark-head { position: relative; z-index: 2; border-bottom-color: #e7ebf2; background: rgba(255,255,255,.96); box-shadow: 0 8px 24px rgba(31,48,75,.06); }
+    .patient-mark-head h2 { color: #1f304b; font-size: 17px; letter-spacing: .01em; }
+    .patient-mark-body { padding: 32px 32px 48px; }
+    .patient-mark-patient { position: relative; gap: 16px; margin-bottom: 24px; padding: 20px 24px; overflow: hidden; border: 1px solid #dfe7f5; border-radius: 12px; background: linear-gradient(135deg, #f2f6ff 0%, #f8faff 100%); box-shadow: 0 8px 24px rgba(49,84,255,.08); }
+    .patient-mark-patient::before { position: absolute; top: 0; bottom: 0; left: 0; width: 4px; background: linear-gradient(180deg, #3154ff 0%, #7090ff 100%); content: ""; }
+    .patient-mark-patient::after { position: absolute; top: -42px; right: -22px; width: 112px; height: 112px; border-radius: 50%; background: rgba(49,84,255,.05); content: ""; }
+    .patient-mark-patient > * { position: relative; z-index: 1; }
+    .patient-mark-patient .patient-list-avatar { width: 40px; height: 40px; font-size: 14px; }
+    .patient-mark-patient strong { margin-bottom: 6px; color: #1f304b; font-size: 15px; }
+    .patient-mark-patient span:last-child { color: #61718a; line-height: 1.6; }
+    .patient-mark-section { padding: 24px; border: 1px solid #e4e9f1; border-radius: 12px; background: #fff; box-shadow: 0 8px 24px rgba(31,48,75,.05); }
+    .patient-mark-section + .patient-mark-section { margin-top: 24px; }
+    .patient-mark-section-title { color: #1f304b; font-size: 15px; }
+    .patient-mark-section-note { color: #7a8799; }
+    .patient-mark-type-limit { padding: 3px 9px; border-radius: 999px; color: #61718a; background: #f2f5fa; }
+    .patient-mark-types { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+    .patient-mark-type span { min-height: 48px; padding: 8px 12px; border-color: #dce3ee; border-radius: 8px; background: linear-gradient(180deg, #fff 0%, #fbfcff 100%); box-shadow: 0 2px 6px rgba(31,48,75,.03); transition: border-color .18s ease, box-shadow .18s ease, transform .18s ease, background .18s ease; }
+    .patient-mark-type:hover span { border-color: #8fa4ff; box-shadow: 0 6px 14px rgba(49,84,255,.10); transform: translateY(-1px); }
+    .patient-mark-type input:checked + span { border-color: #3154ff; color: #2347eb; background: linear-gradient(135deg, #eef2ff 0%, #f7f9ff 100%); box-shadow: 0 0 0 2px rgba(49,84,255,.10), 0 8px 18px rgba(49,84,255,.10); font-weight: 600; }
+    .patient-mark-field input, .patient-mark-benefit-row input { border-radius: 8px; background: #fbfcfe; transition: border-color .18s ease, box-shadow .18s ease, background .18s ease; }
+    .patient-mark-field input:hover, .patient-mark-benefit-row input:hover { border-color: #9cabca; background: #fff; }
+    .patient-mark-benefits { overflow: hidden; border-color: #dde4ef; border-radius: 10px; box-shadow: 0 4px 14px rgba(31,48,75,.04); }
+    .patient-mark-benefit-head { min-height: 46px; background: linear-gradient(180deg, #f8fafd 0%, #f4f7fb 100%); }
+    .patient-mark-benefit-add { border-radius: 8px; border-color: #aebff1; color: #3154ff; background: linear-gradient(180deg, #fbfcff 0%, #f5f7ff 100%); box-shadow: 0 3px 10px rgba(49,84,255,.04); font-weight: 600; transition: border-color .18s ease, box-shadow .18s ease, transform .18s ease, background .18s ease; }
+    .patient-mark-benefit-add:hover, .patient-mark-benefit-add:focus-visible { background: #eef2ff; box-shadow: 0 7px 16px rgba(49,84,255,.10); transform: translateY(-1px); }
+    .patient-mark-foot { position: relative; z-index: 2; border-top-color: #e7ebf2; background: rgba(255,255,255,.96); box-shadow: 0 -10px 28px rgba(31,48,75,.07); }
+    .patient-mark-foot button { border-radius: 8px; }
+    .patient-mark-cancel:hover { border-color: #9cabca; color: #3154ff; background: #f7f9fc; }
+    .patient-mark-submit { background: linear-gradient(135deg, #3154ff 0%, #496dff 100%); box-shadow: 0 8px 18px rgba(49,84,255,.24); }
+    .patient-mark-submit:hover { box-shadow: 0 10px 24px rgba(49,84,255,.30); transform: translateY(-1px); }
     body.patient-mark-open .ui-note-toolbar, body.patient-mark-open .interface-note-toolbar { right: calc(min(680px, 100vw) + 18px); }
     @media (max-width: 720px) {
       .patient-mark-head, .patient-mark-foot { padding-left: 24px; padding-right: 24px; }
@@ -1278,6 +1323,8 @@
     .archive-report-layout-btn:hover { color: #3154ff; border-color: #9eb2ff; }
     .archive-report-generate { gap: 6px; padding: 0 13px; border: 1px solid #3154ff; color: #3154ff; background: #fff; font-size: 13px; font-weight: 700; }
     .archive-report-generate:hover { color: #163cff; border-color: #163cff; background: #f7f9ff; }
+    .archive-report-generate .archive-report-chevron { width: 13px; height: 13px; margin-left: 2px; transition: transform .2s ease; }
+    .archive-report-generate[aria-expanded="true"] .archive-report-chevron { transform: rotate(180deg); }
     .archive-report-layout-btn:focus-visible, .archive-report-generate:focus-visible, .archive-report-more:focus-visible { outline: 2px solid rgba(49,84,255,.35); outline-offset: 2px; }
     .archive-report-actions svg { width: 16px; height: 16px; }
     .archive-report-toolbar { margin: 16px 18px; padding: 16px; display: flex; align-items: center; gap: 20px; border-radius: 8px; background: #fafafa; }
@@ -1366,6 +1413,37 @@
     .archive-report-dialog-btn.danger { color: #fff; border-color: #ff4d4f; background: #ff4d4f; }
     .archive-report-dialog-btn.danger:hover { border-color: #d9363e; background: #d9363e; }
     .archive-report-dialog-btn:focus-visible, .archive-report-dialog-close:focus-visible { outline: 2px solid rgba(49,84,255,.35); outline-offset: 2px; }
+    .archive-report-dialog.preview-document { width: min(920px, calc(100vw - 32px)); max-height: calc(100vh - 32px); display: flex; flex-direction: column; }
+    .archive-report-dialog.preview-document .archive-report-dialog-body { padding: 18px; overflow-y: auto; background: #f5f7fa; }
+    .archive-report-dialog.preview-document .archive-report-dialog-foot { display: none; }
+    .generated-report-paper { overflow: hidden; border-radius: 8px; color: #14233c; background: #fff; box-shadow: 0 4px 18px rgba(31,51,82,.08); }
+    .generated-report-cover { position: relative; min-height: 680px; padding: 48px 56px; overflow: hidden; display: flex; flex-direction: column; background: linear-gradient(180deg,#effcff 0%,#f9feff 66%,#edf9ff 100%); }
+    .generated-report-cover::before, .generated-report-cover::after { content: ''; position: absolute; border-radius: 50%; filter: blur(1px); }
+    .generated-report-cover::before { width: 360px; height: 360px; right: -90px; top: 170px; border: 32px solid rgba(34,197,194,.12); transform: rotate(-28deg); }
+    .generated-report-cover::after { width: 520px; height: 180px; left: -80px; bottom: -80px; border: 30px solid rgba(70,165,232,.1); }
+    .generated-report-hospital { position: relative; z-index: 1; display: flex; align-items: center; justify-content: center; gap: 14px; color: #087b66; }
+    .generated-report-hospital-mark { width: 58px; height: 58px; display: grid; place-items: center; border: 6px solid currentColor; border-radius: 50%; font-size: 30px; font-weight: 900; line-height: 1; }
+    .generated-report-hospital strong { display: block; font-size: 25px; letter-spacing: .08em; }
+    .generated-report-hospital small { display: block; margin-top: 4px; font-size: 10px; letter-spacing: .05em; }
+    .generated-report-dna { position: absolute; top: 150px; left: 50%; width: 430px; height: 380px; transform: translateX(-50%) rotate(-8deg); opacity: .82; }
+    .generated-report-cover-meta { position: relative; z-index: 1; margin: auto auto 46px; text-align: center; }
+    .generated-report-cover-meta h3 { margin: 0 0 26px; color: #27343d; font-size: 24px; }
+    .generated-report-cover-meta p { margin: 10px 0; color: #344554; font-size: 15px; }
+    .generated-report-body { padding: 54px 46px 70px; }
+    .generated-report-body h3 { margin: 0 0 34px; text-align: center; font-size: 24px; }
+    .generated-report-toc { margin: 0 0 60px; padding: 28px 32px; border: 1px solid #edf0f5; border-radius: 8px; background: #fafcff; }
+    .generated-report-toc strong { display: block; margin-bottom: 22px; }
+    .generated-report-toc span { display: block; margin-top: 18px; font-weight: 700; }
+    .generated-report-section h4 { margin: 0 0 18px; font-size: 20px; }
+    .generated-report-section p { margin: 0 0 12px; font-size: 15px; line-height: 1.9; }
+    .generated-report-section ul { margin: 14px 0 0; padding-left: 22px; }
+    .generated-report-section li { margin: 9px 0; line-height: 1.7; }
+    @media (max-width: 720px) {
+      .generated-report-cover { min-height: 560px; padding: 30px 22px; }
+      .generated-report-hospital strong { font-size: 18px; }
+      .generated-report-dna { width: 330px; height: 310px; top: 140px; }
+      .generated-report-body { padding: 36px 24px 48px; }
+    }
     .archive-invite-mask { position: fixed; inset: 0; z-index: 300; display: none; align-items: center; justify-content: center; padding: 24px; background: rgba(19,32,55,.5); }
     .archive-invite-mask.open { display: flex; }
     .archive-invite-dialog { width: min(820px, calc(100vw - 48px)); max-height: calc(100vh - 48px); display: flex; flex-direction: column; overflow: hidden; border-radius: 10px; background: #fff; box-shadow: 0 20px 56px rgba(18,38,75,.22); }
@@ -3012,13 +3090,13 @@
   <link rel="stylesheet" href="./css/statistics-report.css?v=20260911-05">
   <link rel="stylesheet" href="./css/operations-statistics.css?v=20260910-01">
   <link rel="stylesheet" href="./css/operations-statistics-responsive.css?v=20260910-02">
-  <link rel="stylesheet" href="./css/patient-archive-reference.css?v=20261019-24">
-  <link rel="stylesheet" href="./css/customer-service.css?v=20261019-33">
+  <link rel="stylesheet" href="./css/patient-archive-reference.css?v=20261020-33">
+  <link rel="stylesheet" href="./css/customer-service.css?v=20261020-36">
   <link rel="stylesheet" href="./css/health-portrait.css?v=20260924-3">
 <link rel="stylesheet" href="./css/personnel-management.css?v=20260929-1">
 <link rel="stylesheet" href="./css/organization-management.css?v=20260929-1">
 <link rel="stylesheet" href="./css/workbench.css?v=20261019-4">
-<link rel="stylesheet" href="./css/ai-steward.css?v=20261019-19">
+  <link rel="stylesheet" href="./css/ai-steward.css?v=20261020-22">
 <link rel="stylesheet" href="./css/system-role.css?v=20260916-1">
 <link rel="stylesheet" href="./css/dashboard-latest.css?v=20260913-40">
 <link rel="stylesheet" href="./css/dashboard-updated.css?v=20260913-2">
@@ -3438,10 +3516,34 @@
           </div>
           <div class="dashboard-grid" id="indicatorCards"></div>
         </section>
+        <section class="list-panel list-view team-patient-view" id="teamPatientView" aria-label="团队患者">
+          <div class="team-patient-shell">
+            <header class="team-patient-header">
+              <div class="team-patient-heading">
+                <div class="team-patient-name-row"><strong>高血压管理团队</strong><button type="button" class="team-patient-switch" data-team-patient-switch title="切换团队" aria-label="切换团队"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="m8 7-4 4 4 4M4 11h12M16 17l4-4-4-4M20 13H8"/></svg></button></div>
+                <p><span aria-hidden="true">⌂</span> 科室: 心血管内科一病区、生殖中心专区、测试科室</p>
+              </div>
+              <div class="team-patient-header-actions"><button type="button" class="team-patient-qr" data-team-patient-qr aria-label="团队二维码" title="团队二维码"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M4 4h6v6H4zM14 4h6v6h-6zM4 14h6v6H4zM14 14h2v2h-2zM18 14h2v6h-6v-2h4z"/></svg></button><button type="button" class="team-patient-add" data-team-patient-add><span>＋</span>添加患者</button></div>
+            </header>
+            <nav class="team-patient-tabs" aria-label="患者入组状态">
+              <button type="button" class="active" data-team-patient-tab="pending">待入组（<span data-team-patient-count="pending">13</span>）</button>
+              <button type="button" data-team-patient-tab="managing">管理中（<span data-team-patient-count="managing">0</span>）</button>
+              <button type="button" data-team-patient-tab="exited">已出组（<span data-team-patient-count="exited">1</span>）</button>
+              <button type="button" class="team-patient-audit" data-team-patient-audit><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M6 3h9l4 4v14H6zM14 3v5h5M9 13h7M9 17h5"/></svg>入组审核记录</button>
+            </nav>
+            <div class="team-patient-filters" data-persistence-ignore>
+              <label class="team-patient-search"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="11" cy="11" r="7"/><path d="m16.5 16.5 4 4"/></svg><input id="teamPatientSearch" placeholder="就诊号/姓名/手机" autocomplete="off"></label>
+              <label class="team-patient-source"><span class="sr-only">患者来源</span><select id="teamPatientSource"><option value="">患者来源 请选择</option><option value="智能分组">智能分组</option><option value="医生转入">医生转入</option><option value="患者申请">患者申请</option></select></label>
+            </div>
+            <div class="team-patient-list" id="teamPatientList" aria-live="polite"></div>
+            <footer class="team-patient-pagination" id="teamPatientPagination" aria-label="团队患者分页"></footer>
+          </div>
+        </section>
         <section class="list-panel list-view patient-list-panel" id="patientListView">
           <div class="patient-list-toolbar" data-persistence-ignore>
             <label class="search patient-list-search"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="11" cy="11" r="7"/><path d="m16.5 16.5 4 4"/></svg><input id="patientListSearch" placeholder="患者姓名/就诊卡号/手机号码" autocomplete="off"></label>
             <select class="patient-team-filter" id="patientTeamFilter"><option value="">请选择患者已加入团队</option><option>呼吸内科随访团队</option><option>小儿科随访团队</option><option>妇科随访团队</option><option>泌尿外科随访团队</option><option>肿瘤科随访团队</option></select>
+            <select class="patient-mark-status-filter" id="patientMarkStatusFilter" aria-label="筛选标记状态"><option value="">全部标记状态</option><option value="pending">待标记</option><option value="marked">已标记</option></select>
             <button class="patient-smart-filter-btn" data-open-smart-filter><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="m12 3 1.6 4.4L18 9l-4.4 1.6L12 15l-1.6-4.4L6 9l4.4-1.6L12 3Z"/><path d="m18 15 .8 2.2L21 18l-2.2.8L18 21l-.8-2.2L15 18l2.2-.8L18 15Z"/></svg>智能筛选</button>
             <button class="patient-filter-btn" data-toggle-patient-filter><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M4 5h16l-6 7v6l-4 2v-8Z"/></svg>更多筛选</button>
             <div class="patient-list-toolbar-actions">
@@ -3456,7 +3558,7 @@
             <div class="patient-filter-summary-actions"><span class="patient-filter-result-count" id="patientFilterResultCount"></span><button class="patient-filter-summary-clear" data-clear-smart-filter>清除查询</button></div>
           </section>
           <div class="patient-advanced-panel" id="patientAdvancedPanel" data-persistence-ignore><div class="patient-advanced-grid"><label>性别<select><option>全部</option><option>男</option><option>女</option></select></label><label>年龄<select><option>全部</option><option>0-18岁</option><option>19-60岁</option><option>60岁以上</option></select></label><label>最近科室<select><option>全部科室</option><option>肿瘤科</option><option>妇科</option><option>泌尿外科</option></select></label><label>最近日期<select><option>全部时间</option><option>近7天</option><option>近30天</option></select></label></div><div class="patient-advanced-actions"><button class="reset" data-reset-patient-filter>重置</button><button class="apply" data-apply-patient-filter>确定</button></div></div>
-          <div class="patient-list-table-wrap"><table class="patient-list-table"><thead><tr><th class="patient-select-col"><input class="patient-row-check" id="patientSelectAll" type="checkbox" aria-label="全选当前列表患者"></th><th class="patient-name-col">姓名</th><th class="visit-col">就诊卡号</th><th class="age-col">年龄</th><th class="gender-col">性别</th><th class="phone-col">手机号码</th><th class="institution-col">机构</th><th class="dept-col">最近就诊科室</th><th class="diagnosis-col">最近诊断</th><th class="date-col">最近就诊日期</th><th class="team-col">已加入团队</th><th class="patient-action-col">操作</th></tr></thead><tbody id="patientListRows"></tbody></table></div>
+          <div class="patient-list-table-wrap"><table class="patient-list-table"><thead><tr><th class="patient-select-col"><input class="patient-row-check" id="patientSelectAll" type="checkbox" aria-label="全选当前列表患者"></th><th class="patient-name-col">姓名</th><th class="visit-col">就诊卡号</th><th class="age-col">年龄</th><th class="gender-col">性别</th><th class="phone-col">手机号码</th><th class="mark-status-col">标记状态</th><th class="institution-col">机构</th><th class="dept-col">最近就诊科室</th><th class="diagnosis-col">最近诊断</th><th class="date-col">最近就诊日期</th><th class="team-col">已加入团队</th><th class="patient-action-col">操作</th></tr></thead><tbody id="patientListRows"></tbody></table></div>
           <div class="pager patient-list-pager"><span class="total">共 78593 条</span><button class="page-btn disabled">‹</button><button class="page-btn active" data-patient-page="1">1</button><button class="page-btn" data-patient-page="2">2</button><button class="page-btn" data-patient-page="3">3</button><button class="page-btn" data-patient-page="4">4</button><button class="page-btn" data-patient-page="5">5</button><span class="ellipsis">...</span><button class="page-btn" data-patient-page="7860">7860</button><button class="page-btn" data-patient-page="next">›</button><button class="page-select">10 条/页⌄</button><span>跳至</span><span class="jump-input" contenteditable="true"></span><span>页</span></div>
         </section>
       </main>
@@ -3490,7 +3592,7 @@
         <div class="patient-mark-patient"><span class="patient-list-avatar" id="patientMarkAvatar" aria-hidden="true">患</span><div><strong id="patientMarkPatientName">患者</strong><span id="patientMarkPatientMeta">--</span></div></div>
         <section class="patient-mark-section" aria-labelledby="patientMarkServiceTitle">
           <div class="patient-mark-section-head"><div><div class="patient-mark-section-title" id="patientMarkServiceTitle">服务信息</div><div class="patient-mark-section-note">选择本次标记对应的管理类型，并填写患者服务信息。</div></div></div>
-          <div class="patient-mark-field"><span class="patient-mark-field-label patient-mark-required">标记类型</span><div class="patient-mark-types" id="patientMarkTypes" role="radiogroup" aria-label="标记类型"><label class="patient-mark-type"><input type="radio" name="patientMarkType" value="基因/分子检测"><span>基因/分子检测</span></label><label class="patient-mark-type"><input type="radio" name="patientMarkType" value="就医协同"><span>就医协同</span></label><label class="patient-mark-type"><input type="radio" name="patientMarkType" value="体检/健康检查"><span>体检/健康检查</span></label><label class="patient-mark-type"><input type="radio" name="patientMarkType" value="营养健康产品"><span>营养健康产品</span></label><label class="patient-mark-type"><input type="radio" name="patientMarkType" value="专项检测/影像"><span>专项检测/影像</span></label></div></div>
+          <div class="patient-mark-field"><div class="patient-mark-field-label-row"><span class="patient-mark-field-label patient-mark-required">标记类型</span><span class="patient-mark-type-limit" id="patientMarkTypeLimit">已选 0/3</span></div><div class="patient-mark-types" id="patientMarkTypes" role="group" aria-label="标记类型，最多选择三项" aria-describedby="patientMarkTypeLimit"><label class="patient-mark-type"><input type="checkbox" name="patientMarkType" value="基因/分子检测"><span>基因/分子检测</span></label><label class="patient-mark-type"><input type="checkbox" name="patientMarkType" value="就医协同"><span>就医协同</span></label><label class="patient-mark-type"><input type="checkbox" name="patientMarkType" value="体检/健康检查"><span>体检/健康检查</span></label><label class="patient-mark-type"><input type="checkbox" name="patientMarkType" value="营养健康产品"><span>营养健康产品</span></label><label class="patient-mark-type"><input type="checkbox" name="patientMarkType" value="专项检测/影像"><span>专项检测/影像</span></label></div></div>
           <label class="patient-mark-field"><span class="patient-mark-field-label patient-mark-required">服务名称</span><span class="patient-mark-control"><input id="patientMarkServiceName" maxlength="60" placeholder="请输入服务名称" autocomplete="off"></span></label>
           <label class="patient-mark-field"><span class="patient-mark-field-label patient-mark-required">服务金额</span><span class="patient-mark-control amount"><span class="patient-mark-currency">¥</span><input id="patientMarkServiceAmount" type="number" min="0" step="0.01" inputmode="decimal" placeholder="请输入服务金额"></span></label>
         </section>
@@ -4056,12 +4158,12 @@
             <h2 class="archive-report-title">报告文档</h2>
             <div class="archive-report-actions">
               <button class="archive-report-layout-btn" type="button" data-report-menu-trigger="invite" aria-label="患者信息与评估邀请" title="患者信息与评估邀请" aria-expanded="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="4" y="4" width="6" height="6"/><rect x="14" y="4" width="6" height="6"/><rect x="4" y="14" width="6" height="6"/><rect x="14" y="14" width="6" height="6"/></svg></button>
-              <button class="archive-report-generate" type="button" data-report-menu-trigger="generate" aria-expanded="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="m12 3 1.3 3.7L17 8l-3.7 1.3L12 13l-1.3-3.7L7 8l3.7-1.3L12 3Z"/><path d="m18 14 .8 2.2L21 17l-2.2.8L18 20l-.8-2.2L15 17l2.2-.8L18 14Z"/></svg>生成报告</button>
+              <button class="archive-report-generate" type="button" data-report-menu-trigger="generate" aria-haspopup="menu" aria-expanded="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="m12 3 1.3 3.7L17 8l-3.7 1.3L12 13l-1.3-3.7L7 8l3.7-1.3L12 3Z"/><path d="m18 14 .8 2.2L21 17l-2.2.8L18 20l-.8-2.2L15 17l2.2-.8L18 14Z"/></svg><span>生成报告</span><svg class="archive-report-chevron" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="m4 6 4 4 4-4" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
             </div>
           </header>
-          <form class="archive-report-toolbar" id="archiveReportSearchForm">
-            <div class="archive-report-field"><label for="archiveReportNameSearch">报告名称：</label><input class="archive-report-search-input" id="archiveReportNameSearch" type="search" placeholder="请输入报告名称" autocomplete="off"></div>
-            <div class="archive-report-field"><label for="archiveReportStatusSearch">发布状态：</label><select class="archive-report-search-select" id="archiveReportStatusSearch"><option value="">全部</option><option value="已发布">已发布</option><option value="待发布">待发布</option></select></div>
+          <form class="archive-report-toolbar" id="archiveReportSearchForm" data-persistence-ignore>
+            <div class="archive-report-field"><label for="archiveReportNameSearch">报告名称：</label><input class="archive-report-search-input" id="archiveReportNameSearch" type="search" value="" placeholder="请输入报告名称" autocomplete="off" data-persistence-ignore></div>
+            <div class="archive-report-field"><label for="archiveReportStatusSearch">发布状态：</label><select class="archive-report-search-select" id="archiveReportStatusSearch" data-persistence-ignore><option value="">全部</option><option value="已发布">已发布</option><option value="待发布">待发布</option></select></div>
             <div class="archive-report-query-actions"><button class="archive-report-query-btn primary" type="submit">查询</button><button class="archive-report-query-btn" type="button" id="archiveReportReset">重置</button></div>
           </form>
           <div class="archive-report-table-wrap">
@@ -4371,7 +4473,7 @@
           <label class="archive-edit-field"><span>年龄 <b aria-hidden="true">*</b></span><input type="number" min="0" max="130" step="1" data-archive-modal-field="age" placeholder="请输入年龄" aria-required="true"><small data-archive-modal-error="age"></small></label>
           <label class="archive-edit-field"><span>出生日期</span><input type="month" data-archive-modal-field="birthDate"><small data-archive-modal-error="birthDate"></small></label>
           <label class="archive-edit-field"><span>手机号 <b aria-hidden="true">*</b></span><input type="text" data-archive-modal-field="phone" placeholder="请输入手机号" aria-required="true"><small data-archive-modal-error="phone"></small></label>
-          <label class="archive-edit-field"><span>证件类型 <b aria-hidden="true">*</b></span><select data-archive-modal-field="idType" aria-required="true"><option value="">请选择</option><option>居民身份证</option><option>护照</option><option>港澳居民来往内地通行证</option><option>台湾居民来往大陆通行证</option><option>其他</option></select><small data-archive-modal-error="idType"></small></label>
+          <label class="archive-edit-field"><span>证件类型 <b aria-hidden="true">*</b></span><select data-archive-modal-field="idType" aria-required="true"><option value="">请选择</option><option>居民身份证</option><option>护照</option><option>港澳居民来往内地通行证</option><option>港奥居民内地居住证</option><option>其他</option></select><small data-archive-modal-error="idType"></small></label>
           <label class="archive-edit-field"><span>证件号 <b aria-hidden="true">*</b></span><input type="text" maxlength="32" data-archive-modal-field="idNumber" placeholder="请输入证件号" aria-required="true"><small data-archive-modal-error="idNumber"></small></label>
           <label class="archive-edit-field"><span>民族</span><select data-archive-modal-field="ethnicity"><option value="">请选择</option><option>汉族</option><option>壮族</option><option>回族</option><option>满族</option><option>其他</option></select></label>
           <label class="archive-edit-field"><span>婚姻状况</span><select data-archive-modal-field="maritalStatus"><option value="">请选择</option><option>未婚</option><option>已婚</option><option>离异</option><option>丧偶</option><option>其他</option></select></label>
@@ -4422,7 +4524,7 @@
         <form id="patientCreateForm" novalidate>
           <section class="patient-create-section"><h3>基础信息</h3><div class="patient-create-grid">
             <label class="patient-create-field"><span>姓名 <b>*</b></span><input name="name" autocomplete="name" placeholder="请输入患者姓名"><small data-create-error="name"></small></label>
-            <label class="patient-create-field"><span>证件类型 <b>*</b></span><select name="idType"><option>居民身份证</option><option>护照</option><option>港澳居民来往内地通行证</option><option>台湾居民来往大陆通行证</option><option>其他</option></select></label>
+            <label class="patient-create-field"><span>证件类型 <b>*</b></span><select name="idType"><option>居民身份证</option><option>护照</option><option>港澳居民来往内地通行证</option><option>港奥居民内地居住证</option><option>其他</option></select></label>
             <label class="patient-create-field"><span>证件号码 <b>*</b></span><input name="idNumber" autocomplete="off" maxlength="18" placeholder="请输入18位居民身份证号" aria-describedby="patientCreateIdNumberError"><small id="patientCreateIdNumberError" data-create-error="idNumber" role="alert"></small></label>
             <div class="patient-create-duplicate" id="patientCreateDuplicate" hidden></div>
             <label class="patient-create-field">性别<select name="gender"><option value="">请选择</option><option>男</option><option>女</option></select></label>
@@ -4464,7 +4566,7 @@
         <div class="archive-field"><label>职业</label><input class="archive-input" data-patient-field="occupation" placeholder="请输入职业"></div>
         <div class="archive-field"><label>常住地址</label><input class="archive-input" data-patient-field="region" placeholder="请输入常住地址"></div>
         <div class="archive-field required"><label>手机号码</label><input class="archive-input" data-patient-field="phone" placeholder="请输入手机号码"><div class="field-error" data-error-for="phone"></div></div>
-        <div class="archive-field"><label>证件类型</label><select class="archive-select" data-patient-field="idType"><option value="">请选择</option><option>居民身份证</option><option>护照</option><option>港澳居民来往内地通行证</option><option>台湾居民来往大陆通行证</option><option>其他</option></select></div>
+        <div class="archive-field"><label>证件类型</label><select class="archive-select" data-patient-field="idType"><option value="">请选择</option><option>居民身份证</option><option>护照</option><option>港澳居民来往内地通行证</option><option>港奥居民内地居住证</option><option>其他</option></select></div>
         <div class="archive-field"><label>证件号</label><input class="archive-input" data-patient-field="idNumber" placeholder="请输入证件号码"></div>
         <div class="archive-field"><label>就诊号</label><input class="archive-input" data-patient-field="visitNo" readonly></div>
       </div></div></section>
@@ -4675,7 +4777,7 @@
       standardFeature: patientDemoProfiles.standardFeatures[index % patientDemoProfiles.standardFeatures.length],
       businessTag: patientDemoProfiles.businessTags[index % patientDemoProfiles.businessTags.length]
     }));
-    const patientListState = { keyword: '', team: '', page: 1, smartConditions: [], activeSmartTagId: '' };
+    const patientListState = { keyword: '', team: '', markStatus: '', page: 1, smartConditions: [], activeSmartTagId: '' };
     let patientMarkTargetVisitNo = '';
     const patientBatchSelection = new Set();
     const patientBatchEnrollmentNotifications = [];
@@ -5800,14 +5902,17 @@
     function clearPatientQueryConditions() {
       patientListState.keyword = '';
       patientListState.team = '';
+      patientListState.markStatus = '';
       patientListState.page = 1;
       patientListState.smartConditions = [];
       patientListState.activeSmartTagId = '';
       const search = document.getElementById('patientListSearch');
       const team = document.getElementById('patientTeamFilter');
+      const markStatus = document.getElementById('patientMarkStatusFilter');
       const advancedPanel = document.getElementById('patientAdvancedPanel');
       if (search) search.value = '';
       if (team) team.selectedIndex = 0;
+      if (markStatus) markStatus.selectedIndex = 0;
       advancedPanel?.querySelectorAll('select').forEach(select => select.selectedIndex = 0);
       advancedPanel?.classList.remove('open');
       renderPatientSmartTags();
@@ -6056,16 +6161,17 @@
       const rows = allPatients.filter(patient => {
         const matchesKeyword = !keyword || [patient.name, patient.visitNo, patient.phone].some(value => value.toLowerCase().includes(keyword));
         const matchesTeam = !patientListState.team || patient.team === patientListState.team;
+        const matchesMarkStatus = !patientListState.markStatus || (patientListState.markStatus === 'marked' ? Boolean(patient.marked) : !patient.marked);
         const matchesSmart = patientMatchesSmartConditions(patient, patientListState.smartConditions);
-        return matchesKeyword && matchesTeam && matchesSmart;
+        return matchesKeyword && matchesTeam && matchesMarkStatus && matchesSmart;
       });
       document.getElementById('patientListRows').innerHTML = rows.length ? rows.map(patient => `<tr class="${patientBatchSelection.has(patient.visitNo) ? 'selected' : ''}" data-patient-row="${esc(patient.visitNo)}" tabindex="0" role="link" aria-label="查看${esc(patient.name)}的患者档案">
         <td class="patient-select-col"><input class="patient-row-check" type="checkbox" data-patient-select="${esc(patient.visitNo)}" aria-label="选择患者${esc(patient.name)}" ${patientBatchSelection.has(patient.visitNo) ? 'checked' : ''}></td>
         <td class="patient-name-col"><div class="patient-name-with-tags"><button type="button" class="patient-name-link" data-open-patient-record="${esc(patient.visitNo)}" aria-label="进入${esc(patient.name)}的患者档案"><span class="patient-list-avatar" aria-hidden="true">${esc(patient.name.slice(-1))}</span><span class="patient-name-text">${esc(patient.name)}</span></button>${renderPatientTags(patient.tags)}</div></td><td>${esc(patient.visitNo)}</td><td>${patient.age ? esc(patient.age) + '岁' : '--'}</td><td>${esc(patient.gender)}</td>
-        <td><span class="patient-phone-mask">${esc(patient.phone)} <span class="patient-phone-eye">⌁</span></span></td><td class="institution-col" title="${esc(patient.managementInstitution || '--')}">${esc(patient.managementInstitution || '--')}</td><td>${esc(patient.department)}</td>
+        <td><span class="patient-phone-mask">${esc(patient.phone)} <span class="patient-phone-eye">⌁</span></span></td><td class="mark-status-col"><span class="patient-mark-status ${patient.marked ? 'marked' : ''}">${patient.marked ? '已标记' : '待标记'}</span></td><td class="institution-col" title="${esc(patient.managementInstitution || '--')}">${esc(patient.managementInstitution || '--')}</td><td>${esc(patient.department)}</td>
         <td class="patient-diagnosis" title="${esc(patient.diagnosis)}">${esc(patient.diagnosis)}</td><td>${esc(patient.visitDate)}</td><td title="${esc(patient.team)}">${esc(patient.team)}</td>
         <td class="patient-action-col"><span class="patient-row-actions"><button type="button" class="patient-mark-action" data-mark-patient="${esc(patient.visitNo)}" aria-pressed="${Boolean(patient.marked)}" aria-label="${patient.marked ? '编辑标记' : '标记'}${esc(patient.name)}"><span>标记</span></button><button type="button" class="patient-more-action" data-toggle-patient-more="${esc(patient.visitNo)}" aria-haspopup="menu" aria-expanded="false">更多<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="m4 6 4 4 4-4" stroke-linecap="round" stroke-linejoin="round"/></svg></button><span class="patient-action-menu" role="menu" hidden><button type="button" role="menuitem" data-open-patient-record="${esc(patient.visitNo)}">查看档案</button><button type="button" role="menuitem" data-select-patient-group="${esc(patient.visitNo)}">选择分组</button><button type="button" role="menuitem" class="patient-referral-action" data-open-referral="${esc(patient.visitNo)}">转诊申请</button></span></span></td>
-      </tr>`).join('') : `<tr><td colspan="12" style="height:220px;text-align:center;color:#9aa5b4">暂无符合条件的患者<br><button data-clear-smart-filter style="margin-top:10px;color:#3154ff">清除智能条件</button></td></tr>`;
+      </tr>`).join('') : `<tr><td colspan="13" style="height:220px;text-align:center;color:#9aa5b4">暂无符合条件的患者<br><button data-clear-smart-filter style="margin-top:10px;color:#3154ff">清除智能条件</button></td></tr>`;
       const summary = document.getElementById('patientFilterSummary');
       summary.hidden = !patientListState.smartConditions.length;
       if (patientListState.smartConditions.length) {
@@ -6073,7 +6179,7 @@
         document.getElementById('patientFilterResultCount').textContent = `命中 ${rows.length} 位患者`;
       }
       const total = document.querySelector('.patient-list-pager .total');
-      if (total) total.textContent = patientListState.smartConditions.length || keyword || patientListState.team ? `共 ${rows.length} 条` : `共 ${78593 + allPatients.length - patientListInitialCount} 条`;
+      if (total) total.textContent = patientListState.smartConditions.length || keyword || patientListState.team || patientListState.markStatus ? `共 ${rows.length} 条` : `共 ${78593 + allPatients.length - patientListInitialCount} 条`;
       updatePatientBatchSelectionUI(rows.map(patient => patient.visitNo));
       renderPatientSmartTags();
     }
@@ -6122,6 +6228,18 @@
       if (error) error.textContent = '';
     }
 
+    function getSelectedPatientMarkTypes() {
+      return Array.from(document.querySelectorAll('input[name="patientMarkType"]:checked'));
+    }
+
+    function syncPatientMarkTypeLimit() {
+      const inputs = Array.from(document.querySelectorAll('input[name="patientMarkType"]'));
+      const selectedCount = inputs.filter(input => input.checked).length;
+      inputs.forEach(input => { input.disabled = selectedCount >= 3 && !input.checked; });
+      const limit = document.getElementById('patientMarkTypeLimit');
+      if (limit) limit.textContent = `已选 ${selectedCount}/3`;
+    }
+
     function openPatientMarkDrawer(visitNo) {
       const patient = allPatients.find(item => item.visitNo === visitNo);
       if (!patient) return;
@@ -6129,9 +6247,11 @@
       closePatientActionMenus();
       const saved = patient.markInfo || {};
       document.getElementById('patientMarkPatientName').textContent = patient.name;
-      document.getElementById('patientMarkPatientMeta').textContent = `${patient.gender || '--'} · ${patient.age ? `${patient.age}岁` : '--'} · 就诊卡号 ${patient.visitNo}`;
+      document.getElementById('patientMarkPatientMeta').textContent = `性别：${patient.gender || '--'} · 年龄：${patient.age ? `${patient.age}岁` : '--'} · 手机号码：${patient.phone || '--'}`;
       document.getElementById('patientMarkAvatar').textContent = patient.name.slice(-1);
-      document.querySelectorAll('input[name="patientMarkType"]').forEach(input => { input.checked = input.value === saved.type; });
+      const savedTypes = (Array.isArray(saved.types) ? saved.types : (saved.type ? [saved.type] : [])).slice(0, 3);
+      document.querySelectorAll('input[name="patientMarkType"]').forEach(input => { input.checked = savedTypes.includes(input.value); });
+      syncPatientMarkTypeLimit();
       document.getElementById('patientMarkServiceName').value = saved.serviceName || '';
       document.getElementById('patientMarkServiceAmount').value = saved.amount ?? '';
       renderPatientMarkBenefits(saved.benefits || [{ content: '', duration: '' }]);
@@ -6155,12 +6275,12 @@
       clearPatientMarkValidation();
       const patient = allPatients.find(item => item.visitNo === patientMarkTargetVisitNo);
       if (!patient) return;
-      const typeInput = document.querySelector('input[name="patientMarkType"]:checked');
+      const typeInputs = getSelectedPatientMarkTypes();
       const serviceNameInput = document.getElementById('patientMarkServiceName');
       const amountInput = document.getElementById('patientMarkServiceAmount');
       const benefits = collectPatientMarkBenefits();
       let firstInvalid = null;
-      if (!typeInput) {
+      if (!typeInputs.length || typeInputs.length > 3) {
         const types = document.getElementById('patientMarkTypes');
         types.classList.add('invalid');
         firstInvalid = document.querySelector('input[name="patientMarkType"]');
@@ -6191,15 +6311,17 @@
         return;
       }
       patient.marked = true;
+      const selectedTypes = typeInputs.map(input => input.value);
       patient.markInfo = {
-        type: typeInput.value,
+        type: selectedTypes[0],
+        types: selectedTypes,
         serviceName: serviceNameInput.value.trim(),
         amount: Number(amountInput.value).toFixed(2),
         benefits
       };
       closePatientMarkDrawer();
       renderPatientList();
-      showToast(`已为${patient.name}添加${patient.markInfo.type}标记`);
+      showToast(`已为${patient.name}添加${selectedTypes.join('、')}标记`);
     }
 
     function bindPatientArchiveEntries() {
@@ -6529,6 +6651,7 @@
       if (view === 'organization') window.mountOrganizationPage?.();
       document.getElementById('organizationManagementView')?.classList.toggle('active', view === 'organization');
       const isPatients = view === 'patients';
+      const isTeamPatients = view === 'teamPatients';
       const isHealthTasks = view === 'healthTasks';
       const isCheckinEvaluation = view === 'checkinEvaluation';
       const isKnowledge = view === 'knowledge';
@@ -6555,6 +6678,7 @@
       document.getElementById('systemRoleView')?.classList.toggle('active', isSystemRoles);
       document.getElementById('teamHomeView')?.classList.remove('active');
       document.getElementById('patientListView')?.classList.toggle('active', isPatients);
+      document.getElementById('teamPatientView')?.classList.toggle('active', isTeamPatients);
       document.getElementById('healthTaskView')?.classList.toggle('active', isHealthTasks);
       document.getElementById('checkinEvaluationView')?.classList.toggle('active', isCheckinEvaluation);
       document.getElementById('knowledgeBaseView')?.classList.toggle('active', isKnowledge);
@@ -6562,9 +6686,10 @@
       document.getElementById('operationsStatisticsView')?.classList.toggle('active', isOperationsStatistics);
       document.getElementById('knowledgeDetailView')?.classList.remove('active');
       if (document.getElementById('listPageTitleText')) document.getElementById('listPageTitleText').textContent = isHealthTasks ? '健康任务' : isCheckinEvaluation ? '评价任务' : isPatients ? '全部患者' : isIndicator ? '指标模板' : isScale ? '量表管理' : '方案管理';
-      const listTitleMap = { personnel: '人员管理', organization: '组织管理', systemRoles: '系统角色', workbench: '工作台', healthTasks: '健康任务', checkinEvaluation: '评价任务', patients: '全部患者', indicator: '指标模板', teams: '团队管理', scale: '量表管理', plans: '方案管理', evaluationReports: '评估报告', articles: '文章管理', knowledge: '知识库', statisticsReport: '数据报表', operationsStatistics: '统计报表', dashboardLatest: '数据看板（最新稿）', dashboardUpdated: '数据看板更新版' };
+      const listTitleMap = { personnel: '人员管理', organization: '组织管理', systemRoles: '系统角色', workbench: '工作台', healthTasks: '健康任务', checkinEvaluation: '评价任务', patients: '全部患者', teamPatients: '团队患者', indicator: '指标模板', teams: '团队管理', scale: '量表管理', plans: '方案管理', evaluationReports: '评估报告', articles: '文章管理', knowledge: '知识库', statisticsReport: '数据报表', operationsStatistics: '统计报表', dashboardLatest: '数据看板（最新稿）', dashboardUpdated: '数据看板更新版' };
       if (document.getElementById('listPageTitleText')) document.getElementById('listPageTitleText').textContent = listTitleMap[view] || '方案管理';
       document.querySelector('.list-main')?.classList.toggle('workbench-main', isWorkbench);
+      document.querySelector('.list-main')?.classList.toggle('team-patient-main-view', isTeamPatients);
       document.querySelector('.list-main')?.classList.toggle('statistics-report-main', isStatisticsReport || isOperationsStatistics);
       document.querySelector('.list-main')?.classList.toggle('operations-statistics-main', isOperationsStatistics);
       document.querySelector('.list-app')?.classList.toggle('operations-statistics-layout', isOperationsStatistics);
@@ -6586,6 +6711,7 @@
       if (isTeams) window.renderTeamList?.();
       if (isSystemRoles) window.renderSystemRoles?.();
       if (isPatients) renderPatientList();
+      if (isTeamPatients) window.renderTeamPatientList?.();
       if (isHealthTasks) {
         ensureHealthTaskCheckinTypeRows();
         const activeTab = document.querySelector('.health-task-tab.active')?.dataset.healthTaskTab || 'running';
@@ -10709,10 +10835,10 @@
         return;
       }
       if (e.target.closest('[data-patient-team-list]')) {
-        showListView('patients');
-        document.getElementById('patientTeamFilter').selectedIndex = 1;
-        patientListState.team = document.getElementById('patientTeamFilter').value;
-        renderPatientList();
+        showListView('teamPatients');
+        const teamPatientMenu = document.querySelector('[data-patient-team-list]');
+        teamPatientMenu?.classList.add('active');
+        teamPatientMenu?.closest('.menu-section')?.classList.remove('is-collapsed');
         return;
       }
       if (e.target.closest('[data-archive-back]')) {
@@ -11944,6 +12070,12 @@
         renderPatientList();
         return;
       }
+      if (e.target.id === 'patientMarkStatusFilter') {
+        patientListState.markStatus = e.target.value;
+        patientListState.page = 1;
+        renderPatientList();
+        return;
+      }
       if (e.target.id === 'checkinEvalTypeFilter') {
         applyCheckinEvalFilters();
         return;
@@ -12117,6 +12249,16 @@
     clearPatientQueryConditions();
     renderPatientList();
     bindPatientArchiveEntries();
+    document.getElementById('patientMarkTypes')?.addEventListener('change', event => {
+      if (!event.target.matches('input[name="patientMarkType"]')) return;
+      const selectedTypes = getSelectedPatientMarkTypes();
+      if (selectedTypes.length > 3) {
+        event.target.checked = false;
+        showToast('标记类型最多选择3项');
+      }
+      syncPatientMarkTypeLimit();
+      if (getSelectedPatientMarkTypes().length) document.getElementById('patientMarkTypes')?.classList.remove('invalid');
+    });
     document.querySelector('.patient-list-table-wrap')?.addEventListener('scroll', () => closePatientActionMenus(), { passive: true });
     window.addEventListener('resize', () => closePatientActionMenus());
     renderPatientDetail();
@@ -14163,6 +14305,7 @@
         }
         const targetPanel = document.querySelector(`#patientArchivePage [data-archive-panel="${archiveTab.dataset.archiveTab}"]`);
         if (!archivePage || !targetPanel) return;
+        if (archiveTab.dataset.archiveTab === 'customer-service') window.dispatchEvent(new CustomEvent('customerServiceSectionOpen'));
         event.preventDefault();
         event.stopImmediatePropagation();
         setArchiveMoreOpen(false);
@@ -14265,8 +14408,38 @@
       function closeReportDialog() {
         reportDialog.classList.remove('open');
         reportDialog.setAttribute('aria-hidden', 'true');
+        reportDialog.querySelector('.archive-report-dialog')?.classList.remove('preview-document');
         activeReportId = null;
         reportDialogMode = '';
+      }
+
+      function buildGeneratedReportPreview(reportName, reportDate) {
+        const patient = archiveInvitePatient();
+        return `<article class="generated-report-paper" aria-label="${escapeHtml(reportName)}预览">
+          <section class="generated-report-cover">
+            <div class="generated-report-hospital"><span class="generated-report-hospital-mark">✚</span><span><strong>暨南大学附属顺德医院</strong><small>THE AFFILIATED SHUNDE HOSPITAL OF JINAN UNIVERSITY</small></span></div>
+            <svg class="generated-report-dna" viewBox="0 0 430 380" fill="none" aria-hidden="true"><defs><linearGradient id="reportDnaGradient" x1="70" y1="320" x2="360" y2="50" gradientUnits="userSpaceOnUse"><stop stop-color="#56B7EC"/><stop offset=".5" stop-color="#14C7C0"/><stop offset="1" stop-color="#047E96"/></linearGradient></defs><path d="M82 332C188 288 240 238 278 160C307 102 340 70 375 50" stroke="url(#reportDnaGradient)" stroke-width="24" stroke-linecap="round"/><path d="M55 294C160 261 213 213 246 142C274 83 309 51 354 30" stroke="url(#reportDnaGradient)" stroke-width="17" stroke-linecap="round" opacity=".8"/><g stroke="#74DCE1" stroke-width="8" stroke-linecap="round" opacity=".9"><path d="m91 285 75 12"/><path d="m126 255 73 9"/><path d="m166 219 69 6"/><path d="m202 181 62 5"/><path d="m237 139 55 7"/><path d="m273 98 45 10"/><path d="m308 65 36 10"/></g></svg>
+            <div class="generated-report-cover-meta"><h3>${escapeHtml(reportName)}</h3><p>用户： ${escapeHtml(patient.name || '/')}</p><p>日期： ${escapeHtml(reportDate)}</p></div>
+          </section>
+          <section class="generated-report-body"><h3>目录</h3><div class="generated-report-toc"><strong>一、本周期数据情况</strong><span>请注意</span></div><div class="generated-report-section"><h4>一、本周期数据情况</h4><p>本报告周期为 ${escapeHtml(reportDate)}（单日数据）。本周期内未采集到任何打卡记录与量表记录，<strong>暂无法生成健康数据分析。</strong></p><p>为保证报告的真实性与安全性，本报告不对未采集的指标做任何推测或估算。待有实际打卡与量表数据后，将重新生成完整的阶段分析报告。</p><h4>请注意</h4><p><strong>说明：</strong></p><ul><li>本报告基于患者本周期内的实际打卡与量表数据生成；当前周期无数据，故未包含健康指标分析内容。</li><li>报告内容仅供参考，<strong>不替代执业医师线下诊断与临床医疗建议。</strong></li><li>如在管理过程中出现身体不适或指标异常波动，请及时就医。</li><li>如已完成打卡或量表填写但此处仍显示无数据，请联系健康管理师核对。</li></ul></div></section>
+        </article>`;
+      }
+
+      function openGeneratedReportPreview(reportName) {
+        closeReportMenu();
+        const now = new Date();
+        const reportDate = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
+        reportDialogMode = 'generated-preview';
+        dialogTitle.textContent = `${reportName} ${reportDate}`;
+        dialogBody.innerHTML = buildGeneratedReportPreview(reportName, reportDate);
+        dialogFoot.innerHTML = '';
+        reportDialog.querySelector('.archive-report-dialog')?.classList.add('preview-document');
+        reportDialog.classList.add('open');
+        reportDialog.setAttribute('aria-hidden', 'false');
+        reportDialog.querySelectorAll('[data-report-dialog-close]').forEach(button => {
+          button.onclick = event => { event.preventDefault(); event.stopPropagation(); closeReportDialog(); };
+        });
+        requestAnimationFrame(() => reportDialog.querySelector('[data-report-dialog-close]')?.focus());
       }
 
       function renderReportTable() {
@@ -14316,6 +14489,7 @@
 
       function openReportDialog(mode, reportId) {
         closeReportMenu();
+        reportDialog.querySelector('.archive-report-dialog')?.classList.remove('preview-document');
         activeReportId = reportId;
         reportDialogMode = mode;
         const report = getActiveReport();
@@ -14363,7 +14537,7 @@
         menu.setAttribute('role', 'menu');
         menu.innerHTML = type === 'invite'
           ? '<button role="menuitem" data-report-feature="邀请完善信息"><span class="archive-report-popover-icon">＋</span>邀请完善信息</button><button role="menuitem" data-report-feature="邀请完成评估"><span class="archive-report-popover-icon">✓</span>邀请完成评估</button>'
-          : ['总检报告生成', '体检报告解读', '新-体检报告解读', '定制体检方案', '新-定制体检方案', '定制健康管理方案'].map((label, index) => `<button role="menuitem" data-report-feature="${label}"><span class="archive-report-popover-icon">${index < 3 ? '▣' : '▤'}</span>${label}</button>`).join('');
+          : ['阶段日报', '总检报告生成', '体检报告解读', '新-体检报告解读', '定制体检方案', '新-定制体检方案', '定制健康管理方案'].map((label, index) => `<button role="menuitem" data-report-feature="${label}" data-generated-report-preview="${label}"><span class="archive-report-popover-icon">${index < 4 ? '▣' : '▤'}</span>${label}</button>`).join('');
         button.parentElement.append(menu);
         button.setAttribute('aria-expanded', 'true');
         menu.querySelector('button')?.focus();
@@ -14512,6 +14686,7 @@
           closeReportMenu();
           if (feature.dataset.reportFeature === '邀请完善信息') openInviteDialog();
           else if (feature.dataset.reportFeature === '邀请完成评估') openEvaluationInviteDialog();
+          else if (feature.dataset.generatedReportPreview) openGeneratedReportPreview(feature.dataset.generatedReportPreview);
           else showReportToast(`已选择“${feature.dataset.reportFeature}”`);
           return;
         }
@@ -14611,7 +14786,9 @@
         }
       });
 
-      renderReportTable();
+      nameInput.value = '';
+      statusSelect.value = '';
+      runReportSearch();
     })();
   </script>
   <!-- Upload modal patch scripts are intentionally disabled on initial page load.
@@ -16708,8 +16885,8 @@
 </script>
 
 <script src="./js/service-management.js?v=20260929-1"></script>
-<script src="./js/expert-report.js?v=20261019-29"></script>
-<script src="./js/customer-service.js?v=20261019-33"></script>
+<script src="./js/expert-report.js?v=20261020-33"></script>
+<script src="./js/customer-service.js?v=20261020-36"></script>
 <script src="./js/interface-notes-snapshot.js?v=20260923-v3-17"></script>
 <script src="./js/interface-annotations-v3.js?v=20260924-v3-18"></script>
 <script src="./js/knowledge-base.js?v=knowledge-v15"></script>
@@ -16719,11 +16896,12 @@
 <script src="./js/statistics-report.js?v=20260911-05"></script>
 <script src="./js/operations-statistics.js?v=20260910-01"></script>
 <script src="./js/team-management.js?v=20260923-7"></script>
+<script src="./js/team-patients.js?v=20261020-1"></script>
   <script src="./js/health-portrait.js?v=20260924-3"></script>
 <script src="./js/personnel-management.js?v=20260929-2"></script>
 <script src="./js/organization-management.js?v=20260929-4"></script>
 <script src="./js/workbench.js?v=20261016-3"></script>
-<script src="./js/ai-steward.js?v=20261019-23"></script>
+  <script src="./js/ai-steward.js?v=20261020-28"></script>
 <script src="./js/system-role.js?v=20260929-1"></script>
 <script src="./js/scale-create.js?v=20260916-3"></script>
 <script src="./js/dashboard-latest-data.js?v=20260913-31"></script>
