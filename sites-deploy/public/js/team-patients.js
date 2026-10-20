@@ -1,5 +1,5 @@
 (function () {
-  const patients = [
+  const hypertensionPending = [
     { id: '9935669', name: '钟云文', gender: '男', age: 49, phone: '138****4378', source: '智能分组', date: '2026/09/16', tags: ['正在接受降压治疗', '高血压病史', '频发室性早搏'], state: 'pending', suggestion: '患者为中年男性，因频发室性早搏伴T波改变及肺动脉瓣轻度返流就诊，提示存在心律失常及潜在心血管风险；从门诊病历中识别到患者正在接受奥美沙坦酯片20mg每日一次的降压治疗，符合高血压管理团队中“正在接受降压药物治疗”的入组条件；结合当前主要监测血压控制情况及评估其对心脏影响的干预目标，建议分配至高血压管理团队进行持续管理。' },
     { id: '9922269', name: '潘淑玲', gender: '女', age: 58, phone: '137****6962', source: '智能分组', date: '2026/09/16', tags: ['降压药物治疗'], state: 'pending', suggestion: '患者为58岁女性，有长期服用降压药物史，提示存在高血压病史并伴潜在靶器官损害风险；从病历中识别到患者自述“高血压服药中”，符合当前随访组中“正在接受降压药物治疗”的纳入条件；结合当前主要监测血压控制情况与评估心血管风险的目标，建议分配至高血压管理团队进行持续管理。' },
     { id: '9800536', name: '罗朋英', gender: '女', age: 76, phone: '135****8080', source: '智能分组', date: '2026/09/15', tags: ['高龄', '既往高血压病史'], state: 'pending', suggestion: '患者为76岁老年女性，有明确高血压病史，当前因眩晕复诊并伴口干、腰酸、舌脉异常等表现，提示血压控制可能不稳定且存在脑血管事件风险；从病历记录中识别到患者既往有高血压病史，符合高血压管理团队中“既往有高血压病史记录”的入组条件；结合当前主要监测血压变化、评估眩晕与血压关联性及预防心脑血管并发症的干预目标，建议分配至高血压管理团队进行持续管理。' },
@@ -16,52 +16,92 @@
     { id: '9481206', name: '孙文华', gender: '男', age: 66, phone: '133****5217', source: '医生转入', date: '2026/09/08', tags: ['血压控制达标'], state: 'exited', suggestion: '患者阶段性管理目标已完成，近期血压稳定、用药方案明确，已按计划出组并转为常规复诊。' }
   ];
 
-  const state = { tab: 'pending', keyword: '', source: '', page: 1, pageSize: 20 };
+  const weightManaging = [
+    ['陈梦强', '女', 35, '2026/08/18', 64, '182****2136', '勿动 28天血糖管理领跑营', '开营-问卷建档', '2026/08/18', true, false],
+    ['测试一号', '女', 29, '2026/08/20', 62, '139****5678', '暂无', '--', '--', false, false],
+    ['王星星', '女', 29, '2026/09/09', 42, '182****2136', '勿动 28天血糖管理领跑营', '开营-问卷建档', '2026/09/09', true, false],
+    ['杨明星', '男', 29, '2026/09/10', 41, '182****2136', '勿动 28天血糖管理领跑营', '开营-饮食运动方案', '2026/09/10', true, false],
+    ['王一博', '男', 28, '2026/09/10', 41, '156****7517', '勿动 28天血糖管理领跑营', '开营-问卷建档', '2026/09/10', true, false],
+    ['汪丹', '男', 30, '2026/09/10', 41, '182****2136', '勿动 28天血糖管理领跑营', '开营-问卷建档', '2026/09/10', true, false],
+    ['李佳宁', '女', 31, '2026/09/12', 39, '186****3208', '勿动 28天血糖管理领跑营', '开营-饮食运动方案', '2026/09/12', true, false],
+    ['周凯', '男', 33, '2026/09/13', 38, '137****9076', '勿动 28天血糖管理领跑营', '开营-问卷建档', '2026/09/13', false, true],
+    ['赵可欣', '女', 27, '2026/09/14', 37, '159****6742', '勿动 28天血糖管理领跑营', '开营-问卷建档', '2026/09/14', false, false]
+  ].map((item, index) => ({ id: `team-m-${String(index + 1).padStart(3, '0')}`, displayVisitNo: '--', name: item[0], gender: item[1], age: item[2], joinedAt: item[3], joinedDays: item[4], phone: item[5], manager: '暂无', plan: item[6], node: item[7], nodeDate: item[8], overdue: item[9], warning: item[10], state: 'managing' }));
+
+  const teamProfiles = {
+    hypertension: { name: '高血压管理团队', department: '心血管内科一病区、生殖中心专区、测试科室', defaultTab: 'pending', patients: hypertensionPending },
+    weight: { name: '28天体重血糖管理领跑营', department: '生殖中心专区、测试科室', defaultTab: 'managing', patients: [
+      { id: 'team-p-001', name: '林可欣', gender: '女', age: 32, phone: '138****5201', source: '患者申请', date: '2026/10/18', tags: ['体重管理'], state: 'pending', suggestion: '患者主动申请参与体重与血糖管理，基础资料完整，建议审核后入组。' },
+      { id: 'team-p-002', name: '方敏', gender: '女', age: 36, phone: '186****7318', source: '医生转入', date: '2026/10/18', tags: ['血糖偏高'], state: 'pending', suggestion: '患者近期血糖偏高并有体重管理需求，符合团队接收范围，建议纳入持续干预。' },
+      { id: 'team-p-003', name: '张杰', gender: '男', age: 34, phone: '137****1569', source: '智能分组', date: '2026/10/17', tags: ['超重'], state: 'pending', suggestion: '患者BMI偏高，存在代谢风险，建议进入28天体重血糖管理领跑营。' },
+      ...weightManaging,
+      { id: 'team-e-001', name: '刘子涵', gender: '女', age: 38, phone: '136****2017', source: '医生转入', date: '2026/09/01', tags: ['已完成计划'], state: 'exited', suggestion: '患者已完成28天管理计划并达到阶段目标，已结案出组。' }
+    ] }
+  };
+
+  const state = { team: 'hypertension', tab: 'pending', keyword: '', source: '', warningOnly: false, overdueOnly: false, page: 1, pageSize: 20, actionMenuId: '' };
   const escapeHtml = value => String(value ?? '').replace(/[&<>'"]/g, character => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[character]));
+  const currentProfile = () => teamProfiles[state.team];
+
+  weightManaging.forEach(patient => {
+    if (typeof allPatients === 'undefined' || allPatients.some(item => item.visitNo === patient.id)) return;
+    allPatients.push({ name: patient.name, visitNo: patient.id, age: String(patient.age), gender: patient.gender, phone: patient.phone, department: '生殖中心专区', diagnosis: '体重与血糖健康管理', tags: patient.overdue ? ['任务已逾期'] : [], visitDate: patient.joinedAt, team: teamProfiles.weight.name, managementInstitution: '暨南大学附属顺德医院' });
+  });
+
+  function counts() {
+    return currentProfile().patients.reduce((result, patient) => { result[patient.state] += 1; return result; }, { pending: 0, managing: 0, exited: 0 });
+  }
 
   function filteredPatients() {
     const keyword = state.keyword.trim().toLowerCase();
-    return patients.filter(patient => patient.state === state.tab
-      && (!keyword || [patient.id, patient.name, patient.phone].some(value => value.toLowerCase().includes(keyword)))
-      && (!state.source || patient.source === state.source));
+    return currentProfile().patients.filter(patient => patient.state === state.tab
+      && (!keyword || [patient.id, patient.displayVisitNo, patient.name, patient.phone, patient.plan, patient.node].some(value => String(value || '').toLowerCase().includes(keyword)))
+      && (!state.source || patient.source === state.source)
+      && (!state.warningOnly || patient.warning)
+      && (!state.overdueOnly || patient.overdue));
   }
 
-  function counts() {
-    return patients.reduce((result, patient) => {
-      result[patient.state] += 1;
-      return result;
-    }, { pending: 0, managing: 0, exited: 0 });
+  function renderTeamMenu() {
+    const menu = document.getElementById('teamPatientTeamMenu');
+    if (!menu) return;
+    menu.innerHTML = Object.entries(teamProfiles).map(([key, profile]) => `<button type="button" role="option" aria-selected="${key === state.team}" class="${key === state.team ? 'selected' : ''}" data-team-patient-select-team="${key}"><strong>${escapeHtml(profile.name)}</strong><span>${escapeHtml(profile.department)}</span></button>`).join('');
   }
 
-  function renderRow(patient) {
+  function renderFilters() {
+    const filters = document.querySelector('.team-patient-filters');
+    if (!filters) return;
+    const placeholder = state.tab === 'managing' ? '就诊号/姓名/手机/当前执行计划' : '就诊号/姓名/手机';
+    filters.innerHTML = `<label class="team-patient-search"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="11" cy="11" r="7"/><path d="m16.5 16.5 4 4"/></svg><input id="teamPatientSearch" value="${escapeHtml(state.keyword)}" placeholder="${placeholder}" autocomplete="off"></label>${state.tab === 'managing' ? `<label class="team-patient-filter-check"><input id="teamPatientWarningOnly" type="checkbox" ${state.warningOnly ? 'checked' : ''}>预警待处理</label><label class="team-patient-filter-check"><input id="teamPatientOverdueOnly" type="checkbox" ${state.overdueOnly ? 'checked' : ''}>任务已逾期</label>` : `<label class="team-patient-source"><span class="sr-only">患者来源</span><select id="teamPatientSource"><option value="">患者来源 请选择</option><option value="智能分组" ${state.source === '智能分组' ? 'selected' : ''}>智能分组</option><option value="医生转入" ${state.source === '医生转入' ? 'selected' : ''}>医生转入</option><option value="患者申请" ${state.source === '患者申请' ? 'selected' : ''}>患者申请</option></select></label>`}`;
+  }
+
+  function renderPendingRow(patient) {
     const pendingActions = patient.state === 'pending' ? `<div class="team-patient-actions"><button type="button" class="team-patient-action" data-team-patient-reject="${escapeHtml(patient.id)}">拒绝入组</button><button type="button" class="team-patient-action primary" data-team-patient-accept="${escapeHtml(patient.id)}">接收入组</button></div>` : '';
-    const statusTag = patient.state === 'managing' ? '<span class="team-patient-chip">管理中</span>' : patient.state === 'exited' ? '<span class="team-patient-chip muted">已出组</span>' : '';
-    return `<article class="team-patient-row" data-team-patient-id="${escapeHtml(patient.id)}">
-      <div class="team-patient-main"><input class="team-patient-check" type="checkbox" aria-label="选择${escapeHtml(patient.name)}"><div class="team-patient-identity">
-        <div class="team-patient-line"><span class="team-patient-avatar" aria-hidden="true">${escapeHtml(patient.name.slice(-1))}</span><strong>${escapeHtml(patient.name)}</strong><b>${escapeHtml(patient.gender)}</b><b>${patient.age}岁</b>${patient.tags.map(tag => `<span class="team-patient-chip">${escapeHtml(tag)}</span>`).join('')}${statusTag}</div>
-        <div class="team-patient-meta"><span>患者来源： <b>${escapeHtml(patient.source)}</b></span><span>${escapeHtml(patient.date)}</span></div>
-        <div class="team-patient-detail"><span>就诊号： ${escapeHtml(patient.id)}</span></div>
-        <div class="team-patient-detail"><span>手机号： ${escapeHtml(patient.phone)}</span></div>
-      </div></div>
-      <div class="team-patient-ai"><strong>AI评估建议</strong><p>${escapeHtml(patient.suggestion)}</p></div>${pendingActions}
-    </article>`;
+    const statusTag = patient.state === 'exited' ? '<span class="team-patient-chip muted">已出组</span>' : '';
+    return `<article class="team-patient-row" data-team-patient-id="${escapeHtml(patient.id)}"><div class="team-patient-main"><input class="team-patient-check" type="checkbox" aria-label="选择${escapeHtml(patient.name)}"><div class="team-patient-identity"><div class="team-patient-line"><span class="team-patient-avatar" aria-hidden="true">${escapeHtml(patient.name.slice(-1))}</span><strong>${escapeHtml(patient.name)}</strong><b>${escapeHtml(patient.gender)}</b><b>${patient.age}岁</b>${patient.tags.map(tag => `<span class="team-patient-chip">${escapeHtml(tag)}</span>`).join('')}${statusTag}</div><div class="team-patient-meta"><span>患者来源： <b>${escapeHtml(patient.source)}</b></span><span>${escapeHtml(patient.date)}</span></div><div class="team-patient-detail"><span>就诊号： ${escapeHtml(patient.displayVisitNo || patient.id)}</span></div><div class="team-patient-detail"><span>手机号： ${escapeHtml(patient.phone)}</span></div></div></div><div class="team-patient-ai"><strong>AI评估建议</strong><p>${escapeHtml(patient.suggestion)}</p></div>${pendingActions}</article>`;
+  }
+
+  function renderManagingRow(patient) {
+    const menuOpen = state.actionMenuId === patient.id;
+    return `<article class="team-patient-row team-patient-managing-row" data-team-patient-id="${escapeHtml(patient.id)}"><div class="team-patient-main"><input class="team-patient-check" type="checkbox" aria-label="选择${escapeHtml(patient.name)}"><div class="team-patient-identity"><div class="team-patient-line"><span class="team-patient-avatar" aria-hidden="true">${escapeHtml(patient.name.slice(-1))}</span><strong>${escapeHtml(patient.name)}</strong><b>${escapeHtml(patient.gender)}</b><b>${patient.age}岁</b>${patient.overdue ? '<span class="team-patient-overdue">任务已逾期</span>' : ''}</div><div class="team-patient-meta"><span>入组时间： <b>${patient.joinedAt}</b></span><span>已在组${patient.joinedDays}天</span></div><div class="team-patient-detail"><span>就诊号： ${escapeHtml(patient.displayVisitNo)}</span></div><div class="team-patient-detail"><span>手机号： ${escapeHtml(patient.phone)}</span></div></div></div><div class="team-patient-plan-info"><p><span>健康负责人：</span><b>${escapeHtml(patient.manager)}</b></p><p><span>当前管理方案：</span><b>${escapeHtml(patient.plan)}</b></p><p><span>当前任务节点：</span><b>${escapeHtml(patient.node)}</b><em>|</em><b>${escapeHtml(patient.nodeDate)}</b></p></div><div class="team-patient-managing-actions"><button type="button" class="team-patient-action" data-mark-patient="${escapeHtml(patient.id)}">标记</button><button type="button" class="team-patient-action" data-team-view-task="${escapeHtml(patient.id)}">查看任务</button><button type="button" class="team-patient-action" data-team-adjust-plan="${escapeHtml(patient.id)}">调整方案</button><div class="team-patient-more-wrap"><button type="button" class="team-patient-action team-patient-more" data-team-patient-more="${escapeHtml(patient.id)}" aria-haspopup="menu" aria-expanded="${menuOpen}">···</button><div class="team-patient-row-menu" role="menu" ${menuOpen ? '' : 'hidden'}><button type="button" role="menuitem" data-team-adjust-manager="${escapeHtml(patient.id)}">调整健康负责人</button><button type="button" role="menuitem" data-team-close-case="${escapeHtml(patient.id)}">结案出组</button></div></div></div></article>`;
   }
 
   function render() {
+    const profile = currentProfile();
     const list = document.getElementById('teamPatientList');
     const pagination = document.getElementById('teamPatientPagination');
     if (!list || !pagination) return;
+    document.getElementById('teamPatientTeamName').textContent = profile.name;
+    document.getElementById('teamPatientDepartment').textContent = profile.department;
     const summary = counts();
-    Object.keys(summary).forEach(key => {
-      const node = document.querySelector(`[data-team-patient-count="${key}"]`);
-      if (node) node.textContent = summary[key];
-    });
+    Object.keys(summary).forEach(key => { const node = document.querySelector(`[data-team-patient-count="${key}"]`); if (node) node.textContent = summary[key]; });
     document.querySelectorAll('[data-team-patient-tab]').forEach(button => button.classList.toggle('active', button.dataset.teamPatientTab === state.tab));
+    renderTeamMenu();
+    renderFilters();
     const rows = filteredPatients();
     const totalPages = Math.max(1, Math.ceil(rows.length / state.pageSize));
     state.page = Math.min(state.page, totalPages);
     const visible = rows.slice((state.page - 1) * state.pageSize, state.page * state.pageSize);
-    list.innerHTML = visible.length ? visible.map(renderRow).join('') : '<div class="team-patient-empty"><span class="team-patient-empty-icon" aria-hidden="true"></span><span>暂无符合条件的患者</span></div>';
+    list.innerHTML = visible.length ? visible.map(patient => state.tab === 'managing' ? renderManagingRow(patient) : renderPendingRow(patient)).join('') : '<div class="team-patient-empty"><span class="team-patient-empty-icon" aria-hidden="true"></span><span>暂无符合条件的患者</span></div>';
     pagination.innerHTML = `<span>共 ${rows.length} 条</span><button type="button" class="team-patient-page" data-team-patient-page="prev" ${state.page === 1 ? 'disabled' : ''} aria-label="上一页">‹</button><button type="button" class="team-patient-page active" aria-current="page">${state.page}</button><button type="button" class="team-patient-page" data-team-patient-page="next" ${state.page === totalPages ? 'disabled' : ''} aria-label="下一页">›</button><select class="team-patient-page-size" data-team-patient-page-size aria-label="每页条数"><option value="20" ${state.pageSize === 20 ? 'selected' : ''}>20 条/页</option><option value="10" ${state.pageSize === 10 ? 'selected' : ''}>10 条/页</option></select>`;
   }
 
@@ -73,14 +113,31 @@
     node.textContent = message;
     document.body.append(node);
     requestAnimationFrame(() => node.classList.add('show'));
-    window.setTimeout(() => {
-      node.classList.remove('show');
-      window.setTimeout(() => node.remove(), 180);
-    }, 1800);
+    window.setTimeout(() => { node.classList.remove('show'); window.setTimeout(() => node.remove(), 180); }, 1800);
+  }
+
+  function closeTeamMenu() {
+    document.getElementById('teamPatientTeamMenu')?.setAttribute('hidden', '');
+    document.querySelector('[data-team-patient-switch]')?.setAttribute('aria-expanded', 'false');
+  }
+
+  function switchTeam(key) {
+    if (!teamProfiles[key]) return;
+    state.team = key;
+    state.tab = teamProfiles[key].defaultTab;
+    state.keyword = '';
+    state.source = '';
+    state.warningOnly = false;
+    state.overdueOnly = false;
+    state.page = 1;
+    state.actionMenuId = '';
+    closeTeamMenu();
+    render();
+    toast(`已切换至${teamProfiles[key].name}`);
   }
 
   function changePatientState(id, nextState, message) {
-    const patient = patients.find(item => item.id === id);
+    const patient = currentProfile().patients.find(item => item.id === id);
     if (!patient) return;
     patient.state = nextState;
     state.page = 1;
@@ -93,39 +150,45 @@
     state.keyword = event.target.value;
     state.page = 1;
     render();
+    requestAnimationFrame(() => { const input = document.getElementById('teamPatientSearch'); input?.focus(); input?.setSelectionRange(state.keyword.length, state.keyword.length); });
   });
 
   document.addEventListener('change', event => {
-    if (event.target.id === 'teamPatientSource') {
-      state.source = event.target.value;
-      state.page = 1;
-      render();
-    }
-    if (event.target.matches('[data-team-patient-page-size]')) {
-      state.pageSize = Number(event.target.value) || 20;
-      state.page = 1;
-      render();
-    }
+    if (event.target.id === 'teamPatientSource') state.source = event.target.value;
+    else if (event.target.id === 'teamPatientWarningOnly') state.warningOnly = event.target.checked;
+    else if (event.target.id === 'teamPatientOverdueOnly') state.overdueOnly = event.target.checked;
+    else if (event.target.matches('[data-team-patient-page-size]')) state.pageSize = Number(event.target.value) || 20;
+    else return;
+    state.page = 1;
+    render();
   });
 
   document.addEventListener('click', event => {
+    const switchButton = event.target.closest('[data-team-patient-switch]');
+    if (switchButton) {
+      const menu = document.getElementById('teamPatientTeamMenu');
+      const willOpen = menu.hidden;
+      menu.hidden = !willOpen;
+      switchButton.setAttribute('aria-expanded', String(willOpen));
+      return;
+    }
+    const teamOption = event.target.closest('[data-team-patient-select-team]');
+    if (teamOption) { switchTeam(teamOption.dataset.teamPatientSelectTeam); return; }
+    if (!event.target.closest('.team-patient-switch-wrap')) closeTeamMenu();
     const tab = event.target.closest('[data-team-patient-tab]');
-    if (tab) {
-      state.tab = tab.dataset.teamPatientTab;
-      state.page = 1;
-      render();
-      return;
-    }
+    if (tab) { state.tab = tab.dataset.teamPatientTab; state.page = 1; state.keyword = ''; state.warningOnly = false; state.overdueOnly = false; state.actionMenuId = ''; render(); return; }
     const accept = event.target.closest('[data-team-patient-accept]');
-    if (accept) {
-      changePatientState(accept.dataset.teamPatientAccept, 'managing', '已接收{name}入组');
-      return;
-    }
+    if (accept) { changePatientState(accept.dataset.teamPatientAccept, 'managing', '已接收{name}入组'); return; }
     const reject = event.target.closest('[data-team-patient-reject]');
-    if (reject) {
-      changePatientState(reject.dataset.teamPatientReject, 'exited', '已拒绝{name}入组');
-      return;
-    }
+    if (reject) { changePatientState(reject.dataset.teamPatientReject, 'exited', '已拒绝{name}入组'); return; }
+    const more = event.target.closest('[data-team-patient-more]');
+    if (more) { state.actionMenuId = state.actionMenuId === more.dataset.teamPatientMore ? '' : more.dataset.teamPatientMore; render(); return; }
+    if (!event.target.closest('.team-patient-more-wrap') && state.actionMenuId) { state.actionMenuId = ''; render(); }
+    const closeCase = event.target.closest('[data-team-close-case]');
+    if (closeCase) { changePatientState(closeCase.dataset.teamCloseCase, 'exited', '已将{name}结案出组'); return; }
+    if (event.target.closest('[data-team-view-task]')) { toast('患者任务列表已打开'); return; }
+    if (event.target.closest('[data-team-adjust-plan]')) { toast('管理方案调整已打开'); return; }
+    if (event.target.closest('[data-team-adjust-manager]')) { toast('健康负责人调整已打开'); return; }
     const page = event.target.closest('[data-team-patient-page]');
     if (page && !page.disabled) {
       const totalPages = Math.max(1, Math.ceil(filteredPatients().length / state.pageSize));
@@ -135,7 +198,6 @@
     }
     if (event.target.closest('[data-team-patient-add]')) toast('添加患者入口已打开');
     else if (event.target.closest('[data-team-patient-qr]')) toast('团队二维码已生成');
-    else if (event.target.closest('[data-team-patient-switch]')) toast('团队切换器已打开');
     else if (event.target.closest('[data-team-patient-audit]')) toast('入组审核记录已打开');
   });
 

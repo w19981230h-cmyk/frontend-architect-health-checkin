@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="./css/team-management.css?v=20260923-4">
-  <link rel="stylesheet" href="./css/team-patients.css?v=20261020-1">
+  <link rel="stylesheet" href="./css/team-patients.css?v=20261020-2">
   <link rel="stylesheet" href="./css/plan-form-mode.css?v=20260924-2">
   <link rel="stylesheet" href="./css/interface-annotations-v3.css?v=20260924-v3-18">
   <link rel="stylesheet" href="./css/referral-drawer.css?v=20260902-8">
@@ -3096,7 +3096,7 @@
 <link rel="stylesheet" href="./css/personnel-management.css?v=20260929-1">
 <link rel="stylesheet" href="./css/organization-management.css?v=20260929-1">
 <link rel="stylesheet" href="./css/workbench.css?v=20261019-4">
-  <link rel="stylesheet" href="./css/ai-steward.css?v=20261020-22">
+  <link rel="stylesheet" href="./css/ai-steward.css?v=20261020-25">
 <link rel="stylesheet" href="./css/system-role.css?v=20260916-1">
 <link rel="stylesheet" href="./css/dashboard-latest.css?v=20260913-40">
 <link rel="stylesheet" href="./css/dashboard-updated.css?v=20260913-2">
@@ -3520,8 +3520,8 @@
           <div class="team-patient-shell">
             <header class="team-patient-header">
               <div class="team-patient-heading">
-                <div class="team-patient-name-row"><strong>高血压管理团队</strong><button type="button" class="team-patient-switch" data-team-patient-switch title="切换团队" aria-label="切换团队"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="m8 7-4 4 4 4M4 11h12M16 17l4-4-4-4M20 13H8"/></svg></button></div>
-                <p><span aria-hidden="true">⌂</span> 科室: 心血管内科一病区、生殖中心专区、测试科室</p>
+                <div class="team-patient-name-row"><strong id="teamPatientTeamName">高血压管理团队</strong><div class="team-patient-switch-wrap"><button type="button" class="team-patient-switch" data-team-patient-switch aria-label="切换团队" title="切换团队" aria-haspopup="listbox" aria-expanded="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="m8 7-4 4 4 4M4 11h12M16 17l4-4-4-4M20 13H8"/></svg></button><div class="team-patient-team-menu" id="teamPatientTeamMenu" role="listbox" aria-label="选择团队" hidden></div></div></div>
+                <p><span aria-hidden="true">⌂</span> 科室: <b id="teamPatientDepartment">心血管内科一病区、生殖中心专区、测试科室</b></p>
               </div>
               <div class="team-patient-header-actions"><button type="button" class="team-patient-qr" data-team-patient-qr aria-label="团队二维码" title="团队二维码"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M4 4h6v6H4zM14 4h6v6h-6zM4 14h6v6H4zM14 14h2v2h-2zM18 14h2v6h-6v-2h4z"/></svg></button><button type="button" class="team-patient-add" data-team-patient-add><span>＋</span>添加患者</button></div>
             </header>
@@ -4606,6 +4606,7 @@
         <button type="button" data-ai-query-tag="blood-pressure">查血压</button>
         <button type="button" data-ai-query-tag="blood-sugar">查血糖</button>
         <button type="button" data-ai-query-tag="medication-list">查用药</button>
+        <button type="button" data-ai-query-tag="report">查报告</button>
         <button type="button" data-ai-query-tag="abnormal">查异常</button>
       </section>
       <div class="workbench-chat-input">
@@ -13424,9 +13425,10 @@
         return `<div class="history-file" data-history-file="${id}"><span class="history-file-name">${title}</span>${upload}</div>`;
       }
 
-      function archiveHistoryExternalFile(id, time, title, uploadText) {
-        return `<div class="history-external-file" data-history-file="${id}" data-history-group="report">
-          <span class="history-file-meta"><span class="history-file-primary"><span class="history-file-name" title="${title}">${title}</span><span class="history-upload-tag ${uploadText === '患者上传' ? 'patient' : 'nurse'}">${uploadText}</span></span><span class="history-file-time">${archiveReportDateOnly(time)}</span></span>
+      function archiveHistoryExternalFile(id, time, title, uploadText, group = 'report') {
+        const uploadClass = uploadText === '患者上传' ? 'patient' : uploadText === '医护上传' ? 'nurse' : 'sync';
+        return `<div class="history-external-file" data-history-file="${id}" data-history-group="${group}">
+          <span class="history-file-meta"><span class="history-file-primary"><span class="history-file-name" title="${title}">${title}</span><span class="history-upload-tag ${uploadClass}">${uploadText}</span></span><span class="history-file-time">${archiveReportDateOnly(time)}</span></span>
         </div>`;
       }
 
@@ -13845,8 +13847,8 @@
           title,
           date: details.date || details.uploadedAt || details.checkDate || '2026/10/19 09:00',
           name: patientName,
-          source: '医护上传',
-          reportType: '报告单',
+          source: details.source || '医护上传',
+          reportType: details.reportType || '报告单',
           hospital: details.hospital || '健康管理中心',
           note: details.note || '*本资料由AI主理人归档',
           pages: 1,
@@ -13861,18 +13863,26 @@
         let file = Array.from(tree.querySelectorAll('[data-history-file]')).find(item => item.dataset.historyFile === id);
         if (!file) {
           const holder = document.createElement('div');
-          holder.innerHTML = archiveHistoryExternalFile(id, archiveHistoryRecords[id].date, title, '医护上传');
+          const source = archiveHistoryRecords[id].source;
+          const group = archiveHistoryRecords[id].reportType === '就诊记录' ? 'visit' : archiveHistoryRecords[id].reportType === '处方记录' ? 'prescription' : 'report';
+          holder.innerHTML = archiveHistoryExternalFile(id, archiveHistoryRecords[id].date, title, source, group);
           file = holder.firstElementChild;
           tree.prepend(file);
         }
-        historyList.querySelectorAll('[data-history-tab-filter]').forEach(tab => tab.classList.toggle('active', tab.dataset.historyTabFilter === 'report'));
+        const group = archiveHistoryRecords[id].reportType === '就诊记录' ? 'visit' : archiveHistoryRecords[id].reportType === '处方记录' ? 'prescription' : 'report';
+        historyList.querySelectorAll('[data-history-tab-filter]').forEach(tab => tab.classList.toggle('active', tab.dataset.historyTabFilter === group));
         const search = historyList.querySelector('[data-history-search]');
         if (search) search.value = '';
         applyArchiveHistoryFilters(historyList);
         historyList.querySelectorAll('[data-history-file]').forEach(item => item.classList.toggle('active', item === file));
         file.style.display = '';
         renderArchiveHistoryDetail(id);
-        requestAnimationFrame(() => file.scrollIntoView({ block: 'center', behavior: window.matchMedia?.('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' }));
+        requestAnimationFrame(() => {
+          file.scrollIntoView({ block: 'center', behavior: window.matchMedia?.('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' });
+          if (archiveHistoryRecords[id].source === '患者上传' || archiveHistoryRecords[id].source === '医护上传') {
+            document.querySelector('#patientArchivePage .archive-history-viewer [data-history-preview-thumb]')?.click();
+          }
+        });
       };
 
       function applyArchiveHistoryFilters(historyList) {
@@ -16885,7 +16895,7 @@
 </script>
 
 <script src="./js/service-management.js?v=20260929-1"></script>
-<script src="./js/expert-report.js?v=20261020-33"></script>
+<script src="./js/expert-report.js?v=20261020-37"></script>
 <script src="./js/customer-service.js?v=20261020-36"></script>
 <script src="./js/interface-notes-snapshot.js?v=20260923-v3-17"></script>
 <script src="./js/interface-annotations-v3.js?v=20260924-v3-18"></script>
@@ -16896,12 +16906,12 @@
 <script src="./js/statistics-report.js?v=20260911-05"></script>
 <script src="./js/operations-statistics.js?v=20260910-01"></script>
 <script src="./js/team-management.js?v=20260923-7"></script>
-<script src="./js/team-patients.js?v=20261020-1"></script>
+<script src="./js/team-patients.js?v=20261020-2"></script>
   <script src="./js/health-portrait.js?v=20260924-3"></script>
 <script src="./js/personnel-management.js?v=20260929-2"></script>
 <script src="./js/organization-management.js?v=20260929-4"></script>
 <script src="./js/workbench.js?v=20261016-3"></script>
-  <script src="./js/ai-steward.js?v=20261020-28"></script>
+  <script src="./js/ai-steward.js?v=20261020-32"></script>
 <script src="./js/system-role.js?v=20260929-1"></script>
 <script src="./js/scale-create.js?v=20260916-3"></script>
 <script src="./js/dashboard-latest-data.js?v=20260913-31"></script>
