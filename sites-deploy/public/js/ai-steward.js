@@ -14,6 +14,8 @@
     currentCustomer: null,
     pendingIntent: '',
     conversations: read('aiStewardConversations', []),
+    historyTitles: read('aiStewardHistoryTitles', {}),
+    deletedHistoryIds: read('aiStewardDeletedHistoryIds', []),
     reminders: read('aiServiceReminders', [
       {id:'R001',taskId:'T001',customer:'张三',title:'完成基因检测报告解读跟进',time:'10:00',description:'确认专家解读安排，并向客户同步报告处理进度。',detail:'report',completed:false},
       {id:'R002',taskId:'T002',customer:'李四',title:'联系客户确认复查安排',time:'14:30',description:'根据专家建议，与客户确认7天后复查时间。',detail:'expert-detail',completed:false},
@@ -26,6 +28,8 @@
     ])
   };
   if(!Array.isArray(store.conversations))store.conversations=[];
+  if(!store.historyTitles||typeof store.historyTitles!=='object'||Array.isArray(store.historyTitles))store.historyTitles={};
+  if(!Array.isArray(store.deletedHistoryIds))store.deletedHistoryIds=[];
   if(!Array.isArray(store.reminders))store.reminders=[];
   if(!Array.isArray(store.tasks))store.tasks=[];
   store.tasks.forEach(task=>{task.status=task.status==='已完成'?'已完成':'待提醒';});
@@ -54,6 +58,8 @@
   if(homePrioritySeed.every(seed=>store.reminders.find(item=>item.id===seed.id)?.completed))resetPriorityExamples();
   save('aiServiceReminders',store.reminders);
   const esc = value => String(value ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  const antEditOutlined = '<svg class="anticon anticon-edit" viewBox="0 0 1024 1024" focusable="false" aria-hidden="true"><path d="M257.7 752c2 0 4-.2 6-.5L431.9 722c2-.4 3.9-1.3 5.3-2.8l423.9-423.9a9.96 9.96 0 0 0 0-14.1L694.9 114.9c-1.9-1.9-4.4-2.9-7.1-2.9s-5.2 1-7.1 2.9L256.8 538.8c-1.5 1.5-2.4 3.3-2.8 5.3l-29.5 168.2a33.5 33.5 0 0 0 9.4 29.8c6.6 6.4 14.9 9.9 23.8 9.9zm67.4-174.4L687.8 215l73.3 73.3-362.7 362.6-88.9 15.7 15.6-89zM880 836H144c-17.7 0-32 14.3-32 32v36c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-36c0-17.7-14.3-32-32-32z"></path></svg>';
+  const antDeleteOutlined = '<svg class="anticon anticon-delete" viewBox="0 0 1024 1024" focusable="false" aria-hidden="true"><path d="M360 184h-8c4.4 0 8-3.6 8-8v8h304v-8c0 4.4 3.6 8 8 8h-8v72h72v-80c0-35.3-28.7-64-64-64H352c-35.3 0-64 28.7-64 64v80h72v-72zm504 72H160c-17.7 0-32 14.3-32 32v32c0 4.4 3.6 8 8 8h60.4l24.7 523c1.6 34.1 29.8 61 63.9 61h454c34.2 0 62.3-26.8 63.9-61l24.7-523H888c4.4 0 8-3.6 8-8v-32c0-17.7-14.3-32-32-32zM731.3 840H292.7l-24.2-512h487l-24.2 512z"></path></svg>';
   const body = () => document.getElementById('workbenchChatBody');
   const assistantName = () => window.getGlobalAssistantName?.() || 'AI主理人';
   const avatar = () => '<span class="global-ai-avatar global-chat-avatar" aria-hidden="true"><svg viewBox="0 0 40 40" fill="none"><path d="M20 6.5 23 14l7.5 3-7.5 3-3 7.5-3-7.5-7.5-3 7.5-3 3-7.5Z" fill="currentColor"/><circle cx="30.5" cy="9.5" r="3.5" fill="currentColor" opacity=".72"/><path d="M8 25v9M3.5 29.5h9" stroke="currentColor" stroke-width="3" stroke-linecap="round"/></svg></span>';
@@ -197,6 +203,7 @@
     return {...known,id:known.id||`PAGE-${name}`,name,gender:value('gender')||known.gender||'待补充',age:Number((value('age')||String(known.age||'0')).replace(/\D/g,''))||'待补充',phone:value('phone')||known.phone||'待补充',pastHistory:value('pastHistory')||known.diseases||'暂无记录',surgeryHistory:value('surgeryHistory')||'暂无记录',allergyHistory:value('allergyHistory')||known.allergy||'暂无记录',familyHistory:value('familyHistory')||'暂无记录',diseases:known.diseases||value('pastHistory')||'暂无记录',allergy:known.allergy||value('allergyHistory')||'暂无记录',lastCheck:known.lastCheck||'暂无相关记录',summary:known.summary||'当前为患者专属权限，仅可查询或新增这位患者的任务。',sku:known.sku||'暂无相关记录',meds:known.meds||[],glucose:known.glucose||[],report:known.report||'暂无相关记录'};
   };
   const profileCard = customer => `<section class="ai-business-card"><span class="ai-intent-tag">已识别业务意图 · 客户档案查询</span><div class="ai-profile-head"><span class="ai-profile-avatar">${esc(customer.name.slice(-1))}</span><div><strong>${esc(customer.name)}</strong><small>${customer.gender} · ${customer.age}岁 · ${esc(customer.phone)}</small></div></div><dl class="ai-detail-grid"><dt>健康史</dt><dd>${esc(customer.summary)}</dd><dt>既往疾病</dt><dd>${esc(customer.diseases||'暂无相关记录')}</dd><dt>过敏史</dt><dd>${esc(customer.allergy||'暂无相关记录')}</dd><dt>客户标签</dt><dd>重点随访 · 慢病管理</dd><dt>最近检查</dt><dd>${esc(customer.lastCheck)}</dd><dt>进行中服务</dt><dd>${esc(customer.sku)}</dd><dt>档案来源</dt><dd>主理人录入 · 最近更新 ${esc(customer.lastCheck)}</dd></dl></section>`;
+  const customerContext = customer => `<div class="ai-customer-context"><span class="ai-customer-context-avatar" aria-hidden="true">${esc(customer.name.slice(-1))}</span><span class="ai-customer-context-main"><strong>${esc(customer.name)}</strong><small>${esc(customer.gender)} · ${esc(customer.age)}岁 · ${esc(customer.phone)}</small><em>${esc(customer.diseases||'暂无相关记录')}</em></span></div>`;
   const showProfile = customer => appendAI('客户健康档案',profileCard(customer),action('完整档案','profile-detail',customer.name)+action('查看报告','report',customer.name)+action('查看服务','service',customer.name,true));
   const statusTag = (label,tone='orange') => `<span class="ai-query-status ${tone}">${label}</span>`;
   const listView = (rows,visible=rows.length,extraClass='') => `<div class="ai-query-list ${extraClass}">${rows.map((row,rowIndex)=>`<article class="ai-query-list-row ${row.completed?'completed':''} ${row.action!==undefined?'has-action':''} ${row.actionOnly?'action-only':''} ${rowIndex>=visible?'ai-query-extra':''}" ${rowIndex>=visible?'hidden':''} ${row.id?`data-query-reminder="${row.id}"`:''}><span class="ai-query-row-rail"></span>${row.marker||`<span class="ai-query-row-marker">${rowIndex+1}</span>`}<span class="ai-query-row-copy"><strong>${row.customer}${row.primary?`<b>｜</b>${row.primary}`:''}</strong><small>${row.secondary}</small></span><time>${row.meta||''}</time>${row.status||''}${row.action!==undefined?(row.action||'<span class="ai-query-row-action-spacer" aria-hidden="true"></span>'):''}</article>`).join('')}</div>`;
@@ -208,7 +215,7 @@
   const showMedicationList = customer => {
     const medicines=customer.meds?.length?customer.meds:[['暂无长期用药记录','--','--']];
     const rows=medicines.map(([name,dose,frequency])=>({customer:esc(name),primary:'当前用药',secondary:`剂量：${esc(dose)}`,meta:esc(frequency),status:statusTag(name.includes('暂无')?'待补充':'服用中',name.includes('暂无')?'orange':'green')}));
-    appendAI('',`<section class="case-answer-card case-order-answer"><header class="case-answer-head"><span class="case-answer-icon blue">${homeIcon('report')}</span><div><strong>${esc(customer.name)}当前用药</strong><small>数据更新：${esc(customer.lastCheck)}</small></div></header>${listView(rows,rows.length,'case-answer-list')}<p class="case-answer-note"><i>◆</i>用药信息来自当前患者档案，请结合最新医嘱核对。</p><div class="case-answer-actions">${action('查看最近医嘱','original-order',customer.name)}${action('创建提醒','task-form',customer.name)}</div></section>`);
+    appendAI('',`<section class="case-answer-card case-order-answer"><header class="case-answer-head"><span class="case-answer-icon blue">${homeIcon('report')}</span><div><strong>${esc(customer.name)}当前用药</strong><small>数据更新：${esc(customer.lastCheck)}</small></div></header>${listView(rows,rows.length,'case-answer-list')}<p class="case-answer-note"><i>◆</i>用药信息来自当前患者档案，请结合最新医嘱核对。</p></section>`);
   };
   const reportsFor = customer => [
     {id:`${customer.id}-health`,name:customer.report,reportTime:`${customer.lastCheck} 09:30`,reportType:'报告单',uploadedAt:`${customer.lastCheck} 16:20`,uploadType:'医护上传',hospital:'健康管理中心',summary:customer.summary,fileName:`${customer.report}.pdf`},
@@ -218,11 +225,11 @@
   const reportById = (customer,id) => reportsFor(customer).find(report=>report.id===id)||reportsFor(customer)[0];
   const showReportDetail = (customer,reportId) => {
     const report=reportById(customer,reportId);store.currentReport=report;
-    appendAI(`${customer.name} · 报告基本信息`,`<section class="ai-business-card ai-report-detail-card"><h4>${esc(report.name)}</h4><dl class="ai-detail-grid"><dt>报告名称</dt><dd>${esc(report.name)}</dd><dt>报告时间</dt><dd>${esc(report.reportTime)}</dd><dt>报告类型</dt><dd>${esc(report.reportType)}</dd><dt>上传时间</dt><dd>${esc(report.uploadedAt)}</dd><dt>上传类型</dt><dd>${esc(report.uploadType)}</dd></dl></section>`,`<button type="button" class="primary" data-ai-action="report-detail" data-customer-id="${esc(customer.id)}" data-report-id="${esc(report.id)}">查看报告原件</button>`);
+    appendAI(`${customer.name} · 报告基本信息`,`<section class="ai-business-card ai-report-detail-card">${customerContext(customer)}<h4>${esc(report.name)}</h4><dl class="ai-detail-grid"><dt>报告名称</dt><dd>${esc(report.name)}</dd><dt>报告时间</dt><dd>${esc(report.reportTime)}</dd><dt>报告类型</dt><dd>${esc(report.reportType)}</dd><dt>上传时间</dt><dd>${esc(report.uploadedAt)}</dd><dt>上传类型</dt><dd>${esc(report.uploadType)}</dd></dl></section>`,`<button type="button" class="primary" data-ai-action="report-detail" data-customer-id="${esc(customer.id)}" data-report-id="${esc(report.id)}">查看报告原件</button>`);
   };
   const showReport = customer => {
     const reports=reportsFor(customer);
-    appendAI(`${customer.name}共有${reports.length}份报告`,`<p class="ai-report-picker-hint">请选择需要查看的报告</p><div class="ai-report-picker" role="list">${reports.map((report,index)=>`<button type="button" class="ai-report-choice" data-ai-action="select-report" data-customer-id="${esc(customer.id)}" data-report-id="${esc(report.id)}" aria-label="查看${esc(report.name)}"><span class="ai-report-choice-icon">${index+1}</span><span><strong>${esc(report.name)}</strong><small>${esc(report.reportTime)} · ${esc(report.reportType)}</small><em>${esc(report.uploadType)}</em></span><b aria-hidden="true">›</b></button>`).join('')}</div>`);
+    appendAI(`${customer.name}共有${reports.length}份报告`,`${customerContext(customer)}<p class="ai-report-picker-hint">请选择需要查看的报告</p><div class="ai-report-picker" role="list">${reports.map((report,index)=>`<button type="button" class="ai-report-choice" data-ai-action="select-report" data-customer-id="${esc(customer.id)}" data-report-id="${esc(report.id)}" aria-label="查看${esc(report.name)}"><span class="ai-report-choice-icon">${index+1}</span><span><strong>${esc(report.name)}</strong><small>${esc(report.reportTime)} · ${esc(report.reportType)}</small><em>${esc(report.uploadType)}</em></span><b aria-hidden="true">›</b></button>`).join('')}</div>`);
   };
   const openReportArchive = (customer,report=store.currentReport||reportById(customer)) => {
     const latestGlucose=customer.glucose?.at(-1);
@@ -258,14 +265,14 @@
   const showTrend = customer => {
     const values=[['2024-08-10',8.5],['2024-09-15',8.2],['2024-10-10',7.8]];
     const id=`aiTrend${Date.now()}`;
-    appendAI('',`<section class="case-answer-card case-trend-answer"><header class="case-answer-head split"><div><span class="case-answer-icon blue">${homeIcon('trend')}</span><strong>空腹血糖变化趋势</strong></div><small>单位：mmol/L</small></header><div class="case-answer-chart" id="${id}" role="img" aria-label="${esc(customer.name)}最近三次空腹血糖折线图：8.5、8.2、7.8"></div><div class="case-answer-analysis"><strong><i>●</i>AI分析</strong><p>最近三次空腹血糖呈逐步下降趋势，建议持续监测并结合生活方式干预。</p></div><div class="case-answer-actions">${action('查看原始报告','report-detail',customer.name)}${action('创建提醒','task-form',customer.name)}</div></section>`);
+    appendAI('',`<section class="case-answer-card case-trend-answer">${customerContext(customer)}<header class="case-answer-head split"><div><span class="case-answer-icon blue">${homeIcon('trend')}</span><strong>空腹血糖变化趋势</strong></div><small>单位：mmol/L</small></header><div class="case-answer-chart" id="${id}" role="img" aria-label="${esc(customer.name)}最近三次空腹血糖折线图：8.5、8.2、7.8"></div><div class="case-answer-analysis"><strong><i>●</i>AI分析</strong><p>最近三次空腹血糖呈逐步下降趋势，建议持续监测并结合生活方式干预。</p></div><div class="case-answer-actions">${action('查看原始报告','report-detail',customer.name)}${action('创建提醒','task-form',customer.name)}</div></section>`);
     setTimeout(()=>{ const el=document.getElementById(id); if(!el||!window.echarts)return; const chart=window.echarts.init(el); chart.setOption({animation:!window.matchMedia?.('(prefers-reduced-motion: reduce)').matches,animationDuration:450,tooltip:{trigger:'axis',valueFormatter:value=>`${value} mmol/L`},grid:{left:34,right:14,top:34,bottom:32},xAxis:{type:'category',boundaryGap:false,data:values.map(v=>v[0]),axisTick:{show:false},axisLine:{lineStyle:{color:'#dce7f3'}},axisLabel:{color:'#7186a2',fontSize:11,margin:12}},yAxis:{type:'value',min:0,max:10,interval:5,axisTick:{show:false},axisLine:{show:false},axisLabel:{color:'#8799ae',fontSize:10},splitLine:{lineStyle:{color:'#edf2f8'}}},series:[{type:'line',data:values.map(v=>v[1]),symbol:'circle',symbolSize:8,label:{show:true,position:'top',distance:8,color:'#173f77',fontSize:12,fontWeight:700},lineStyle:{color:'#2787f5',width:3},itemStyle:{color:'#2787f5',borderColor:'#fff',borderWidth:2}}]}); if(window.ResizeObserver)new ResizeObserver(()=>chart.resize()).observe(el); },30);
   };
   const showBloodPressure = customer => {
     const seed={C001:[["2026-08-10",146,92],["2026-09-15",140,88],["2026-10-10",134,84]],C002:[["2026-08-12",132,84],["2026-09-12",128,82],["2026-10-08",126,80]],C003:[["2026-07-28",142,90],["2026-08-28",138,88],["2026-09-28",136,86]]};
     const values=seed[customer.id]||[["2026-08-06",130,82],["2026-09-06",128,80],["2026-10-06",126,79]];
     const id=`aiPressure${Date.now()}`;
-    appendAI('',`<section class="case-answer-card case-trend-answer"><header class="case-answer-head split"><div><span class="case-answer-icon blue">${homeIcon('clock')}</span><strong>${esc(customer.name)}近期血压趋势</strong></div><small>单位：mmHg</small></header><div class="case-answer-chart" id="${id}" role="img" aria-label="${esc(customer.name)}最近三次血压趋势"></div><div class="case-answer-analysis"><strong><i>●</i>趋势分析</strong><p>最近三次血压整体呈下降趋势，最新一次为 ${values.at(-1)[1]}/${values.at(-1)[2]} mmHg，建议继续按计划监测。</p></div><div class="case-answer-actions">${action('查看健康档案','profile-detail',customer.name)}${action('创建提醒','task-form',customer.name)}</div></section>`);
+    appendAI('',`<section class="case-answer-card case-trend-answer">${customerContext(customer)}<header class="case-answer-head split"><div><span class="case-answer-icon blue">${homeIcon('clock')}</span><strong>${esc(customer.name)}近期血压趋势</strong></div><small>单位：mmHg</small></header><div class="case-answer-chart" id="${id}" role="img" aria-label="${esc(customer.name)}最近三次血压趋势"></div><div class="case-answer-analysis"><strong><i>●</i>趋势分析</strong><p>最近三次血压整体呈下降趋势，最新一次为 ${values.at(-1)[1]}/${values.at(-1)[2]} mmHg，建议继续按计划监测。</p></div><div class="case-answer-actions"><button type="button" data-ai-open-archive data-ai-archive-tab="basic" data-customer="${esc(customer.name)}" data-gender="${esc(customer.gender)}" data-age="${esc(customer.age)}">查看健康档案</button>${action('创建提醒','task-form',customer.name)}</div></section>`);
     setTimeout(()=>{const el=document.getElementById(id);if(!el||!window.echarts)return;const chart=window.echarts.init(el);chart.setOption({animation:!window.matchMedia?.('(prefers-reduced-motion: reduce)').matches,animationDuration:450,tooltip:{trigger:'axis',valueFormatter:value=>`${value} mmHg`},legend:{top:0,right:4,itemWidth:12,itemHeight:6,textStyle:{color:'#6f83a1',fontSize:10}},grid:{left:34,right:14,top:38,bottom:32},xAxis:{type:'category',boundaryGap:false,data:values.map(value=>value[0].slice(5)),axisTick:{show:false},axisLine:{lineStyle:{color:'#dce7f3'}},axisLabel:{color:'#7186a2',fontSize:10,margin:12}},yAxis:{type:'value',min:60,max:160,interval:20,axisTick:{show:false},axisLine:{show:false},axisLabel:{color:'#8799ae',fontSize:10},splitLine:{lineStyle:{color:'#edf2f8'}}},series:[{name:'收缩压',type:'line',data:values.map(value=>value[1]),symbol:'circle',symbolSize:7,lineStyle:{color:'#2787f5',width:3},itemStyle:{color:'#2787f5'}},{name:'舒张压',type:'line',data:values.map(value=>value[2]),symbol:'circle',symbolSize:7,lineStyle:{color:'#20b882',width:3},itemStyle:{color:'#20b882'}}]});if(window.ResizeObserver)new ResizeObserver(()=>chart.resize()).observe(el);},30);
   };
   const showAbnormalIndicators = customer => {
@@ -410,7 +417,7 @@
     const template=document.createElement('template'); template.innerHTML=conversation.html||'';
     return template.content.querySelector('.global-chat-row.user .workbench-message, .workbench-message.user')?.textContent?.trim()||'';
   };
-  const firstQuestion = conversation => questionFromConversation(conversation)||conversation.title||'未命名对话';
+  const firstQuestion = conversation => store.historyTitles[String(conversation.id)]||questionFromConversation(conversation)||conversation.title||'未命名对话';
   const conversationDate = conversation => {
     const timestamp=Number(conversation.createdAt||conversation.id);
     if(Number.isFinite(timestamp)&&timestamp>0)return new Date(timestamp);
@@ -431,10 +438,11 @@
     return '';
   };
   const formatConversationTime = conversation => {
-    const date=conversationDate(conversation), now=new Date();
+    const date=conversationDate(conversation);
     const pad=value=>String(value).padStart(2,'0');
-    if(startOfDay(date).getTime()===startOfDay(now).getTime())return `${pad(date.getHours())}:${pad(date.getMinutes())}`;
-    return `${date.getFullYear()}/${pad(date.getMonth()+1)}/${pad(date.getDate())}`;
+    const time=`${pad(date.getHours())}:${pad(date.getMinutes())}`;
+    if(startOfDay(date).getTime()===startOfDay(new Date()).getTime())return time;
+    return `${date.getFullYear()}/${pad(date.getMonth()+1)}/${pad(date.getDate())} ${time}`;
   };
   const historyGroups = [
     ['today','今天'],['yesterday','昨天'],['days-3','最近3天'],['days-7','最近7天'],['days-30','最近30天'],['year-2026','2026年'],['year-2025','2025年']
@@ -464,11 +472,21 @@
     demoHistoryItem(-162,fixedHistoryDate(2025,7,21,15,16),'查询2025年重点客户随访记录','已找到2025年重点客户随访记录。'),
     demoHistoryItem(-163,fixedHistoryDate(2025,2,14,9,42),'查看2025年健康评估报告归档','已找到2025年健康评估报告归档记录。')
   ];
-  const allHistoryConversations = () => [...store.conversations.filter(questionFromConversation),...demoHistoryConversations()].sort((a,b)=>conversationDate(b)-conversationDate(a));
+  const allHistoryConversations = () => [...store.conversations.filter(questionFromConversation),...demoHistoryConversations()].filter(item=>!store.deletedHistoryIds.includes(String(item.id))).sort((a,b)=>conversationDate(b)-conversationDate(a));
   const renderHistoryPanel = panel => {
     const conversations=allHistoryConversations();
     const groups=historyGroups.map(([key,label])=>[key,label,conversations.filter(item=>conversationBucket(item)===key)]);
-    panel.innerHTML=`<div class="ai-history-head"><strong>历史对话</strong></div><div class="ai-history-list ai-history-timeline">${groups.map(([key,label,items])=>`<section class="ai-history-group" data-history-group="${key}"><div class="ai-history-timepoint"><i aria-hidden="true"></i><strong>${label}</strong><small>${items.length}条</small></div><div class="ai-history-group-items">${items.map(c=>`<button class="ai-history-item" data-ai-history-open="${c.id}" title="${esc(firstQuestion(c))}"><strong>${esc(firstQuestion(c))}</strong><small>${esc(formatConversationTime(c))}</small></button>`).join('')}</div></section>`).join('')}</div>`;
+    panel.innerHTML=`<div class="ai-history-head"><strong>历史对话</strong></div><div class="ai-history-list ai-history-timeline">${groups.map(([key,label,items])=>`<section class="ai-history-group" data-history-group="${key}"><div class="ai-history-timepoint"><i aria-hidden="true"></i><strong>${label}</strong><small>${items.length}条</small></div><div class="ai-history-group-items">${items.map(c=>`<article class="ai-history-item"><button type="button" class="ai-history-open-main" data-ai-history-open="${c.id}" title="${esc(firstQuestion(c))}"><strong>${esc(firstQuestion(c))}</strong><small>${esc(formatConversationTime(c))}</small></button><div class="ai-history-item-actions"><button type="button" data-ai-history-rename="${c.id}" aria-label="修改会话名称：${esc(firstQuestion(c))}" title="修改名称">${antEditOutlined}</button><button type="button" class="danger" data-ai-history-delete="${c.id}" aria-label="删除会话：${esc(firstQuestion(c))}" title="删除">${antDeleteOutlined}</button></div></article>`).join('')}</div></section>`).join('')}</div>`;
+  };
+  const closeHistoryDialog = () => document.querySelector('.ai-history-dialog-mask')?.remove();
+  const showHistoryDialog = (type,id) => {
+    const item=allHistoryConversations().find(c=>String(c.id)===String(id));if(!item)return;
+    closeHistoryDialog();
+    const mask=document.createElement('div');mask.className='ai-history-dialog-mask';
+    if(type==='rename')mask.innerHTML=`<section class="ai-history-dialog" role="dialog" aria-modal="true" aria-labelledby="aiHistoryDialogTitle"><header><strong id="aiHistoryDialogTitle">修改会话名称</strong><button type="button" data-ai-history-dialog-close aria-label="关闭">×</button></header><div class="ai-history-dialog-body"><label for="aiHistoryRenameInput">会话名称</label><input id="aiHistoryRenameInput" maxlength="50" value="${esc(firstQuestion(item))}" placeholder="请输入会话名称"><small data-ai-history-name-error></small></div><footer><button type="button" data-ai-history-dialog-close>取消</button><button type="button" class="primary" data-ai-history-rename-confirm="${id}">保存</button></footer></section>`;
+    else mask.innerHTML=`<section class="ai-history-dialog compact" role="alertdialog" aria-modal="true" aria-labelledby="aiHistoryDialogTitle" aria-describedby="aiHistoryDeleteMessage"><header><strong id="aiHistoryDialogTitle">删除会话</strong><button type="button" data-ai-history-dialog-close aria-label="关闭">×</button></header><div class="ai-history-dialog-body"><p id="aiHistoryDeleteMessage">确定删除此会话吗？删除后数据不可恢复</p></div><footer><button type="button" data-ai-history-dialog-close>取消</button><button type="button" class="danger" data-ai-history-delete-confirm="${id}">确认删除</button></footer></section>`;
+    document.getElementById('globalAiPanel')?.append(mask);
+    if(type==='rename'){const input=mask.querySelector('input');input?.focus();input?.select();}
   };
   const saveConversation = () => { const host=body(); if(!host||!host.children.length)return; const question=host.querySelector('.global-chat-row.user .workbench-message, .workbench-message.user')?.textContent?.trim()||''; if(!question)return; const createdAt=Date.now(); store.conversations.unshift({id:createdAt,createdAt,question,title:question,time:new Date(createdAt).toISOString(),html:host.innerHTML}); store.conversations=store.conversations.slice(0,100); save('aiStewardConversations',store.conversations); };
   const showHistory = () => { let panel=document.querySelector('.ai-history-panel'); if(!panel){panel=document.createElement('section');panel.className='ai-history-panel';document.getElementById('globalAiPanel')?.append(panel);} panel.hidden=false; renderHistoryPanel(panel); };
@@ -524,6 +542,11 @@
       const actionTarget=event.target.closest('[data-ai-action]');if(actionTarget){handleAction(actionTarget);return;}
       if(event.target.closest('[data-ai-new]')){saveConversation();closeHistory();store.pendingIntent='';if(store.mode==='case-manager')renderCaseManagerHome();else{resetPriorityExamples();store.currentCustomer=null;renderBrief();}document.getElementById('workbenchChatInput')?.focus();toast('已新建会话，已载入今日待处理事项');return;}
       if(event.target.closest('[data-ai-history]')){showHistory();return;}
+      const historyRename=event.target.closest('[data-ai-history-rename]');if(historyRename){showHistoryDialog('rename',historyRename.dataset.aiHistoryRename);return;}
+      const historyDelete=event.target.closest('[data-ai-history-delete]');if(historyDelete){showHistoryDialog('delete',historyDelete.dataset.aiHistoryDelete);return;}
+      if(event.target.closest('[data-ai-history-dialog-close]')||event.target.classList.contains('ai-history-dialog-mask')){closeHistoryDialog();return;}
+      const renameConfirm=event.target.closest('[data-ai-history-rename-confirm]');if(renameConfirm){const input=document.getElementById('aiHistoryRenameInput'),name=input?.value.trim(),error=document.querySelector('[data-ai-history-name-error]');if(!name){if(error)error.textContent='请输入会话名称';input?.focus();return;}store.historyTitles[String(renameConfirm.dataset.aiHistoryRenameConfirm)]=name;save('aiStewardHistoryTitles',store.historyTitles);closeHistoryDialog();const historyPanel=document.querySelector('.ai-history-panel');if(historyPanel)renderHistoryPanel(historyPanel);toast('会话名称已修改');return;}
+      const deleteConfirm=event.target.closest('[data-ai-history-delete-confirm]');if(deleteConfirm){const id=String(deleteConfirm.dataset.aiHistoryDeleteConfirm);store.conversations=store.conversations.filter(item=>String(item.id)!==id);if(!store.deletedHistoryIds.includes(id))store.deletedHistoryIds.push(id);delete store.historyTitles[id];save('aiStewardConversations',store.conversations);save('aiStewardDeletedHistoryIds',store.deletedHistoryIds);save('aiStewardHistoryTitles',store.historyTitles);closeHistoryDialog();const historyPanel=document.querySelector('.ai-history-panel');if(historyPanel)renderHistoryPanel(historyPanel);toast('会话已删除');return;}
       const history=event.target.closest('[data-ai-history-open]');if(history){const item=allHistoryConversations().find(c=>c.id===Number(history.dataset.aiHistoryOpen));if(item){body().innerHTML=item.html;history.closest('.ai-history-panel').hidden=true;scrollEnd();}}
     });
     const syncReminderForm=event=>{const field=event.target.closest('.case-reminder-form [data-field]');if(field)updateCaseReminderSummary(field.closest('.case-reminder-form-card'));};

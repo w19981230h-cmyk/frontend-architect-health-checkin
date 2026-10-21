@@ -799,6 +799,20 @@
     .patient-mark-cancel:hover { border-color: #9cabca; color: #3154ff; background: #f7f9fc; }
     .patient-mark-submit { background: linear-gradient(135deg, #3154ff 0%, #496dff 100%); box-shadow: 0 8px 18px rgba(49,84,255,.24); }
     .patient-mark-submit:hover { box-shadow: 0 10px 24px rgba(49,84,255,.30); transform: translateY(-1px); }
+    .patient-mark-team-confirm { position: fixed; z-index: 190; inset: 0; padding: 24px; display: grid; place-items: center; background: rgba(21,32,52,.46); opacity: 0; visibility: hidden; transition: opacity .18s ease, visibility .18s ease; }
+    .patient-mark-team-confirm.open { opacity: 1; visibility: visible; }
+    .patient-mark-team-confirm-card { width: min(440px, 100%); padding: 28px; border: 1px solid #e7eaf0; border-radius: 12px; background: #fff; box-shadow: 0 24px 64px rgba(31,45,72,.22); transform: translateY(8px) scale(.98); transition: transform .18s ease; }
+    .patient-mark-team-confirm.open .patient-mark-team-confirm-card { transform: translateY(0) scale(1); }
+    .patient-mark-team-confirm-icon { width: 44px; height: 44px; margin-bottom: 18px; border-radius: 50%; display: grid; place-items: center; color: #d46b08; background: #fff7e6; font-size: 24px; font-weight: 700; }
+    .patient-mark-team-confirm-card h3 { margin: 0 0 10px; color: #1f304b; font-size: 18px; }
+    .patient-mark-team-confirm-card p { margin: 0; color: #61718a; font-size: 14px; line-height: 1.75; }
+    .patient-mark-team-confirm-patient { margin-top: 18px; padding: 12px 14px; border-radius: 8px; color: #40506a; background: #f6f8fc; font-size: 13px; }
+    .patient-mark-team-confirm-actions { margin-top: 24px; display: flex; justify-content: flex-end; gap: 12px; }
+    .patient-mark-team-confirm-actions button { height: 40px; padding: 0 18px; border-radius: 8px; font-weight: 600; }
+    .patient-mark-team-confirm-back { border: 1px solid #d8deea; color: #526079; background: #fff; }
+    .patient-mark-team-confirm-back:hover { border-color: #8fa4ff; color: #3154ff; }
+    .patient-mark-team-confirm-continue { color: #fff; background: #3154ff; box-shadow: 0 6px 14px rgba(49,84,255,.2); }
+    .patient-mark-team-confirm-continue:hover { background: #2448ed; }
     body.patient-mark-open .ui-note-toolbar, body.patient-mark-open .interface-note-toolbar { right: calc(min(680px, 100vw) + 18px); }
     @media (max-width: 720px) {
       .patient-mark-head, .patient-mark-foot { padding-left: 24px; padding-right: 24px; }
@@ -816,7 +830,7 @@
       .patient-mark-head, .patient-mark-foot { padding-left: 16px; padding-right: 16px; }
       .patient-mark-body { padding-left: 16px; padding-right: 16px; }
     }
-    @media (prefers-reduced-motion: reduce) { .patient-mark-drawer, .patient-mark-panel { transition: none; } }
+    @media (prefers-reduced-motion: reduce) { .patient-mark-drawer, .patient-mark-panel, .patient-mark-team-confirm, .patient-mark-team-confirm-card { transition: none; } }
     .patient-list-pager { height: 64px; flex: 0 0 auto; align-items: center; }
     .patient-list-pager .total { margin-right: 4px; color: #637187; }
     .patient-advanced-panel { position: absolute; z-index: 8; left: 576px; top: 58px; width: 330px; padding: 16px; border: 1px solid #e1e7f0; border-radius: 7px; background: #fff; box-shadow: 0 12px 28px rgba(31,51,82,.14); display: none; }
@@ -3096,7 +3110,7 @@
 <link rel="stylesheet" href="./css/personnel-management.css?v=20260929-1">
 <link rel="stylesheet" href="./css/organization-management.css?v=20260929-1">
 <link rel="stylesheet" href="./css/workbench.css?v=20261019-4">
-  <link rel="stylesheet" href="./css/ai-steward.css?v=20261020-25">
+  <link rel="stylesheet" href="./css/ai-steward.css?v=20261021-28">
 <link rel="stylesheet" href="./css/system-role.css?v=20260916-1">
 <link rel="stylesheet" href="./css/dashboard-latest.css?v=20260913-40">
 <link rel="stylesheet" href="./css/dashboard-updated.css?v=20260913-2">
@@ -3605,6 +3619,16 @@
       </div>
       <div class="patient-mark-foot"><button type="button" class="patient-mark-cancel" data-close-patient-mark>取消</button><button type="button" class="patient-mark-submit" data-submit-patient-mark>确定标记</button></div>
     </aside>
+  </div>
+
+  <div class="patient-mark-team-confirm" id="patientMarkTeamConfirm" aria-hidden="true">
+    <section class="patient-mark-team-confirm-card" role="alertdialog" aria-modal="true" aria-labelledby="patientMarkTeamConfirmTitle" aria-describedby="patientMarkTeamConfirmDescription">
+      <div class="patient-mark-team-confirm-icon" aria-hidden="true">!</div>
+      <h3 id="patientMarkTeamConfirmTitle">患者尚未进入管理团队</h3>
+      <p id="patientMarkTeamConfirmDescription">当前患者尚未加入你所管理的团队。完成标记后，相关待办事项不会向你发出提醒。是否仍要继续标记？</p>
+      <div class="patient-mark-team-confirm-patient" id="patientMarkTeamConfirmPatient">患者：--</div>
+      <div class="patient-mark-team-confirm-actions"><button type="button" class="patient-mark-team-confirm-back" data-cancel-patient-mark-team-confirm>返回检查</button><button type="button" class="patient-mark-team-confirm-continue" data-confirm-patient-mark-without-team>仍然标记</button></div>
+    </section>
   </div>
 
   <div class="patient-smart-mask" id="patientSmartFilter" aria-hidden="true">
@@ -4681,10 +4705,10 @@
       { name: '冯金柳', visitNo: '11338105', age: '38', gender: '女', phone: '137****8802', department: '妇科', diagnosis: '子宫肌瘤', tags: ['高血压', '妇科随访'], visitDate: '2026/06/12', team: '妇科随访团队' },
       { name: '农业宝', visitNo: '452126195009101818', age: '75', gender: '男', phone: '188****6540', department: '泌尿外科', diagnosis: '慢性肾功能不全', tags: ['糖尿病', '高血压', '慢性肾病'], visitDate: '2026/06/12', team: '泌尿外科随访团队' },
       { name: '余玉梅', visitNo: '26060418002', age: '62', gender: '女', phone: '156****1238', department: '肿瘤科', diagnosis: '乳腺恶性肿瘤术后', tags: ['糖尿病', '肿瘤患者', '重点随访'], visitDate: '2026/06/11', team: '肿瘤科随访团队' },
-      { name: '梁禹兴', visitNo: '11338047', age: '32', gender: '男', phone: '173****8884', department: '泌尿外科', diagnosis: '肾结石', tags: ['高血压', '泌尿系统疾病'], visitDate: '2026/06/10', team: '泌尿外科随访团队' },
+      { name: '梁禹兴', visitNo: '11338047', age: '32', gender: '男', phone: '173****8884', department: '泌尿外科', diagnosis: '肾结石', tags: ['高血压', '泌尿系统疾病'], visitDate: '2026/06/10', team: '未加入团队', inManagedTeam: false },
       { name: '韦望林', visitNo: '22070815354', age: '62', gender: '女', phone: '138****1977', department: '心血管内科一病区', diagnosis: '1.冠状动脉粥样硬化性心脏病 2.不稳定型心绞痛', tags: ['高血压', '冠心病', '糖尿病'], visitDate: '2026/06/09', team: '心内科随访团队' },
       { name: '刘五妹', visitNo: '22071515705', age: '65', gender: '女', phone: '187****6519', department: '肿瘤科', diagnosis: '胰腺低分化腺癌T4N2M1、IV期', tags: ['糖尿病', '肿瘤患者', '高风险'], visitDate: '2026/06/08', team: '肿瘤科随访团队' },
-      { name: '滕晓霞', visitNo: '50245326', age: '39', gender: '女', phone: '134****5416', department: '乳腺甲状腺外科', diagnosis: '甲状腺结节', tags: ['甲状腺疾病', '定期复查'], visitDate: '2026/06/07', team: '乳腺甲状腺外科' },
+      { name: '滕晓霞', visitNo: '50245326', age: '39', gender: '女', phone: '134****5416', department: '乳腺甲状腺外科', diagnosis: '甲状腺结节', tags: ['甲状腺疾病', '定期复查'], visitDate: '2026/06/07', team: '未加入团队', inManagedTeam: false },
       { name: '黄灿芳', visitNo: '441282198102054523', age: '45', gender: '女', phone: '152****1012', department: '妇科', diagnosis: '子宫内膜增生', tags: ['高血压', '妇科随访'], visitDate: '2026/06/06', team: '妇科随访团队、行风办满意... (2)' },
       { name: '陈建国', visitNo: '23011807621', age: '58', gender: '男', phone: '136****3208', department: '内分泌科', diagnosis: '2型糖尿病伴周围神经病变', tags: ['糖尿病', '高血压', '重点随访'], visitDate: '2026/06/05', team: '内分泌科慢病管理团队' },
       { name: '吴秀兰', visitNo: '21090618437', age: '69', gender: '女', phone: '159****6742', department: '肾内科', diagnosis: '慢性肾脏病3期', tags: ['慢性肾病', '高血压', '低盐饮食'], visitDate: '2026/06/04', team: '肾内科随访团队' },
@@ -4692,7 +4716,7 @@
       { name: '李春梅', visitNo: '22082416309', age: '64', gender: '女', phone: '157****4821', department: '内分泌科', diagnosis: '2型糖尿病', tags: ['糖尿病', '血糖控制不佳'], visitDate: '2026/06/02', team: '内分泌科慢病管理团队' },
       { name: '赵海峰', visitNo: '25010803146', age: '47', gender: '男', phone: '180****1165', department: '肾内科', diagnosis: '糖尿病肾病', tags: ['糖尿病', '慢性肾病', '高风险'], visitDate: '2026/06/01', team: '肾内科随访团队' },
       { name: '孙桂英', visitNo: '21121520738', age: '71', gender: '女', phone: '151****7350', department: '老年医学科', diagnosis: '高血压合并血脂异常', tags: ['高血压', '高血脂', '老年患者'], visitDate: '2026/05/31', team: '老年慢病管理团队' },
-      { name: '郑志强', visitNo: '24062011852', age: '55', gender: '男', phone: '189****2534', department: '全科医学科', diagnosis: '代谢综合征', tags: ['糖尿病前期', '高血压', '肥胖'], visitDate: '2026/05/30', team: '全科慢病管理团队' },
+      { name: '郑志强', visitNo: '24062011852', age: '55', gender: '男', phone: '189****2534', department: '全科医学科', diagnosis: '代谢综合征', tags: ['糖尿病前期', '高血压', '肥胖'], visitDate: '2026/05/30', team: '未加入团队', inManagedTeam: false },
       { name: '何雅琴', visitNo: '23110408269', age: '60', gender: '女', phone: '158****8493', department: '肾内科', diagnosis: '慢性肾脏病2期', tags: ['慢性肾病', '糖尿病', '定期复查'], visitDate: '2026/05/29', team: '肾内科随访团队' }
     ];
     const patientListInitialCount = allPatients.length;
@@ -4780,6 +4804,7 @@
     }));
     const patientListState = { keyword: '', team: '', markStatus: '', page: 1, smartConditions: [], activeSmartTagId: '' };
     let patientMarkTargetVisitNo = '';
+    let patientMarkPendingSubmission = null;
     const patientBatchSelection = new Set();
     const patientBatchEnrollmentNotifications = [];
     const patientBatchTeams = ['呼吸内科随访团队', '小儿科随访团队', '妇科随访团队', '泌尿外科随访团队', '肿瘤科随访团队', '内分泌科慢病管理团队', '肾内科随访团队'];
@@ -6269,7 +6294,41 @@
       drawer?.classList.remove('open');
       drawer?.setAttribute('aria-hidden', 'true');
       document.body.classList.remove('patient-mark-open');
+      closePatientMarkTeamConfirm(false);
       patientMarkTargetVisitNo = '';
+    }
+
+    function patientIsInManagedTeam(patient) {
+      return patient.inManagedTeam !== false && patientBatchTeams.includes(patient.team);
+    }
+
+    function openPatientMarkTeamConfirm(patient, submission) {
+      patientMarkPendingSubmission = submission;
+      const confirm = document.getElementById('patientMarkTeamConfirm');
+      document.getElementById('patientMarkTeamConfirmPatient').textContent = `患者：${patient.name} · 当前团队：${patient.team || '未加入团队'}`;
+      confirm.classList.add('open');
+      confirm.setAttribute('aria-hidden', 'false');
+      requestAnimationFrame(() => confirm.querySelector('[data-cancel-patient-mark-team-confirm]')?.focus());
+    }
+
+    function closePatientMarkTeamConfirm(restoreFocus = true) {
+      const confirm = document.getElementById('patientMarkTeamConfirm');
+      confirm?.classList.remove('open');
+      confirm?.setAttribute('aria-hidden', 'true');
+      patientMarkPendingSubmission = null;
+      if (restoreFocus) requestAnimationFrame(() => document.querySelector('[data-submit-patient-mark]')?.focus());
+    }
+
+    function commitPatientMark(submission) {
+      if (!submission) return;
+      const patient = allPatients.find(item => item.visitNo === submission.visitNo);
+      if (!patient) return;
+      patient.marked = true;
+      patient.markInfo = submission.markInfo;
+      closePatientMarkTeamConfirm(false);
+      closePatientMarkDrawer();
+      renderPatientList();
+      showToast(`已为${patient.name}添加${submission.markInfo.types.join('、')}标记`);
     }
 
     function submitPatientMark() {
@@ -6311,18 +6370,22 @@
         firstInvalid.focus();
         return;
       }
-      patient.marked = true;
       const selectedTypes = typeInputs.map(input => input.value);
-      patient.markInfo = {
-        type: selectedTypes[0],
-        types: selectedTypes,
-        serviceName: serviceNameInput.value.trim(),
-        amount: Number(amountInput.value).toFixed(2),
-        benefits
+      const submission = {
+        visitNo: patient.visitNo,
+        markInfo: {
+          type: selectedTypes[0],
+          types: selectedTypes,
+          serviceName: serviceNameInput.value.trim(),
+          amount: Number(amountInput.value).toFixed(2),
+          benefits
+        }
       };
-      closePatientMarkDrawer();
-      renderPatientList();
-      showToast(`已为${patient.name}添加${selectedTypes.join('、')}标记`);
+      if (!patientIsInManagedTeam(patient)) {
+        openPatientMarkTeamConfirm(patient, submission);
+        return;
+      }
+      commitPatientMark(submission);
     }
 
     function bindPatientArchiveEntries() {
@@ -10057,6 +10120,10 @@
     }
 
     document.addEventListener('keydown', e => {
+      if (e.key === 'Escape' && document.getElementById('patientMarkTeamConfirm')?.classList.contains('open')) {
+        closePatientMarkTeamConfirm();
+        return;
+      }
       if (e.key === 'Escape' && document.getElementById('patientMarkDrawer')?.classList.contains('open')) {
         closePatientMarkDrawer();
         return;
@@ -10580,6 +10647,14 @@
       const markPatient = e.target.closest('[data-mark-patient]');
       if (markPatient) {
         openPatientMarkDrawer(markPatient.dataset.markPatient);
+        return;
+      }
+      if (e.target.closest('[data-confirm-patient-mark-without-team]')) {
+        commitPatientMark(patientMarkPendingSubmission);
+        return;
+      }
+      if (e.target.closest('[data-cancel-patient-mark-team-confirm]') || e.target.id === 'patientMarkTeamConfirm') {
+        closePatientMarkTeamConfirm();
         return;
       }
       if (e.target.closest('[data-close-patient-mark]') || e.target.id === 'patientMarkDrawer') {
@@ -16911,7 +16986,7 @@
 <script src="./js/personnel-management.js?v=20260929-2"></script>
 <script src="./js/organization-management.js?v=20260929-4"></script>
 <script src="./js/workbench.js?v=20261016-3"></script>
-  <script src="./js/ai-steward.js?v=20261020-32"></script>
+    <script src="./js/ai-steward.js?v=20261021-39"></script>
 <script src="./js/system-role.js?v=20260929-1"></script>
 <script src="./js/scale-create.js?v=20260916-3"></script>
 <script src="./js/dashboard-latest-data.js?v=20260913-31"></script>
