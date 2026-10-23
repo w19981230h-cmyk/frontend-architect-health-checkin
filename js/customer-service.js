@@ -178,7 +178,7 @@
     return `<section class="archive-panel customer-service-panel" data-archive-panel="customer-service" data-persistence-ignore hidden>
       <nav class="customer-service-section-tabs" role="tablist" aria-label="客户服务内容">
         <button type="button" class="active" role="tab" aria-selected="true" data-customer-section="reminders"><span class="customer-service-section-tab-icon">${icon('reminder')}</span><span>客户提醒</span></button>
-        <button type="button" role="tab" aria-selected="false" data-customer-section="expert"><span class="customer-service-section-tab-icon">${icon('expert')}</span><span>专家建议</span></button>
+        <button type="button" role="tab" aria-selected="false" data-customer-section="expert"><span class="customer-service-section-tab-icon">${icon('expert')}</span><span>服务档案</span></button>
       </nav>
       <div class="customer-service-section-view" data-customer-section-view="reminders">
       <article class="customer-service-card">

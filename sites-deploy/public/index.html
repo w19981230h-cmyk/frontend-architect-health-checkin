@@ -3104,7 +3104,7 @@
   <link rel="stylesheet" href="./css/statistics-report.css?v=20260911-05">
   <link rel="stylesheet" href="./css/operations-statistics.css?v=20260910-01">
   <link rel="stylesheet" href="./css/operations-statistics-responsive.css?v=20260910-02">
-  <link rel="stylesheet" href="./css/patient-archive-reference.css?v=20261020-33">
+  <link rel="stylesheet" href="./css/patient-archive-reference.css?v=20261023-37">
   <link rel="stylesheet" href="./css/customer-service.css?v=20261020-37">
   <link rel="stylesheet" href="./css/health-portrait.css?v=20260924-3">
 <link rel="stylesheet" href="./css/personnel-management.css?v=20260929-1">
@@ -4481,6 +4481,27 @@
         <div class="modal-field full"><label class="required" for="patientIndicatorDisplay">展示方式</label><select class="modal-select" id="patientIndicatorDisplay"><option value="">请选择展示方式</option><option value="result">结果卡</option><option value="trend">趋势图</option></select></div>
       </div>
       <div class="modal-foot"><button class="secondary-btn" data-close-patient-indicator>取消</button><button class="confirm-btn" data-save-patient-indicator>添加</button></div>
+    </div>
+  </div>
+
+  <div class="modal-mask archive-tag-modal" id="archiveTagModal" aria-hidden="true">
+    <div class="archive-tag-dialog" role="dialog" aria-modal="true" aria-labelledby="archiveTagModalTitle">
+      <div class="archive-tag-modal-head">
+        <div><h2 id="archiveTagModalTitle">添加患者标签</h2><p>选择常用标签，或输入自定义标签</p></div>
+        <button type="button" class="archive-tag-modal-close" data-close-archive-tag-modal aria-label="关闭添加患者标签弹窗">×</button>
+      </div>
+      <div class="archive-tag-modal-body">
+        <section class="archive-tag-modal-section">
+          <div class="archive-tag-section-title">常用标签 <span>可多选</span></div>
+          <div class="archive-tag-options" id="archiveTagOptions" role="group" aria-label="常用患者标签"></div>
+        </section>
+        <section class="archive-tag-modal-section">
+          <label class="archive-tag-section-title" for="archiveTagCustomInput">自定义标签 <span>选填</span></label>
+          <input id="archiveTagCustomInput" class="archive-tag-custom-input" maxlength="12" placeholder="请输入标签名称，最多12个字符" autocomplete="off">
+          <div class="archive-tag-helper">每位患者最多保留 8 个标签</div>
+        </section>
+      </div>
+      <div class="archive-tag-modal-foot"><button type="button" class="secondary-btn" data-close-archive-tag-modal>取消</button><button type="button" class="confirm-btn" data-confirm-archive-tags>确认添加</button></div>
     </div>
   </div>
 
@@ -7681,9 +7702,102 @@
       const archivePatientTags = document.getElementById('archivePatientTags');
       if (archivePatientTags) {
         const tags = Array.isArray(patient.tags) ? patient.tags.filter(Boolean) : [];
-        archivePatientTags.innerHTML = tags.map(tag => `<span class="archive-patient-tag">${esc(tag)}</span>`).join('');
-        archivePatientTags.hidden = tags.length === 0;
+        const manualTags = Array.isArray(patient.manualTags) ? patient.manualTags.filter(Boolean) : [];
+        const tagsExpanded = archiveExpandedTagPatients.has(patient.visitNo);
+        const visibleTags = tagsExpanded ? tags : tags.slice(0, 5);
+        const hiddenTagCount = Math.max(0, tags.length - 5);
+        archivePatientTags.classList.toggle('is-expanded', tagsExpanded);
+        archivePatientTags.innerHTML = visibleTags.map(tag => {
+          const removable = manualTags.includes(tag);
+          return `<span class="archive-patient-tag${removable ? ' is-manual' : ''}">${esc(tag)}${removable ? `<button type="button" class="archive-patient-tag-remove" data-archive-tag-remove="${esc(tag)}" aria-label="删除标签${esc(tag)}">×</button>` : ''}</span>`;
+        }).join('') + (hiddenTagCount ? `<button type="button" class="archive-patient-tag-more" data-archive-tag-more aria-expanded="${tagsExpanded}">${tagsExpanded ? '收起' : `+${hiddenTagCount}`}</button>` : '') + `<button type="button" class="archive-patient-tag-add" data-archive-tag-add aria-haspopup="dialog">＋ 添加标签</button>`;
+        archivePatientTags.hidden = false;
       }
+    }
+
+    const archiveExpandedTagPatients = new Set();
+    const archiveTagModalState = { selected: new Set(), trigger: null };
+    const archiveTagSuggestions = ['重点随访', '定期复查', '低盐饮食', '血糖控制不佳', '心血管风险', '老年患者', '儿童', '妇科随访', '肿瘤患者', '糖尿病', '高血脂', '肥胖'];
+
+    function renderArchiveTagOptions() {
+      const options = document.getElementById('archiveTagOptions');
+      if (!options || !archiveCurrentPatient) return;
+      const current = new Set((archiveCurrentPatient.tags || []).map(tag => String(tag).toLowerCase()));
+      options.innerHTML = archiveTagSuggestions.map(tag => {
+        const exists = current.has(tag.toLowerCase());
+        const selected = archiveTagModalState.selected.has(tag);
+        return `<button type="button" class="archive-tag-option${selected ? ' is-selected' : ''}" data-archive-tag-option="${esc(tag)}" aria-pressed="${selected}"${exists ? ' disabled' : ''}><span>${esc(tag)}</span>${exists ? '<small>已添加</small>' : ''}</button>`;
+      }).join('');
+    }
+
+    function openArchivePatientTagModal(trigger) {
+      if (!archiveCurrentPatient) return;
+      const modal = document.getElementById('archiveTagModal');
+      const input = document.getElementById('archiveTagCustomInput');
+      archiveTagModalState.selected.clear();
+      archiveTagModalState.trigger = trigger || document.querySelector('[data-archive-tag-add]');
+      if (input) input.value = '';
+      renderArchiveTagOptions();
+      modal.classList.add('open');
+      modal.setAttribute('aria-hidden', 'false');
+      requestAnimationFrame(() => optionsFirstFocus());
+    }
+
+    function optionsFirstFocus() {
+      const firstOption = document.querySelector('#archiveTagOptions .archive-tag-option:not(:disabled)');
+      (firstOption || document.getElementById('archiveTagCustomInput'))?.focus();
+    }
+
+    function closeArchivePatientTagModal(restoreFocus = true) {
+      const modal = document.getElementById('archiveTagModal');
+      if (!modal?.classList.contains('open')) return;
+      modal.classList.remove('open');
+      modal.setAttribute('aria-hidden', 'true');
+      archiveTagModalState.selected.clear();
+      if (restoreFocus) archiveTagModalState.trigger?.focus();
+    }
+
+    function toggleArchivePatientTagOption(button) {
+      const tag = button?.dataset.archiveTagOption;
+      if (!tag || button.disabled) return;
+      if (archiveTagModalState.selected.has(tag)) archiveTagModalState.selected.delete(tag);
+      else archiveTagModalState.selected.add(tag);
+      button.classList.toggle('is-selected', archiveTagModalState.selected.has(tag));
+      button.setAttribute('aria-pressed', String(archiveTagModalState.selected.has(tag)));
+    }
+
+    function saveArchivePatientTags() {
+      if (!archiveCurrentPatient) return;
+      const input = document.getElementById('archiveTagCustomInput');
+      const custom = String(input?.value || '').replace(/\s+/g, ' ').trim();
+      const tags = Array.isArray(archiveCurrentPatient.tags) ? archiveCurrentPatient.tags.filter(Boolean) : [];
+      const existing = new Set(tags.map(tag => String(tag).toLowerCase()));
+      if (custom.length > 12) return showToast('标签名称最多12个字符');
+      if (custom && existing.has(custom.toLowerCase())) return showToast('该标签已存在');
+      const pending = [...archiveTagModalState.selected];
+      if (custom && !pending.some(tag => tag.toLowerCase() === custom.toLowerCase())) pending.push(custom);
+      if (!pending.length) return showToast('请选择或输入标签');
+      if (tags.length + pending.length > 8) return showToast(`最多还可添加${Math.max(0, 8 - tags.length)}个标签`);
+      archiveCurrentPatient.tags = [...tags, ...pending];
+      const manualTags = Array.isArray(archiveCurrentPatient.manualTags) ? archiveCurrentPatient.manualTags.filter(Boolean) : [];
+      archiveCurrentPatient.manualTags = [...manualTags, ...pending.filter(tag => !manualTags.includes(tag))];
+      closeArchivePatientTagModal(false);
+      renderPatientArchive();
+      renderPatientList();
+      showToast(`已添加${pending.length}个标签`);
+      requestAnimationFrame(() => document.querySelector('#archivePatientTags [data-archive-tag-add]')?.focus());
+    }
+
+    function removeArchivePatientTag(tag) {
+      if (!archiveCurrentPatient || !tag) return;
+      const manualTags = Array.isArray(archiveCurrentPatient.manualTags) ? archiveCurrentPatient.manualTags : [];
+      if (!manualTags.includes(tag)) return;
+      archiveCurrentPatient.tags = (archiveCurrentPatient.tags || []).filter(item => item !== tag);
+      archiveCurrentPatient.manualTags = manualTags.filter(item => item !== tag);
+      renderPatientArchive();
+      renderPatientList();
+      showToast('标签已删除');
+      requestAnimationFrame(() => document.querySelector('#archivePatientTags [data-archive-tag-add]')?.focus());
     }
 
     function ensureHealthHistoryRecords(patient) {
@@ -10407,6 +10521,23 @@
         if (createNext.dataset.patientCreateNext === 'manage') openPatientBatchTeamModal(patientCreateCreated.visitNo);
         return;
       }
+      const archiveTagAdd = e.target.closest('[data-archive-tag-add]');
+      if (archiveTagAdd) { openArchivePatientTagModal(archiveTagAdd); return; }
+      const archiveTagMore = e.target.closest('[data-archive-tag-more]');
+      if (archiveTagMore && archiveCurrentPatient) {
+        const patientKey = archiveCurrentPatient.visitNo;
+        if (archiveExpandedTagPatients.has(patientKey)) archiveExpandedTagPatients.delete(patientKey);
+        else archiveExpandedTagPatients.add(patientKey);
+        renderPatientArchive();
+        requestAnimationFrame(() => document.querySelector('[data-archive-tag-more]')?.focus());
+        return;
+      }
+      const archiveTagOption = e.target.closest('[data-archive-tag-option]');
+      if (archiveTagOption) { toggleArchivePatientTagOption(archiveTagOption); return; }
+      if (e.target.closest('[data-confirm-archive-tags]')) { saveArchivePatientTags(); return; }
+      if (e.target.closest('[data-close-archive-tag-modal]') || e.target.id === 'archiveTagModal') { closeArchivePatientTagModal(); return; }
+      const archiveTagRemove = e.target.closest('[data-archive-tag-remove]');
+      if (archiveTagRemove) { removeArchivePatientTag(archiveTagRemove.dataset.archiveTagRemove); return; }
       if (!e.target.closest('.archive-more-actions')) setArchiveMoreOpen(false);
       if (e.target.closest('[data-archive-more]')) {
         setArchiveMoreOpen(document.getElementById('archiveMoreMenu').hidden);
@@ -12206,6 +12337,16 @@
     });
 
     document.addEventListener('keydown', e => {
+      if (e.target.id === 'archiveTagCustomInput' && e.key === 'Enter') {
+        e.preventDefault();
+        saveArchivePatientTags();
+        return;
+      }
+      if (e.key === 'Escape' && document.getElementById('archiveTagModal').classList.contains('open')) {
+        e.preventDefault();
+        closeArchivePatientTagModal();
+        return;
+      }
       if (e.key === 'Escape' && document.getElementById('archiveHealthDeleteConfirm').classList.contains('open')) {
         closeHealthDeleteConfirm();
         return;
@@ -16971,7 +17112,7 @@
 
 <script src="./js/service-management.js?v=20260929-1"></script>
 <script src="./js/expert-report.js?v=20261020-37"></script>
-<script src="./js/customer-service.js?v=20261020-36"></script>
+<script src="./js/customer-service.js?v=20261023-38"></script>
 <script src="./js/interface-notes-snapshot.js?v=20260923-v3-17"></script>
 <script src="./js/interface-annotations-v3.js?v=20260924-v3-18"></script>
 <script src="./js/knowledge-base.js?v=knowledge-v15"></script>

@@ -178,14 +178,49 @@
   box-shadow: 0 10px 28px rgba(44, 72, 123, .035);
 }
 
-#patientArchivePage .archive-info-head { padding-right: 120px; gap: 12px; margin-bottom: 24px; }
+#patientArchivePage .archive-info-head { padding-right: 120px; gap: 12px; margin-bottom: 24px; flex-wrap: wrap; }
 #patientArchivePage .archive-info-head::before { content: none; }
-#patientArchivePage .archive-info-head strong { color: #26354e; font-size: 28px; line-height: 1; }
-#patientArchivePage .archive-info-head > span { color: #2f3d56; font-size: 16px; font-weight: 700; }
+#patientArchivePage .archive-info-head strong { flex: 0 0 auto; color: #26354e; font-size: 28px; line-height: 1; }
+#patientArchivePage .archive-info-head > span { flex: 0 0 auto; color: #2f3d56; font-size: 16px; font-weight: 700; }
 #patientArchivePage .archive-info-head > span:last-child { display: none; }
-#patientArchivePage .archive-info-head .archive-patient-tag-list { min-width: 0; display: flex; align-items: center; flex-wrap: wrap; gap: 6px; }
+#patientArchivePage .archive-info-head .archive-patient-tag-list { min-width: 0; flex: 1 1 260px; display: flex; align-items: center; flex-wrap: wrap; gap: 6px; }
+#patientArchivePage .archive-info-head .archive-patient-tag-list.is-expanded { flex-basis: 100%; margin-top: 2px; }
 #patientArchivePage .archive-info-head .archive-patient-tag-list[hidden] { display: none; }
-#patientArchivePage .archive-patient-tag { padding: 3px 8px; border: 1px solid #dce7ff; border-radius: 4px; color: #315cff; background: #edf3ff; font-size: 12px; font-weight: 600; line-height: 18px; white-space: nowrap; }
+#patientArchivePage .archive-patient-tag { min-height: 26px; padding: 3px 8px; border: 1px solid #dce7ff; border-radius: 4px; display: inline-flex; align-items: center; gap: 4px; color: #315cff; background: #edf3ff; font-size: 12px; font-weight: 600; line-height: 18px; white-space: nowrap; }
+#patientArchivePage .archive-patient-tag-remove { width: 16px; height: 16px; padding: 0; border: 0; border-radius: 3px; display: grid; place-items: center; color: #7591d7; background: transparent; font-size: 14px; line-height: 1; cursor: pointer; }
+#patientArchivePage .archive-patient-tag-remove:hover { color: #315cff; background: #dce7ff; }
+#patientArchivePage .archive-patient-tag-remove:focus-visible,
+#patientArchivePage .archive-patient-tag-add:focus-visible,
+#patientArchivePage .archive-patient-tag-more:focus-visible { outline: 2px solid #315cff; outline-offset: 1px; }
+#patientArchivePage .archive-patient-tag-more { height: 26px; padding: 0 7px; border: 0; border-radius: 4px; color: #315cff; background: #f3f6ff; font-size: 12px; font-weight: 600; white-space: nowrap; cursor: pointer; }
+#patientArchivePage .archive-patient-tag-more:hover { background: #e7edff; }
+#patientArchivePage .archive-patient-tag-add { height: 26px; padding: 0 8px; border: 1px dashed #b8c8e6; border-radius: 4px; color: #526b9e; background: #fff; font-size: 12px; white-space: nowrap; cursor: pointer; }
+#patientArchivePage .archive-patient-tag-add:hover { color: #315cff; border-color: #86a1ff; background: #f7f9ff; }
+.archive-tag-modal { z-index: 70; padding: 24px; }
+.archive-tag-dialog { width: min(520px, calc(100vw - 48px)); overflow: hidden; border-radius: 10px; background: #fff; box-shadow: 0 16px 48px rgba(26, 45, 80, .2); }
+.archive-tag-modal-head { min-height: 76px; padding: 18px 24px; border-bottom: 1px solid #e8edf5; display: flex; align-items: flex-start; justify-content: space-between; gap: 20px; }
+.archive-tag-modal-head h2 { margin: 0; color: #26354e; font-size: 18px; line-height: 26px; }
+.archive-tag-modal-head p { margin: 4px 0 0; color: #8190a7; font-size: 13px; line-height: 20px; }
+.archive-tag-modal-close { width: 28px; height: 28px; padding: 0; border: 0; border-radius: 5px; color: #71819a; background: transparent; font-size: 22px; line-height: 1; cursor: pointer; }
+.archive-tag-modal-close:hover { color: #315cff; background: #f2f5fa; }
+.archive-tag-modal-body { padding: 22px 24px 24px; display: grid; gap: 24px; }
+.archive-tag-modal-section { min-width: 0; }
+.archive-tag-section-title { margin-bottom: 12px; display: block; color: #34445d; font-size: 14px; font-weight: 700; line-height: 22px; }
+.archive-tag-section-title span { margin-left: 5px; color: #98a4b6; font-size: 12px; font-weight: 400; }
+.archive-tag-options { display: flex; flex-wrap: wrap; gap: 10px 8px; }
+.archive-tag-option { min-height: 32px; padding: 5px 12px; border: 1px solid #d9e2f1; border-radius: 5px; display: inline-flex; align-items: center; gap: 6px; color: #52617a; background: #fff; font-size: 13px; line-height: 20px; cursor: pointer; }
+.archive-tag-option:hover:not(:disabled) { color: #315cff; border-color: #86a1ff; background: #f7f9ff; }
+.archive-tag-option.is-selected { color: #315cff; border-color: #315cff; background: #edf3ff; }
+.archive-tag-option:disabled { color: #98a4b6; border-color: #e8edf5; background: #f6f8fb; cursor: not-allowed; }
+.archive-tag-option small { font-size: 11px; font-weight: 400; }
+.archive-tag-custom-input { width: 100%; height: 38px; padding: 0 12px; border: 1px solid #d9e2f1; border-radius: 6px; color: #26354e; background: #fff; font: inherit; font-size: 14px; }
+.archive-tag-custom-input:focus { border-color: #315cff; outline: 0; box-shadow: 0 0 0 2px rgba(49, 92, 255, .12); }
+.archive-tag-helper { margin-top: 7px; color: #98a4b6; font-size: 12px; }
+.archive-tag-modal-foot { min-height: 64px; padding: 12px 24px; border-top: 1px solid #e8edf5; display: flex; align-items: center; justify-content: flex-end; gap: 10px; }
+.archive-tag-modal-foot button { min-width: 76px; }
+.archive-tag-modal-close:focus-visible,
+.archive-tag-option:focus-visible,
+.archive-tag-modal-foot button:focus-visible { outline: 2px solid #315cff; outline-offset: 2px; }
 #patientArchivePage .archive-demo-label { color: #8491a5; font-size: 11px; }
 #patientArchivePage .archive-info-columns { grid-template-columns: minmax(0, .86fr) minmax(0, 1.14fr); align-items: start; gap: 40px; }
 #patientArchivePage .archive-info-section { min-width: 0; }
