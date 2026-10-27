@@ -3,7 +3,14 @@
   const tasks = [
     { key: 'archive', symbol: '档', title: '档案待补充', base: 7, unit: '人', action: '前往补充', target: 'patients', description: count => `共${count}位客户的健康档案需要主理人补充` },
     { key: 'report', symbol: '报', title: '报告待出具', base: 5, unit: '份', action: '生成报告', target: 'evaluationReports', description: count => `共${count}份客户健康评估报告待生成` },
-    { key: 'reminder', symbol: '醒', title: '客户待提醒', base: 12, unit: '项', action: '查看提醒', target: 'healthTasks', description: count => `当前存在${count}条待提醒的任务事项，需主理人完成客户提醒` }
+    { key: 'reminder', symbol: '醒', title: '客户待提醒', base: 12, unit: '项', action: '查看提醒', target: 'healthTasks', description: count => `当前存在${count}条待提醒的任务事项，需主理人完成客户提醒` },
+    { key: 'enrollment-review', symbol: '入', title: '待审核患者入组', base: 5, unit: '人', action: '前往审核', target: 'patients', high: true, description: count => `共${count}个预分组患者待审核` },
+    { key: 'phone-completion', symbol: '号', title: '补充患者手机号', base: 5, unit: '人', action: '再次外呼　｜　前往补充', target: 'patients', high: true, description: count => `共${count}位患者缺少有效手机号` },
+    { key: 'ai-call-failed', symbol: '呼', title: 'AI外呼失败处理', base: 5, unit: '项', action: '前往审核', target: 'healthTasks', high: true, description: count => `共${count}条外呼失败记录待处理` },
+    { key: 'followup-call', symbol: '访', title: '今日待办随访任务', base: 5, unit: '项', action: '前往审核', target: 'healthTasks', description: count => `共${count}位患者待完成电话随访` },
+    { key: 'followup-result', symbol: '访', title: '今日待办随访任务', base: 5, unit: '项', action: '前往审核', target: 'healthTasks', description: count => `共${count}份随访结果待审核` },
+    { key: 'followup-record', symbol: '访', title: '今日待办随访任务', base: 5, unit: '项', action: '前往审核', target: 'healthTasks', description: count => `共${count}份随访记录待补充` },
+    { key: 'followup-due', symbol: '访', title: '今日待办随访任务', base: 5, unit: '项', action: '前往审核', target: 'healthTasks', description: count => `共${count}项随访任务今日到期` }
   ];
   let scope = null;
   let assistantName = 'AI主理人';

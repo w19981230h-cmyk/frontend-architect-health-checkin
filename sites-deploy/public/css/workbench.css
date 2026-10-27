@@ -70,9 +70,17 @@
 .workbench-institution-task[data-task-tone="archive"] .workbench-task-symbol{color:oklch(57% .2 266);background:oklch(95.5% .035 270)}
 .workbench-institution-task[data-task-tone="report"] .workbench-task-symbol{color:oklch(64% .15 210);background:oklch(96% .035 210)}
 .workbench-institution-task[data-task-tone="reminder"] .workbench-task-symbol{color:oklch(66% .17 55);background:oklch(96.5% .045 72)}
+.workbench-institution-task[data-task-tone="enrollment-review"] .workbench-task-symbol,
+.workbench-institution-task[data-task-tone="phone-completion"] .workbench-task-symbol,
+.workbench-institution-task[data-task-tone="ai-call-failed"] .workbench-task-symbol,
+.workbench-institution-task[data-task-tone^="followup-"] .workbench-task-symbol{color:oklch(61% .2 266);background:oklch(95.5% .035 270)}
 .workbench-institution-task[data-task-tone="archive"]:hover{border-color:oklch(82% .08 270);background:oklch(98.5% .012 270)}
 .workbench-institution-task[data-task-tone="report"]:hover{border-color:oklch(82% .07 210);background:oklch(98.5% .012 210)}
 .workbench-institution-task[data-task-tone="reminder"]:hover{border-color:oklch(84% .09 72);background:oklch(98.5% .018 72)}
+.workbench-institution-task[data-task-tone="enrollment-review"]:hover,
+.workbench-institution-task[data-task-tone="phone-completion"]:hover,
+.workbench-institution-task[data-task-tone="ai-call-failed"]:hover,
+.workbench-institution-task[data-task-tone^="followup-"]:hover{border-color:oklch(82% .08 270);background:oklch(98.5% .012 270)}
 .workbench-institution-task-main{min-width:0}
 .workbench-institution-task-main strong{display:flex;align-items:center;gap:8px;color:#263752;font-size:14px;font-weight:800}
 .workbench-institution-task-main small{display:block;margin-top:5px;color:#8490a4;font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
