@@ -24,6 +24,26 @@
 
   const escapeHtml = value => String(value).replace(/[&<>'"]/g, char => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' })[char]);
   const unique = values => [...new Set((values || []).filter(Boolean))];
+  const taskProcessorPatients = [
+    { name: '张惠春', gender: '男', age: 57, phone: '133****0000', idCard: '440482320214515493', tags: ['eGFR ≥60', 'CKD3期', '高血压'], risk: '高风险' },
+    { name: '李桂芳', gender: '女', age: 63, phone: '138****2216', idCard: '440682196302183028', tags: ['糖尿病', 'CKD2期', '重点随访'], risk: '重点关注' },
+    { name: '陈建国', gender: '男', age: 52, phone: '156****8921', idCard: '440681197407123613', tags: ['高血压', '冠心病', '用药管理'], risk: '中风险' },
+    { name: '吴秀兰', gender: '女', age: 68, phone: '189****5704', idCard: '440683195806284526', tags: ['慢性肾病', '低盐饮食', '复诊提醒'], risk: '重点关注' },
+    { name: '周明远', gender: '男', age: 46, phone: '137****3048', idCard: '440684198003174117', tags: ['肥胖', '血脂异常', '运动干预'], risk: '一般' }
+  ];
+  const taskProcessorProfiles = {
+    archive: { queueTitle: '档案待补充', hint: '核对缺失字段并完善患者主档', assistant: 'AI 已识别档案缺失项，并按影响健康管理的程度完成排序。', analysisTitle: '档案完整性分析', analysis: '患者既往疾病记录与近期检验结果存在关联，但用药史、过敏史和紧急联系人仍不完整，建议补齐后再开展后续服务。', highlights: [['缺失字段', '用药情况、过敏史、紧急联系人'], ['最近来源', '2026-10-26 肾内科门诊病历'], ['完整度', '72% · 需补充']], sectionTitle: '补充档案信息', sectionHint: '保存后同步更新患者主档', fields: [['现用药物', '氨氯地平片 5mg，每日一次', 'text'], ['药物过敏史', '青霉素', 'text'], ['紧急联系人', '请输入姓名和联系电话', 'text']], actions: [['暂不处理', 'default'], ['保存档案', 'primary']] },
+    report: { queueTitle: '报告待出具', hint: '确认数据范围并生成健康评估报告', assistant: 'AI 已汇总最近 90 天健康数据，可直接生成报告，也可先调整报告范围。', analysisTitle: '报告生成建议', analysis: '近 30 天血压波动较大，eGFR 呈下降趋势。建议在报告中突出肾功能与心血管风险，并给出复诊和用药依从性建议。', highlights: [['报告类型', '综合健康评估报告'], ['数据范围', '最近 90 天'], ['可用数据', '检验 18 项、随访 6 次']], sectionTitle: '报告配置', sectionHint: '生成前确认报告模板与数据范围', fields: [['报告模板', '慢病综合评估模板', 'select'], ['数据范围', '最近90天', 'select'], ['报告备注', '重点说明肾功能变化及复诊建议', 'textarea']], actions: [['保存草稿', 'default'], ['生成报告', 'primary']] },
+    reminder: { queueTitle: '客户待提醒', hint: '选择触达方式并完成客户提醒', assistant: 'AI 已根据服务节点整理提醒内容，建议优先电话联系高风险患者。', analysisTitle: '提醒策略建议', analysis: '患者明日需要复查肾功能，且最近一次电话未接通。建议先电话联系，未接通时自动补发短信提醒。', highlights: [['提醒事项', '肾功能复查与用药确认'], ['计划时间', '今天 15:30 前'], ['最近触达', '10月26日电话未接通']], sectionTitle: '执行客户提醒', sectionHint: '确认提醒渠道和发送内容', fields: [['提醒渠道', '电话 + 短信', 'select'], ['计划联系时间', '2026-10-27 14:30', 'text'], ['提醒内容', '请按预约时间完成肾功能复查，并携带近期用药清单。', 'textarea']], actions: [['稍后处理', 'default'], ['完成提醒', 'primary']] },
+    'enrollment-review': { queueTitle: '待审核患者入组', hint: '审核 AI 推荐分组与健康管理方案', assistant: 'AI 已为您整理待审核患者，并生成入组依据和推荐团队。', analysisTitle: '智能入组分析', analysis: '患者为高龄高血压合并 CKD3 期人群，eGFR 持续下降，符合肾病慢病管理团队入组标准，建议纳入重点管理。', highlights: [['推荐团队', '肾内科慢病管理团队'], ['推荐方案', 'CKD 分级随访管理方案'], ['匹配程度', '92% · 高匹配']], sectionTitle: '入组审核', sectionHint: '确认团队、方案并填写审核意见', fields: [['入组团队', '肾内科慢病管理团队', 'select'], ['健康管理方案', 'CKD 分级随访管理方案', 'select'], ['审核意见', '符合入组条件，建议重点关注肾功能及血压变化。', 'textarea']], actions: [['拒绝入组', 'danger'], ['确认入组', 'primary']] },
+    'phone-completion': { queueTitle: '补充患者手机号', hint: '核对患者身份并补录有效联系电话', assistant: 'AI 已从就诊登记信息中发现一个候选号码，请人工核对后保存。', analysisTitle: '联系方式核验', analysis: '当前主档手机号缺失，门诊登记中存在候选号码 133****0000。最近一次外呼由家属接听，需要确认号码归属。', highlights: [['候选号码', '133****0000'], ['号码来源', '2026-10-26 门诊登记'], ['核验状态', '待人工确认']], sectionTitle: '补充联系方式', sectionHint: '保存前请确认号码归属和授权情况', fields: [['患者手机号', '13326678484', 'text'], ['号码归属', '患者本人', 'select'], ['核验备注', '已通过就诊登记信息核对', 'textarea']], actions: [['再次外呼', 'default'], ['保存手机号', 'primary']] },
+    'ai-call-failed': { queueTitle: 'AI外呼失败处理', hint: '查看失败原因并选择后续处理方式', assistant: 'AI 已汇总外呼失败原因，建议对连续未接通患者转为人工联系。', analysisTitle: '外呼失败分析', analysis: '过去 24 小时已尝试外呼 3 次，其中 2 次无人接听、1 次忙线。继续自动重呼的成功率较低，建议人工联系或补发短信。', highlights: [['失败原因', '无人接听 / 忙线'], ['尝试次数', '3 次'], ['最后外呼', '今天 11:24']], sectionTitle: '失败处理', sectionHint: '选择后续触达方式并记录处理结果', fields: [['处理方式', '转人工联系', 'select'], ['下次联系时间', '2026-10-27 16:00', 'text'], ['处理备注', '若仍未接通，发送复诊提醒短信。', 'textarea']], actions: [['再次外呼', 'default'], ['标记已处理', 'primary']] },
+    'followup-call': { queueTitle: '电话随访任务', hint: '按随访提纲完成电话沟通', assistant: 'AI 已根据患者近期指标生成本次电话随访提纲。', analysisTitle: '随访前摘要', analysis: '患者近一周家庭血压均值 148/92mmHg，高于目标范围；用药依从性一般，建议本次重点确认漏服原因与不良反应。', highlights: [['随访主题', '血压与用药依从性'], ['上次随访', '2026-10-20'], ['需关注', '连续 3 天血压偏高']], sectionTitle: '电话随访记录', sectionHint: '勾选已确认事项并填写患者反馈', fields: [['接听情况', '患者本人接听', 'select'], ['随访结果', '已确认用药情况，患者无明显不良反应。', 'textarea'], ['下次随访', '2026-11-03', 'text']], actions: [['保存草稿', 'default'], ['完成随访', 'primary']] },
+    'followup-result': { queueTitle: '随访结果待审核', hint: '审核随访结论与异常处置建议', assistant: 'AI 已标记随访记录中的异常指标和需要复核的结论。', analysisTitle: '审核风险提示', analysis: '随访结论提到患者出现轻度头晕，但未记录发生频次和与用药的关系。建议补充后再确认本次随访结果。', highlights: [['记录人员', '李敏 健康管理师'], ['提交时间', '今天 10:18'], ['异常项', '头晕、血压偏高']], sectionTitle: '审核随访结果', sectionHint: '确认结论、异常等级与后续动作', fields: [['审核结论', '建议通过并补充观察', 'select'], ['异常等级', '中风险', 'select'], ['审核意见', '补充头晕发生频次，并持续监测未来 3 天血压。', 'textarea']], actions: [['退回修改', 'danger'], ['通过审核', 'primary']] },
+    'followup-record': { queueTitle: '随访记录待补充', hint: '补齐随访过程与后续安排', assistant: 'AI 已从通话摘要中提取关键信息，可在确认后写入正式随访记录。', analysisTitle: '通话内容提取', analysis: '患者自述血压近期有所升高，存在两次漏服；无胸痛、气促等不适。计划继续当前方案并加强提醒。', highlights: [['通话时长', '6 分 24 秒'], ['信息来源', '人工电话随访'], ['待补字段', '患者反馈、后续计划']], sectionTitle: '补充随访记录', sectionHint: '确认 AI 提取内容并完善记录', fields: [['患者反馈', '近期工作较忙，发生两次漏服。', 'textarea'], ['干预措施', '设置每日用药提醒，继续监测血压。', 'textarea'], ['复查安排', '一周后复查血压记录', 'text']], actions: [['保存草稿', 'default'], ['保存记录', 'primary']] },
+    'followup-due': { queueTitle: '今日到期随访', hint: '处理今日到期或即将逾期的任务', assistant: 'AI 已按到期时间和患者风险排序，建议优先处理当前高风险患者。', analysisTitle: '到期任务分析', analysis: '该任务今天 17:00 到期，关联患者为重点管理对象。若无法按时完成，应调整日期并填写原因，避免任务无说明逾期。', highlights: [['截止时间', '今天 17:00'], ['任务状态', '剩余 2 小时 18 分'], ['任务优先级', '高优']], sectionTitle: '到期任务处理', sectionHint: '完成任务或调整计划时间', fields: [['处理状态', '计划今日完成', 'select'], ['计划完成时间', '2026-10-27 16:30', 'text'], ['处理说明', '已联系患者，等待回电确认。', 'textarea']], actions: [['调整日期', 'default'], ['完成任务', 'primary']] }
+  };
+  let taskProcessorState = { key: 'enrollment-review', patientIndex: 0, institution: fallbackInstitutions[0], completed: new Set() };
   const currentInstitutions = () => {
     const names = unique(scope?.institutionNames);
     return names.length ? names : fallbackInstitutions;
@@ -35,6 +55,72 @@
     return Math.max(1, task.base + seed % (spread * 2 + 1) - spread);
   };
   const buildInstitutionTasks = institutions => institutions.map((institution, institutionIndex) => ({ institution, tasks: tasks.map(task => ({ ...task, count: taskCount(task, institution, institutionIndex) })) }));
+  const processorTask = key => tasks.find(task => task.key === key) || tasks[0];
+  const processorProfile = key => taskProcessorProfiles[key] || taskProcessorProfiles.archive;
+  const processorField = ([label, value, kind], index) => {
+    const id = `taskProcessorField${index}`;
+    if (kind === 'textarea') return `<label class="task-processor-field task-processor-field-wide" for="${id}"><span>${escapeHtml(label)}</span><textarea id="${id}" rows="3">${escapeHtml(value)}</textarea></label>`;
+    if (kind === 'select') return `<label class="task-processor-field" for="${id}"><span>${escapeHtml(label)}</span><select id="${id}"><option>${escapeHtml(value)}</option><option>待进一步确认</option><option>转人工处理</option></select></label>`;
+    return `<label class="task-processor-field" for="${id}"><span>${escapeHtml(label)}</span><input id="${id}" value="${escapeHtml(value)}"></label>`;
+  };
+  const renderTaskProcessorActions = profile => {
+    const host = document.getElementById('taskProcessorActions');
+    if (!host) return;
+    host.innerHTML = profile.actions.map(([label, tone]) => `<button type="button" class="task-action-btn ${tone}" data-task-processor-action="${escapeHtml(label)}">${tone === 'primary' ? '<span aria-hidden="true">✓</span>' : tone === 'danger' ? '<span aria-hidden="true">×</span>' : ''}${escapeHtml(label)}</button>`).join('');
+  };
+  const renderTaskProcessorQueue = (task, profile) => {
+    const title = document.getElementById('taskProcessorQueueTitle');
+    const progress = document.getElementById('taskProcessorQueueProgress');
+    const tip = document.getElementById('taskProcessorAssistantTip');
+    const host = document.getElementById('taskProcessorPatientList');
+    if (title) title.textContent = profile.queueTitle;
+    const done = taskProcessorPatients.filter((_, index) => taskProcessorState.completed.has(`${task.key}:${index}`)).length;
+    if (progress) progress.textContent = `已处理 ${done} / 共 ${task.base}${task.unit}`;
+    if (tip) tip.textContent = profile.assistant;
+    if (!host) return;
+    host.innerHTML = taskProcessorPatients.map((patient, index) => {
+      const selected = index === taskProcessorState.patientIndex;
+      const completed = taskProcessorState.completed.has(`${task.key}:${index}`);
+      return `<button type="button" class="task-patient-card${selected ? ' selected' : ''}${completed ? ' completed' : ''}" data-task-processor-patient="${index}" aria-pressed="${selected}"><span class="task-patient-avatar" aria-hidden="true">${escapeHtml(patient.name.slice(-1))}</span><span class="task-patient-copy"><strong>${escapeHtml(patient.name)}<em>${escapeHtml(patient.risk)}</em></strong><small>${escapeHtml(patient.phone)} · ${patient.gender} · ${patient.age}岁</small><span>${patient.tags.map(tag => `<i>${escapeHtml(tag)}</i>`).join('')}</span></span><b>${completed ? '已处理' : '待处理'}</b></button>`;
+    }).join('');
+  };
+  const renderTaskProcessorContent = (task, profile) => {
+    const patient = taskProcessorPatients[taskProcessorState.patientIndex] || taskProcessorPatients[0];
+    const host = document.getElementById('taskProcessorContent');
+    if (!host) return;
+    host.innerHTML = `<section class="task-patient-hero"><div class="task-patient-identity"><span class="task-patient-large-avatar" aria-hidden="true">${escapeHtml(patient.name.slice(-1))}</span><div><p><strong>${escapeHtml(patient.name)}</strong><em>${escapeHtml(patient.risk)}</em></p><span>${patient.gender} · ${patient.age}岁　手机号：${escapeHtml(patient.phone)}</span><small>身份证号：${escapeHtml(patient.idCard)}</small><div>${patient.tags.map(tag => `<i>${escapeHtml(tag)}</i>`).join('')}</div></div></div><button type="button" class="task-archive-button" data-task-processor-archive>查看患者档案</button></section><section class="task-analysis-card"><header><span aria-hidden="true">✦</span><div><strong>${escapeHtml(profile.analysisTitle)}</strong><small>由 AI 根据患者档案与任务数据生成</small></div></header><p>${escapeHtml(profile.analysis)}</p><div class="task-analysis-highlights">${profile.highlights.map(([label, value]) => `<article><span>${escapeHtml(label)}</span><strong>${escapeHtml(value)}</strong></article>`).join('')}</div></section><section class="task-handling-card"><header><div><strong>${escapeHtml(profile.sectionTitle)}</strong><small>${escapeHtml(profile.sectionHint)}</small></div><span>${escapeHtml(task.title)}</span></header><div class="task-processor-fields">${profile.fields.map(processorField).join('')}</div></section><p class="task-ai-disclaimer">AI 辅助整理内容仅供参考，请结合患者实际情况核对确认。</p>`;
+  };
+  const renderTaskProcessor = () => {
+    const task = processorTask(taskProcessorState.key);
+    const profile = processorProfile(task.key);
+    const select = document.getElementById('taskProcessorTypeSelect');
+    if (select) {
+      select.innerHTML = tasks.map(item => `<option value="${item.key}"${item.key === task.key ? ' selected' : ''}>${escapeHtml(item.title)}</option>`).join('');
+      select.value = task.key;
+    }
+    const hint = document.getElementById('taskProcessorTypeHint');
+    if (hint) hint.textContent = `${taskProcessorState.institution} · ${profile.hint}`;
+    renderTaskProcessorActions(profile);
+    renderTaskProcessorQueue(task, profile);
+    renderTaskProcessorContent(task, profile);
+  };
+  const openTaskProcessor = (taskKey, institutionName) => {
+    taskProcessorState.key = processorTask(taskKey).key;
+    taskProcessorState.patientIndex = 0;
+    taskProcessorState.institution = institutionName || currentInstitutions()[0];
+    window.showListView?.('workbenchTasks');
+    renderTaskProcessor();
+    document.getElementById('workbenchTaskProcessorView')?.scrollTo({ top: 0 });
+  };
+  let processorToastTimer;
+  const showTaskProcessorToast = message => {
+    const toast = document.getElementById('taskProcessorToast');
+    if (!toast) return;
+    toast.textContent = message;
+    toast.hidden = false;
+    window.clearTimeout(processorToastTimer);
+    processorToastTimer = window.setTimeout(() => { toast.hidden = true; }, 2400);
+  };
   const sumByKey = (groups, key) => groups.reduce((sum, group) => sum + (group.tasks.find(task => task.key === key)?.count || 0), 0);
   const sumScopeMetric = (groups, key, base) => groups.reduce((sum, group, index) => sum + taskCount({ key, base }, group.institution, index), 0);
   const renderStats = groups => {
@@ -54,7 +140,7 @@
     if (!host) return;
     host.innerHTML = groups.map(group => {
       const total = group.tasks.reduce((sum, task) => sum + task.count, 0);
-      const rows = group.tasks.map(task => `<button type="button" class="workbench-institution-task" data-task-tone="${task.key}" data-workbench-institution="${escapeHtml(group.institution)}" data-workbench-target="${task.target}" aria-label="${escapeHtml(group.institution)} ${task.title} ${task.count}${task.unit}，${task.action}"><span class="workbench-task-symbol">${task.symbol}</span><span class="workbench-institution-task-main"><strong>${task.title}${task.high ? '<em class="workbench-priority">高优</em>' : ''}</strong><small>${escapeHtml(task.description(task.count))}</small></span><span class="workbench-institution-action">${task.action} ›</span></button>`).join('');
+      const rows = group.tasks.map(task => `<button type="button" class="workbench-institution-task" data-task-tone="${task.key}" data-workbench-task-key="${task.key}" data-workbench-institution="${escapeHtml(group.institution)}" data-workbench-target="${task.target}" aria-label="${escapeHtml(group.institution)} ${task.title} ${task.count}${task.unit}，${task.action}"><span class="workbench-task-symbol">${task.symbol}</span><span class="workbench-institution-task-main"><strong>${task.title}${task.high ? '<em class="workbench-priority">高优</em>' : ''}</strong><small>${escapeHtml(task.description(task.count))}</small></span><span class="workbench-institution-action">${task.action} ›</span></button>`).join('');
       return `<article class="workbench-institution-panel"><header class="workbench-institution-panel-head"><div><strong>${escapeHtml(group.institution)}</strong><small>当前机构待办事项</small></div><span>共${total}项</span></header><div class="workbench-institution-tasks">${rows}</div></article>`;
     }).join('');
   };
@@ -294,8 +380,42 @@
       document.querySelector('[data-global-ai-toggle]')?.focus();
       return;
     }
+    const back = event.target.closest('[data-task-processor-back]');
+    if (back) {
+      window.showListView?.('workbench');
+      return;
+    }
+    const patientCard = event.target.closest('[data-task-processor-patient]');
+    if (patientCard) {
+      taskProcessorState.patientIndex = Number(patientCard.dataset.taskProcessorPatient) || 0;
+      renderTaskProcessor();
+      return;
+    }
+    if (event.target.closest('[data-task-processor-archive]')) {
+      showTaskProcessorToast(`已打开${taskProcessorPatients[taskProcessorState.patientIndex].name}的患者档案预览`);
+      return;
+    }
+    const taskAction = event.target.closest('[data-task-processor-action]');
+    if (taskAction) {
+      const patient = taskProcessorPatients[taskProcessorState.patientIndex];
+      const action = taskAction.dataset.taskProcessorAction;
+      if (taskAction.classList.contains('primary') || taskAction.classList.contains('danger')) {
+        taskProcessorState.completed.add(`${taskProcessorState.key}:${taskProcessorState.patientIndex}`);
+        const next = taskProcessorPatients.findIndex((_, index) => !taskProcessorState.completed.has(`${taskProcessorState.key}:${index}`));
+        if (next >= 0) taskProcessorState.patientIndex = next;
+        renderTaskProcessor();
+      }
+      showTaskProcessorToast(`${patient.name}：${action}操作已记录`);
+      return;
+    }
     const row = event.target.closest('[data-workbench-institution]');
-    if (row) openInstitutionTask(row.dataset.workbenchInstitution, row.dataset.workbenchTarget);
+    if (row) openTaskProcessor(row.dataset.workbenchTaskKey, row.dataset.workbenchInstitution);
+  });
+  document.addEventListener('change', event => {
+    if (event.target?.id !== 'taskProcessorTypeSelect') return;
+    taskProcessorState.key = processorTask(event.target.value).key;
+    taskProcessorState.patientIndex = 0;
+    renderTaskProcessor();
   });
   document.addEventListener('keydown', event => {
     if (event.target?.id === 'globalAiTitle' && event.target.classList.contains('editing')) {

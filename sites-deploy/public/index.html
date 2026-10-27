@@ -3109,7 +3109,7 @@
   <link rel="stylesheet" href="./css/health-portrait.css?v=20260924-3">
 <link rel="stylesheet" href="./css/personnel-management.css?v=20260929-1">
 <link rel="stylesheet" href="./css/organization-management.css?v=20260929-1">
-<link rel="stylesheet" href="./css/workbench.css?v=20261027-5">
+<link rel="stylesheet" href="./css/workbench.css?v=20261027-6">
   <link rel="stylesheet" href="./css/ai-steward.css?v=20261021-28">
 <link rel="stylesheet" href="./css/system-role.css?v=20260916-1">
 <link rel="stylesheet" href="./css/dashboard-latest.css?v=20260913-40">
@@ -3207,6 +3207,24 @@
               <div class="workbench-todos" id="workbenchTodos" aria-live="polite"></div>
             </section>
           </div>
+        </section>
+        <section class="list-panel list-view task-processor-view" id="workbenchTaskProcessorView" aria-label="任务处理中心">
+          <div class="task-processor-shell">
+            <header class="task-processor-toolbar">
+              <button type="button" class="task-processor-back" data-task-processor-back aria-label="返回工作台"><span aria-hidden="true">‹</span> 返回工作台</button>
+              <label class="task-processor-type"><span>任务类型</span><select id="taskProcessorTypeSelect" aria-label="切换任务类型"></select><small id="taskProcessorTypeHint"></small></label>
+              <div class="task-processor-actions" id="taskProcessorActions" aria-label="当前任务操作"></div>
+            </header>
+            <div class="task-processor-layout">
+              <aside class="task-processor-queue" aria-label="待处理患者队列">
+                <p class="task-processor-ai-tip" id="taskProcessorAssistantTip"></p>
+                <div class="task-processor-queue-heading"><strong id="taskProcessorQueueTitle"></strong><span id="taskProcessorQueueProgress"></span></div>
+                <div class="task-processor-patient-list" id="taskProcessorPatientList"></div>
+              </aside>
+              <main class="task-processor-content" id="taskProcessorContent" aria-live="polite"></main>
+            </div>
+          </div>
+          <div class="task-processor-toast" id="taskProcessorToast" role="status" aria-live="polite" hidden></div>
         </section>
         <section class="list-panel list-view plan-management-view" id="planManagementView">
           <div class="plan-shell">
@@ -6726,6 +6744,7 @@
 
     function showListView(view) {
       const isWorkbench = view === 'workbench';
+      const isTaskProcessor = view === 'workbenchTasks';
       const isPlans = view === 'plans';
       const isScale = view === 'scale';
       const isIndicator = view === 'indicator';
@@ -6756,6 +6775,7 @@
       document.querySelector('.list-main')?.classList.toggle('dashboard-latest-main', isDashboardLatest || isDashboardUpdated);
       if (isDashboardLatest) window.renderDashboardLatest?.();
       document.getElementById('workbenchView')?.classList.toggle('active', isWorkbench);
+      document.getElementById('workbenchTaskProcessorView')?.classList.toggle('active', isTaskProcessor);
       document.getElementById('planManagementView')?.classList.toggle('active', isPlans);
       document.getElementById('scaleManagementView')?.classList.toggle('active', isScale);
       document.getElementById('indicatorTemplateView')?.classList.toggle('active', isIndicator);
@@ -6771,9 +6791,10 @@
       document.getElementById('operationsStatisticsView')?.classList.toggle('active', isOperationsStatistics);
       document.getElementById('knowledgeDetailView')?.classList.remove('active');
       if (document.getElementById('listPageTitleText')) document.getElementById('listPageTitleText').textContent = isHealthTasks ? '健康任务' : isCheckinEvaluation ? '评价任务' : isPatients ? '全部患者' : isIndicator ? '指标模板' : isScale ? '量表管理' : '方案管理';
-      const listTitleMap = { personnel: '人员管理', organization: '组织管理', systemRoles: '系统角色', workbench: '工作台', healthTasks: '健康任务', checkinEvaluation: '评价任务', patients: '全部患者', teamPatients: '团队患者', indicator: '指标模板', teams: '团队管理', scale: '量表管理', plans: '方案管理', evaluationReports: '评估报告', articles: '文章管理', knowledge: '知识库', statisticsReport: '数据报表', operationsStatistics: '统计报表', dashboardLatest: '数据看板（最新稿）', dashboardUpdated: '数据看板更新版' };
+      const listTitleMap = { personnel: '人员管理', organization: '组织管理', systemRoles: '系统角色', workbench: '工作台', workbenchTasks: '任务处理中心', healthTasks: '健康任务', checkinEvaluation: '评价任务', patients: '全部患者', teamPatients: '团队患者', indicator: '指标模板', teams: '团队管理', scale: '量表管理', plans: '方案管理', evaluationReports: '评估报告', articles: '文章管理', knowledge: '知识库', statisticsReport: '数据报表', operationsStatistics: '统计报表', dashboardLatest: '数据看板（最新稿）', dashboardUpdated: '数据看板更新版' };
       if (document.getElementById('listPageTitleText')) document.getElementById('listPageTitleText').textContent = listTitleMap[view] || '方案管理';
       document.querySelector('.list-main')?.classList.toggle('workbench-main', isWorkbench);
+      document.querySelector('.list-main')?.classList.toggle('task-processor-main', isTaskProcessor);
       document.querySelector('.list-main')?.classList.toggle('team-patient-main-view', isTeamPatients);
       document.querySelector('.list-main')?.classList.toggle('statistics-report-main', isStatisticsReport || isOperationsStatistics);
       document.querySelector('.list-main')?.classList.toggle('operations-statistics-main', isOperationsStatistics);
@@ -17126,7 +17147,7 @@
   <script src="./js/health-portrait.js?v=20260924-3"></script>
 <script src="./js/personnel-management.js?v=20260929-2"></script>
 <script src="./js/organization-management.js?v=20260929-4"></script>
-<script src="./js/workbench.js?v=20261027-4"></script>
+<script src="./js/workbench.js?v=20261027-5"></script>
     <script src="./js/ai-steward.js?v=20261021-39"></script>
 <script src="./js/system-role.js?v=20260929-1"></script>
 <script src="./js/scale-create.js?v=20260916-3"></script>
