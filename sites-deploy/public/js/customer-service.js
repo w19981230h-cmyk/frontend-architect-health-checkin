@@ -129,7 +129,6 @@
 
   function withinTime(item) {
     const due = new Date(item.dueAt);
-    if (state.time === 'overdue') return item.status !== 'completed' && due < TODAY;
     if (state.time === 'week') {
       const end = new Date(TODAY); end.setDate(end.getDate() + 7);
       return due >= TODAY && due < end;
@@ -219,7 +218,7 @@
   }
 
   function commonFilters({ time = true, status = true } = {}) {
-    return `${time ? selectMarkup('time', [['all','全部时间'],['week','未来7天'],['month','本月'],['overdue','已逾期']], state.time) : ''}
+    return `${time ? selectMarkup('time', [['all','全部时间'],['week','未来7天'],['month','本月']], state.time) : ''}
       ${selectMarkup('type', [['all','全部类型'],['standard','标准SKU'],['expert','专家建议'],['custom','自定义']], state.type)}
       ${status ? selectMarkup('status', [['all','全部状态'],['upcoming','待提醒'],['completed','已完成']], state.status) : ''}`;
   }
