@@ -3109,7 +3109,7 @@
   <link rel="stylesheet" href="./css/health-portrait.css?v=20260924-3">
 <link rel="stylesheet" href="./css/personnel-management.css?v=20260929-1">
 <link rel="stylesheet" href="./css/organization-management.css?v=20260929-1">
-<link rel="stylesheet" href="./css/workbench.css?v=20261027-6">
+<link rel="stylesheet" href="./css/workbench.css?v=20261027-7">
   <link rel="stylesheet" href="./css/ai-steward.css?v=20261021-28">
 <link rel="stylesheet" href="./css/system-role.css?v=20260916-1">
 <link rel="stylesheet" href="./css/dashboard-latest.css?v=20260913-40">
@@ -6795,6 +6795,8 @@
       if (document.getElementById('listPageTitleText')) document.getElementById('listPageTitleText').textContent = listTitleMap[view] || '方案管理';
       document.querySelector('.list-main')?.classList.toggle('workbench-main', isWorkbench);
       document.querySelector('.list-main')?.classList.toggle('task-processor-main', isTaskProcessor);
+      document.querySelector('.list-app')?.classList.toggle('task-processor-fullscreen', isTaskProcessor);
+      document.body.classList.toggle('task-processor-fullscreen-active', isTaskProcessor);
       document.querySelector('.list-main')?.classList.toggle('team-patient-main-view', isTeamPatients);
       document.querySelector('.list-main')?.classList.toggle('statistics-report-main', isStatisticsReport || isOperationsStatistics);
       document.querySelector('.list-main')?.classList.toggle('operations-statistics-main', isOperationsStatistics);
