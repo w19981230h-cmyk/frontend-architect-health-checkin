@@ -535,7 +535,9 @@
         if(patient){store.mode='case-manager';store.currentCustomer=patient;setCaseManagerChrome(true);renderCaseManagerHome(patient);}
         else{
           store.mode='steward';store.currentCustomer=null;setCaseManagerChrome(false);renderBrief();
-          taskMessage=trigger.dataset.taskProcessorAssistantMessage||'';
+          taskMessage=document.body.classList.contains('task-processor-fullscreen-active')
+            ? document.getElementById('globalAiReminderBubble')?.textContent?.trim()||''
+            : '';
         }
       }
       setOpen(opening);
