@@ -29,14 +29,21 @@
     { name: '李桂芳', gender: '女', age: 63, phone: '138****2216', phoneFull: '13868232216', avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=160&q=80', idCard: '440682196302183028', tags: ['糖尿病', 'CKD2期', '重点随访'], risk: '重点关注' },
     { name: '陈建国', gender: '男', age: 52, phone: '156****8921', phoneFull: '15668198921', avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=160&q=80', idCard: '440681197407123613', tags: ['高血压', '冠心病', '用药管理'], risk: '中风险' },
     { name: '吴秀兰', gender: '女', age: 68, phone: '189****5704', phoneFull: '18968355704', avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=160&q=80', idCard: '440683195806284526', tags: ['慢性肾病', '低盐饮食', '复诊提醒'], risk: '重点关注' },
-    { name: '周明远', gender: '男', age: 46, phone: '137****3048', phoneFull: '13768433048', avatar: 'https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&w=160&q=80', idCard: '440684198003174117', tags: ['肥胖', '血脂异常', '运动干预'], risk: '一般' }
+    { name: '周明远', gender: '男', age: 46, phone: '137****3048', phoneFull: '13768433048', avatar: 'https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&w=160&q=80', idCard: '440684198003174117', tags: ['肥胖', '血脂异常', '运动干预'], risk: '一般' },
+    { name: '赵雅琴', gender: '女', age: 59, phone: '136****7812', phoneFull: '13668247812', avatar: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?auto=format&fit=crop&w=160&q=80', idCard: '440681196708124528', tags: ['糖化血红蛋白 8.2%', '糖尿病', '饮食干预'], risk: '重点关注' },
+    { name: '黄志诚', gender: '男', age: 61, phone: '159****4357', phoneFull: '15968414357', avatar: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&w=160&q=80', idCard: '440682196503174913', tags: ['血压偏高', '冠心病', '用药调整'], risk: '高风险' },
+    { name: '梁国兴', gender: '男', age: 54, phone: '181****6209', phoneFull: '18168276209', avatar: 'https://images.unsplash.com/photo-1527980965255-d3b416303d12?auto=format&fit=crop&w=160&q=80', idCard: '440683197201082715', tags: ['eGFR 48', 'CKD3期', '蛋白尿'], risk: '高风险' },
+    { name: '何淑仪', gender: '女', age: 65, phone: '134****9826', phoneFull: '13468159826', avatar: 'https://images.unsplash.com/photo-1547425260-76bcadfb4f2c?auto=format&fit=crop&w=160&q=80', idCard: '440684196105264628', tags: ['骨质疏松', '跌倒风险', '营养干预'], risk: '中风险' },
+    { name: '郑文浩', gender: '男', age: 48, phone: '185****3164', phoneFull: '18568233164', avatar: 'https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?auto=format&fit=crop&w=160&q=80', idCard: '440681197802154517', tags: ['BMI 30.2', '脂肪肝', '运动处方'], risk: '重点关注' },
+    { name: '谭晓梅', gender: '女', age: 56, phone: '137****5641', phoneFull: '13768325641', avatar: 'https://images.unsplash.com/photo-1488426862026-3ee34a7d66df?auto=format&fit=crop&w=160&q=80', idCard: '440682197007233024', tags: ['甲状腺结节', '定期复查', '检验异常'], risk: '一般' },
+    { name: '冯玉珍', gender: '女', age: 70, phone: '188****1475', phoneFull: '18868421475', avatar: 'https://images.unsplash.com/photo-1531123897727-8f129e1688ce?auto=format&fit=crop&w=160&q=80', idCard: '440683195601042527', tags: ['高血压', '房颤', '抗凝管理'], risk: '高风险' }
   ];
   const processorTypes = [
-    { key: 'enrollment-review', title: '入组审核', base: 5, unit: '人' },
-    { key: 'health-task', title: '健康任务', base: 6, unit: '项' },
-    { key: 'alert-disposal', title: '预警处置', base: 4, unit: '项' },
-    { key: 'evaluation-review', title: '评价审核', base: 3, unit: '项' },
-    { key: 'health-assessment', title: '健康评估', base: 5, unit: '份' }
+    { key: 'enrollment-review', title: '入组审核', base: 12, unit: '人' },
+    { key: 'health-task', title: '健康任务', base: 10, unit: '项' },
+    { key: 'alert-disposal', title: '预警处置', base: 8, unit: '项' },
+    { key: 'evaluation-review', title: '评价审核', base: 8, unit: '项' },
+    { key: 'health-assessment', title: '健康评估', base: 10, unit: '份' }
   ];
   const processorTypeAliases = {
     archive: 'health-task', reminder: 'health-task', 'phone-completion': 'health-task', 'followup-call': 'health-task', 'followup-record': 'health-task', 'followup-due': 'health-task',
@@ -50,25 +57,43 @@
       { name: '唐月华', gender: '女', age: 70, phone: '188****0935', idCard: '440683195601240824', tags: ['复诊提醒', '肾功能复查', '明日到期'], risk: '重点任务' },
       { name: '刘国良', gender: '男', age: 49, phone: '159****4018', idCard: '440684197704090036', tags: ['运动随访', '未完成', 'App任务'], risk: '待执行' },
       { name: '郑淑珍', gender: '女', age: 66, phone: '137****8524', idCard: '440681196001131528', tags: ['饮食记录', '已逾期1天', '人工随访'], risk: '已逾期' },
-      { name: '罗文彬', gender: '男', age: 58, phone: '180****2357', idCard: '440682196807172513', tags: ['血糖监测', '待回访', '电话任务'], risk: '待执行' }
+      { name: '罗文彬', gender: '男', age: 58, phone: '180****2357', idCard: '440682196807172513', tags: ['血糖监测', '待回访', '电话任务'], risk: '待执行' },
+      { name: '卢秀英', gender: '女', age: 63, phone: '156****1948', idCard: '440683196302182526', tags: ['体重打卡', '连续漏卡', 'App任务'], risk: '需催办' },
+      { name: '邓永强', gender: '男', age: 52, phone: '133****7604', idCard: '440684197409203614', tags: ['复诊预约', '明天上午', '电话确认'], risk: '高优先级' },
+      { name: '苏丽华', gender: '女', age: 57, phone: '189****4283', idCard: '440681196905143029', tags: ['用药随访', '依从性一般', '人工随访'], risk: '待执行' },
+      { name: '钟伟民', gender: '男', age: 60, phone: '135****8369', idCard: '440682196604162517', tags: ['饮食打卡', '本周完成5次', 'App任务'], risk: '待确认' }
     ],
     'alert-disposal': [
       { name: '蔡美玲', gender: '女', age: 72, phone: '139****1168', idCard: '440683195402065020', tags: ['血压 182/108', '连续2次', '刚刚'], risk: '紧急预警' },
       { name: '黄建华', gender: '男', age: 64, phone: '158****7740', idCard: '440681196202184537', tags: ['空腹血糖 15.8', '超阈值', '12分钟前'], risk: '高风险' },
       { name: '彭小燕', gender: '女', age: 59, phone: '134****9261', idCard: '440682196711224826', tags: ['体重突增', '3天+2.6kg', '待核实'], risk: '中风险' },
-      { name: '林伟东', gender: '男', age: 47, phone: '181****5083', idCard: '440684197903113019', tags: ['心率 118', '持续偏快', '设备上报'], risk: '中风险' }
+      { name: '林伟东', gender: '男', age: 47, phone: '181****5083', idCard: '440684197903113019', tags: ['心率 118', '持续偏快', '设备上报'], risk: '中风险' },
+      { name: '叶淑芬', gender: '女', age: 67, phone: '137****2846', idCard: '440681195903214026', tags: ['血氧 89%', '连续3次', '5分钟前'], risk: '紧急预警' },
+      { name: '方国栋', gender: '男', age: 55, phone: '186****6132', idCard: '440682197105162518', tags: ['舒张压 105', '连续偏高', '家庭上报'], risk: '高风险' },
+      { name: '莫春兰', gender: '女', age: 62, phone: '150****9471', idCard: '440683196402132527', tags: ['空腹血糖 3.1', '低于阈值', '刚刚'], risk: '高风险' },
+      { name: '欧阳杰', gender: '男', age: 49, phone: '159****3768', idCard: '440684197708194513', tags: ['心率 42', '持续偏低', '设备上报'], risk: '中风险' }
     ],
     'evaluation-review': [
       { name: '郭丽萍', gender: '女', age: 62, phone: '132****6845', idCard: '440681196408273040', tags: ['阶段评价', 'AI已生成', '待审核'], risk: '待审核' },
       { name: '曾国庆', gender: '男', age: 56, phone: '150****3379', idCard: '440682197006153539', tags: ['方案评价', '目标未达成', '需复核'], risk: '重点关注' },
-      { name: '邓雅琴', gender: '女', age: 45, phone: '186****7920', idCard: '440683198108091525', tags: ['月度评价', '数据完整', '待确认'], risk: '待审核' }
+      { name: '邓雅琴', gender: '女', age: 45, phone: '186****7920', idCard: '440683198108091525', tags: ['月度评价', '数据完整', '待确认'], risk: '待审核' },
+      { name: '潘美华', gender: '女', age: 53, phone: '135****4098', idCard: '440684197303082528', tags: ['饮食评价', '照片12张', 'AI已生成'], risk: '待审核' },
+      { name: '高俊峰', gender: '男', age: 50, phone: '138****7516', idCard: '440681197609171514', tags: ['运动评价', '目标达成68%', '需复核'], risk: '重点关注' },
+      { name: '罗小玲', gender: '女', age: 58, phone: '188****2639', idCard: '440682196807122526', tags: ['周度评价', '数据完整', '待确认'], risk: '待审核' },
+      { name: '许志明', gender: '男', age: 64, phone: '133****9142', idCard: '440683196203142513', tags: ['用药评价', '漏服2次', 'AI已生成'], risk: '重点关注' },
+      { name: '马秋月', gender: '女', age: 47, phone: '181****5827', idCard: '440684197910202524', tags: ['月度评价', '饮食偏油', '待审核'], risk: '待审核' }
     ],
     'health-assessment': [
       { name: '苏志明', gender: '男', age: 65, phone: '133****2471', idCard: '440681196104125514', tags: ['综合评估', '数据已齐', '待出具'], risk: '高风险' },
       { name: '冯玉兰', gender: '女', age: 58, phone: '189****6304', idCard: '440682196812203027', tags: ['心血管评估', '检验18项', '待生成'], risk: '中风险' },
       { name: '马振宇', gender: '男', age: 51, phone: '157****4082', idCard: '440683197509163518', tags: ['糖尿病评估', '随访6次', '待生成'], risk: '重点关注' },
       { name: '谢晓梅', gender: '女', age: 69, phone: '138****5196', idCard: '440684195708242528', tags: ['老年综合评估', '量表已完成', '待出具'], risk: '高风险' },
-      { name: '袁绍辉', gender: '男', age: 43, phone: '182****9653', idCard: '440681198305077514', tags: ['体重评估', '周期结束', '待确认'], risk: '一般' }
+      { name: '袁绍辉', gender: '男', age: 43, phone: '182****9653', idCard: '440681198305077514', tags: ['体重评估', '周期结束', '待确认'], risk: '一般' },
+      { name: '杜海燕', gender: '女', age: 60, phone: '136****2754', idCard: '440682196607153026', tags: ['肾功能评估', '检验22项', '待出具'], risk: '高风险' },
+      { name: '蒋文涛', gender: '男', age: 57, phone: '159****8421', idCard: '440683196904182519', tags: ['心血管评估', '随访8次', '待生成'], risk: '中风险' },
+      { name: '林桂香', gender: '女', age: 66, phone: '137****3916', idCard: '440684196001262528', tags: ['营养评估', '饮食记录完整', '待出具'], risk: '重点关注' },
+      { name: '何启明', gender: '男', age: 54, phone: '180****6275', idCard: '440681197208102513', tags: ['睡眠评估', '量表已完成', '待确认'], risk: '一般' },
+      { name: '温彩霞', gender: '女', age: 49, phone: '189****5183', idCard: '440682197711193025', tags: ['代谢评估', '检验16项', '待生成'], risk: '中风险' }
     ]
   };
   const taskProcessorProfiles = {
