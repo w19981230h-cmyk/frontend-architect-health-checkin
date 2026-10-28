@@ -31,6 +31,46 @@
     { name: '吴秀兰', gender: '女', age: 68, phone: '189****5704', idCard: '440683195806284526', tags: ['慢性肾病', '低盐饮食', '复诊提醒'], risk: '重点关注' },
     { name: '周明远', gender: '男', age: 46, phone: '137****3048', idCard: '440684198003174117', tags: ['肥胖', '血脂异常', '运动干预'], risk: '一般' }
   ];
+  const processorTypes = [
+    { key: 'enrollment-review', title: '入组审核', base: 5, unit: '人' },
+    { key: 'health-task', title: '健康任务', base: 6, unit: '项' },
+    { key: 'alert-disposal', title: '预警处置', base: 4, unit: '项' },
+    { key: 'evaluation-review', title: '评价审核', base: 3, unit: '项' },
+    { key: 'health-assessment', title: '健康评估', base: 5, unit: '份' }
+  ];
+  const processorTypeAliases = {
+    archive: 'health-task', reminder: 'health-task', 'phone-completion': 'health-task', 'followup-call': 'health-task', 'followup-record': 'health-task', 'followup-due': 'health-task',
+    'ai-call-failed': 'alert-disposal', 'followup-result': 'evaluation-review', report: 'health-assessment'
+  };
+  const taskProcessorPatientsByType = {
+    'enrollment-review': taskProcessorPatients,
+    'health-task': [
+      { name: '梁慧敏', gender: '女', age: 61, phone: '135****3186', idCard: '440681196503082041', tags: ['血压随访', '今日到期', '电话任务'], risk: '高优先级' },
+      { name: '何志强', gender: '男', age: 55, phone: '136****6722', idCard: '440682197101195517', tags: ['用药提醒', '短信任务', '14:30前'], risk: '待执行' },
+      { name: '唐月华', gender: '女', age: 70, phone: '188****0935', idCard: '440683195601240824', tags: ['复诊提醒', '肾功能复查', '明日到期'], risk: '重点任务' },
+      { name: '刘国良', gender: '男', age: 49, phone: '159****4018', idCard: '440684197704090036', tags: ['运动随访', '未完成', 'App任务'], risk: '待执行' },
+      { name: '郑淑珍', gender: '女', age: 66, phone: '137****8524', idCard: '440681196001131528', tags: ['饮食记录', '已逾期1天', '人工随访'], risk: '已逾期' },
+      { name: '罗文彬', gender: '男', age: 58, phone: '180****2357', idCard: '440682196807172513', tags: ['血糖监测', '待回访', '电话任务'], risk: '待执行' }
+    ],
+    'alert-disposal': [
+      { name: '蔡美玲', gender: '女', age: 72, phone: '139****1168', idCard: '440683195402065020', tags: ['血压 182/108', '连续2次', '刚刚'], risk: '紧急预警' },
+      { name: '黄建华', gender: '男', age: 64, phone: '158****7740', idCard: '440681196202184537', tags: ['空腹血糖 15.8', '超阈值', '12分钟前'], risk: '高风险' },
+      { name: '彭小燕', gender: '女', age: 59, phone: '134****9261', idCard: '440682196711224826', tags: ['体重突增', '3天+2.6kg', '待核实'], risk: '中风险' },
+      { name: '林伟东', gender: '男', age: 47, phone: '181****5083', idCard: '440684197903113019', tags: ['心率 118', '持续偏快', '设备上报'], risk: '中风险' }
+    ],
+    'evaluation-review': [
+      { name: '郭丽萍', gender: '女', age: 62, phone: '132****6845', idCard: '440681196408273040', tags: ['阶段评价', 'AI已生成', '待审核'], risk: '待审核' },
+      { name: '曾国庆', gender: '男', age: 56, phone: '150****3379', idCard: '440682197006153539', tags: ['方案评价', '目标未达成', '需复核'], risk: '重点关注' },
+      { name: '邓雅琴', gender: '女', age: 45, phone: '186****7920', idCard: '440683198108091525', tags: ['月度评价', '数据完整', '待确认'], risk: '待审核' }
+    ],
+    'health-assessment': [
+      { name: '苏志明', gender: '男', age: 65, phone: '133****2471', idCard: '440681196104125514', tags: ['综合评估', '数据已齐', '待出具'], risk: '高风险' },
+      { name: '冯玉兰', gender: '女', age: 58, phone: '189****6304', idCard: '440682196812203027', tags: ['心血管评估', '检验18项', '待生成'], risk: '中风险' },
+      { name: '马振宇', gender: '男', age: 51, phone: '157****4082', idCard: '440683197509163518', tags: ['糖尿病评估', '随访6次', '待生成'], risk: '重点关注' },
+      { name: '谢晓梅', gender: '女', age: 69, phone: '138****5196', idCard: '440684195708242528', tags: ['老年综合评估', '量表已完成', '待出具'], risk: '高风险' },
+      { name: '袁绍辉', gender: '男', age: 43, phone: '182****9653', idCard: '440681198305077514', tags: ['体重评估', '周期结束', '待确认'], risk: '一般' }
+    ]
+  };
   const taskProcessorProfiles = {
     archive: { queueTitle: '档案待补充', hint: '核对缺失字段并完善患者主档', assistant: 'AI 已识别档案缺失项，并按影响健康管理的程度完成排序。', analysisTitle: '档案完整性分析', analysis: '患者既往疾病记录与近期检验结果存在关联，但用药史、过敏史和紧急联系人仍不完整，建议补齐后再开展后续服务。', highlights: [['缺失字段', '用药情况、过敏史、紧急联系人'], ['最近来源', '2026-10-26 肾内科门诊病历'], ['完整度', '72% · 需补充']], sectionTitle: '补充档案信息', sectionHint: '保存后同步更新患者主档', fields: [['现用药物', '氨氯地平片 5mg，每日一次', 'text'], ['药物过敏史', '青霉素', 'text'], ['紧急联系人', '请输入姓名和联系电话', 'text']], actions: [['暂不处理', 'default'], ['保存档案', 'primary']] },
     report: { queueTitle: '报告待出具', hint: '确认数据范围并生成健康评估报告', assistant: 'AI 已汇总最近 90 天健康数据，可直接生成报告，也可先调整报告范围。', analysisTitle: '报告生成建议', analysis: '近 30 天血压波动较大，eGFR 呈下降趋势。建议在报告中突出肾功能与心血管风险，并给出复诊和用药依从性建议。', highlights: [['报告类型', '综合健康评估报告'], ['数据范围', '最近 90 天'], ['可用数据', '检验 18 项、随访 6 次']], sectionTitle: '报告配置', sectionHint: '生成前确认报告模板与数据范围', fields: [['报告模板', '慢病综合评估模板', 'select'], ['数据范围', '最近90天', 'select'], ['报告备注', '重点说明肾功能变化及复诊建议', 'textarea']], actions: [['保存草稿', 'default'], ['生成报告', 'primary']] },
@@ -41,7 +81,11 @@
     'followup-call': { queueTitle: '电话随访任务', hint: '按随访提纲完成电话沟通', assistant: 'AI 已根据患者近期指标生成本次电话随访提纲。', analysisTitle: '随访前摘要', analysis: '患者近一周家庭血压均值 148/92mmHg，高于目标范围；用药依从性一般，建议本次重点确认漏服原因与不良反应。', highlights: [['随访主题', '血压与用药依从性'], ['上次随访', '2026-10-20'], ['需关注', '连续 3 天血压偏高']], sectionTitle: '电话随访记录', sectionHint: '勾选已确认事项并填写患者反馈', fields: [['接听情况', '患者本人接听', 'select'], ['随访结果', '已确认用药情况，患者无明显不良反应。', 'textarea'], ['下次随访', '2026-11-03', 'text']], actions: [['保存草稿', 'default'], ['完成随访', 'primary']] },
     'followup-result': { queueTitle: '随访结果待审核', hint: '审核随访结论与异常处置建议', assistant: 'AI 已标记随访记录中的异常指标和需要复核的结论。', analysisTitle: '审核风险提示', analysis: '随访结论提到患者出现轻度头晕，但未记录发生频次和与用药的关系。建议补充后再确认本次随访结果。', highlights: [['记录人员', '李敏 健康管理师'], ['提交时间', '今天 10:18'], ['异常项', '头晕、血压偏高']], sectionTitle: '审核随访结果', sectionHint: '确认结论、异常等级与后续动作', fields: [['审核结论', '建议通过并补充观察', 'select'], ['异常等级', '中风险', 'select'], ['审核意见', '补充头晕发生频次，并持续监测未来 3 天血压。', 'textarea']], actions: [['退回修改', 'danger'], ['通过审核', 'primary']] },
     'followup-record': { queueTitle: '随访记录待补充', hint: '补齐随访过程与后续安排', assistant: 'AI 已从通话摘要中提取关键信息，可在确认后写入正式随访记录。', analysisTitle: '通话内容提取', analysis: '患者自述血压近期有所升高，存在两次漏服；无胸痛、气促等不适。计划继续当前方案并加强提醒。', highlights: [['通话时长', '6 分 24 秒'], ['信息来源', '人工电话随访'], ['待补字段', '患者反馈、后续计划']], sectionTitle: '补充随访记录', sectionHint: '确认 AI 提取内容并完善记录', fields: [['患者反馈', '近期工作较忙，发生两次漏服。', 'textarea'], ['干预措施', '设置每日用药提醒，继续监测血压。', 'textarea'], ['复查安排', '一周后复查血压记录', 'text']], actions: [['保存草稿', 'default'], ['保存记录', 'primary']] },
-    'followup-due': { queueTitle: '今日到期随访', hint: '处理今日到期或即将逾期的任务', assistant: 'AI 已按到期时间和患者风险排序，建议优先处理当前高风险患者。', analysisTitle: '到期任务分析', analysis: '该任务今天 17:00 到期，关联患者为重点管理对象。若无法按时完成，应调整日期并填写原因，避免任务无说明逾期。', highlights: [['截止时间', '今天 17:00'], ['任务状态', '剩余 2 小时 18 分'], ['任务优先级', '高优']], sectionTitle: '到期任务处理', sectionHint: '完成任务或调整计划时间', fields: [['处理状态', '计划今日完成', 'select'], ['计划完成时间', '2026-10-27 16:30', 'text'], ['处理说明', '已联系患者，等待回电确认。', 'textarea']], actions: [['调整日期', 'default'], ['完成任务', 'primary']] }
+    'followup-due': { queueTitle: '今日到期随访', hint: '处理今日到期或即将逾期的任务', assistant: 'AI 已按到期时间和患者风险排序，建议优先处理当前高风险患者。', analysisTitle: '到期任务分析', analysis: '该任务今天 17:00 到期，关联患者为重点管理对象。若无法按时完成，应调整日期并填写原因，避免任务无说明逾期。', highlights: [['截止时间', '今天 17:00'], ['任务状态', '剩余 2 小时 18 分'], ['任务优先级', '高优']], sectionTitle: '到期任务处理', sectionHint: '完成任务或调整计划时间', fields: [['处理状态', '计划今日完成', 'select'], ['计划完成时间', '2026-10-27 16:30', 'text'], ['处理说明', '已联系患者，等待回电确认。', 'textarea']], actions: [['调整日期', 'default'], ['完成任务', 'primary']] },
+    'health-task': { queueTitle: '待执行健康任务', hint: '集中处理随访、提醒与监测任务', assistant: 'AI 已按到期时间、患者风险和触达难度排列健康任务。', analysisTitle: '任务执行建议', analysis: '该患者今日需完成血压随访，近 3 天家庭血压高于目标范围。建议优先电话确认用药情况，并同步安排后续复测。', highlights: [['任务类型', '电话随访'], ['截止时间', '今天 17:00'], ['执行优先级', '高优']], sectionTitle: '健康任务处理', sectionHint: '记录执行结果并安排下一步计划', fields: [['执行状态', '患者本人已接听', 'select'], ['完成时间', '2026-10-27 15:30', 'text'], ['执行记录', '已确认近期血压与用药情况，安排 3 天后复测。', 'textarea']], actions: [['暂缓处理', 'default'], ['完成任务', 'primary']] },
+    'alert-disposal': { queueTitle: '待处置健康预警', hint: '核实异常指标并完成分级处置', assistant: 'AI 已按预警等级与持续时间排序，紧急预警请优先联系患者。', analysisTitle: '预警风险分析', analysis: '患者连续两次血压达到 182/108mmHg，已超过紧急预警阈值。建议立即电话核实症状，必要时指导就医并通知责任医生。', highlights: [['异常指标', '血压 182/108mmHg'], ['预警等级', '紧急'], ['首次触发', '今天 14:08']], sectionTitle: '预警处置', sectionHint: '记录核实结果、处置方式和后续跟踪', fields: [['核实结果', '患者自述轻度头晕', 'select'], ['处置方式', '通知责任医生并建议立即就医', 'select'], ['处置记录', '已电话联系患者及家属，责任医生已接收预警。', 'textarea']], actions: [['标记误报', 'default'], ['完成处置', 'primary']] },
+    'evaluation-review': { queueTitle: '待审核健康评价', hint: '复核阶段评价结论与方案调整建议', assistant: 'AI 已标记评价结论中的异常项和证据不足项，供审核时重点确认。', analysisTitle: '评价审核提示', analysis: '本周期血压达标率由 62% 提升至 78%，但运动任务完成度仅 45%。建议保留当前用药管理目标，并加强运动干预。', highlights: [['评价周期', '2026-09-27 至 2026-10-27'], ['目标达成', '3 / 5 项'], ['建议调整', '加强运动干预']], sectionTitle: '评价审核', sectionHint: '确认评价结论并决定是否调整管理方案', fields: [['审核结论', '评价结论基本准确', 'select'], ['方案调整', '增加每周运动指导任务', 'select'], ['审核意见', '通过评价，下一周期重点提升运动任务完成率。', 'textarea']], actions: [['退回修改', 'danger'], ['通过审核', 'primary']] },
+    'health-assessment': { queueTitle: '待出具健康评估', hint: '核对评估数据并生成正式报告', assistant: 'AI 已汇总患者近期档案、检验、监测和随访数据，可辅助生成健康评估。', analysisTitle: '健康评估摘要', analysis: '患者近 90 天血压控制不稳定，eGFR 较上周期下降 6%。综合评估提示心肾风险升高，建议强化复诊和用药依从性管理。', highlights: [['评估类型', '综合健康评估'], ['数据范围', '最近 90 天'], ['风险等级', '高风险']], sectionTitle: '健康评估', sectionHint: '确认评估模板、数据范围与报告结论', fields: [['评估模板', '慢病综合健康评估模板', 'select'], ['数据范围', '最近 90 天', 'select'], ['评估结论', '心肾风险较上周期升高，建议加强复诊与指标监测。', 'textarea']], actions: [['保存草稿', 'default'], ['生成评估报告', 'primary']] }
   };
   let taskProcessorState = { key: 'enrollment-review', patientIndex: 0, institution: fallbackInstitutions[0], completed: new Set() };
   const currentInstitutions = () => {
@@ -55,8 +99,9 @@
     return Math.max(1, task.base + seed % (spread * 2 + 1) - spread);
   };
   const buildInstitutionTasks = institutions => institutions.map((institution, institutionIndex) => ({ institution, tasks: tasks.map(task => ({ ...task, count: taskCount(task, institution, institutionIndex) })) }));
-  const processorTask = key => tasks.find(task => task.key === key) || tasks[0];
+  const processorTask = key => processorTypes.find(task => task.key === (processorTypeAliases[key] || key)) || processorTypes[0];
   const processorProfile = key => taskProcessorProfiles[key] || taskProcessorProfiles.archive;
+  const processorPatients = () => taskProcessorPatientsByType[taskProcessorState.key] || taskProcessorPatients;
   const processorField = ([label, value, kind], index) => {
     const id = `taskProcessorField${index}`;
     if (kind === 'textarea') return `<label class="task-processor-field task-processor-field-wide" for="${id}"><span>${escapeHtml(label)}</span><textarea id="${id}" rows="3">${escapeHtml(value)}</textarea></label>`;
@@ -73,31 +118,43 @@
     const progress = document.getElementById('taskProcessorQueueProgress');
     const tip = document.getElementById('taskProcessorAssistantTip');
     const host = document.getElementById('taskProcessorPatientList');
-    if (title) title.textContent = profile.queueTitle;
-    const done = taskProcessorPatients.filter((_, index) => taskProcessorState.completed.has(`${task.key}:${index}`)).length;
-    if (progress) progress.textContent = `已处理 ${done} / 共 ${task.base}${task.unit}`;
+    if (title) title.textContent = '待办事项';
+    const patients = processorPatients();
+    const done = patients.filter((_, index) => taskProcessorState.completed.has(`${task.key}:${index}`)).length;
+    const pending = patients.length - done;
+    if (progress) progress.textContent = `共 ${pending}${task.unit}`;
     if (tip) tip.textContent = profile.assistant;
     if (!host) return;
-    host.innerHTML = taskProcessorPatients.map((patient, index) => {
+    const visiblePatients = patients.map((patient, index) => ({ patient, index })).filter(({ index }) => !taskProcessorState.completed.has(`${task.key}:${index}`));
+    if (visiblePatients.length && !visiblePatients.some(({ index }) => index === taskProcessorState.patientIndex)) taskProcessorState.patientIndex = visiblePatients[0].index;
+    if (!visiblePatients.length) {
+      host.innerHTML = '<p class="task-processor-empty">暂无待处理任务</p>';
+      return;
+    }
+    host.innerHTML = visiblePatients.map(({ patient, index }) => {
       const selected = index === taskProcessorState.patientIndex;
-      const completed = taskProcessorState.completed.has(`${task.key}:${index}`);
-      return `<button type="button" class="task-patient-card${selected ? ' selected' : ''}${completed ? ' completed' : ''}" data-task-processor-patient="${index}" aria-pressed="${selected}"><span class="task-patient-avatar" aria-hidden="true">${escapeHtml(patient.name.slice(-1))}</span><span class="task-patient-copy"><strong>${escapeHtml(patient.name)}<em>${escapeHtml(patient.risk)}</em></strong><small>${escapeHtml(patient.phone)} · ${patient.gender} · ${patient.age}岁</small><span>${patient.tags.map(tag => `<i>${escapeHtml(tag)}</i>`).join('')}</span></span><b>${completed ? '已处理' : '待处理'}</b></button>`;
+      return `<button type="button" class="task-patient-card${selected ? ' selected' : ''}" data-task-processor-patient="${index}" aria-pressed="${selected}"><span class="task-patient-avatar" aria-hidden="true">${escapeHtml(patient.name.slice(-1))}</span><span class="task-patient-copy"><strong>${escapeHtml(patient.name)}<em>${escapeHtml(patient.risk)}</em></strong><small>${escapeHtml(patient.phone)} · ${patient.gender} · ${patient.age}岁</small><span>${patient.tags.map(tag => `<i>${escapeHtml(tag)}</i>`).join('')}</span></span><b>待处理</b></button>`;
     }).join('');
   };
   const renderTaskProcessorContent = (task, profile) => {
-    const patient = taskProcessorPatients[taskProcessorState.patientIndex] || taskProcessorPatients[0];
+    const patients = processorPatients();
+    const patient = patients[taskProcessorState.patientIndex] || patients[0];
     const host = document.getElementById('taskProcessorContent');
     if (!host) return;
+    const patientCompleted = taskProcessorState.completed.has(`${task.key}:${taskProcessorState.patientIndex}`);
+    if (!patient || patientCompleted) {
+      const actions = document.getElementById('taskProcessorActions');
+      if (actions) actions.innerHTML = '';
+      host.innerHTML = '<section class="task-processor-content-empty"><strong>暂无待处理任务</strong><span>切换其他待办类型继续查看。</span></section>';
+      return;
+    }
     host.innerHTML = `<section class="task-patient-hero"><div class="task-patient-identity"><span class="task-patient-large-avatar" aria-hidden="true">${escapeHtml(patient.name.slice(-1))}</span><div><p><strong>${escapeHtml(patient.name)}</strong><em>${escapeHtml(patient.risk)}</em></p><span>${patient.gender} · ${patient.age}岁　手机号：${escapeHtml(patient.phone)}</span><small>身份证号：${escapeHtml(patient.idCard)}</small><div>${patient.tags.map(tag => `<i>${escapeHtml(tag)}</i>`).join('')}</div></div></div><button type="button" class="task-archive-button" data-task-processor-archive>查看患者档案</button></section><section class="task-analysis-card"><header><span aria-hidden="true">✦</span><div><strong>${escapeHtml(profile.analysisTitle)}</strong><small>由 AI 根据患者档案与任务数据生成</small></div></header><p>${escapeHtml(profile.analysis)}</p><div class="task-analysis-highlights">${profile.highlights.map(([label, value]) => `<article><span>${escapeHtml(label)}</span><strong>${escapeHtml(value)}</strong></article>`).join('')}</div></section><section class="task-handling-card"><header><div><strong>${escapeHtml(profile.sectionTitle)}</strong><small>${escapeHtml(profile.sectionHint)}</small></div><span>${escapeHtml(task.title)}</span></header><div class="task-processor-fields">${profile.fields.map(processorField).join('')}</div></section><p class="task-ai-disclaimer">AI 辅助整理内容仅供参考，请结合患者实际情况核对确认。</p>`;
   };
   const renderTaskProcessor = () => {
     const task = processorTask(taskProcessorState.key);
     const profile = processorProfile(task.key);
-    const select = document.getElementById('taskProcessorTypeSelect');
-    if (select) {
-      select.innerHTML = tasks.map(item => `<option value="${item.key}"${item.key === task.key ? ' selected' : ''}>${escapeHtml(item.title)}</option>`).join('');
-      select.value = task.key;
-    }
+    const tabs = document.getElementById('taskProcessorTabs');
+    if (tabs) tabs.innerHTML = processorTypes.map(item => `<button type="button" class="task-processor-tab${item.key === task.key ? ' active' : ''}" role="tab" aria-selected="${item.key === task.key}" tabindex="${item.key === task.key ? '0' : '-1'}" data-task-processor-tab="${item.key}">${escapeHtml(item.title)}</button>`).join('');
     const hint = document.getElementById('taskProcessorTypeHint');
     if (hint) hint.textContent = `${taskProcessorState.institution} · ${profile.hint}`;
     renderTaskProcessorActions(profile);
@@ -391,17 +448,25 @@
       renderTaskProcessor();
       return;
     }
+    const taskTab = event.target.closest('[data-task-processor-tab]');
+    if (taskTab) {
+      taskProcessorState.key = processorTask(taskTab.dataset.taskProcessorTab).key;
+      taskProcessorState.patientIndex = 0;
+      renderTaskProcessor();
+      return;
+    }
     if (event.target.closest('[data-task-processor-archive]')) {
-      showTaskProcessorToast(`已打开${taskProcessorPatients[taskProcessorState.patientIndex].name}的患者档案预览`);
+      showTaskProcessorToast(`已打开${processorPatients()[taskProcessorState.patientIndex].name}的患者档案预览`);
       return;
     }
     const taskAction = event.target.closest('[data-task-processor-action]');
     if (taskAction) {
-      const patient = taskProcessorPatients[taskProcessorState.patientIndex];
+      const patients = processorPatients();
+      const patient = patients[taskProcessorState.patientIndex];
       const action = taskAction.dataset.taskProcessorAction;
       if (taskAction.classList.contains('primary') || taskAction.classList.contains('danger')) {
         taskProcessorState.completed.add(`${taskProcessorState.key}:${taskProcessorState.patientIndex}`);
-        const next = taskProcessorPatients.findIndex((_, index) => !taskProcessorState.completed.has(`${taskProcessorState.key}:${index}`));
+        const next = patients.findIndex((_, index) => !taskProcessorState.completed.has(`${taskProcessorState.key}:${index}`));
         if (next >= 0) taskProcessorState.patientIndex = next;
         renderTaskProcessor();
       }
@@ -410,12 +475,6 @@
     }
     const row = event.target.closest('[data-workbench-institution]');
     if (row) openTaskProcessor(row.dataset.workbenchTaskKey, row.dataset.workbenchInstitution);
-  });
-  document.addEventListener('change', event => {
-    if (event.target?.id !== 'taskProcessorTypeSelect') return;
-    taskProcessorState.key = processorTask(event.target.value).key;
-    taskProcessorState.patientIndex = 0;
-    renderTaskProcessor();
   });
   document.addEventListener('keydown', event => {
     if (event.target?.id === 'globalAiTitle' && event.target.classList.contains('editing')) {

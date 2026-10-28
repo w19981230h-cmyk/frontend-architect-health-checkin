@@ -9,6 +9,7 @@
   <link rel="stylesheet" href="./css/interface-annotations-v3.css?v=20260924-v3-18">
   <link rel="stylesheet" href="./css/referral-drawer.css?v=20260902-8">
   <link rel="stylesheet" href="./css/scale-create.css?v=20260916-3">
+  <link rel="stylesheet" href="./css/health-management.css?v=20261027-1">
   <title>AI患者管理系统 - 量表设计</title>
   <style>
     :root {
@@ -1974,9 +1975,12 @@
     .checkin-head svg { width: 18px; height: 18px; color: #61708a; stroke-width: 2.6; }
     .checkin-layout { height: calc(100% - 56px); min-height: 0; display: grid; grid-template-columns: 376px minmax(0, 1fr); }
     .checkin-side { height: 100%; min-height: 0; padding: 24px; overflow-y: auto; border-right: 1px solid #e5ebf3; background: #fff; }
-    .checkin-quick-filters { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; margin-bottom: 12px; }
-    .checkin-quick-filter { height: 32px; border: 1px solid #d8e1ed; border-radius: 7px; color: #52617a; background: #fff; font-size: 13px; font-weight: 700; }
-    .checkin-quick-filter.active { color: #3154ff; border-color: #3154ff; background: #f7f9ff; }
+    .checkin-quick-filters { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; margin-bottom: 12px; padding: 4px; border: 1px solid #dfe7f3; border-radius: 9px; background: #f5f7fb; }
+    .checkin-quick-filter { height: 34px; border: 1px solid transparent; border-radius: 6px; color: #52617a; background: transparent; font-size: 13px; font-weight: 700; transition: color .16s ease, background .16s ease, border-color .16s ease, box-shadow .16s ease; }
+    .checkin-quick-filter:hover { color: #3154ff; background: #eef3ff; }
+    .checkin-quick-filter.active { color: #fff; border-color: #3154ff; background: #3154ff; box-shadow: 0 3px 8px rgba(49,84,255,.24); }
+    .checkin-quick-filter.active:hover { color: #fff; background: #2448eb; }
+    .checkin-quick-filter:focus-visible { outline: 2px solid rgba(49,84,255,.28); outline-offset: 2px; }
     .checkin-calendar-head { display: grid; grid-template-columns: 30px minmax(0, 1fr) auto 30px; align-items: center; gap: 10px; margin-bottom: 16px; }
     .checkin-month { color: #23344f; font-size: 18px; font-weight: 700; }
     .checkin-arrow { width: 30px; height: 30px; border: 1px solid #d8e1ed; border-radius: 7px; display: grid; place-items: center; color: #52617a; background: #fff; }
@@ -3211,14 +3215,14 @@
         <section class="list-panel list-view task-processor-view" id="workbenchTaskProcessorView" aria-label="任务处理中心">
           <div class="task-processor-shell">
             <header class="task-processor-toolbar">
-              <button type="button" class="task-processor-back" data-task-processor-back aria-label="返回工作台"><span aria-hidden="true">‹</span> 返回工作台</button>
-              <label class="task-processor-type"><span>任务类型</span><select id="taskProcessorTypeSelect" aria-label="切换任务类型"></select><small id="taskProcessorTypeHint"></small></label>
+              <button type="button" class="task-processor-back" data-task-processor-back aria-label="返回"><span aria-hidden="true">‹</span> 返回</button>
               <div class="task-processor-actions" id="taskProcessorActions" aria-label="当前任务操作"></div>
             </header>
             <div class="task-processor-layout">
               <aside class="task-processor-queue" aria-label="待处理患者队列">
                 <p class="task-processor-ai-tip" id="taskProcessorAssistantTip"></p>
-                <div class="task-processor-queue-heading"><strong id="taskProcessorQueueTitle"></strong><span id="taskProcessorQueueProgress"></span></div>
+                <div class="task-processor-queue-heading"><strong id="taskProcessorQueueTitle">待办事项</strong><span id="taskProcessorQueueProgress"></span></div>
+                <div class="task-processor-type"><div class="task-processor-tabs" id="taskProcessorTabs" role="tablist" aria-label="待办类型"></div><small id="taskProcessorTypeHint"></small></div>
                 <div class="task-processor-patient-list" id="taskProcessorPatientList"></div>
               </aside>
               <main class="task-processor-content" id="taskProcessorContent" aria-live="polite"></main>
@@ -4168,11 +4172,94 @@
             </section>
           </section>
         </div>
+        <section class="archive-panel health-management-panel" data-archive-panel="health" hidden>
+          <header class="hm-page-head">
+            <h2>健康管理</h2>
+            <div class="hm-more-wrap">
+              <button type="button" class="hm-icon-button" data-hm-more aria-label="更多健康管理操作" aria-expanded="false">•••</button>
+              <div class="hm-popover hm-more-menu" data-hm-more-menu hidden>
+                <button type="button" data-hm-action="summary">查看管理摘要</button>
+                <button type="button" data-hm-action="export">导出管理计划</button>
+                <button type="button" data-hm-action="pause">暂停当前计划</button>
+              </div>
+            </div>
+          </header>
+          <div class="hm-body">
+            <section class="hm-alert-section">
+              <div class="hm-alert-bar">
+                <button type="button" class="hm-alert-tab" data-hm-alerts><span aria-hidden="true">♟</span>预警任务</button>
+                <span>预警总数: 2</span>
+              </div>
+              <div class="hm-filter-row">
+                <span></span>
+                <div class="hm-filter-wrap">
+                  <button type="button" class="hm-filter-button" data-hm-filter aria-expanded="false">显示全部 <span>⌄</span></button>
+                  <div class="hm-popover hm-filter-menu" data-hm-filter-menu hidden>
+                    <button type="button" class="active" data-hm-filter-value="全部">显示全部</button>
+                    <button type="button" data-hm-filter-value="待处理">仅看待处理</button>
+                    <button type="button" data-hm-filter-value="高优先级">仅看高优先级</button>
+                  </div>
+                </div>
+                <span></span>
+              </div>
+            </section>
+
+            <div class="hm-plan-tags" role="group" aria-label="健康管理方案标签">
+              <button type="button" class="hm-plan-tag active" aria-pressed="true" data-hm-plan-tab="weight"><span>28天减重管理计划</span><em class="running">进行中</em></button>
+              <button type="button" class="hm-plan-tag" aria-pressed="false" data-hm-plan-tab="pressure"><span>12周血压稳态管理计划</span><em class="completed">已完成</em></button>
+              <button type="button" class="hm-plan-tag" aria-pressed="false" data-hm-plan-tab="glucose"><span>糖代谢改善观察计划</span><em class="terminated">已终止</em></button>
+            </div>
+
+            <section class="hm-plan-section">
+              <div class="hm-plan-title-row">
+                <div><h1 data-hm-plan-title>28天减重管理计划</h1><span class="hm-status-tag" data-hm-plan-status>进行中</span></div>
+                <button type="button" class="hm-text-button" data-hm-edit-plan><span aria-hidden="true">⚙</span>编辑当前计划</button>
+              </div>
+              <p class="hm-team" data-hm-plan-team>心血管健康管理组</p>
+              <p class="hm-plan-copy" data-hm-plan-copy>通过饮食调整、规律运动、生活习惯优化三大维度，4 周循序渐进实现体重下降、体脂减少，同时养成可持续的健康生活方式。</p>
+            </section>
+
+            <section class="hm-section hm-goals-section">
+              <header class="hm-section-head"><h3>健康目标</h3><button type="button" class="hm-text-button" data-hm-goals><span aria-hidden="true">◎</span>设置健康目标</button></header>
+              <div class="hm-goal-summary"><strong>健康管理目标概述</strong><p data-hm-goal-summary>通过饮食调整、规律运动、生活习惯优化三大维度，4 周循序渐进实现体重下降、体脂减少，同时养成可持续的健康生活方式。</p></div>
+              <div class="hm-goal-grid" data-hm-goal-grid>
+                <button type="button" class="hm-goal-card" data-hm-goal-card="血压"><span class="hm-goal-card-head"><strong>收缩压/舒张压</strong><em class="warn">偏高</em></span><span class="hm-goal-labels"><small>目标基线（mmHg）</small><small>目标基线（mmHg）</small></span><span class="hm-goal-values"><b>&lt;120/&lt;80</b><b class="warn">&lt;120/&lt;80</b></span></button>
+                <button type="button" class="hm-goal-card" data-hm-goal-card="空腹血糖"><span class="hm-goal-card-head"><strong>空腹血糖 (FPG)</strong><em class="success">偏高</em></span><span class="hm-goal-labels"><small>目标基线</small><small>目标基线</small></span><span class="hm-goal-values"><b>&lt;120/&lt;80</b><b class="success">&lt;120/&lt;80</b></span></button>
+              </div>
+            </section>
+
+            <section class="hm-section hm-checkin-section">
+              <header class="hm-section-head"><h3>日常打卡</h3><button type="button" class="hm-text-button" data-hm-view-checkins><span aria-hidden="true">▣</span>查看打卡记录</button></header>
+              <div class="hm-checkin-grid" data-hm-checkin-grid>
+                <button type="button" class="hm-checkin-card" data-hm-checkin-card="早餐饮食打卡"><span class="hm-checkin-head"><strong><i aria-hidden="true">▣</i>饮食打卡</strong><em class="running">● 执行中</em></span><span class="hm-checkin-copy">请在早晨空腹状态下测量并记录体</span><span class="hm-checkin-frequency">◷&nbsp; 每日早晨一次</span></button>
+                <button type="button" class="hm-checkin-card" data-hm-checkin-card="空腹指标打卡"><span class="hm-checkin-head"><strong><i aria-hidden="true">▣</i>饮食打卡</strong><em>● 未开始</em></span><span class="hm-checkin-copy">请在早晨空腹状态下测量并记录体</span><span class="hm-checkin-frequency">◷&nbsp; 每日早晨一次</span></button>
+              </div>
+            </section>
+
+            <section class="hm-section hm-tasks-section">
+              <header class="hm-section-head hm-task-heading"><div><h3>健康任务</h3><span data-hm-task-progress>进度 1/4</span></div></header>
+              <div class="hm-task-list" data-hm-task-list>
+                <article class="hm-task-item is-open" data-hm-task>
+                  <span class="hm-task-index">1</span><div class="hm-task-card"><div class="hm-task-main"><span>随访量表</span><strong>每日空腹体重打卡</strong><small>2025/03/01 至 2025/03/02</small></div><em class="done">● 已完成</em><button type="button" class="hm-task-toggle" aria-label="收起任务" aria-expanded="true">⌃</button><div class="hm-task-detail">已完成 2 次记录，最近一次体重 68.6 kg。点击“查看打卡记录”可查看完整数据。</div></div>
+                </article>
+                <article class="hm-task-item" data-hm-task>
+                  <span class="hm-task-index">2</span><div class="hm-task-card"><div class="hm-task-main"><span>随访量表</span><strong>每日空腹体重打卡</strong><small>2025/03/01 至 2025/03/02</small></div><em class="stopped">● 已终止</em><button type="button" class="hm-task-toggle" aria-label="展开任务" aria-expanded="false">⌄</button><div class="hm-task-detail">该阶段任务已终止。如需恢复，请在“编辑当前计划”中重新启用。</div></div>
+                </article>
+                <article class="hm-task-item" data-hm-task>
+                  <span class="hm-task-index">3</span><div class="hm-task-card"><div class="hm-task-main"><span>随访量表</span><strong>每日空腹体重打卡</strong><small>2025/03/03 至 2025/03/28</small></div><em class="running">● 进行中</em><button type="button" class="hm-task-toggle" aria-label="展开任务" aria-expanded="false">⌄</button><div class="hm-task-detail">当前任务持续进行中，下一次打卡提醒将在明早 07:30 发送。</div></div>
+                </article>
+                <article class="hm-task-item" data-hm-task>
+                  <span class="hm-task-index">4</span><div class="hm-task-card"><div class="hm-task-main"><span>运动任务</span><strong>每日步行 6000 步</strong><small>2025/03/03 至 2025/03/28</small></div><em>● 未开始</em><button type="button" class="hm-task-toggle" aria-label="展开任务" aria-expanded="false">⌄</button><div class="hm-task-detail">任务尚未开始，将在计划进入第 2 阶段后自动开启。</div></div>
+                </article>
+              </div>
+            </section>
+          </div>
+        </section>
         <section class="archive-panel checkin-panel" data-archive-panel="checkin" hidden>
           <header class="checkin-head"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="4" y="5" width="16" height="15" rx="2"/><path d="M8 3v4M16 3v4M4 10h16M8 14h3M13 14h3M8 17h3"/></svg>健康打卡</header>
           <div class="checkin-layout">
             <aside class="checkin-side">
-              <div class="checkin-quick-filters" id="checkinQuickFilters"><button class="checkin-quick-filter active" data-checkin-range="all">全部</button><button class="checkin-quick-filter" data-checkin-range="7">近七天</button><button class="checkin-quick-filter" data-checkin-range="30">近30天</button></div>
+              <div class="checkin-quick-filters" id="checkinQuickFilters" role="tablist" aria-label="健康打卡时间范围"><button type="button" class="checkin-quick-filter active" data-checkin-range="all" role="tab" aria-selected="true">全部</button><button type="button" class="checkin-quick-filter" data-checkin-range="7" role="tab" aria-selected="false">近七天</button><button type="button" class="checkin-quick-filter" data-checkin-range="30" role="tab" aria-selected="false">近30天</button></div>
               <div class="checkin-calendar-head"><button class="checkin-arrow" data-checkin-month="-1" aria-label="上个月">‹</button><div class="checkin-month" id="checkinMonth">2026年 6月</div><button class="checkin-today" data-checkin-today>今天</button><button class="checkin-arrow" data-checkin-month="1" aria-label="下个月">›</button></div>
               <div class="checkin-week"><span>一</span><span>二</span><span>三</span><span>四</span><span>五</span><span>六</span><span>日</span></div>
               <div class="checkin-days" id="checkinDays"></div>
@@ -8611,6 +8698,17 @@
       selectedRecordIds: []
     };
 
+    function resetCheckinRangeToAll() {
+      checkinState.quickRange = 'all';
+      checkinState.rangeStart = '';
+      checkinState.rangeEnd = '';
+      checkinState.selectedDate = null;
+      checkinState.activeRecordId = '';
+      checkinState.selectedRecordIds = [];
+      checkinState.calendarMonth = new Date(2026, 5, 1);
+      renderCheckinPanel();
+    }
+
     function formatCalendarTitle(date) {
       return `${date.getFullYear()}年 ${date.getMonth() + 1}月`;
     }
@@ -12751,7 +12849,10 @@
         if (!root) return;
         var mode = checkinState.quickRange || (!hasCheckinRangeV2() ? 'all' : 'custom');
         root.querySelectorAll('[data-checkin-range]').forEach(function (button) {
-          button.classList.toggle('active', button.dataset.checkinRange === mode);
+          var selected = button.dataset.checkinRange === mode;
+          button.classList.toggle('active', selected);
+          button.setAttribute('aria-selected', selected ? 'true' : 'false');
+          button.tabIndex = selected ? 0 : -1;
         });
       }
       function latestRecordsInRangeV2(startKey, endKey) {
@@ -14571,6 +14672,7 @@
         targetPanel.classList.add('is-visible');
         archivePage.classList.toggle('history-document-mode', archiveTab.dataset.archiveTab === 'history');
         if (archiveTab.dataset.archiveTab === 'history') normalizeArchiveHistoryPanel();
+        if (archiveTab.dataset.archiveTab === 'checkin') resetCheckinRangeToAll();
         archivePage.scrollTop = 0;
         archivePage.scrollLeft = 0;
       }, true);
@@ -17149,7 +17251,7 @@
   <script src="./js/health-portrait.js?v=20260924-3"></script>
 <script src="./js/personnel-management.js?v=20260929-2"></script>
 <script src="./js/organization-management.js?v=20260929-4"></script>
-<script src="./js/workbench.js?v=20261027-5"></script>
+<script src="./js/workbench.js?v=20261028-8"></script>
     <script src="./js/ai-steward.js?v=20261027-04"></script>
 <script src="./js/system-role.js?v=20260929-1"></script>
 <script src="./js/scale-create.js?v=20260916-3"></script>
@@ -17161,5 +17263,6 @@
 <script src="./js/article-management.js?v=20260916-1"></script>
 <script src="./js/plan-management.js?v=20260924-4"></script>
 <script src="./js/plan-form-mode.js?v=20260924-2"></script>
+<script src="./js/health-management.js?v=20261027-1"></script>
 </body>
 </html>
