@@ -9,7 +9,7 @@
   <link rel="stylesheet" href="./css/interface-annotations-v3.css?v=20260924-v3-18">
   <link rel="stylesheet" href="./css/referral-drawer.css?v=20260902-8">
   <link rel="stylesheet" href="./css/scale-create.css?v=20260916-3">
-  <link rel="stylesheet" href="./css/health-management.css?v=20261028-2">
+  <link rel="stylesheet" href="./css/health-management.css?v=20261028-5">
   <title>AI患者管理系统 - 量表设计</title>
   <style>
     :root {
@@ -4224,14 +4224,13 @@
               <div class="hm-goal-summary" aria-label="健康管理整体规划">
                 <span class="hm-goal-summary-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M5 19V9m7 10V5m7 14v-7"/><path d="m4 6 5-3 5 3 6-4"/></svg></span>
                 <div class="hm-goal-summary-content">
-                  <div class="hm-goal-summary-head"><div><span>整体规划</span><strong>健康管理目标概述</strong></div><em data-hm-goal-period>4 周方案</em></div>
+                  <strong>健康管理目标概述</strong>
                   <p data-hm-goal-summary>通过饮食调整、规律运动、生活习惯优化三大维度，4 周循序渐进实现体重下降、体脂减少，同时养成可持续的健康生活方式。</p>
-                  <div class="hm-goal-summary-path"><span>重点路径</span><div data-hm-goal-path><i>饮食调整</i><i>规律运动</i><i>习惯养成</i></div></div>
                 </div>
               </div>
               <div class="hm-goal-grid" data-hm-goal-grid>
-                <button type="button" class="hm-goal-card" data-hm-goal-card="血压"><span class="hm-goal-card-head"><strong>收缩压/舒张压</strong><em class="warn">偏高</em></span><span class="hm-goal-labels"><small>目标基线（mmHg）</small><small>目标基线（mmHg）</small></span><span class="hm-goal-values"><b>&lt;120/&lt;80</b><b class="warn">&lt;120/&lt;80</b></span></button>
-                <button type="button" class="hm-goal-card" data-hm-goal-card="空腹血糖"><span class="hm-goal-card-head"><strong>空腹血糖 (FPG)</strong><em class="success">偏高</em></span><span class="hm-goal-labels"><small>目标基线</small><small>目标基线</small></span><span class="hm-goal-values"><b>&lt;120/&lt;80</b><b class="success">&lt;120/&lt;80</b></span></button>
+                <button type="button" class="hm-goal-card" data-hm-goal-card="血压"><span class="hm-goal-card-head"><strong>收缩压/舒张压</strong><em class="warn">偏高</em></span><span class="hm-goal-updated">更新时间：2025年03月02日 07时42分</span><span class="hm-goal-labels"><small>初始基线（mmHg）</small><small>当前结果（mmHg）</small></span><span class="hm-goal-values"><b>&lt;120/&lt;80</b><b class="warn">&lt;120/&lt;80</b></span></button>
+                <button type="button" class="hm-goal-card" data-hm-goal-card="空腹血糖"><span class="hm-goal-card-head"><strong>空腹血糖 (FPG)</strong><em class="success">偏高</em></span><span class="hm-goal-updated">更新时间：2025年03月02日 07时45分</span><span class="hm-goal-labels"><small>初始基线</small><small>当前结果</small></span><span class="hm-goal-values"><b>&lt;120/&lt;80</b><b class="success">&lt;120/&lt;80</b></span></button>
               </div>
             </section>
 
@@ -4244,21 +4243,9 @@
             </section>
 
             <section class="hm-section hm-tasks-section">
-              <header class="hm-section-head hm-task-heading"><div><h3>健康任务</h3><span data-hm-task-progress>进度 1/4</span></div></header>
-              <div class="hm-task-list" data-hm-task-list>
-                <article class="hm-task-item is-open" data-hm-task>
-                  <span class="hm-task-index">1</span><div class="hm-task-card"><div class="hm-task-main"><span>随访量表</span><strong>每日空腹体重打卡</strong><small>2025/03/01 至 2025/03/02</small></div><em class="done">● 已完成</em><button type="button" class="hm-task-toggle" aria-label="收起任务" aria-expanded="true">⌃</button><div class="hm-task-detail">已完成 2 次记录，最近一次体重 68.6 kg。点击“查看打卡记录”可查看完整数据。</div></div>
-                </article>
-                <article class="hm-task-item" data-hm-task>
-                  <span class="hm-task-index">2</span><div class="hm-task-card"><div class="hm-task-main"><span>随访量表</span><strong>每日空腹体重打卡</strong><small>2025/03/01 至 2025/03/02</small></div><em class="stopped">● 已终止</em><button type="button" class="hm-task-toggle" aria-label="展开任务" aria-expanded="false">⌄</button><div class="hm-task-detail">该阶段任务已终止。如需恢复，请在“编辑当前计划”中重新启用。</div></div>
-                </article>
-                <article class="hm-task-item" data-hm-task>
-                  <span class="hm-task-index">3</span><div class="hm-task-card"><div class="hm-task-main"><span>随访量表</span><strong>每日空腹体重打卡</strong><small>2025/03/03 至 2025/03/28</small></div><em class="running">● 进行中</em><button type="button" class="hm-task-toggle" aria-label="展开任务" aria-expanded="false">⌄</button><div class="hm-task-detail">当前任务持续进行中，下一次打卡提醒将在明早 07:30 发送。</div></div>
-                </article>
-                <article class="hm-task-item" data-hm-task>
-                  <span class="hm-task-index">4</span><div class="hm-task-card"><div class="hm-task-main"><span>运动任务</span><strong>每日步行 6000 步</strong><small>2025/03/03 至 2025/03/28</small></div><em>● 未开始</em><button type="button" class="hm-task-toggle" aria-label="展开任务" aria-expanded="false">⌄</button><div class="hm-task-detail">任务尚未开始，将在计划进入第 2 阶段后自动开启。</div></div>
-                </article>
-              </div>
+              <header class="hm-section-head hm-task-heading"><h3>健康任务</h3></header>
+              <div class="hm-task-toolbar" data-hm-task-filters aria-label="健康任务状态筛选"></div>
+              <div class="hm-task-list" data-hm-task-list></div>
             </section>
           </div>
         </section>
@@ -17271,6 +17258,6 @@
 <script src="./js/article-management.js?v=20260916-1"></script>
 <script src="./js/plan-management.js?v=20260924-4"></script>
 <script src="./js/plan-form-mode.js?v=20260924-2"></script>
-<script src="./js/health-management.js?v=20261028-2"></script>
+<script src="./js/health-management.js?v=20261028-5"></script>
 </body>
 </html>
