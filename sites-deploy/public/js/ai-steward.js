@@ -62,7 +62,7 @@
   const antDeleteOutlined = '<svg class="anticon anticon-delete" viewBox="0 0 1024 1024" focusable="false" aria-hidden="true"><path d="M360 184h-8c4.4 0 8-3.6 8-8v8h304v-8c0 4.4 3.6 8 8 8h-8v72h72v-80c0-35.3-28.7-64-64-64H352c-35.3 0-64 28.7-64 64v80h72v-72zm504 72H160c-17.7 0-32 14.3-32 32v32c0 4.4 3.6 8 8 8h60.4l24.7 523c1.6 34.1 29.8 61 63.9 61h454c34.2 0 62.3-26.8 63.9-61l24.7-523H888c4.4 0 8-3.6 8-8v-32c0-17.7-14.3-32-32-32zM731.3 840H292.7l-24.2-512h487l-24.2 512z"></path></svg>';
   const body = () => document.getElementById('workbenchChatBody');
   const assistantName = () => window.getGlobalAssistantName?.() || 'AI主理人';
-  const avatar = () => '<span class="global-ai-avatar global-chat-avatar" aria-hidden="true"><svg viewBox="0 0 40 40" fill="none"><path d="M20 6.5 23 14l7.5 3-7.5 3-3 7.5-3-7.5-7.5-3 7.5-3 3-7.5Z" fill="currentColor"/><circle cx="30.5" cy="9.5" r="3.5" fill="currentColor" opacity=".72"/><path d="M8 25v9M3.5 29.5h9" stroke="currentColor" stroke-width="3" stroke-linecap="round"/></svg></span>';
+  const avatar = () => '<span class="global-ai-avatar global-chat-avatar" aria-hidden="true"><img src="./assets/ai-steward-mascot.png" alt=""></span>';
   const scrollEnd = () => { const host = body(); if (host) host.scrollTop = host.scrollHeight; };
   const toast = text => { const panel=document.getElementById('globalAiPanel'); if(!panel)return; const node=document.createElement('div'); node.className='ai-toast'; node.textContent=text; panel.append(node); setTimeout(()=>node.remove(),1800); };
   const appendUser = text => {
@@ -525,7 +525,22 @@
     window.addEventListener('hashchange',()=>setOpen(false));
     window.addEventListener('popstate',()=>setOpen(false));
     setOpen(false);
-    document.addEventListener('click',event=>{const trigger=event.target.closest('[data-global-ai-toggle]');if(!trigger)return;event.preventDefault();event.stopImmediatePropagation();const opening=panel.hidden;if(opening){const patient=activePatientScope();if(patient){store.mode='case-manager';store.currentCustomer=patient;setCaseManagerChrome(true);renderCaseManagerHome(patient);}else{store.mode='steward';store.currentCustomer=null;setCaseManagerChrome(false);renderBrief();}}setOpen(opening);},true);
+    document.addEventListener('click',event=>{
+      const trigger=event.target.closest('[data-global-ai-toggle]');if(!trigger)return;
+      event.preventDefault();event.stopImmediatePropagation();
+      const opening=panel.hidden;
+      let taskMessage='';
+      if(opening){
+        const patient=activePatientScope();
+        if(patient){store.mode='case-manager';store.currentCustomer=patient;setCaseManagerChrome(true);renderCaseManagerHome(patient);}
+        else{
+          store.mode='steward';store.currentCustomer=null;setCaseManagerChrome(false);renderBrief();
+          taskMessage=trigger.dataset.taskProcessorAssistantMessage||'';
+        }
+      }
+      setOpen(opening);
+      if(opening&&taskMessage)appendAI('当前任务建议',`<p>${esc(taskMessage)}</p>`);
+    },true);
     close?.addEventListener('click',event=>{event.stopPropagation();setOpen(false);toggle?.focus();});
     renderBrief(); window.aiStewardSend=send;
     panel.addEventListener('click',event=>{

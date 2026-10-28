@@ -116,14 +116,17 @@
   const renderTaskProcessorQueue = (task, profile) => {
     const title = document.getElementById('taskProcessorQueueTitle');
     const progress = document.getElementById('taskProcessorQueueProgress');
-    const tip = document.getElementById('taskProcessorAssistantTip');
+    const assistantTrigger = document.getElementById('taskProcessorAssistantTrigger');
     const host = document.getElementById('taskProcessorPatientList');
     if (title) title.textContent = '待办事项';
     const patients = processorPatients();
     const done = patients.filter((_, index) => taskProcessorState.completed.has(`${task.key}:${index}`)).length;
     const pending = patients.length - done;
     if (progress) progress.textContent = `共 ${pending}${task.unit}`;
-    if (tip) tip.textContent = profile.assistant;
+    if (assistantTrigger) {
+      assistantTrigger.dataset.taskProcessorAssistantMessage = profile.assistant;
+      assistantTrigger.setAttribute('aria-label', `打开AI主理人：${profile.assistant}`);
+    }
     if (!host) return;
     const visiblePatients = patients.map((patient, index) => ({ patient, index })).filter(({ index }) => !taskProcessorState.completed.has(`${task.key}:${index}`));
     if (visiblePatients.length && !visiblePatients.some(({ index }) => index === taskProcessorState.patientIndex)) taskProcessorState.patientIndex = visiblePatients[0].index;
