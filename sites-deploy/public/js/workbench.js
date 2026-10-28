@@ -118,7 +118,7 @@
     const progress = document.getElementById('taskProcessorQueueProgress');
     const assistantBubble = document.getElementById('globalAiReminderBubble');
     const host = document.getElementById('taskProcessorPatientList');
-    if (title) title.textContent = '待办事项';
+    if (title) title.textContent = '待办明细';
     const patients = processorPatients();
     const done = patients.filter((_, index) => taskProcessorState.completed.has(`${task.key}:${index}`)).length;
     const pending = patients.length - done;
