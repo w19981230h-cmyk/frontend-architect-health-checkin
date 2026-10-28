@@ -112,7 +112,7 @@
     'evaluation-review': { queueTitle: '待审核健康评价', assistant: 'AI 已标记评价结论中的异常项和证据不足项，供审核时重点确认。', analysisTitle: 'AI 食物成分总结', analysis: '近 7 天饮食记录显示碳水化合物和脂肪供能比偏高，蛋白质摄入基本合理，蔬菜摄入不足。晚餐热量占全天 42%，是当前体重控制效果不佳的主要影响因素。', highlights: [['碳水供能比', '52% · 偏高'], ['蛋白质供能比', '16% · 合理'], ['脂肪供能比', '32% · 偏高']], fields: [['审核结论', '评价结论基本准确', 'select'], ['方案调整', '增加晚餐控量与蔬菜摄入指导', 'select'], ['审核意见', '通过评价，下周期重点改善晚餐结构。', 'textarea']], actions: [['退回修改', 'danger'], ['通过审核', 'primary']] },
     'health-assessment': { queueTitle: '待出具健康评估', assistant: 'AI 已汇总患者近期档案、检验、监测和随访数据，可辅助生成健康评估。', analysisTitle: 'AI 营养与健康总结', analysis: '患者近期饮食中精制碳水与饱和脂肪占比偏高，蛋白质摄入基本达标。结合血压与肾功能变化，日报应提示当日异常，周报关注趋势，月报形成综合干预建议。', highlights: [['饮食记录', '28 天'], ['异常指标', '4 项'], ['报告周期', '日报 / 周报 / 月报']], fields: [['评估模板', '慢病综合评估模板', 'select'], ['数据范围', '最近 90 天', 'select'], ['评估结论', '心肾风险较上周期升高，建议加强复诊与指标监测。', 'textarea']], actions: [['保存草稿', 'default'], ['生成评估报告', 'primary']] }
   };
-  let taskProcessorState = { key: 'enrollment-review', patientIndex: 0, institution: fallbackInstitutions[0], completed: new Set(), phoneVisible: new Set(), queueCollapsed: false };
+  let taskProcessorState = { key: 'enrollment-review', patientIndex: 0, institution: fallbackInstitutions[0], completed: new Set(), phoneVisible: new Set(), queueCollapsed: false, menuPatientIndex: null };
   const currentInstitutions = () => {
     const names = unique(scope?.institutionNames);
     return names.length ? names : fallbackInstitutions;
@@ -128,11 +128,14 @@
   const processorProfile = key => taskProcessorProfiles[key] || taskProcessorProfiles.archive;
   const processorPatients = () => taskProcessorPatientsByType[taskProcessorState.key] || taskProcessorPatients;
   const patientAvatar = (patient, large = false) => `<span class="${large ? 'task-patient-large-avatar' : 'task-patient-avatar'}" aria-hidden="true">${patient.avatar ? `<img src="${escapeHtml(patient.avatar)}" alt="">` : escapeHtml(patient.name.slice(-1))}</span>`;
-  const patientPhone = (patient, index) => {
+  const patientPhone = (patient, index, iconOnly = false) => {
     const phoneKey = `${taskProcessorState.key}:${index}`;
     const visible = taskProcessorState.phoneVisible.has(phoneKey);
     const value = visible ? (patient.phoneFull || patient.phone) : patient.phone;
-    return `<span class="task-patient-phone"><span>${escapeHtml(value)}</span><button type="button" data-task-phone-toggle="${escapeHtml(phoneKey)}" aria-pressed="${visible}" aria-label="${visible ? '隐藏' : '查看'}${escapeHtml(patient.name)}的完整手机号" title="${visible ? '隐藏手机号' : '查看完整手机号'}">${visible ? '隐藏' : '查看'}</button></span>`;
+    const eyeIcon = visible
+      ? '<svg viewBox="0 0 20 20" fill="none" stroke="currentColor" aria-hidden="true"><path d="M2 2l16 16M8.6 5.2A8.8 8.8 0 0 1 10 5c5.2 0 8.2 5 8.2 5a12.1 12.1 0 0 1-2.3 2.8M11.8 14.8A8.8 8.8 0 0 1 10 15c-5.2 0-8.2-5-8.2-5a12 12 0 0 1 2.5-2.9M7.7 7.7A3.2 3.2 0 0 0 12.3 12.3"/></svg>'
+      : '<svg viewBox="0 0 20 20" fill="none" stroke="currentColor" aria-hidden="true"><path d="M1.8 10s2.9-5 8.2-5 8.2 5 8.2 5-2.9 5-8.2 5-8.2-5-8.2-5Z"/><circle cx="10" cy="10" r="2.4"/></svg>';
+    return `<span class="task-patient-phone"><span>${escapeHtml(value)}</span><button type="button" class="${iconOnly ? 'task-phone-icon-button' : ''}" data-task-phone-toggle="${escapeHtml(phoneKey)}" aria-pressed="${visible}" aria-label="${visible ? '隐藏' : '查看'}${escapeHtml(patient.name)}的完整手机号" title="${visible ? '隐藏手机号' : '查看完整手机号'}">${iconOnly ? eyeIcon : (visible ? '隐藏' : '查看')}</button></span>`;
   };
   const processorField = ([label, value, kind], index) => {
     const id = `taskProcessorField${index}`;
@@ -143,10 +146,11 @@
   const renderTaskMetricCards = items => `<div class="task-business-metrics">${items.map(([label, value, note, tone = '']) => `<article class="${escapeHtml(tone)}"><span>${escapeHtml(label)}</span><strong>${escapeHtml(value)}</strong><small>${escapeHtml(note)}</small></article>`).join('')}</div>`;
   const renderTaskProcessorBusiness = (task, profile, patient) => {
     if (task.key === 'enrollment-review') {
-      return `<section class="task-business-card"><header><div><strong>重点异常指标</strong><small>与推荐入组团队直接关联</small></div><span>入组审核</span></header>${renderTaskMetricCards([['血压','156/96 mmHg','连续 3 天高于目标值','danger'],['eGFR','52 ml/min','近 3 个月持续下降','warning'],['CKD 分期','3 期','符合肾病慢病管理标准','warning']])}<div class="task-business-subsection"><h4>其他异常指标</h4>${renderTaskMetricCards([['低密度脂蛋白','4.1 mmol/L','高于参考范围'],['BMI','28.6','超重'],['尿酸','468 μmol/L','轻度升高']])}</div><div class="task-processor-fields">${profile.fields.map(processorField).join('')}</div></section>`;
+      const source = '<span class="task-archive-source"><span aria-hidden="true">▣</span><button type="button" data-task-record-source>2026-03-10 | 肾内科门诊 | 检验报告</button></span>';
+      return `<section class="task-archive-overview" aria-label="档案要点"><header><strong>档案要点</strong></header><article class="task-archive-group"><h3>重点关注 (3)</h3><ul><li><span>eGFR:12 ml/min/1.73m，重度下降。</span>${source}</li><li><span>血肌酐:486 umol/L，明显升高，提示肾功能减退明显。</span>${source}</li><li><span>血红蛋白:86 g/，明显下降，提示肾性贫血风险。</span>${source}</li></ul></article><article class="task-archive-group"><h3>其他异常 (1)</h3><ul><li><span>eGFR:12 ml/min/1.73m，重度下降。</span>${source}</li></ul></article><p class="task-archive-note">*采用AI模型智能辅助采集量表内容，仅供参考，请核对确认。</p></section>`;
     }
     if (task.key === 'health-task') {
-      return `<section class="task-business-card"><header><div><strong>任务执行记录统计</strong><small>当前管理周期任务完成情况</small></div><span>健康任务</span></header><div class="task-stat-grid"><article><strong>23</strong><span>任务总数</span></article><article><strong>18</strong><span>已完成</span></article><article class="warning"><strong>3</strong><span>未完成</span></article><article class="danger"><strong>2</strong><span>已逾期</span></article></div><div class="task-audio-row"><div><span class="task-audio-icon" aria-hidden="true">▶</span><div><strong>最近一次电话随访录音</strong><small>2026-10-27 14:36 · 时长 08:42 · 已生成文字摘要</small></div></div><button type="button" class="task-inline-action" data-task-audio>查看录音文件</button></div><div class="task-business-subsection"><h4>量表数据</h4><div class="task-scale-list"><article><span>MMAS-8 用药依从性</span><strong>5 分</strong><em class="warning">依从性一般</em></article><article><span>PHQ-9 抑郁筛查</span><strong>6 分</strong><em>轻度</em></article><article><span>慢病自我管理能力</span><strong>72 分</strong><em class="success">良好</em></article></div></div></section>`;
+      return `<section class="task-scale-form" aria-labelledby="taskHealthScaleTitle"><header><h2 id="taskHealthScaleTitle">高血压随访量表</h2><p>请结合患者本周期的任务执行记录完成量表。AI 已预填可确认内容，提交前请人工核对。</p></header><div class="task-scale-question"><div class="task-scale-question-title"><span>*</span><strong>01</strong><p>患者近 7 天是否按计划完成家庭血压监测？</p></div><div class="task-scale-options"><label><input type="radio" name="healthScaleMonitor" value="yes" checked><span>是</span></label><label><input type="radio" name="healthScaleMonitor" value="no"><span>否</span></label></div></div><div class="task-scale-question"><div class="task-scale-question-title"><em>多选</em><strong>02</strong><p>患者近期是否出现以下不适症状？</p></div><p class="task-scale-question-note">可根据人工外呼结果补充，未出现症状时请选择“无明显不适”。</p><div class="task-scale-options grid"><label><input type="checkbox" name="healthScaleSymptoms" value="dizzy"><span>头晕或头痛</span></label><label><input type="checkbox" name="healthScaleSymptoms" value="chest"><span>胸闷或心悸</span></label><label><input type="checkbox" name="healthScaleSymptoms" value="fatigue"><span>乏力或睡眠不佳</span></label><label><input type="checkbox" name="healthScaleSymptoms" value="none" checked><span>无明显不适</span></label></div></div><div class="task-scale-question"><div class="task-scale-question-title"><strong>03</strong><p>最近一次家庭血压测量结果</p></div><div class="task-scale-inline-fields"><label><span>收缩压</span><span><input type="number" value="138" min="60" max="260"> mmHg</span></label><label><span>舒张压</span><span><input type="number" value="88" min="30" max="180"> mmHg</span></label></div></div><div class="task-scale-question"><div class="task-scale-question-title"><strong>04</strong><p>最近一次复诊日期</p></div><input class="task-scale-date" type="date" value="2026-10-26" aria-label="最近一次复诊日期"></div><p class="task-scale-ai-note">（采用 AI 模型智能辅助采集量表内容，仅供参考，请核对确认。）</p></section>`;
     }
     if (task.key === 'alert-disposal') {
       return `<section class="task-business-card"><header><div><strong>预警内容</strong><small>触发指标、规则与核实结果</small></div><span class="danger">紧急预警</span></header><div class="task-alert-banner"><strong>血压连续异常，需要立即核实</strong><span>${escapeHtml(patient.name)}连续两次血压达到 182/108mmHg，并反馈轻度头晕。</span></div>${renderTaskMetricCards([['当前血压','182/108 mmHg','今天 14:08','danger'],['连续次数','2 次','间隔 30 分钟','warning'],['伴随症状','轻度头晕','患者主动反馈','warning'],['触发来源','家庭血压计','设备自动上报']])}<div class="task-processor-fields">${profile.fields.map(processorField).join('')}</div></section>`;
@@ -156,9 +160,18 @@
     }
     return `<section class="task-business-card"><header><div><strong>修改评估报告明细</strong><small>分别调整日报、周报和月报的展示内容</small></div><span>健康评估</span></header><div class="task-report-grid"><label><span>日报明细</span><small>2026-10-27</small><textarea rows="5">今日晚餐碳水与脂肪占比偏高；家庭血压 148/92mmHg，建议晚餐后适量步行并按计划复测。</textarea></label><label><span>周报明细</span><small>2026-10-21 至 2026-10-27</small><textarea rows="5">本周饮食记录完成率 93%，晚餐热量持续偏高；血压平均值较上周下降 4/2mmHg，仍需继续监测。</textarea></label><label><span>月报明细</span><small>2026-10 月</small><textarea rows="5">本月精制碳水摄入下降，但饱和脂肪仍偏高。结合血压与肾功能趋势，建议强化复诊和用药依从性管理。</textarea></label></div></section>`;
   };
-  const renderTaskProcessorActions = profile => {
+  const renderTaskProcessorActions = (task, profile) => {
     const host = document.getElementById('taskProcessorActions');
     if (!host) return;
+    if (task.key === 'health-task') {
+      const actions = [['标记', 'default'], ['人工外呼', 'default'], ['保存', 'default'], ['提交', 'primary']];
+      host.innerHTML = actions.map(([label, tone]) => `<button type="button" class="task-action-btn ${tone}" data-task-processor-action="${label}">${tone === 'primary' ? '<span aria-hidden="true">✓</span>' : ''}${label}</button>`).join('');
+      return;
+    }
+    if (task.key !== 'enrollment-review') {
+      host.innerHTML = '';
+      return;
+    }
     host.innerHTML = profile.actions.map(([label, tone]) => `<button type="button" class="task-action-btn ${tone}" data-task-processor-action="${escapeHtml(label)}">${tone === 'primary' ? '<span aria-hidden="true">✓</span>' : tone === 'danger' ? '<span aria-hidden="true">×</span>' : ''}${escapeHtml(label)}</button>`).join('');
   };
   const syncTaskProcessorQueueState = () => {
@@ -203,7 +216,9 @@
     host.innerHTML = visiblePatients.map(({ patient, index }) => {
       const selected = index === taskProcessorState.patientIndex;
       const enrollment = task.key === 'enrollment-review';
-      return `<article class="task-patient-card${selected ? ' selected' : ''}" data-task-processor-patient="${index}" role="button" tabindex="0" aria-pressed="${selected}">${patientAvatar(patient)}<span class="task-patient-copy"><strong><span>${escapeHtml(patient.name)}</span>${enrollment ? patientPhone(patient, index) : `<em>${escapeHtml(patient.risk)}</em>`}</strong><small>${patient.gender} · ${patient.age}岁</small><span>${patient.tags.map(tag => `<i>${escapeHtml(tag)}</i>`).join('')}</span></span>${enrollment ? '' : '<b>待处理</b>'}</article>`;
+      const menuOpen = taskProcessorState.menuPatientIndex === index;
+      const tags = patient.tags.slice(0, 3);
+      return `<article class="task-patient-card${selected ? ' selected' : ''}" data-task-processor-patient="${index}" role="button" tabindex="0" aria-pressed="${selected}">${patientAvatar(patient)}<span class="task-patient-copy"><strong><span>${escapeHtml(patient.name)}</span>${enrollment ? patientPhone(patient, index, true) : `<em>${escapeHtml(patient.risk)}</em>`}</strong>${enrollment ? '' : `<small>${patient.gender} · ${patient.age}岁</small>`}<span>${tags.map(tag => `<i>${escapeHtml(tag)}</i>`).join('')}</span></span>${enrollment ? '' : '<b>待处理</b>'}<span class="task-patient-more-wrap"><button type="button" class="task-patient-more" data-task-patient-more="${index}" aria-expanded="${menuOpen}" aria-label="更多操作" title="更多操作"><span aria-hidden="true">•••</span></button><span class="task-patient-more-menu" ${menuOpen ? '' : 'hidden'}><button type="button" data-task-patient-record="${index}">执行记录</button></span></span></article>`;
     }).join('');
   };
   const renderTaskProcessorContent = (task, profile) => {
@@ -219,7 +234,8 @@
       return;
     }
     const enrollment = task.key === 'enrollment-review';
-    host.innerHTML = `<section class="task-detail-context" aria-label="当前任务详情"><div><strong>任务详情</strong><small>从左侧待办明细选择任务后查看</small></div><span>${escapeHtml(patient.name)} · ${escapeHtml(task.title)}</span></section><section class="task-patient-hero"><div class="task-patient-identity">${patientAvatar(patient, true)}<div><p><strong>${escapeHtml(patient.name)}</strong>${enrollment ? patientPhone(patient, taskProcessorState.patientIndex) : `<em>${escapeHtml(patient.risk)}</em>`}</p><span>${patient.gender} · ${patient.age}岁</span><small>身份证号：${escapeHtml(patient.idCard)}</small><div>${patient.tags.map(tag => `<i>${escapeHtml(tag)}</i>`).join('')}</div></div></div><button type="button" class="task-archive-button" data-task-processor-archive>查看患者档案</button></section><section class="task-analysis-card"><header><span aria-hidden="true">✦</span><div><strong>${escapeHtml(profile.analysisTitle)}</strong><small>由 AI 根据患者档案与任务数据生成</small></div></header><p>${escapeHtml(profile.analysis)}</p><div class="task-analysis-highlights">${profile.highlights.map(([label, value]) => `<article><span>${escapeHtml(label)}</span><strong>${escapeHtml(value)}</strong></article>`).join('')}</div></section>${renderTaskProcessorBusiness(task, profile, patient)}<p class="task-ai-disclaimer">AI 辅助整理内容仅供参考，请结合患者实际情况核对确认。</p>`;
+    const insightSummary = profile.highlights.map(([label, value]) => `${label}为${value}`).join('，');
+    host.innerHTML = `<section class="task-ai-profile-card" aria-label="患者信息与 AI 智能解析"><header class="task-ai-profile-header"><div class="task-ai-profile-strip"><strong class="task-ai-profile-name">${escapeHtml(patient.name)}</strong><span class="task-ai-demographic">${escapeHtml(patient.gender)} · ${escapeHtml(patient.age)}岁</span><span class="task-ai-profile-tags">${patient.tags.map(tag => `<i>${escapeHtml(tag)}</i>`).join('')}</span><span class="task-ai-profile-meta">身份证号 <strong>${escapeHtml(patient.idCard)}</strong></span><span class="task-ai-profile-meta">手机号 ${enrollment ? patientPhone(patient, taskProcessorState.patientIndex, true) : `<strong>${escapeHtml(patient.phone || '--')}</strong>`}</span></div><button type="button" class="task-ai-profile-archive" data-task-processor-archive>${patientAvatar(patient)}<span>患者档案</span></button></header><div class="task-ai-scan-line" aria-hidden="true"></div><section class="task-ai-report"><header><span class="task-ai-orb" aria-hidden="true">✦</span><div><strong>智能解析报告</strong><small>${escapeHtml(profile.analysisTitle)} · 由 AI 根据患者档案与任务数据生成</small></div></header><ul><li>${escapeHtml(profile.analysis)}</li><li>基于当前患者画像与任务规则，${escapeHtml(insightSummary)}。</li></ul></section></section>${renderTaskProcessorBusiness(task, profile, patient)}${enrollment ? '' : '<p class="task-ai-disclaimer">AI 辅助整理内容仅供参考，请结合患者实际情况核对确认。</p>'}`;
   };
   const renderTaskProcessor = () => {
     const task = processorTask(taskProcessorState.key);
@@ -227,7 +243,7 @@
     const tabs = document.getElementById('taskProcessorTabs');
     if (tabs) tabs.innerHTML = processorTypes.map(item => `<button type="button" class="task-processor-tab${item.key === task.key ? ' active' : ''}" role="tab" aria-selected="${item.key === task.key}" tabindex="${item.key === task.key ? '0' : '-1'}" data-task-processor-tab="${item.key}">${escapeHtml(item.title)}</button>`).join('');
     syncTaskProcessorQueueState();
-    renderTaskProcessorActions(profile);
+    renderTaskProcessorActions(task, profile);
     renderTaskProcessorQueue(task, profile);
     renderTaskProcessorContent(task, profile);
   };
@@ -525,9 +541,26 @@
       renderTaskProcessor();
       return;
     }
+    const patientMore = event.target.closest('[data-task-patient-more]');
+    if (patientMore) {
+      const index = Number(patientMore.dataset.taskPatientMore) || 0;
+      taskProcessorState.menuPatientIndex = taskProcessorState.menuPatientIndex === index ? null : index;
+      renderTaskProcessorQueue(processorTask(taskProcessorState.key), processorProfile(taskProcessorState.key));
+      return;
+    }
+    const patientRecord = event.target.closest('[data-task-patient-record]');
+    if (patientRecord) {
+      const index = Number(patientRecord.dataset.taskPatientRecord) || 0;
+      taskProcessorState.patientIndex = index;
+      taskProcessorState.menuPatientIndex = null;
+      renderTaskProcessor();
+      showTaskProcessorToast(`已打开${processorPatients()[index].name}的执行记录`);
+      return;
+    }
     const patientCard = event.target.closest('[data-task-processor-patient]');
     if (patientCard) {
       taskProcessorState.patientIndex = Number(patientCard.dataset.taskProcessorPatient) || 0;
+      taskProcessorState.menuPatientIndex = null;
       renderTaskProcessor();
       return;
     }
@@ -535,6 +568,7 @@
     if (taskTab) {
       taskProcessorState.key = processorTask(taskTab.dataset.taskProcessorTab).key;
       taskProcessorState.patientIndex = 0;
+      taskProcessorState.menuPatientIndex = null;
       renderTaskProcessor();
       return;
     }
