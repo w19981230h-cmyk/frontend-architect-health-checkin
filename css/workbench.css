@@ -128,9 +128,11 @@
 .task-processor-empty{margin:10px 0;padding:28px 16px;border:1px dashed #d9d9d9;border-radius:10px;color:#8c8c8c;text-align:center;background:#fff}
 .task-patient-card{position:relative;width:100%;min-height:100px;padding:12px 10px;display:grid;grid-template-columns:36px minmax(0,1fr);align-items:start;gap:10px;border:1px solid #e5eaf3;border-radius:10px;color:#263752;text-align:left;background:#fff;cursor:pointer;transition:border-color .18s,box-shadow .18s,transform .18s}
 .task-patient-card:hover{border-color:#91caff;box-shadow:0 7px 18px rgba(38,81,168,.08);transform:translateY(-1px)}
+.task-patient-card:focus-visible{outline:2px solid #1677ff;outline-offset:2px}
 .task-patient-card.selected{border-color:#1677ff;box-shadow:0 0 0 2px rgba(22,119,255,.08),0 8px 22px rgba(22,119,255,.12)}
 .task-patient-card.completed{opacity:.66}
-.task-patient-avatar,.task-patient-large-avatar{display:grid;place-items:center;border-radius:50%;color:#2458c6;background:#dfeaff;font-weight:800}
+.task-patient-avatar,.task-patient-large-avatar{display:grid;place-items:center;border-radius:50%;color:#2458c6;background:#dfeaff;font-weight:800;overflow:hidden}
+.task-patient-avatar img,.task-patient-large-avatar img{width:100%;height:100%;display:block;object-fit:cover}
 .task-patient-avatar{width:36px;height:36px}
 .task-patient-copy{min-width:0;display:block}
 .task-patient-copy strong{display:flex;align-items:center;gap:6px;font-size:14px}
@@ -140,6 +142,12 @@
 .task-patient-copy i,.task-patient-identity i{padding:3px 6px;border-radius:4px;color:#64748b;background:#f1f4f9;font-size:10px;font-style:normal}
 .task-patient-card>b{position:absolute;right:10px;top:13px;color:#8b96a9;font-size:11px;font-weight:500}
 .task-patient-card.selected>b{color:#1677ff}
+.task-patient-phone{display:inline-flex!important;align-items:center;gap:3px;color:#5d6d86;font-size:12px;font-weight:400;white-space:nowrap}
+.task-patient-phone button{height:24px;padding:0 4px;display:inline-grid;place-items:center;border:0;border-radius:4px;color:#1677ff;background:transparent;font-size:11px;cursor:pointer;transition:color .18s,background .18s}
+.task-patient-phone button:hover{color:#1677ff;background:#eaf3ff}
+.task-patient-phone button:focus-visible{outline:2px solid #1677ff;outline-offset:1px}
+.task-patient-phone button[aria-pressed="true"]{color:#1677ff}
+.sr-only{position:absolute!important;width:1px!important;height:1px!important;padding:0!important;margin:-1px!important;overflow:hidden!important;clip:rect(0,0,0,0)!important;white-space:nowrap!important;border:0!important}
 .task-processor-content{min-height:0;padding:16px 24px 24px;overflow:auto;background:#edf1f6}
 .task-processor-content-empty{min-height:260px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;border:1px dashed #d9d9d9;border-radius:12px;color:#8c8c8c;background:#fff}
 .task-processor-content-empty strong{color:#595959;font-size:16px}
@@ -154,6 +162,7 @@
 .task-patient-large-avatar{width:52px;height:52px;flex:0 0 52px;font-size:18px}
 .task-patient-identity p{margin:0 0 5px;display:flex;align-items:center;gap:9px}
 .task-patient-identity p strong{color:#1c3154;font-size:18px}
+.task-patient-identity p .task-patient-phone{font-size:13px}
 .task-patient-identity span,.task-patient-identity small{display:block;margin-top:3px;color:#637188;font-size:13px}
 .task-patient-identity div>div{margin-top:7px}
 .task-analysis-card,.task-handling-card,.task-business-card{padding:16px 20px}
