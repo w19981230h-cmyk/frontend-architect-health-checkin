@@ -52,16 +52,16 @@
   const taskProcessorPatientsByType = {
     'enrollment-review': taskProcessorPatients,
     'health-task': [
-      { name: '梁慧敏', gender: '女', age: 61, phone: '135****3186', idCard: '440681196503082041', tags: ['血压随访', '今日到期', '电话任务'], risk: '高优先级' },
-      { name: '何志强', gender: '男', age: 55, phone: '136****6722', idCard: '440682197101195517', tags: ['用药提醒', '短信任务', '14:30前'], risk: '待执行' },
-      { name: '唐月华', gender: '女', age: 70, phone: '188****0935', idCard: '440683195601240824', tags: ['复诊提醒', '肾功能复查', '明日到期'], risk: '重点任务' },
-      { name: '刘国良', gender: '男', age: 49, phone: '159****4018', idCard: '440684197704090036', tags: ['运动随访', '未完成', 'App任务'], risk: '待执行' },
-      { name: '郑淑珍', gender: '女', age: 66, phone: '137****8524', idCard: '440681196001131528', tags: ['饮食记录', '已逾期1天', '人工随访'], risk: '已逾期' },
-      { name: '罗文彬', gender: '男', age: 58, phone: '180****2357', idCard: '440682196807172513', tags: ['血糖监测', '待回访', '电话任务'], risk: '待执行' },
-      { name: '卢秀英', gender: '女', age: 63, phone: '156****1948', idCard: '440683196302182526', tags: ['体重打卡', '连续漏卡', 'App任务'], risk: '需催办' },
-      { name: '邓永强', gender: '男', age: 52, phone: '133****7604', idCard: '440684197409203614', tags: ['复诊预约', '明天上午', '电话确认'], risk: '高优先级' },
-      { name: '苏丽华', gender: '女', age: 57, phone: '189****4283', idCard: '440681196905143029', tags: ['用药随访', '依从性一般', '人工随访'], risk: '待执行' },
-      { name: '钟伟民', gender: '男', age: 60, phone: '135****8369', idCard: '440682196604162517', tags: ['饮食打卡', '本周完成5次', 'App任务'], risk: '待确认' }
+      { name: '梁慧敏', gender: '女', age: 61, phone: '135****3186', phoneFull: '13568243186', avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=160&q=80', idCard: '440681196503082041', tags: ['血压随访', '今日到期', '电话任务'], risk: '高优先级', callCount: 3, callStatus: '外呼成功', callTone: 'success' },
+      { name: '何志强', gender: '男', age: 55, phone: '136****6722', phoneFull: '13668126722', avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=160&q=80', idCard: '440682197101195517', tags: ['用药提醒', '短信任务', '14:30前'], risk: '待执行', callCount: 3, callStatus: '外呼失败', callTone: 'failed' },
+      { name: '唐月华', gender: '女', age: 70, phone: '188****0935', phoneFull: '18868240935', avatar: 'https://images.unsplash.com/photo-1531123897727-8f129e1688ce?auto=format&fit=crop&w=160&q=80', idCard: '440683195601240824', tags: ['复诊提醒', '肾功能复查', '明日到期'], risk: '重点任务', callCount: 2, callStatus: '待外呼', callTone: 'pending' },
+      { name: '刘国良', gender: '男', age: 49, phone: '159****4018', phoneFull: '15968124018', avatar: 'https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?auto=format&fit=crop&w=160&q=80', idCard: '440684197704090036', tags: ['运动随访', '未完成', 'App任务'], risk: '待执行', callCount: 0, callStatus: '未入队', callTone: 'inactive' },
+      { name: '郑淑珍', gender: '女', age: 66, phone: '137****8524', phoneFull: '13768148524', avatar: 'https://images.unsplash.com/photo-1488426862026-3ee34a7d66df?auto=format&fit=crop&w=160&q=80', idCard: '440681196001131528', tags: ['饮食记录', '已逾期1天', '人工随访'], risk: '已逾期', callCount: 3, callStatus: '外呼成功', callTone: 'success' },
+      { name: '罗文彬', gender: '男', age: 58, phone: '180****2357', phoneFull: '18068142357', avatar: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&w=160&q=80', idCard: '440682196807172513', tags: ['血糖监测', '待回访', '电话任务'], risk: '待执行', callCount: 2, callStatus: '外呼失败', callTone: 'failed' },
+      { name: '卢秀英', gender: '女', age: 63, phone: '156****1948', phoneFull: '15668121948', avatar: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?auto=format&fit=crop&w=160&q=80', idCard: '440683196302182526', tags: ['体重打卡', '连续漏卡', 'App任务'], risk: '需催办', callCount: 1, callStatus: '待外呼', callTone: 'pending' },
+      { name: '邓永强', gender: '男', age: 52, phone: '133****7604', phoneFull: '13368127604', avatar: 'https://images.unsplash.com/photo-1527980965255-d3b416303d12?auto=format&fit=crop&w=160&q=80', idCard: '440684197409203614', tags: ['复诊预约', '明天上午', '电话确认'], risk: '高优先级', callCount: 3, callStatus: '外呼成功', callTone: 'success' },
+      { name: '苏丽华', gender: '女', age: 57, phone: '189****4283', phoneFull: '18968124283', avatar: 'https://images.unsplash.com/photo-1547425260-76bcadfb4f2c?auto=format&fit=crop&w=160&q=80', idCard: '440681196905143029', tags: ['用药随访', '依从性一般', '人工随访'], risk: '待执行', callCount: 2, callStatus: '待外呼', callTone: 'pending' },
+      { name: '钟伟民', gender: '男', age: 60, phone: '135****8369', phoneFull: '13568128369', avatar: 'https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&w=160&q=80', idCard: '440682196604162517', tags: ['饮食打卡', '本周完成5次', 'App任务'], risk: '待确认', callCount: 3, callStatus: '外呼成功', callTone: 'success' }
     ],
     'alert-disposal': [
       { name: '蔡美玲', gender: '女', age: 72, phone: '139****1168', idCard: '440683195402065020', tags: ['血压 182/108', '连续2次', '刚刚'], risk: '紧急预警' },
@@ -216,8 +216,12 @@
     host.innerHTML = visiblePatients.map(({ patient, index }) => {
       const selected = index === taskProcessorState.patientIndex;
       const enrollment = task.key === 'enrollment-review';
+      const healthTask = task.key === 'health-task';
       const menuOpen = taskProcessorState.menuPatientIndex === index;
       const tags = patient.tags.slice(0, 3);
+      if (healthTask) {
+        return `<article class="task-patient-card health-task-card${selected ? ' selected' : ''}" data-task-processor-patient="${index}" role="button" tabindex="0" aria-pressed="${selected}"><div class="health-task-card-main">${patientAvatar(patient)}<strong>${escapeHtml(patient.name)}</strong>${patientPhone(patient, index, true)}</div><div class="health-task-card-meta"><span class="health-task-call-count" aria-label="外呼 ${patient.callCount || 0} 次"><span aria-hidden="true">☎</span>${patient.callCount || 0}</span><span class="health-task-call-status ${escapeHtml(patient.callTone || 'inactive')}"><i aria-hidden="true"></i>${escapeHtml(patient.callStatus || '未入队')}</span><button type="button" class="health-task-record" data-task-patient-record="${index}">执行记录<span aria-hidden="true">›</span></button></div></article>`;
+      }
       return `<article class="task-patient-card${selected ? ' selected' : ''}" data-task-processor-patient="${index}" role="button" tabindex="0" aria-pressed="${selected}">${patientAvatar(patient)}<span class="task-patient-copy"><strong><span>${escapeHtml(patient.name)}</span>${enrollment ? patientPhone(patient, index, true) : `<em>${escapeHtml(patient.risk)}</em>`}</strong>${enrollment ? '' : `<small>${patient.gender} · ${patient.age}岁</small>`}<span>${tags.map(tag => `<i>${escapeHtml(tag)}</i>`).join('')}</span></span>${enrollment ? '' : '<b>待处理</b>'}<span class="task-patient-more-wrap"><button type="button" class="task-patient-more" data-task-patient-more="${index}" aria-expanded="${menuOpen}" aria-label="更多操作" title="更多操作"><span aria-hidden="true">•••</span></button><span class="task-patient-more-menu" ${menuOpen ? '' : 'hidden'}><button type="button" data-task-patient-record="${index}">执行记录</button></span></span></article>`;
     }).join('');
   };

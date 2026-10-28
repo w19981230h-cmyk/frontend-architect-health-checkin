@@ -159,6 +159,28 @@
 .task-patient-phone button[aria-pressed="true"]{color:#1677ff}
 .task-patient-phone .task-phone-icon-button{width:24px;height:24px;padding:0;flex:0 0 24px}
 .task-patient-phone .task-phone-icon-button svg{width:16px;height:16px;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
+.task-patient-card.health-task-card{min-height:120px;padding:16px;display:block;border-color:transparent;border-radius:16px;box-shadow:none;background:#fff}
+.task-patient-card.health-task-card:hover{border-color:#91caff;box-shadow:0 8px 20px rgba(38,81,168,.08);transform:none}
+.task-patient-card.health-task-card.selected{border-color:#3154ff;box-shadow:0 0 0 1px rgba(49,84,255,.05)}
+.health-task-card-main{min-width:0;display:grid;grid-template-columns:40px max-content minmax(0,1fr);align-items:center;gap:12px}
+.health-task-card-main .task-patient-avatar{width:40px;height:40px;border:2px solid #dce7ff;box-shadow:0 2px 8px rgba(38,81,168,.12)}
+.health-task-card-main>strong{color:#1e2f4d;font-size:17px;white-space:nowrap}
+.health-task-card-main .task-patient-phone{min-width:0;justify-self:start;color:#6f7c92;font-size:14px}
+.health-task-card-main .task-patient-phone>span{overflow:hidden;text-overflow:ellipsis}
+.health-task-card-main .task-patient-phone .task-phone-icon-button{color:#52627b}
+.health-task-card-main .task-patient-phone .task-phone-icon-button:hover{color:#1677ff;background:#eaf3ff}
+.health-task-card-meta{margin-top:12px;padding-top:12px;display:grid;grid-template-columns:auto minmax(0,1fr) auto;align-items:center;gap:12px;border-top:1px solid #edf0f5}
+.health-task-call-count{height:32px;padding:0 11px;display:inline-flex;align-items:center;gap:7px;border:1px solid #d7e3ff;border-radius:16px;color:#3154ff;background:#f8faff;font-size:14px}
+.health-task-call-count>span{font-size:15px;line-height:1}
+.health-task-call-status{display:inline-flex;align-items:center;gap:6px;color:#8b96a9;font-size:14px;white-space:nowrap}
+.health-task-call-status i{width:7px;height:7px;display:block;border-radius:50%;background:#aeb7c6}
+.health-task-call-status.success{color:#22b563}.health-task-call-status.success i{background:#2ed477}
+.health-task-call-status.failed{color:#ff4d4f}.health-task-call-status.failed i{background:#ff4d4f}
+.health-task-call-status.pending{color:#3154ff}.health-task-call-status.pending i{background:#3154ff}
+.health-task-record{height:32px;padding:0;display:inline-flex;align-items:center;gap:7px;border:0;border-radius:6px;color:#5f6c82;background:transparent;font-size:14px;cursor:pointer;transition:color .18s,background .18s}
+.health-task-record>span{font-size:24px;font-weight:300;line-height:1}
+.health-task-record:hover{color:#1677ff;background:#f0f6ff}
+.health-task-record:focus-visible{outline:2px solid rgba(22,119,255,.32);outline-offset:2px}
 .sr-only{position:absolute!important;width:1px!important;height:1px!important;padding:0!important;margin:-1px!important;overflow:hidden!important;clip:rect(0,0,0,0)!important;white-space:nowrap!important;border:0!important}
 .task-processor-content{min-height:0;padding:16px 24px 24px;overflow:auto;background:#edf1f6}
 .task-processor-content-empty{min-height:260px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;border:1px dashed #d9d9d9;border-radius:12px;color:#8c8c8c;background:#fff}
