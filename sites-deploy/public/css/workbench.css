@@ -236,6 +236,20 @@
 .task-ai-report ul{margin:14px 0 0;padding-left:22px;color:#34435d;font-size:15px;line-height:1.75}
 .task-ai-report li+li{margin-top:6px}
 .task-ai-report li::marker{color:#1677ff}
+.task-ai-execution-summary>p{max-width:76ch;margin:14px 0 0;color:#34435d;font-size:14px;line-height:1.7}
+.task-ai-execution-metrics{margin-top:16px;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+.task-ai-execution-metrics article{padding:12px 16px;border:1px solid #dfe7f4;border-radius:8px;background:rgba(248,250,255,.88)}
+.task-ai-execution-metrics span{display:block;color:#7a879d;font-size:12px}
+.task-ai-execution-metrics strong{display:block;margin-top:5px;color:#17355f;font-size:22px;line-height:1.2}
+.task-ai-execution-metrics strong small{margin-left:3px;color:#7a879d;font-size:11px;font-weight:500}
+.task-ai-execution-metrics article.danger{border-color:#ffccc7;background:#fff7f6}.task-ai-execution-metrics article.danger strong{color:#cf1322}
+.task-ai-execution-metrics article.success{border-color:#d9f7be;background:#fbfff7}.task-ai-execution-metrics article.success strong{color:#389e0d}
+.task-ai-recording{margin-top:16px;padding:12px 16px;display:flex;align-items:center;justify-content:space-between;gap:20px;border:1px solid #d9e5ff;border-radius:8px;background:#fff}
+.task-ai-recording-file{min-width:0;display:flex;align-items:center;gap:12px}
+.task-ai-recording-file>span{width:32px;height:32px;display:grid;place-items:center;flex:0 0 32px;border-radius:50%;color:#fff;background:#1677ff;font-size:11px;box-shadow:0 4px 10px rgba(22,119,255,.22)}
+.task-ai-recording-file strong,.task-ai-recording-file small{display:block}.task-ai-recording-file strong{overflow:hidden;color:#263752;font-size:13px;text-overflow:ellipsis;white-space:nowrap}.task-ai-recording-file small{margin-top:4px;color:#8390a5;font-size:11px}
+.task-ai-recording audio{width:300px;height:36px;flex:0 0 300px}
+@media(max-width:900px){.task-ai-execution-metrics{grid-template-columns:repeat(2,minmax(0,1fr))}.task-ai-recording{align-items:stretch;flex-direction:column}.task-ai-recording audio{width:100%;flex-basis:auto}}
 .task-handling-card header{padding-bottom:12px;border-bottom:1px solid #edf0f5}
 .task-handling-card header>span{padding:4px 9px;border-radius:5px;color:#1677ff;background:#eaf3ff;font-size:12px}
 .task-processor-fields{margin-top:12px;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px 16px}

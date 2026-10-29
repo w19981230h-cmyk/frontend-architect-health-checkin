@@ -137,6 +137,56 @@
       : '<svg viewBox="0 0 20 20" fill="none" stroke="currentColor" aria-hidden="true"><path d="M1.8 10s2.9-5 8.2-5 8.2 5 8.2 5-2.9 5-8.2 5-8.2-5-8.2-5Z"/><circle cx="10" cy="10" r="2.4"/></svg>';
     return `<span class="task-patient-phone"><span>${escapeHtml(value)}</span><button type="button" class="${iconOnly ? 'task-phone-icon-button' : ''}" data-task-phone-toggle="${escapeHtml(phoneKey)}" aria-pressed="${visible}" aria-label="${visible ? '隐藏' : '查看'}${escapeHtml(patient.name)}的完整手机号" title="${visible ? '隐藏手机号' : '查看完整手机号'}">${iconOnly ? eyeIcon : (visible ? '隐藏' : '查看')}</button></span>`;
   };
+  const taskRecordingUrls = new Map();
+  const taskRecordingUrl = fileName => {
+    if (taskRecordingUrls.has(fileName)) return taskRecordingUrls.get(fileName);
+    const sampleRate = 8000;
+    const seconds = 4;
+    const sampleCount = sampleRate * seconds;
+    const buffer = new ArrayBuffer(44 + sampleCount * 2);
+    const view = new DataView(buffer);
+    const writeText = (offset, value) => [...value].forEach((char, index) => view.setUint8(offset + index, char.charCodeAt(0)));
+    writeText(0, 'RIFF'); view.setUint32(4, 36 + sampleCount * 2, true); writeText(8, 'WAVE'); writeText(12, 'fmt ');
+    view.setUint32(16, 16, true); view.setUint16(20, 1, true); view.setUint16(22, 1, true); view.setUint32(24, sampleRate, true);
+    view.setUint32(28, sampleRate * 2, true); view.setUint16(32, 2, true); view.setUint16(34, 16, true); writeText(36, 'data'); view.setUint32(40, sampleCount * 2, true);
+    for (let index = 0; index < sampleCount; index += 1) {
+      const time = index / sampleRate;
+      const envelope = Math.min(1, index / 500, (sampleCount - index) / 700);
+      const modulation = Math.sin(2 * Math.PI * 3.2 * time) * 18;
+      const sample = Math.sin(2 * Math.PI * (210 + modulation) * time) * envelope * 0.08;
+      view.setInt16(44 + index * 2, sample * 0x7fff, true);
+    }
+    const url = URL.createObjectURL(new Blob([buffer], { type: 'audio/wav' }));
+    taskRecordingUrls.set(fileName, url);
+    return url;
+  };
+  const healthTaskExecutionData = (patient, index) => {
+    const planned = 10 + (index % 4) * 2;
+    const overdue = patient.risk === '已逾期' ? 2 : (index % 4 === 0 ? 1 : 0);
+    const executed = Math.max(1, planned - overdue - (index % 3));
+    const aiCalls = Number(patient.callCount) || 0;
+    const hasRecording = patient.callStatus === '外呼成功';
+    return {
+      planned,
+      executed,
+      aiCalls,
+      overdue,
+      completion: Math.round(executed / planned * 100),
+      recordingName: hasRecording ? `${patient.name}_AI外呼随访_20261028_${String(14 + index).padStart(2, '0')}36.wav` : '',
+      recordingDuration: '00:04'
+    };
+  };
+  const renderTaskAiAnalysis = (task, profile, patient, index) => {
+    if (task.key !== 'health-task') {
+      const insightSummary = profile.highlights.map(([label, value]) => `${label}为${value}`).join('，');
+      return `<ul><li>${escapeHtml(profile.analysis)}</li><li>基于当前患者画像与任务规则，${escapeHtml(insightSummary)}。</li></ul>`;
+    }
+    const data = healthTaskExecutionData(patient, index);
+    const recording = data.recordingName
+      ? `<section class="task-ai-recording" aria-label="外呼录音文件"><div class="task-ai-recording-file"><span aria-hidden="true">▶</span><div><strong>${escapeHtml(data.recordingName)}</strong><small>AI 外呼录音 · ${escapeHtml(data.recordingDuration)}</small></div></div><audio controls preload="metadata" src="${escapeHtml(taskRecordingUrl(data.recordingName))}" aria-label="播放${escapeHtml(data.recordingName)}"></audio></section>`
+      : '';
+    return `<div class="task-ai-execution-summary"><p>本周期计划执行 ${data.planned} 次，已执行 ${data.executed} 次，完成率 ${data.completion}%。AI 已完成 ${data.aiCalls} 次外呼，当前逾期 ${data.overdue} 次。</p><div class="task-ai-execution-metrics"><article><span>计划任务</span><strong>${data.planned}<small>次</small></strong></article><article><span>已执行</span><strong>${data.executed}<small>次</small></strong></article><article><span>AI 外呼</span><strong>${data.aiCalls}<small>次</small></strong></article><article class="${data.overdue ? 'danger' : 'success'}"><span>逾期任务</span><strong>${data.overdue}<small>次</small></strong></article></div>${recording}</div>`;
+  };
   const processorField = ([label, value, kind], index) => {
     const id = `taskProcessorField${index}`;
     if (kind === 'textarea') return `<label class="task-processor-field task-processor-field-wide" for="${id}"><span>${escapeHtml(label)}</span><textarea id="${id}" rows="3">${escapeHtml(value)}</textarea></label>`;
@@ -238,8 +288,8 @@
       return;
     }
     const enrollment = task.key === 'enrollment-review';
-    const insightSummary = profile.highlights.map(([label, value]) => `${label}为${value}`).join('，');
-    host.innerHTML = `<section class="task-ai-profile-card" aria-label="患者信息与 AI 智能解析"><header class="task-ai-profile-header"><div class="task-ai-profile-strip"><strong class="task-ai-profile-name">${escapeHtml(patient.name)}</strong><span class="task-ai-demographic">${escapeHtml(patient.gender)} · ${escapeHtml(patient.age)}岁</span><span class="task-ai-profile-tags">${patient.tags.map(tag => `<i>${escapeHtml(tag)}</i>`).join('')}</span><span class="task-ai-profile-meta">身份证号 <strong>${escapeHtml(patient.idCard)}</strong></span><span class="task-ai-profile-meta">手机号 ${enrollment ? patientPhone(patient, taskProcessorState.patientIndex, true) : `<strong>${escapeHtml(patient.phone || '--')}</strong>`}</span></div><button type="button" class="task-ai-profile-archive" data-task-processor-archive>${patientAvatar(patient)}<span>患者档案</span></button></header><div class="task-ai-scan-line" aria-hidden="true"></div><section class="task-ai-report"><header><span class="task-ai-orb" aria-hidden="true">✦</span><div><strong>智能解析报告</strong><small>${escapeHtml(profile.analysisTitle)} · 由 AI 根据患者档案与任务数据生成</small></div></header><ul><li>${escapeHtml(profile.analysis)}</li><li>基于当前患者画像与任务规则，${escapeHtml(insightSummary)}。</li></ul></section></section>${renderTaskProcessorBusiness(task, profile, patient)}${enrollment ? '' : '<p class="task-ai-disclaimer">AI 辅助整理内容仅供参考，请结合患者实际情况核对确认。</p>'}`;
+    const analysisSource = task.key === 'health-task' ? '由 AI 根据任务执行记录生成' : '由 AI 根据患者档案与任务数据生成';
+    host.innerHTML = `<section class="task-ai-profile-card" aria-label="患者信息与 AI 智能解析"><header class="task-ai-profile-header"><div class="task-ai-profile-strip"><strong class="task-ai-profile-name">${escapeHtml(patient.name)}</strong><span class="task-ai-demographic">${escapeHtml(patient.gender)} · ${escapeHtml(patient.age)}岁</span><span class="task-ai-profile-tags">${patient.tags.map(tag => `<i>${escapeHtml(tag)}</i>`).join('')}</span><span class="task-ai-profile-meta">身份证号 <strong>${escapeHtml(patient.idCard)}</strong></span><span class="task-ai-profile-meta">手机号 ${enrollment ? patientPhone(patient, taskProcessorState.patientIndex, true) : `<strong>${escapeHtml(patient.phone || '--')}</strong>`}</span></div><button type="button" class="task-ai-profile-archive" data-task-processor-archive>${patientAvatar(patient)}<span>患者档案</span></button></header><div class="task-ai-scan-line" aria-hidden="true"></div><section class="task-ai-report"><header><span class="task-ai-orb" aria-hidden="true">✦</span><div><strong>智能解析报告</strong><small>${escapeHtml(profile.analysisTitle)} · ${escapeHtml(analysisSource)}</small></div></header>${renderTaskAiAnalysis(task, profile, patient, taskProcessorState.patientIndex)}</section></section>${renderTaskProcessorBusiness(task, profile, patient)}${enrollment ? '' : '<p class="task-ai-disclaimer">AI 辅助整理内容仅供参考，请结合患者实际情况核对确认。</p>'}`;
   };
   const renderTaskProcessor = () => {
     const task = processorTask(taskProcessorState.key);
