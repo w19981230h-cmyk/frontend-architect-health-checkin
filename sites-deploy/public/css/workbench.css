@@ -216,7 +216,9 @@
 .task-ai-profile-header{position:relative;display:flex;align-items:center;justify-content:space-between;gap:20px}
 .task-ai-profile-strip{min-width:0;display:flex;align-items:center;gap:10px;flex:1;color:#263752;font-size:13px;white-space:nowrap}
 .task-ai-profile-name{color:#17355f;font-size:17px}
-.task-ai-demographic{padding:5px 9px;border:1px solid #dce8f9;border-radius:7px;color:#405a80;background:rgba(246,249,255,.9);font-size:12px;font-weight:600}
+.task-ai-demographic{height:28px;padding:0 10px;display:inline-flex;align-items:center;gap:8px;border:1px solid #ccd6e5;border-radius:14px;color:#34435d;background:#e9eef5;font-size:12px;font-weight:700;letter-spacing:.01em}
+.task-ai-demographic i{width:1px;height:12px;background:#b7c3d4}
+.task-ai-demographic span:last-child{font-variant-numeric:tabular-nums}
 .task-ai-profile-tags{display:inline-flex;align-items:center;flex-wrap:wrap;gap:8px}
 .task-ai-profile-tags i{padding:5px 9px;border:1px solid #e1e9f6;border-radius:6px;color:#52627c;background:#f3f6fb;font-size:12px;font-style:normal}
 .task-ai-profile-meta{padding-left:10px;border-left:1px solid #dce5f2;color:#71809a;font-size:12px}
