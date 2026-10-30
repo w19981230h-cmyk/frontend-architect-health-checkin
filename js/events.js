@@ -146,7 +146,11 @@ document.addEventListener('click', e => {
   }
   const archiveTab = e.target.closest('[data-archive-tab]');
   if (archiveTab) {
-    document.querySelectorAll('[data-archive-tab]').forEach(button => button.classList.toggle('active', button === archiveTab));
+    document.querySelectorAll('[data-archive-tab]').forEach(button => {
+      const isActive = button === archiveTab;
+      button.classList.toggle('active', isActive);
+      button.setAttribute('aria-selected', String(isActive));
+    });
     const targetPanel = document.querySelector(`[data-archive-panel="${archiveTab.dataset.archiveTab}"]`);
     document.querySelectorAll('[data-archive-panel]').forEach(panel => {
       panel.hidden = targetPanel ? panel !== targetPanel : panel.dataset.archivePanel !== 'basic';

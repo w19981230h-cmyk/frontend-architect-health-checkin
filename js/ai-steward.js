@@ -493,7 +493,13 @@
   const closeHistory = () => document.querySelector('.ai-history-panel')?.remove();
   const handleAction = target => {
     const type=target.dataset.aiAction, customer=customers.find(c=>c.id===target.dataset.customerId)||customers.find(c=>c.name===target.dataset.customer)||store.currentCustomer||customers[0];
-    if(type==='select-report'){showReportDetail(customer,target.dataset.reportId);return;}
+    if(type==='select-report'){
+      const report=reportById(customer,target.dataset.reportId);
+      store.currentCustomer=customer;
+      store.currentReport=report;
+      openReportArchive(customer,report);
+      return;
+    }
     if(type==='report-detail'){openReportArchive(customer,reportById(customer,target.dataset.reportId));return;}
     if(type==='pending-reports'){showPendingReports();return;}
     if(type==='incomplete-archives'){showIncompleteArchives();return;}

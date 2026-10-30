@@ -39,7 +39,7 @@
     ] }
   };
 
-  const state = { team: 'hypertension', tab: 'pending', keyword: '', source: '', warningOnly: false, overdueOnly: false, page: 1, pageSize: 20, actionMenuId: '' };
+  const state = { team: 'hypertension', tab: 'pending', keyword: '', source: '', warningOnly: false, overdueOnly: false, page: 1, pageSize: 20, actionMenuId: '', selectedPatientId: '' };
   const escapeHtml = value => String(value ?? '').replace(/[&<>'"]/g, character => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[character]));
   const currentProfile = () => teamProfiles[state.team];
 
@@ -77,7 +77,25 @@
   function renderPendingRow(patient) {
     const pendingActions = patient.state === 'pending' ? `<div class="team-patient-actions"><button type="button" class="team-patient-action" data-team-patient-reject="${escapeHtml(patient.id)}">拒绝入组</button><button type="button" class="team-patient-action primary" data-team-patient-accept="${escapeHtml(patient.id)}">接收入组</button></div>` : '';
     const statusTag = patient.state === 'exited' ? '<span class="team-patient-chip muted">已出组</span>' : '';
-    return `<article class="team-patient-row" data-team-patient-id="${escapeHtml(patient.id)}"><div class="team-patient-main"><input class="team-patient-check" type="checkbox" aria-label="选择${escapeHtml(patient.name)}"><div class="team-patient-identity"><div class="team-patient-line"><span class="team-patient-avatar" aria-hidden="true">${escapeHtml(patient.name.slice(-1))}</span><strong>${escapeHtml(patient.name)}</strong><b>${escapeHtml(patient.gender)}</b><b>${patient.age}岁</b>${patient.tags.map(tag => `<span class="team-patient-chip">${escapeHtml(tag)}</span>`).join('')}${statusTag}</div><div class="team-patient-meta"><span>患者来源： <b>${escapeHtml(patient.source)}</b></span><span>${escapeHtml(patient.date)}</span></div><div class="team-patient-detail"><span>就诊号： ${escapeHtml(patient.displayVisitNo || patient.id)}</span></div><div class="team-patient-detail"><span>手机号： ${escapeHtml(patient.phone)}</span></div></div></div><div class="team-patient-ai"><strong>AI评估建议</strong><p>${escapeHtml(patient.suggestion)}</p></div>${pendingActions}</article>`;
+    return `<article class="team-patient-row${state.selectedPatientId === patient.id ? ' selected' : ''}" data-team-patient-id="${escapeHtml(patient.id)}" tabindex="0" aria-label="查看${escapeHtml(patient.name)}的档案要点"><div class="team-patient-main"><input class="team-patient-check" type="checkbox" aria-label="选择${escapeHtml(patient.name)}"><div class="team-patient-identity"><div class="team-patient-line"><span class="team-patient-avatar" aria-hidden="true">${escapeHtml(patient.name.slice(-1))}</span><strong>${escapeHtml(patient.name)}</strong><b>${escapeHtml(patient.gender)}</b><b>${patient.age}岁</b>${patient.tags.map(tag => `<span class="team-patient-chip">${escapeHtml(tag)}</span>`).join('')}${statusTag}</div><div class="team-patient-meta"><span>患者来源： <b>${escapeHtml(patient.source)}</b></span><span>${escapeHtml(patient.date)}</span></div><div class="team-patient-detail"><span>就诊号： ${escapeHtml(patient.displayVisitNo || patient.id)}</span></div><div class="team-patient-detail"><span>手机号： ${escapeHtml(patient.phone)}</span></div></div></div><div class="team-patient-ai"><strong>AI评估建议</strong><p>${escapeHtml(patient.suggestion)}</p></div>${pendingActions}</article>`;
+  }
+
+  const sourceLink = label => `<button type="button" class="team-insight-source" data-team-insight-source="${escapeHtml(label)}"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" aria-hidden="true"><rect x="2.5" y="1.5" width="11" height="13" rx="2"/><path d="M5 5h6M5 8h6M5 11h4"/></svg>${escapeHtml(label)}</button>`;
+
+  function renderInsightPanel() {
+    const panel = document.getElementById('teamPatientInsight');
+    if (!panel) return;
+    const patient = currentProfile().patients.find(item => item.id === state.selectedPatientId && item.state === 'pending');
+    if (!patient || state.tab !== 'pending') {
+      panel.classList.remove('open');
+      panel.setAttribute('aria-hidden', 'true');
+      panel.innerHTML = '';
+      return;
+    }
+    const source = sourceLink('2026-03-10 | 肾内科门诊 | 检验报告');
+    panel.innerHTML = `<div class="team-insight-hero"><div class="team-insight-robot" aria-hidden="true"><img src="./assets/ai-steward-mascot.png" alt=""></div><section class="team-insight-summary" aria-label="患者智能解析报告"><div class="team-insight-patient-row"><div class="team-insight-basics"><span>姓名：${escapeHtml(patient.name)}</span><span>性别：${escapeHtml(patient.gender)}</span><span>年龄：${escapeHtml(patient.age)}岁</span></div><button type="button" class="team-insight-profile" data-team-insight-profile><span class="team-insight-profile-avatar" aria-hidden="true">${escapeHtml(patient.name.slice(-1))}</span>患者档案</button></div><div class="team-insight-contact"><span>身份证号码：440482320214515493</span><span>手机号码：16626678484 <button type="button" class="team-insight-edit" data-team-insight-edit aria-label="编辑手机号"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor"><path d="M9.5 3.5 12.5.5l3 3-3 3M12 1l2 2-7.5 7.5L4 11l.5-2.5L12 1Z"/><path d="M13.5 9.5v4h-11v-11h4"/></svg></button></span></div><div class="team-insight-tags"><span>eGFR ≥60</span><span>CKD3期</span><span>CKD3期</span></div><div class="team-insight-divider"></div><div class="team-insight-report"><div class="team-insight-report-title"><i aria-hidden="true"></i><strong>智能解析报告</strong></div><ul><li>患者为 <b>高龄高血压 CKD5期</b> 患者，存在 eGFR 重度下降、血肌酐升高及血尿异常，提示肾功能 严重受损并伴较高心肾并发症风险;若合并高钾、低白蛋白或血磷异常，建议纳入重点管理。</li><li>基于当前画像结果，推荐分配至 XXX 健康管理团队，并匹配 XXX 健康管理方案。</li></ul></div></section></div><section class="team-insight-body" aria-label="档案要点"><h2>档案要点</h2><article class="team-insight-card"><h3>重点关注 (3)</h3><div class="team-insight-card-content"><p>•&nbsp; eGFR:12 ml/min/1.73m，重度下降。&nbsp;&nbsp; 来源：${source}</p><p>•&nbsp; 血肌酐:486 umol/L，明显升高，提示肾功能减退明显。&nbsp;&nbsp; 来源：${source}</p><p>•&nbsp; 血红蛋白:86 g/L，明显下降，提示肾性贫血风险。&nbsp;&nbsp; 来源：${source}</p></div></article><article class="team-insight-card team-insight-card-secondary"><h3>其他异常 (1)</h3><div class="team-insight-card-content"><p>•&nbsp; eGFR:12 ml/min/1.73m，重度下降。&nbsp;&nbsp; 来源：${source}</p></div></article><p class="team-insight-disclaimer">*采用AI模型智能辅助采集量表内容，仅供参考，请核对确认。</p></section>`;
+    panel.setAttribute('aria-hidden', 'false');
+    requestAnimationFrame(() => panel.classList.add('open'));
   }
 
   function renderManagingRow(patient) {
@@ -103,6 +121,7 @@
     const visible = rows.slice((state.page - 1) * state.pageSize, state.page * state.pageSize);
     list.innerHTML = visible.length ? visible.map(patient => state.tab === 'managing' ? renderManagingRow(patient) : renderPendingRow(patient)).join('') : '<div class="team-patient-empty"><span class="team-patient-empty-icon" aria-hidden="true"></span><span>暂无符合条件的患者</span></div>';
     pagination.innerHTML = `<span>共 ${rows.length} 条</span><button type="button" class="team-patient-page" data-team-patient-page="prev" ${state.page === 1 ? 'disabled' : ''} aria-label="上一页">‹</button><button type="button" class="team-patient-page active" aria-current="page">${state.page}</button><button type="button" class="team-patient-page" data-team-patient-page="next" ${state.page === totalPages ? 'disabled' : ''} aria-label="下一页">›</button><select class="team-patient-page-size" data-team-patient-page-size aria-label="每页条数"><option value="20" ${state.pageSize === 20 ? 'selected' : ''}>20 条/页</option><option value="10" ${state.pageSize === 10 ? 'selected' : ''}>10 条/页</option></select>`;
+    renderInsightPanel();
   }
 
   function toast(message) {
@@ -131,6 +150,7 @@
     state.overdueOnly = false;
     state.page = 1;
     state.actionMenuId = '';
+    state.selectedPatientId = '';
     closeTeamMenu();
     render();
     toast(`已切换至${teamProfiles[key].name}`);
@@ -176,7 +196,7 @@
     if (teamOption) { switchTeam(teamOption.dataset.teamPatientSelectTeam); return; }
     if (!event.target.closest('.team-patient-switch-wrap')) closeTeamMenu();
     const tab = event.target.closest('[data-team-patient-tab]');
-    if (tab) { state.tab = tab.dataset.teamPatientTab; state.page = 1; state.keyword = ''; state.warningOnly = false; state.overdueOnly = false; state.actionMenuId = ''; render(); return; }
+    if (tab) { state.tab = tab.dataset.teamPatientTab; state.page = 1; state.keyword = ''; state.warningOnly = false; state.overdueOnly = false; state.actionMenuId = ''; state.selectedPatientId = ''; render(); return; }
     const accept = event.target.closest('[data-team-patient-accept]');
     if (accept) { changePatientState(accept.dataset.teamPatientAccept, 'managing', '已接收{name}入组'); return; }
     const reject = event.target.closest('[data-team-patient-reject]');
@@ -196,9 +216,30 @@
       render();
       return;
     }
-    if (event.target.closest('[data-team-patient-add]')) toast('添加患者入口已打开');
-    else if (event.target.closest('[data-team-patient-qr]')) toast('团队二维码已生成');
-    else if (event.target.closest('[data-team-patient-audit]')) toast('入组审核记录已打开');
+    if (event.target.closest('[data-team-patient-add]')) { toast('添加患者入口已打开'); return; }
+    if (event.target.closest('[data-team-patient-qr]')) { toast('团队二维码已生成'); return; }
+    if (event.target.closest('[data-team-patient-audit]')) { toast('入组审核记录已打开'); return; }
+    const source = event.target.closest('[data-team-insight-source]');
+    if (source) { toast(`已定位来源：${source.dataset.teamInsightSource}`); return; }
+    if (event.target.closest('[data-team-insight-edit]')) { toast('手机号编辑入口已打开'); return; }
+    if (event.target.closest('[data-team-insight-profile]')) {
+      const patient = currentProfile().patients.find(item => item.id === state.selectedPatientId);
+      if (patient) window.openPatientArchiveFromAssistant?.({ name: patient.name, gender: patient.gender, age: patient.age, tab: 'basic' });
+      return;
+    }
+    const patientRow = event.target.closest('.team-patient-row[data-team-patient-id]');
+    if (patientRow && state.tab === 'pending' && !event.target.closest('button,input,select,a')) {
+      state.selectedPatientId = patientRow.dataset.teamPatientId;
+      render();
+    }
+  });
+
+  document.addEventListener('keydown', event => {
+    const patientRow = event.target.closest('.team-patient-row[data-team-patient-id]');
+    if (!patientRow || state.tab !== 'pending' || !['Enter', ' '].includes(event.key)) return;
+    event.preventDefault();
+    state.selectedPatientId = patientRow.dataset.teamPatientId;
+    render();
   });
 
   window.renderTeamPatientList = render;

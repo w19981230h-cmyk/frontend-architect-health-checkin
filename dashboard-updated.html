@@ -8142,11 +8142,13 @@
     const checkinReviewInitialMealContent = document.getElementById('checkinReviewContent')?.innerHTML || '';
     const checkinReviewDietText = '本餐主食、蔬菜和优质蛋白搭配较完整，整体选择较均衡。建议鸡胸肉烹调时减少煎制时间，搭配少量汤羹或蒸煮方式提升口感；继续保持蔬菜摄入，注意总热量控制。';
     const checkinReviewDietDraft = '本餐包含主食、蔬菜和鸡胸肉，营养结构较完整。建议后续继续保持蔬菜摄入，鸡胸肉可采用蒸煮或少油快炒方式，减少口感偏柴的问题，并注意控制总热量。';
+    const checkinReviewDietNote = '早餐食欲正常，餐后无明显不适；患者备注牛奶为低脂牛奶，全麦面包未添加果酱。';
     const checkinReviewTypeData = {
       '饮食': {
         title: '饮食打卡内容',
         assistantTitle: 'AI 营养师辅助点评',
         content: checkinReviewInitialMealContent,
+        note: checkinReviewDietNote,
         viewText: checkinReviewDietText,
         draftText: checkinReviewDietDraft
       },
@@ -8480,6 +8482,18 @@
       `;
     }
 
+    window.getCheckinReviewRecordForType = type => {
+      const data = checkinReviewTypeData[type] || checkinReviewTypeData['饮食'];
+      const baseContent = data.content || renderCheckinMetricContent(data);
+      const noteContent = type === '饮食' && data.note ? `<div class="checkin-med-note checkin-diet-note"><span>备注</span><strong>${esc(data.note)}</strong></div>` : '';
+      return {
+        title: data.title,
+        content: `${baseContent}${noteContent}`,
+        analysis: data.viewText,
+        draft: data.draftText
+      };
+    };
+
     function openCheckinReviewModal(actionButton) {
       const row = actionButton.closest('[data-checkin-eval-row]');
       const cells = row ? Array.from(row.children) : [];
@@ -8508,7 +8522,7 @@
       if (contentTitle) contentTitle.textContent = data.title;
       if (checkinTime) checkinTime.textContent = `打卡时间:${cells[6]?.textContent.trim() || '2025-07-03 12:30'}`;
       if (assistantTitle) assistantTitle.textContent = 'AI专员';
-      if (content) content.innerHTML = type === '饮食' ? data.content : renderCheckinMetricContent(data);
+      if (content) content.innerHTML = window.getCheckinReviewRecordForType(type).content;
       if (modal) modal.dataset.checkinType = type;
 
       modal?.classList.add('open');

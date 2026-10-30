@@ -408,7 +408,11 @@ function openPatientArchive(patient) {
   archiveCurrentPatient = patient || allPatients[0];
   renderPatientArchive();
   renderArchiveBoard('90天减肥计划');
-  document.querySelectorAll('[data-archive-tab]').forEach(button => button.classList.toggle('active', button.dataset.archiveTab === 'basic'));
+  document.querySelectorAll('[data-archive-tab]').forEach(button => {
+    const isActive = button.dataset.archiveTab === 'basic';
+    button.classList.toggle('active', isActive);
+    button.setAttribute('aria-selected', String(isActive));
+  });
   document.querySelectorAll('[data-archive-panel]').forEach(panel => { panel.hidden = panel.dataset.archivePanel !== 'basic'; });
   document.querySelectorAll('.page').forEach(page => page.classList.remove('active'));
   document.getElementById('patientArchivePage').classList.add('active');

@@ -4,11 +4,12 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="./css/team-management.css?v=20260923-4">
-  <link rel="stylesheet" href="./css/team-patients.css?v=20261020-2">
+  <link rel="stylesheet" href="./css/team-patients.css?v=20261028-3">
   <link rel="stylesheet" href="./css/plan-form-mode.css?v=20260924-2">
   <link rel="stylesheet" href="./css/interface-annotations-v3.css?v=20260924-v3-18">
   <link rel="stylesheet" href="./css/referral-drawer.css?v=20260902-8">
   <link rel="stylesheet" href="./css/scale-create.css?v=20260916-3">
+  <link rel="stylesheet" href="./css/health-management.css?v=20261028-9">
   <title>AI患者管理系统 - 量表设计</title>
   <style>
     :root {
@@ -3113,7 +3114,7 @@
   <link rel="stylesheet" href="./css/health-portrait.css?v=20260924-3">
 <link rel="stylesheet" href="./css/personnel-management.css?v=20260929-1">
 <link rel="stylesheet" href="./css/organization-management.css?v=20260929-1">
-<link rel="stylesheet" href="./css/workbench.css?v=20261029-34">
+<link rel="stylesheet" href="./css/workbench.css?v=20261029-36">
   <link rel="stylesheet" href="./css/ai-steward.css?v=20261027-03">
 <link rel="stylesheet" href="./css/system-role.css?v=20260916-1">
 <link rel="stylesheet" href="./css/dashboard-latest.css?v=20260913-40">
@@ -3572,6 +3573,7 @@
             </div>
             <div class="team-patient-list" id="teamPatientList" aria-live="polite"></div>
             <footer class="team-patient-pagination" id="teamPatientPagination" aria-label="团队患者分页"></footer>
+            <aside class="team-patient-insight" id="teamPatientInsight" aria-label="待入组患者档案要点" aria-hidden="true"></aside>
           </div>
         </section>
         <section class="list-panel list-view patient-list-panel" id="patientListView">
@@ -4171,6 +4173,83 @@
             </section>
           </section>
         </div>
+        <section class="archive-panel health-management-panel" data-archive-panel="health" hidden>
+          <header class="hm-page-head">
+            <h2>健康管理</h2>
+            <div class="hm-more-wrap">
+              <button type="button" class="hm-icon-button" data-hm-more aria-label="更多健康管理操作" aria-expanded="false">•••</button>
+              <div class="hm-popover hm-more-menu" data-hm-more-menu hidden>
+                <button type="button" data-hm-action="summary">查看管理摘要</button>
+                <button type="button" data-hm-action="export">导出管理计划</button>
+                <button type="button" data-hm-action="pause">暂停当前计划</button>
+              </div>
+            </div>
+          </header>
+          <div class="hm-body">
+            <section class="hm-alert-section">
+              <div class="hm-alert-bar">
+                <button type="button" class="hm-alert-tab" data-hm-alerts><span aria-hidden="true">♟</span>预警任务</button>
+                <span>预警总数: 2</span>
+              </div>
+              <div class="hm-filter-row">
+                <span></span>
+                <div class="hm-filter-wrap">
+                  <button type="button" class="hm-filter-button" data-hm-filter aria-expanded="false">显示全部 <span>⌄</span></button>
+                  <div class="hm-popover hm-filter-menu" data-hm-filter-menu hidden>
+                    <button type="button" class="active" data-hm-filter-value="全部">显示全部</button>
+                    <button type="button" data-hm-filter-value="待处理">仅看待处理</button>
+                    <button type="button" data-hm-filter-value="高优先级">仅看高优先级</button>
+                  </div>
+                </div>
+                <span></span>
+              </div>
+            </section>
+
+            <div class="hm-plan-tags" role="group" aria-label="健康管理方案标签">
+              <button type="button" class="hm-plan-tag active" aria-pressed="true" data-hm-plan-tab="weight"><span>28天减重管理计划</span><em class="running">进行中</em></button>
+              <button type="button" class="hm-plan-tag" aria-pressed="false" data-hm-plan-tab="pressure"><span>12周血压稳态管理计划</span><em class="completed">已完成</em></button>
+              <button type="button" class="hm-plan-tag" aria-pressed="false" data-hm-plan-tab="glucose"><span>糖代谢改善观察计划</span><em class="terminated">已终止</em></button>
+            </div>
+
+            <section class="hm-plan-section">
+              <div class="hm-plan-title-row">
+                <div><h1 data-hm-plan-title>28天减重管理计划</h1><span class="hm-status-tag" data-hm-plan-status>进行中</span></div>
+                <button type="button" class="hm-text-button" data-hm-edit-plan><span aria-hidden="true">⚙</span>编辑当前计划</button>
+              </div>
+              <p class="hm-team" data-hm-plan-team>心血管健康管理组</p>
+              <p class="hm-plan-copy" data-hm-plan-copy>通过饮食调整、规律运动、生活习惯优化三大维度，4 周循序渐进实现体重下降、体脂减少，同时养成可持续的健康生活方式。</p>
+            </section>
+
+            <section class="hm-section hm-goals-section">
+              <header class="hm-section-head"><h3>健康目标</h3><button type="button" class="hm-text-button" data-hm-goals><span aria-hidden="true">◎</span>设置健康目标</button></header>
+              <div class="hm-goal-summary" aria-label="健康管理整体规划">
+                <span class="hm-goal-summary-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M5 19V9m7 10V5m7 14v-7"/><path d="m4 6 5-3 5 3 6-4"/></svg></span>
+                <div class="hm-goal-summary-content">
+                  <strong>健康管理目标概述</strong>
+                  <p data-hm-goal-summary>通过饮食调整、规律运动、生活习惯优化三大维度，4 周循序渐进实现体重下降、体脂减少，同时养成可持续的健康生活方式。</p>
+                </div>
+              </div>
+              <div class="hm-goal-grid" data-hm-goal-grid>
+                <button type="button" class="hm-goal-card" data-hm-goal-card="血压"><span class="hm-goal-card-head"><strong>收缩压/舒张压</strong><em class="warn">偏高</em></span><span class="hm-goal-updated">更新时间：2025年03月02日 07时42分</span><span class="hm-goal-labels"><small>初始基线（mmHg）</small><small>当前结果（mmHg）</small></span><span class="hm-goal-values"><b>&lt;120/&lt;80</b><b class="warn">&lt;120/&lt;80</b></span></button>
+                <button type="button" class="hm-goal-card" data-hm-goal-card="空腹血糖"><span class="hm-goal-card-head"><strong>空腹血糖 (FPG)</strong><em class="success">偏高</em></span><span class="hm-goal-updated">更新时间：2025年03月02日 07时45分</span><span class="hm-goal-labels"><small>初始基线</small><small>当前结果</small></span><span class="hm-goal-values"><b>&lt;120/&lt;80</b><b class="success">&lt;120/&lt;80</b></span></button>
+              </div>
+            </section>
+
+            <section class="hm-section hm-checkin-section">
+              <header class="hm-section-head"><h3>日常打卡</h3><button type="button" class="hm-text-button" data-hm-view-checkins><span aria-hidden="true">▣</span>查看打卡记录</button></header>
+              <div class="hm-checkin-grid" data-hm-checkin-grid>
+                <button type="button" class="hm-checkin-card" data-hm-checkin-card="早餐饮食打卡"><span class="hm-checkin-head"><strong><i aria-hidden="true">▣</i>饮食打卡</strong><em class="running">● 执行中</em></span><span class="hm-checkin-copy">请在早晨空腹状态下测量并记录体</span><span class="hm-checkin-frequency">◷&nbsp; 每日早晨一次</span></button>
+                <button type="button" class="hm-checkin-card" data-hm-checkin-card="空腹指标打卡"><span class="hm-checkin-head"><strong><i aria-hidden="true">▣</i>饮食打卡</strong><em>● 未开始</em></span><span class="hm-checkin-copy">请在早晨空腹状态下测量并记录体</span><span class="hm-checkin-frequency">◷&nbsp; 每日早晨一次</span></button>
+              </div>
+            </section>
+
+            <section class="hm-section hm-tasks-section">
+              <header class="hm-section-head hm-task-heading"><h3>健康任务</h3></header>
+              <div class="hm-task-toolbar" data-hm-task-filters aria-label="健康任务状态筛选"></div>
+              <div class="hm-task-list" data-hm-task-list></div>
+            </section>
+          </div>
+        </section>
         <section class="archive-panel checkin-panel" data-archive-panel="checkin" hidden>
           <header class="checkin-head"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="4" y="5" width="16" height="15" rx="2"/><path d="M8 3v4M16 3v4M4 10h16M8 14h3M13 14h3M8 17h3"/></svg>健康打卡</header>
           <div class="checkin-layout">
@@ -8747,7 +8826,11 @@
       archivePage.scrollTop = 0;
       renderPatientArchive();
       renderArchiveBoard('90天减肥计划');
-      document.querySelectorAll('[data-archive-tab]').forEach(button => button.classList.toggle('active', button.dataset.archiveTab === 'basic'));
+      document.querySelectorAll('[data-archive-tab]').forEach(button => {
+        const isActive = button.dataset.archiveTab === 'basic';
+        button.classList.toggle('active', isActive);
+        button.setAttribute('aria-selected', String(isActive));
+      });
       document.querySelectorAll('[data-archive-panel]').forEach(panel => { panel.hidden = panel.dataset.archivePanel !== 'basic'; });
     }
 
@@ -8759,6 +8842,8 @@
       }
       openPatientArchive(patient);
     }
+
+    let embeddedArchiveRestore = null;
 
     window.openPatientArchiveFromAssistant = function(profile = {}) {
       const name = String(profile.name || '').trim();
@@ -8785,7 +8870,112 @@
       trigger?.setAttribute('aria-label', '打开AI主理人');
     };
 
+    window.openPatientArchiveEmbedded = function(profile = {}, target) {
+      const name = String(profile.name || '').trim();
+      const archivePage = document.getElementById('patientArchivePage');
+      if (!name || !archivePage || !target) return false;
+      const existing = allPatients.find(patient => patient.name === name);
+      const basePatient = existing || allPatients[0] || patientRecord;
+      archiveCurrentPatient = {
+        ...basePatient,
+        ...profile,
+        name,
+        gender: profile.gender || basePatient.gender || '--',
+        age: String(profile.age || basePatient.age || '--'),
+        visitNo: profile.visitNo || profile.idCard || basePatient.visitNo,
+        birthDate: profile.birthDate || (profile.age ? `${2026 - Number(profile.age)}-01` : basePatient.birthDate),
+        phone: profile.phone || basePatient.phone,
+        phoneFull: profile.phoneFull || profile.phone || basePatient.phoneFull || basePatient.phone,
+        idType: profile.idCard ? '居民身份证' : basePatient.idType,
+        idNumber: profile.idCard || basePatient.idNumber,
+        idNumberFull: profile.idCard || basePatient.idNumberFull || basePatient.idNumber,
+        pastHistory: Array.isArray(profile.tags) && profile.tags.length ? profile.tags.join('、') : basePatient.pastHistory,
+        diagnosis: profile.diagnosis || (Array.isArray(profile.tags) ? profile.tags.join('、') : basePatient.diagnosis),
+        tags: Array.isArray(profile.tags) && profile.tags.length ? profile.tags : basePatient.tags
+      };
+      archiveSensitiveState.phone = false;
+      archiveSensitiveState.idNumber = false;
+      if (!embeddedArchiveRestore) {
+        const marker = document.createComment('patient-archive-home');
+        archivePage.parentNode?.insertBefore(marker, archivePage);
+        const split = document.createElement('div');
+        split.className = 'task-archive-split';
+        split.setAttribute('aria-label', '任务信息与患者档案对照');
+        const detailPane = document.createElement('section');
+        detailPane.className = 'task-archive-detail-pane';
+        detailPane.setAttribute('aria-label', '当前任务信息');
+        const archivePane = document.createElement('aside');
+        archivePane.className = 'task-archive-panel-pane';
+        archivePane.setAttribute('aria-label', `${name}的患者档案`);
+        while (target.firstChild) detailPane.append(target.firstChild);
+        split.append(detailPane, archivePane);
+        target.append(split);
+        target.classList.add('archive-split-active');
+        embeddedArchiveRestore = { marker, target, split, detailPane, archivePane };
+      }
+      embeddedArchiveRestore.archivePane?.replaceChildren(archivePage);
+      archivePage.classList.remove('history-document-mode');
+      archivePage.classList.add('active', 'task-processor-embedded');
+      archivePage.setAttribute('aria-hidden', 'false');
+      archivePage.scrollTop = 0;
+      renderPatientArchive();
+      renderArchiveBoard('90天减肥计划');
+      const title = archivePage.querySelector('.archive-title');
+      if (title) title.textContent = `患者档案 · ${name}`;
+      const back = archivePage.querySelector('[data-archive-back]');
+      back?.setAttribute('aria-label', '关闭患者档案');
+      const avatar = archivePage.querySelector('.archive-side-avatar');
+      if (avatar && profile.avatar) {
+        avatar.style.backgroundImage = `url("${String(profile.avatar).replace(/["\\]/g, '')}")`;
+        avatar.style.backgroundSize = 'cover';
+        avatar.style.backgroundPosition = 'center';
+      }
+      const nav = archivePage.querySelector('.archive-side-nav');
+      nav?.setAttribute('role', 'tablist');
+      nav?.setAttribute('aria-label', '患者档案分类');
+      archivePage.querySelectorAll('[data-archive-tab]').forEach(button => {
+        const isActive = button.dataset.archiveTab === 'basic';
+        button.classList.toggle('active', isActive);
+        button.setAttribute('role', 'tab');
+        button.setAttribute('aria-selected', String(isActive));
+      });
+      archivePage.querySelectorAll('[data-archive-panel]').forEach(panel => { panel.hidden = panel.dataset.archivePanel !== 'basic'; });
+      if (embeddedArchiveRestore.archivePane) embeddedArchiveRestore.archivePane.scrollTop = 0;
+      return true;
+    };
+
+    window.closePatientArchiveEmbedded = function() {
+      const archivePage = document.getElementById('patientArchivePage');
+      if (!archivePage?.classList.contains('task-processor-embedded')) return false;
+      archivePage.classList.remove('active', 'task-processor-embedded', 'history-document-mode');
+      archivePage.setAttribute('aria-hidden', 'true');
+      const title = archivePage.querySelector('.archive-title');
+      if (title) title.textContent = '患者档案';
+      const back = archivePage.querySelector('[data-archive-back]');
+      back?.setAttribute('aria-label', '返回全部患者');
+      const avatar = archivePage.querySelector('.archive-side-avatar');
+      if (avatar) {
+        avatar.style.removeProperty('background-image');
+        avatar.style.removeProperty('background-size');
+        avatar.style.removeProperty('background-position');
+      }
+      const marker = embeddedArchiveRestore?.marker;
+      if (marker?.parentNode) marker.parentNode.insertBefore(archivePage, marker);
+      marker?.remove();
+      const target = embeddedArchiveRestore?.target;
+      const split = embeddedArchiveRestore?.split;
+      const detailPane = embeddedArchiveRestore?.detailPane;
+      if (target && split?.parentNode === target && detailPane) {
+        while (detailPane.firstChild) target.insertBefore(detailPane.firstChild, split);
+        split.remove();
+        target.classList.remove('archive-split-active');
+      }
+      embeddedArchiveRestore = null;
+      return true;
+    };
+
     function closePatientArchive() {
+      if (window.closePatientArchiveEmbedded?.()) return;
       document.getElementById('patientArchivePage').classList.remove('history-document-mode');
       document.getElementById('patientArchivePage').classList.remove('active');
       document.getElementById('patientArchivePage').setAttribute('aria-hidden', 'true');
@@ -9771,11 +9961,13 @@
     const checkinReviewInitialMealContent = document.getElementById('checkinReviewContent')?.innerHTML || '';
     const checkinReviewDietText = '本餐主食、蔬菜和优质蛋白搭配较完整，整体选择较均衡。建议鸡胸肉烹调时减少煎制时间，搭配少量汤羹或蒸煮方式提升口感；继续保持蔬菜摄入，注意总热量控制。';
     const checkinReviewDietDraft = '本餐包含主食、蔬菜和鸡胸肉，营养结构较完整。建议后续继续保持蔬菜摄入，鸡胸肉可采用蒸煮或少油快炒方式，减少口感偏柴的问题，并注意控制总热量。';
+    const checkinReviewDietNote = '早餐食欲正常，餐后无明显不适；患者备注牛奶为低脂牛奶，全麦面包未添加果酱。';
     const checkinReviewTypeData = {
       '饮食': {
         title: '饮食打卡内容',
         assistantTitle: 'AI 营养师辅助点评',
         content: checkinReviewInitialMealContent,
+        note: checkinReviewDietNote,
         viewText: checkinReviewDietText,
         draftText: checkinReviewDietDraft
       },
@@ -10109,6 +10301,18 @@
       `;
     }
 
+    window.getCheckinReviewRecordForType = type => {
+      const data = checkinReviewTypeData[type] || checkinReviewTypeData['饮食'];
+      const baseContent = data.content || renderCheckinMetricContent(data);
+      const noteContent = type === '饮食' && data.note ? `<div class="checkin-med-note checkin-diet-note"><span>备注</span><strong>${esc(data.note)}</strong></div>` : '';
+      return {
+        title: data.title,
+        content: `${baseContent}${noteContent}`,
+        analysis: data.viewText,
+        draft: data.draftText
+      };
+    };
+
     function openCheckinReviewModal(actionButton) {
       const row = actionButton.closest('[data-checkin-eval-row]');
       const cells = row ? Array.from(row.children) : [];
@@ -10137,7 +10341,7 @@
       if (contentTitle) contentTitle.textContent = data.title;
       if (checkinTime) checkinTime.textContent = `打卡时间:${cells[6]?.textContent.trim() || '2025-07-03 12:30'}`;
       if (assistantTitle) assistantTitle.textContent = 'AI专员';
-      if (content) content.innerHTML = type === '饮食' ? data.content : renderCheckinMetricContent(data);
+      if (content) content.innerHTML = window.getCheckinReviewRecordForType(type).content;
       if (modal) modal.dataset.checkinType = type;
 
       modal?.classList.add('open');
@@ -11087,6 +11291,11 @@
         return;
       }
       if (e.target.closest('[data-archive-back]')) {
+        if (document.getElementById('patientArchivePage')?.classList.contains('task-processor-embedded')) {
+          window.closePatientArchiveEmbedded?.();
+          window.dispatchEvent(new CustomEvent('taskProcessorArchiveClosed'));
+          return;
+        }
         closePatientArchive();
         return;
       }
@@ -11163,7 +11372,11 @@
       }
       const archiveTab = e.target.closest('[data-archive-tab]');
       if (archiveTab) {
-        document.querySelectorAll('[data-archive-tab]').forEach(button => button.classList.toggle('active', button === archiveTab));
+        document.querySelectorAll('[data-archive-tab]').forEach(button => {
+          const isActive = button === archiveTab;
+          button.classList.toggle('active', isActive);
+          button.setAttribute('aria-selected', String(isActive));
+        });
         const targetPanel = document.querySelector(`[data-archive-panel="${archiveTab.dataset.archiveTab}"]`);
         const isHistoryTab = archiveTab.dataset.archiveTab === 'history';
         document.querySelectorAll('[data-archive-panel]').forEach(panel => {
@@ -14577,7 +14790,9 @@
         event.stopImmediatePropagation();
         setArchiveMoreOpen(false);
         document.querySelectorAll('#patientArchivePage [data-archive-tab]').forEach(button => {
-          button.classList.toggle('active', button === archiveTab);
+          const isActive = button === archiveTab;
+          button.classList.toggle('active', isActive);
+          button.setAttribute('aria-selected', String(isActive));
         });
         document.querySelectorAll('#patientArchivePage [data-archive-panel]').forEach(panel => {
           panel.classList.remove('is-visible');
@@ -17164,12 +17379,12 @@
 <script src="./js/statistics-report.js?v=20260911-05"></script>
 <script src="./js/operations-statistics.js?v=20260910-01"></script>
 <script src="./js/team-management.js?v=20260923-7"></script>
-<script src="./js/team-patients.js?v=20261020-2"></script>
+<script src="./js/team-patients.js?v=20261028-3"></script>
   <script src="./js/health-portrait.js?v=20260924-3"></script>
 <script src="./js/personnel-management.js?v=20260929-2"></script>
 <script src="./js/organization-management.js?v=20260929-4"></script>
-<script src="./js/workbench.js?v=20261029-34"></script>
-    <script src="./js/ai-steward.js?v=20261028-06"></script>
+<script src="./js/workbench.js?v=20261029-36"></script>
+    <script src="./js/ai-steward.js?v=20261028-07"></script>
 <script src="./js/system-role.js?v=20260929-1"></script>
 <script src="./js/scale-create.js?v=20260916-3"></script>
 <script src="./js/dashboard-latest-data.js?v=20260913-31"></script>
@@ -17180,5 +17395,6 @@
 <script src="./js/article-management.js?v=20260916-1"></script>
 <script src="./js/plan-management.js?v=20260924-4"></script>
 <script src="./js/plan-form-mode.js?v=20260924-2"></script>
+<script src="./js/health-management.js?v=20261028-9"></script>
 </body>
 </html>

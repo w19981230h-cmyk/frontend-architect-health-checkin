@@ -58,10 +58,14 @@
         { title: '运动打卡', detail: '每日运动打卡', state: '未开始', tone: '', copy: '记录运动类型、时长和强度', frequency: '每周五次' }
       ],
       tasks: [
-        { type: '随访量表', title: '每日空腹体重打卡', range: '2025/03/01 至 2025/03/02', state: '已完成', tone: 'done', detail: '已完成 2 次记录，最近一次体重 68.6 kg。点击“查看打卡记录”可查看完整数据。', open: true },
-        { type: '随访量表', title: '每日空腹体重打卡', range: '2025/03/01 至 2025/03/02', state: '已终止', tone: 'stopped', detail: '该阶段任务已终止。如需恢复，请在“编辑当前计划”中重新启用。' },
-        { type: '随访量表', title: '每日空腹体重打卡', range: '2025/03/03 至 2025/03/28', state: '进行中', tone: 'running', detail: '当前任务持续进行中，下一次打卡提醒将在明早 07:30 发送。' },
-        { type: '运动任务', title: '每日步行 6000 步', range: '2025/03/03 至 2025/03/28', state: '未开始', tone: '', detail: '任务尚未开始，将在计划进入第 2 阶段后自动开启。' }
+        { type: '健康量表', title: '每日空腹体重打卡', range: '2025/03/01 至 2025/03/02', state: '已完成', contentType: '量表', contentName: '每日空腹体重记录量表', detail: '记录每日空腹体重，观察体重变化趋势。' },
+        { type: '科普宣教', title: '科学减重饮食指导', range: '2025/03/01 至 2025/03/02', state: '已终止', contentType: '文章', contentName: '科学减重饮食指导文章', detail: '学习合理膳食搭配与能量控制方法。' },
+        { type: '健康量表', title: '生活方式执行评估', range: '2025/03/03 至 2025/03/28', state: '进行中', contentType: '量表', contentName: '生活方式执行评估量表', detail: '评估饮食、运动与生活习惯的执行情况。', hint: '当前可执行' },
+        { type: '科普宣教', title: '外出就餐控能量技巧', range: '2025/03/10 至 2025/03/12', state: '待完成', contentType: '文章', contentName: '外出就餐控能量指南', detail: '了解外出就餐时的菜品选择、份量控制和用餐顺序。', hint: '今日待处理' },
+        { type: '复诊提醒', title: '第 2 周阶段复诊', range: '2025/03/14 至 2025/03/14', state: '进行中', contentType: '复诊', contentName: '第 2 周阶段复诊安排', detail: '复盘近期体重趋势，评估饮食和运动方案执行效果。', hint: '当前可预约' },
+        { type: '健康量表', title: '睡眠与压力评估', range: '2025/03/21 至 2025/03/23', state: '未开始', contentType: '量表', contentName: '睡眠与压力评估量表', detail: '评估睡眠质量、日常压力及其对体重管理的影响。' },
+        { type: '复诊提醒', title: '第 4 周减重效果复诊', range: '2025/03/28 至 2025/03/28', state: '未开始', contentType: '复诊', contentName: '第 4 周减重效果复诊安排', detail: '复诊时评估体重、体脂及阶段目标完成情况。' },
+        { type: '科普宣教', title: '减重后体重维持指导', range: '2025/04/02 至 2025/04/05', state: '未开始', contentType: '文章', contentName: '减重后体重维持指南', detail: '学习阶段目标完成后的饮食、运动与体重监测策略。' }
       ]
     },
     pressure: {
@@ -82,10 +86,15 @@
         { title: '运动打卡', detail: '有氧运动记录', state: '已完成', tone: 'completed', copy: '记录步行及有氧运动完成情况', frequency: '累计完成 56 次' }
       ],
       tasks: [
-        { type: '阶段评估', title: '第 1 周血压基线评估', range: '2024/09/02 至 2024/09/08', state: '已完成', tone: 'done', detail: '已建立家庭血压基线，并确认目标区间。', open: true },
-        { type: '生活指导', title: '低盐饮食执行评估', range: '2024/09/09 至 2024/10/06', state: '已完成', tone: 'done', detail: '饮食执行率达到 91%，完成阶段目标。' },
-        { type: '随访任务', title: '第 8 周医生随访', range: '2024/10/21 至 2024/10/27', state: '已完成', tone: 'done', detail: '医生确认用药方案继续维持，无需调整剂量。' },
-        { type: '结项评估', title: '12 周管理结项', range: '2024/11/18 至 2024/11/24', state: '已完成', tone: 'done', detail: '计划目标达成，转入常规慢病随访。' }
+        { type: '健康量表', title: '第 1 周血压基线评估', range: '2024/09/02 至 2024/09/08', state: '已完成', contentType: '量表', contentName: '家庭血压基线评估量表', detail: '建立家庭血压基线，并确认目标区间。' },
+        { type: '健康量表', title: '家庭血压记录评估', range: '2024/09/16 至 2024/09/22', state: '已完成', contentType: '量表', contentName: '家庭血压记录评估量表', detail: '评估早晚血压记录的完整性与波动情况。' },
+        { type: '科普宣教', title: '低盐饮食健康宣教', range: '2024/09/23 至 2024/10/06', state: '已完成', contentType: '文章', contentName: '低盐饮食实践指南', detail: '学习低盐饮食原则与家庭执行方法。' },
+        { type: '科普宣教', title: '规范用药知识学习', range: '2024/10/07 至 2024/10/13', state: '已完成', contentType: '文章', contentName: '高血压规范用药指南', detail: '了解用药时间、漏服处理及常见不良反应。' },
+        { type: '复诊提醒', title: '第 8 周医生复诊', range: '2024/10/21 至 2024/10/27', state: '已完成', contentType: '复诊', contentName: '第 8 周血压复诊安排', detail: '复诊确认血压变化与用药方案。' },
+        { type: '健康量表', title: '心血管风险复评', range: '2024/11/04 至 2024/11/10', state: '已完成', contentType: '量表', contentName: '心血管风险复评量表', detail: '复评血压、生活方式与用药依从情况。' },
+        { type: '健康量表', title: '12 周管理结项评估', range: '2024/11/18 至 2024/11/24', state: '已完成', contentType: '量表', contentName: '血压管理结项评估量表', detail: '评估计划目标完成情况与后续管理建议。' },
+        { type: '科普宣教', title: '家庭血压长期管理', range: '2024/11/25 至 2024/11/29', state: '已完成', contentType: '文章', contentName: '家庭血压长期管理指南', detail: '学习结项后的自我监测、用药和复诊安排。' },
+        { type: '复诊提醒', title: '结项后常规复诊', range: '2024/12/02 至 2024/12/02', state: '已完成', contentType: '复诊', contentName: '结项后常规复诊安排', detail: '确认血压维持情况并安排下一阶段复诊。' }
       ]
     },
     glucose: {
@@ -106,27 +115,35 @@
         { title: '运动打卡', detail: '餐后运动打卡', state: '已终止', tone: 'stopped', copy: '原定记录餐后步行与运动时长', frequency: '累计完成 7 次' }
       ],
       tasks: [
-        { type: '基础评估', title: '糖代谢风险评估', range: '2024/05/06 至 2024/05/08', state: '已完成', tone: 'done', detail: '已完成空腹及餐后血糖基线评估。', open: true },
-        { type: '饮食指导', title: '控糖饮食学习', range: '2024/05/09 至 2024/05/15', state: '已完成', tone: 'done', detail: '患者已完成控糖饮食内容学习。' },
-        { type: '随访任务', title: '第 3 周血糖复盘', range: '2024/05/20 至 2024/05/26', state: '已终止', tone: 'stopped', detail: '患者转院，本次随访及后续任务终止。' },
-        { type: '结项评估', title: '代谢改善结项评估', range: '2024/06/03 至 2024/06/09', state: '已终止', tone: 'stopped', detail: '计划提前终止，未进入结项评估阶段。' }
+        { type: '健康量表', title: '糖代谢风险评估', range: '2024/05/06 至 2024/05/08', state: '已完成', contentType: '量表', contentName: '糖代谢风险评估量表', detail: '评估空腹及餐后血糖基线与相关风险。' },
+        { type: '科普宣教', title: '控糖饮食学习', range: '2024/05/09 至 2024/05/15', state: '已完成', contentType: '文章', contentName: '控糖饮食入门文章', detail: '学习主食选择、进餐顺序与饮食记录方法。' },
+        { type: '健康量表', title: '饮食执行情况评估', range: '2024/05/13 至 2024/05/17', state: '已完成', contentType: '量表', contentName: '控糖饮食执行评估量表', detail: '评估主食分配、进餐顺序与饮食记录执行情况。' },
+        { type: '科普宣教', title: '餐后血糖管理', range: '2024/05/16 至 2024/05/19', state: '已完成', contentType: '文章', contentName: '餐后血糖管理指南', detail: '了解餐后血糖监测时间与运动干预方法。' },
+        { type: '复诊提醒', title: '第 3 周血糖复诊', range: '2024/05/20 至 2024/05/26', state: '已终止', contentType: '复诊', contentName: '第 3 周血糖复诊安排', detail: '原计划复盘血糖数据并调整后续管理方案。' },
+        { type: '健康量表', title: '血糖趋势阶段复评', range: '2024/05/27 至 2024/05/31', state: '已终止', contentType: '量表', contentName: '血糖趋势阶段复评量表', detail: '原计划复评空腹及餐后血糖变化趋势。' },
+        { type: '健康量表', title: '代谢改善结项评估', range: '2024/06/03 至 2024/06/09', state: '已终止', contentType: '量表', contentName: '代谢改善结项评估量表', detail: '原计划评估代谢指标改善与目标完成情况。' },
+        { type: '科普宣教', title: '血糖异常处理知识', range: '2024/06/10 至 2024/06/12', state: '已终止', contentType: '文章', contentName: '血糖异常应对指南', detail: '原计划学习高低血糖识别与应对方法。' },
+        { type: '复诊提醒', title: '转院后复诊衔接', range: '2024/06/17 至 2024/06/17', state: '已终止', contentType: '复诊', contentName: '转院后复诊衔接安排', detail: '原计划衔接后续诊疗机构并同步历史监测资料。' }
       ]
     }
   };
 
   let activePlanId = 'weight';
   let activeTaskFilter = 'all';
-  let tasksPendingOnly = false;
   const escapeHtml = (value) => String(value).replace(/[&<>"']/g, character => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[character]);
 
-  const taskCategory = (task) => ({ '进行中': 'current', '已完成': 'completed', '未开始': 'pending', '已逾期': 'overdue', '已终止': 'overdue' }[task.state] || 'pending');
-  const taskTone = (task) => ({ '进行中': 'running', '已完成': 'done', '未开始': 'pending', '已逾期': 'overdue', '已终止': 'stopped' }[task.state] || 'pending');
-  const taskTypeTone = (type) => type.includes('健康') || type.includes('指导') ? 'health' : type.includes('运动') ? 'exercise' : '';
+  const taskCategory = (task) => task.state;
+  const taskTone = (task) => ({ '进行中': 'running', '待完成': 'waiting', '已完成': 'done', '未开始': 'pending', '已终止': 'stopped' }[task.state] || 'pending');
+  const taskTypeTone = (type) => ({ '健康量表': 'scale', '科普宣教': 'education', '复诊提醒': 'followup' }[type] || '');
   const taskActions = (task) => {
-    if (task.state === '已完成') return ['查看记录', '再次填写'];
-    if (task.state === '已逾期' || task.state === '已终止') return ['代填', '催办', '查看详情'];
-    if (task.state === '进行中') return ['填写', '代填', '查看详情'];
-    return ['查看详情'];
+    if (task.state === '已完成' || task.state === '已终止') return ['查看'];
+    if (task.state === '未开始') return [];
+    if (task.state === '进行中' || task.state === '待完成') {
+      if (task.type === '健康量表') return ['填写', '标记'];
+      if (task.type === '科普宣教') return ['阅读', '标记'];
+      if (task.type === '复诊提醒') return ['预约', '标记'];
+    }
+    return [];
   };
   const taskDateMeta = (task) => {
     const start = task.range.split(' 至 ')[0];
@@ -137,24 +154,30 @@
   const taskStateHint = (task) => {
     const end = task.range.split(' 至 ')[1] || task.range.split(' 至 ')[0];
     if (task.state === '已完成') return `完成时间：${end}`;
-    if (task.state === '已逾期' || task.state === '已终止') return `应完成：${end}`;
+    if (task.state === '已终止') return `终止时间：${end}`;
+    if (task.state === '待完成') return task.hint || '待完成';
     if (task.state === '进行中') return task.hint || '当前可执行';
     return '';
   };
+  const openTaskContent = (task) => {
+    const contentBodies = {
+      '量表': `<p><strong>${escapeHtml(task.contentName)}</strong></p><p>${escapeHtml(task.detail)}</p><p>此处展示量表的题目、填写说明与历史结果。</p>`,
+      '文章': `<p><strong>${escapeHtml(task.contentName)}</strong></p><p>${escapeHtml(task.detail)}</p><p>文章内容包含核心知识、执行建议和注意事项。</p>`,
+      '复诊': `<p><strong>${escapeHtml(task.contentName)}</strong></p><p>复诊周期：${escapeHtml(task.range)}</p><p>${escapeHtml(task.detail)}</p>`
+    };
+    openDialog({ title: `查看${escapeHtml(task.contentType)}`, confirm: '知道了', body: contentBodies[task.contentType] || `<p>${escapeHtml(task.detail)}</p>` });
+  };
   const renderTaskSection = (plan) => {
-    const filters = [
-      ['all', '全部'], ['current', '当前可执行'], ['overdue', '已逾期/终止'], ['completed', '已完成'], ['pending', '未开始']
-    ];
+    const filters = [['all', '全部'], ['未开始', '未开始'], ['待完成', '待完成'], ['进行中', '进行中'], ['已完成', '已完成'], ['已终止', '已终止']];
     const counts = plan.tasks.reduce((result, task) => {
       const category = taskCategory(task);
       result.all += 1;
       result[category] += 1;
       return result;
-    }, { all: 0, current: 0, overdue: 0, completed: 0, pending: 0 });
-    page.querySelector('[data-hm-task-filters]').innerHTML = `${filters.map(([value, label]) => `<button type="button" class="hm-task-filter${activeTaskFilter === value ? ' active' : ''}" data-hm-task-filter="${value}" aria-pressed="${activeTaskFilter === value}">${label}<span>${counts[value]}</span></button>`).join('')}<label class="hm-task-pending-only"><input type="checkbox" data-hm-task-pending-only${tasksPendingOnly ? ' checked' : ''}>仅显示待处理</label>`;
+    }, { all: 0, '未开始': 0, '待完成': 0, '进行中': 0, '已完成': 0, '已终止': 0 });
+    page.querySelector('[data-hm-task-filters]').innerHTML = filters.map(([value, label]) => `<button type="button" class="hm-task-filter${activeTaskFilter === value ? ' active' : ''}" data-hm-task-filter="${value}" aria-pressed="${activeTaskFilter === value}">${label}<span>${counts[value]}</span></button>`).join('');
     const visibleTasks = plan.tasks.map((task, index) => ({ task, index, meta: taskDateMeta(task) })).filter(({ task }) => {
       const category = taskCategory(task);
-      if (tasksPendingOnly && category === 'completed') return false;
       return activeTaskFilter === 'all' || activeTaskFilter === category;
     });
     const groups = visibleTasks.reduce((result, item) => {
@@ -167,10 +190,10 @@
       list.innerHTML = '<div class="hm-task-empty">当前筛选条件下暂无健康任务</div>';
       return;
     }
-    list.innerHTML = Object.values(groups).map(group => `<section class="hm-task-month-group"><h4 class="hm-task-month-title"><span>◷</span>${escapeHtml(group.label)}</h4><div class="hm-task-month-items">${group.items.map(({ task, index, meta }) => {
+    list.innerHTML = Object.values(groups).map(group => `<section class="hm-task-month-group"><h4 class="hm-task-month-title"><span class="hm-task-month-tag">${escapeHtml(group.label)}</span></h4><div class="hm-task-month-items">${group.items.map(({ task, index, meta }) => {
       const tone = taskTone(task);
       const marker = tone === 'done' ? '✓' : tone === 'overdue' || tone === 'stopped' ? '!' : '';
-      return `<article class="hm-task-row ${tone}" data-hm-task><div class="hm-task-date"><i class="hm-task-node">${marker}</i><strong>${escapeHtml(meta.dateLabel)}</strong><small>${escapeHtml(meta.weekday)}</small></div><div class="hm-task-card"><div class="hm-task-card-main"><div class="hm-task-card-head"><span class="hm-task-type ${taskTypeTone(task.type)}">${escapeHtml(task.type)}</span><strong>${escapeHtml(task.title)}</strong></div><p><b>执行周期：</b>${escapeHtml(task.range)}</p><p><b>任务内容：</b>${escapeHtml(task.detail)}</p></div><aside class="hm-task-state"><strong>● ${escapeHtml(task.state)}</strong><small>${escapeHtml(taskStateHint(task))}</small></aside><div class="hm-task-actions">${taskActions(task).map(action => `<button type="button" data-hm-task-action="${escapeHtml(action)}" data-hm-task-index="${index}">${escapeHtml(action)}</button>`).join('')}</div></div></article>`;
+      return `<article class="hm-task-row ${tone}" data-hm-task><div class="hm-task-date"><i class="hm-task-node">${marker}</i><strong>${escapeHtml(meta.dateLabel)}</strong><small>${escapeHtml(meta.weekday)}</small></div><div class="hm-task-card"><div class="hm-task-card-main"><div class="hm-task-card-head"><span class="hm-task-type ${taskTypeTone(task.type)}">${escapeHtml(task.type)}</span><strong>${escapeHtml(task.title)}</strong></div><p><b>任务周期：</b>${escapeHtml(task.range)}</p><p class="hm-task-content"><b>任务内容：</b><button type="button" data-hm-task-content="${escapeHtml(task.contentType)}" data-hm-task-index="${index}" aria-label="查看${escapeHtml(task.contentType)}：${escapeHtml(task.contentName)}">${escapeHtml(task.contentName)}</button></p></div><aside class="hm-task-state"><strong>● ${escapeHtml(task.state)}</strong><small>${escapeHtml(taskStateHint(task))}</small></aside><div class="hm-task-actions">${taskActions(task).map(action => `<button type="button" data-hm-task-action="${escapeHtml(action)}" data-hm-task-index="${index}">${escapeHtml(action)}</button>`).join('')}</div></div></article>`;
     }).join('')}</div></section>`).join('');
   };
 
@@ -179,7 +202,6 @@
     if (!plan) return;
     if (activePlanId !== planId) {
       activeTaskFilter = 'all';
-      tasksPendingOnly = false;
     }
     activePlanId = planId;
     page.querySelectorAll('[data-hm-plan-tab]').forEach(tab => {
@@ -280,10 +302,11 @@
       renderTaskSection(plans[activePlanId]);
       return;
     }
-    const pendingOnly = event.target.closest('[data-hm-task-pending-only]');
-    if (pendingOnly) {
-      tasksPendingOnly = pendingOnly.checked;
-      renderTaskSection(plans[activePlanId]);
+    const taskContent = event.target.closest('[data-hm-task-content]');
+    if (taskContent) {
+      const task = plans[activePlanId].tasks[Number(taskContent.dataset.hmTaskIndex)];
+      if (!task) return;
+      openTaskContent(task);
       return;
     }
     const taskAction = event.target.closest('[data-hm-task-action]');
@@ -291,15 +314,19 @@
       const task = plans[activePlanId].tasks[Number(taskAction.dataset.hmTaskIndex)];
       const action = taskAction.dataset.hmTaskAction;
       if (!task) return;
-      if (action === '催办') {
-        toast(`已向患者发送“${task.title}”催办提醒`);
+      if (action === '查看' || action === '阅读') {
+        openTaskContent(task);
         return;
       }
-      if (action === '查看详情' || action === '查看记录') {
-        openDialog({ title: action === '查看记录' ? '任务记录' : '任务详情', confirm: '知道了', body: `<p><strong>${escapeHtml(task.title)}</strong></p><p>任务类型：${escapeHtml(task.type)}<br>执行周期：${escapeHtml(task.range)}<br>当前状态：${escapeHtml(task.state)}</p><p>${escapeHtml(task.detail)}</p>` });
+      if (action === '标记') {
+        openDialog({ title: '标记任务完成', confirm: '确认标记', body: `<p>确认将“${escapeHtml(task.title)}”标记为已完成吗？</p>`, onConfirm: () => { task.state = '已完成'; renderTaskSection(plans[activePlanId]); toast('任务已标记为完成'); } });
         return;
       }
-      openDialog({ title: `${action}：${escapeHtml(task.title)}`, confirm: '保存记录', body: `<p>执行周期：${escapeHtml(task.range)}</p><label>任务记录<textarea placeholder="请输入本次任务记录"></textarea></label>`, onConfirm: () => toast(`${action}记录已保存`) });
+      if (action === '预约') {
+        openDialog({ title: `预约：${escapeHtml(task.title)}`, confirm: '确认预约', body: `<p>复诊安排：${escapeHtml(task.contentName)}</p><p>计划周期：${escapeHtml(task.range)}</p><label>预约备注<textarea placeholder="请输入预约备注"></textarea></label>`, onConfirm: () => toast('复诊预约已保存') });
+        return;
+      }
+      openDialog({ title: `填写：${escapeHtml(task.title)}`, confirm: '保存填写', body: `<p>${escapeHtml(task.contentName)}</p><p>任务周期：${escapeHtml(task.range)}</p><label>填写记录<textarea placeholder="请输入本次填写内容"></textarea></label>`, onConfirm: () => toast('任务填写已保存') });
       return;
     }
     if (!event.target.closest('.hm-more-wrap,.hm-filter-wrap')) closeMenus();

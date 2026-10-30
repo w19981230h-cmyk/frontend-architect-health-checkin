@@ -42,7 +42,7 @@
     { key: 'enrollment-review', title: '入组审核', base: 12, unit: '人' },
     { key: 'health-task', title: '健康任务', base: 10, unit: '项' },
     { key: 'alert-disposal', title: '预警处置', base: 8, unit: '项' },
-    { key: 'evaluation-review', title: '评价审核', base: 8, unit: '项' },
+    { key: 'evaluation-review', title: '评价任务', base: 8, unit: '项' },
     { key: 'health-assessment', title: '健康评估', base: 10, unit: '份' }
   ];
   const processorTypeAliases = {
@@ -64,36 +64,36 @@
       { name: '钟伟民', gender: '男', age: 60, phone: '135****8369', phoneFull: '13568128369', avatar: 'https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&w=160&q=80', idCard: '440682196604162517', tags: ['饮食打卡', '本周完成5次', 'App任务'], risk: '待确认', callCount: 3, callStatus: '外呼成功', callTone: 'success' }
     ],
     'alert-disposal': [
-      { name: '蔡美玲', gender: '女', age: 72, phone: '139****1168', idCard: '440683195402065020', tags: ['血压 182/108', '连续2次', '刚刚'], risk: '紧急预警' },
-      { name: '黄建华', gender: '男', age: 64, phone: '158****7740', idCard: '440681196202184537', tags: ['空腹血糖 15.8', '超阈值', '12分钟前'], risk: '高风险' },
-      { name: '彭小燕', gender: '女', age: 59, phone: '134****9261', idCard: '440682196711224826', tags: ['体重突增', '3天+2.6kg', '待核实'], risk: '中风险' },
-      { name: '林伟东', gender: '男', age: 47, phone: '181****5083', idCard: '440684197903113019', tags: ['心率 118', '持续偏快', '设备上报'], risk: '中风险' },
-      { name: '叶淑芬', gender: '女', age: 67, phone: '137****2846', idCard: '440681195903214026', tags: ['血氧 89%', '连续3次', '5分钟前'], risk: '紧急预警' },
-      { name: '方国栋', gender: '男', age: 55, phone: '186****6132', idCard: '440682197105162518', tags: ['舒张压 105', '连续偏高', '家庭上报'], risk: '高风险' },
-      { name: '莫春兰', gender: '女', age: 62, phone: '150****9471', idCard: '440683196402132527', tags: ['空腹血糖 3.1', '低于阈值', '刚刚'], risk: '高风险' },
-      { name: '欧阳杰', gender: '男', age: 49, phone: '159****3768', idCard: '440684197708194513', tags: ['心率 42', '持续偏低', '设备上报'], risk: '中风险' }
+      { name: '蔡美玲', gender: '女', age: 72, phone: '139****1168', idCard: '440683195402065020', tags: ['血压 182/108', '连续2次', '刚刚'], risk: '三级预警' },
+      { name: '黄建华', gender: '男', age: 64, phone: '158****7740', idCard: '440681196202184537', tags: ['空腹血糖 15.8', '超阈值', '12分钟前'], risk: '二级预警' },
+      { name: '彭小燕', gender: '女', age: 59, phone: '134****9261', idCard: '440682196711224826', tags: ['体重突增', '3天+2.6kg', '待核实'], risk: '一级预警' },
+      { name: '林伟东', gender: '男', age: 47, phone: '181****5083', idCard: '440684197903113019', tags: ['心率 118', '持续偏快', '设备上报'], risk: '一级预警' },
+      { name: '叶淑芬', gender: '女', age: 67, phone: '137****2846', idCard: '440681195903214026', tags: ['血氧 89%', '连续3次', '5分钟前'], risk: '三级预警' },
+      { name: '方国栋', gender: '男', age: 55, phone: '186****6132', idCard: '440682197105162518', tags: ['舒张压 105', '连续偏高', '家庭上报'], risk: '二级预警' },
+      { name: '莫春兰', gender: '女', age: 62, phone: '150****9471', idCard: '440683196402132527', tags: ['空腹血糖 3.1', '低于阈值', '刚刚'], risk: '二级预警' },
+      { name: '欧阳杰', gender: '男', age: 49, phone: '159****3768', idCard: '440684197708194513', tags: ['心率 42', '持续偏低', '设备上报'], risk: '一级预警' }
     ],
     'evaluation-review': [
-      { name: '郭丽萍', gender: '女', age: 62, phone: '132****6845', idCard: '440681196408273040', tags: ['阶段评价', 'AI已生成', '待审核'], risk: '待审核' },
-      { name: '曾国庆', gender: '男', age: 56, phone: '150****3379', idCard: '440682197006153539', tags: ['方案评价', '目标未达成', '需复核'], risk: '重点关注' },
-      { name: '邓雅琴', gender: '女', age: 45, phone: '186****7920', idCard: '440683198108091525', tags: ['月度评价', '数据完整', '待确认'], risk: '待审核' },
-      { name: '潘美华', gender: '女', age: 53, phone: '135****4098', idCard: '440684197303082528', tags: ['饮食评价', '照片12张', 'AI已生成'], risk: '待审核' },
-      { name: '高俊峰', gender: '男', age: 50, phone: '138****7516', idCard: '440681197609171514', tags: ['运动评价', '目标达成68%', '需复核'], risk: '重点关注' },
-      { name: '罗小玲', gender: '女', age: 58, phone: '188****2639', idCard: '440682196807122526', tags: ['周度评价', '数据完整', '待确认'], risk: '待审核' },
-      { name: '许志明', gender: '男', age: 64, phone: '133****9142', idCard: '440683196203142513', tags: ['用药评价', '漏服2次', 'AI已生成'], risk: '重点关注' },
-      { name: '马秋月', gender: '女', age: 47, phone: '181****5827', idCard: '440684197910202524', tags: ['月度评价', '饮食偏油', '待审核'], risk: '待审核' }
+      { name: '郭丽萍', gender: '女', age: 62, phone: '132****6845', idCard: '440681196408273040', evaluationType: '饮食', submittedAt: '2026-10-29 08:42', tags: ['饮食评价', 'AI已生成', '待处理'], risk: '待处理' },
+      { name: '曾国庆', gender: '男', age: 56, phone: '150****3379', idCard: '440682197006153539', evaluationType: '饮水', submittedAt: '2026-10-29 08:56', tags: ['饮水评价', '连续记录', '待处理'], risk: '待处理' },
+      { name: '邓雅琴', gender: '女', age: 45, phone: '186****7920', idCard: '440683198108091525', evaluationType: '血糖', submittedAt: '2026-10-29 09:10', tags: ['血糖评价', '餐前偏高', '待处理'], risk: '重点关注' },
+      { name: '潘美华', gender: '女', age: 53, phone: '135****4098', idCard: '440684197303082528', evaluationType: '用药', submittedAt: '2026-10-29 09:24', tags: ['用药评价', '漏服2次', 'AI已生成'], risk: '重点关注' },
+      { name: '高俊峰', gender: '男', age: 50, phone: '138****7516', idCard: '440681197609171514', evaluationType: '运动', submittedAt: '2026-10-29 09:38', tags: ['运动评价', '目标达成68%', '待处理'], risk: '待处理' },
+      { name: '罗小玲', gender: '女', age: 58, phone: '188****2639', idCard: '440682196807122526', evaluationType: '血压', submittedAt: '2026-10-29 09:45', tags: ['血压评价', '连续偏高', '待处理'], risk: '重点关注' },
+      { name: '许志明', gender: '男', age: 64, phone: '133****9142', idCard: '440683196203142513', evaluationType: '血脂', submittedAt: '2026-10-29 10:02', tags: ['血脂评价', 'LDL-C偏高', 'AI已生成'], risk: '重点关注' },
+      { name: '马秋月', gender: '女', age: 47, phone: '181****5827', idCard: '440684197910202524', evaluationType: '体重', submittedAt: '2026-10-29 10:18', tags: ['体重评价', '本周+0.8kg', '待处理'], risk: '待处理' }
     ],
     'health-assessment': [
-      { name: '苏志明', gender: '男', age: 65, phone: '133****2471', idCard: '440681196104125514', tags: ['综合评估', '数据已齐', '待出具'], risk: '高风险' },
-      { name: '冯玉兰', gender: '女', age: 58, phone: '189****6304', idCard: '440682196812203027', tags: ['心血管评估', '检验18项', '待生成'], risk: '中风险' },
-      { name: '马振宇', gender: '男', age: 51, phone: '157****4082', idCard: '440683197509163518', tags: ['糖尿病评估', '随访6次', '待生成'], risk: '重点关注' },
-      { name: '谢晓梅', gender: '女', age: 69, phone: '138****5196', idCard: '440684195708242528', tags: ['老年综合评估', '量表已完成', '待出具'], risk: '高风险' },
-      { name: '袁绍辉', gender: '男', age: 43, phone: '182****9653', idCard: '440681198305077514', tags: ['体重评估', '周期结束', '待确认'], risk: '一般' },
-      { name: '杜海燕', gender: '女', age: 60, phone: '136****2754', idCard: '440682196607153026', tags: ['肾功能评估', '检验22项', '待出具'], risk: '高风险' },
-      { name: '蒋文涛', gender: '男', age: 57, phone: '159****8421', idCard: '440683196904182519', tags: ['心血管评估', '随访8次', '待生成'], risk: '中风险' },
-      { name: '林桂香', gender: '女', age: 66, phone: '137****3916', idCard: '440684196001262528', tags: ['营养评估', '饮食记录完整', '待出具'], risk: '重点关注' },
-      { name: '何启明', gender: '男', age: 54, phone: '180****6275', idCard: '440681197208102513', tags: ['睡眠评估', '量表已完成', '待确认'], risk: '一般' },
-      { name: '温彩霞', gender: '女', age: 49, phone: '189****5183', idCard: '440682197711193025', tags: ['代谢评估', '检验16项', '待生成'], risk: '中风险' }
+      { name: '苏志明', gender: '男', age: 65, phone: '133****2471', idCard: '440681196104125514', tags: ['日报'], risk: '高风险' },
+      { name: '冯玉兰', gender: '女', age: 58, phone: '189****6304', idCard: '440682196812203027', tags: ['周报'], risk: '中风险' },
+      { name: '马振宇', gender: '男', age: 51, phone: '157****4082', idCard: '440683197509163518', tags: ['月报'], risk: '重点关注' },
+      { name: '谢晓梅', gender: '女', age: 69, phone: '138****5196', idCard: '440684195708242528', tags: ['日报'], risk: '高风险' },
+      { name: '袁绍辉', gender: '男', age: 43, phone: '182****9653', idCard: '440681198305077514', tags: ['周报'], risk: '一般' },
+      { name: '杜海燕', gender: '女', age: 60, phone: '136****2754', idCard: '440682196607153026', tags: ['月报'], risk: '高风险' },
+      { name: '蒋文涛', gender: '男', age: 57, phone: '159****8421', idCard: '440683196904182519', tags: ['日报'], risk: '中风险' },
+      { name: '林桂香', gender: '女', age: 66, phone: '137****3916', idCard: '440684196001262528', tags: ['周报'], risk: '重点关注' },
+      { name: '何启明', gender: '男', age: 54, phone: '180****6275', idCard: '440681197208102513', tags: ['月报'], risk: '一般' },
+      { name: '温彩霞', gender: '女', age: 49, phone: '189****5183', idCard: '440682197711193025', tags: ['日报'], risk: '中风险' }
     ]
   };
   const taskProcessorProfiles = {
@@ -109,10 +109,70 @@
     'followup-due': { queueTitle: '今日到期随访', hint: '处理今日到期或即将逾期的任务', assistant: 'AI 已按到期时间和患者风险排序，建议优先处理当前高风险患者。', analysisTitle: '到期任务分析', analysis: '该任务今天 17:00 到期，关联患者为重点管理对象。若无法按时完成，应调整日期并填写原因，避免任务无说明逾期。', highlights: [['截止时间', '今天 17:00'], ['任务状态', '剩余 2 小时 18 分'], ['任务优先级', '高优']], sectionTitle: '到期任务处理', sectionHint: '完成任务或调整计划时间', fields: [['处理状态', '计划今日完成', 'select'], ['计划完成时间', '2026-10-27 16:30', 'text'], ['处理说明', '已联系患者，等待回电确认。', 'textarea']], actions: [['调整日期', 'default'], ['完成任务', 'primary']] },
     'health-task': { queueTitle: '待执行健康任务', assistant: 'AI 已按到期时间、患者风险和触达难度排列健康任务。', analysisTitle: 'AI 任务执行总结', analysis: '本周期共安排 23 项健康任务，已完成 18 项、未完成 3 项、逾期 2 项。最近一次电话随访录音已生成文字摘要，量表结果提示用药依从性仍需提升。', highlights: [['任务完成率', '78%'], ['随访录音', '1 份 · 08:42'], ['量表数据', '3 份已完成']], fields: [['执行状态', '患者本人已接听', 'select'], ['完成时间', '2026-10-27 15:30', 'text'], ['执行记录', '已确认近期血压与用药情况，安排 3 天后复测。', 'textarea']], actions: [['暂缓处理', 'default'], ['完成任务', 'primary']] },
     'alert-disposal': { queueTitle: '待处置健康预警', assistant: 'AI 已按预警等级与持续时间排序，紧急预警请优先联系患者。', analysisTitle: 'AI 预警触发分析', analysis: '患者连续两次血压达到 182/108mmHg，且伴随轻度头晕，已同时满足数值超阈值和连续异常两项规则，因此触发紧急预警。', highlights: [['异常指标', '血压 182/108mmHg'], ['触发规则', '连续 2 次超阈值'], ['预警等级', '紧急']], fields: [['核实结果', '患者自述轻度头晕', 'select'], ['处置方式', '通知责任医生并建议立即就医', 'select'], ['处置记录', '已电话联系患者及家属，责任医生已接收预警。', 'textarea']], actions: [['标记误报', 'default'], ['完成处置', 'primary']] },
-    'evaluation-review': { queueTitle: '待审核健康评价', assistant: 'AI 已标记评价结论中的异常项和证据不足项，供审核时重点确认。', analysisTitle: 'AI 食物成分总结', analysis: '近 7 天饮食记录显示碳水化合物和脂肪供能比偏高，蛋白质摄入基本合理，蔬菜摄入不足。晚餐热量占全天 42%，是当前体重控制效果不佳的主要影响因素。', highlights: [['碳水供能比', '52% · 偏高'], ['蛋白质供能比', '16% · 合理'], ['脂肪供能比', '32% · 偏高']], fields: [['审核结论', '评价结论基本准确', 'select'], ['方案调整', '增加晚餐控量与蔬菜摄入指导', 'select'], ['审核意见', '通过评价，下周期重点改善晚餐结构。', 'textarea']], actions: [['退回修改', 'danger'], ['通过审核', 'primary']] },
+    'evaluation-review': { queueTitle: '待处理评价任务', assistant: 'AI 已按当前评价类型完成数据分析，并生成可修改的评价总结。', analysisTitle: 'AI 总结', analysis: '系统已结合患者本次记录与近期趋势生成总结。', highlights: [], fields: [], actions: [['发送处理', 'primary']] },
     'health-assessment': { queueTitle: '待出具健康评估', assistant: 'AI 已汇总患者近期档案、检验、监测和随访数据，可辅助生成健康评估。', analysisTitle: 'AI 营养与健康总结', analysis: '患者近期饮食中精制碳水与饱和脂肪占比偏高，蛋白质摄入基本达标。结合血压与肾功能变化，日报应提示当日异常，周报关注趋势，月报形成综合干预建议。', highlights: [['饮食记录', '28 天'], ['异常指标', '4 项'], ['报告周期', '日报 / 周报 / 月报']], fields: [['评估模板', '慢病综合评估模板', 'select'], ['数据范围', '最近 90 天', 'select'], ['评估结论', '心肾风险较上周期升高，建议加强复诊与指标监测。', 'textarea']], actions: [['保存草稿', 'default'], ['生成评估报告', 'primary']] }
   };
-  let taskProcessorState = { key: 'enrollment-review', patientIndex: 0, institution: fallbackInstitutions[0], completed: new Set(), phoneVisible: new Set(), queueCollapsed: false, menuPatientIndex: null };
+  const evaluationTypeSummaries = {
+    '饮食': { title: '饮食分析', analysis: '近 7 天饮食记录显示，碳水和脂肪供能比偏高，蔬菜摄入不足，晚餐热量占全天 42%。', metrics: [['记录完整度', '91%'], ['晚餐热量占比', '42%'], ['蔬菜摄入', '不足']], draft: '近期饮食记录较完整，但晚餐热量、精制碳水和脂肪摄入偏高。建议下一周期适当减少晚餐主食和油脂，增加蔬菜与优质蛋白，并继续记录三餐。' },
+    '饮水': { title: '饮水分析', analysis: '近 7 天日均饮水量 1380ml，达标 4 天，饮水时间主要集中在下午和晚间。', metrics: [['日均饮水', '1380ml'], ['达标天数', '4/7 天'], ['饮水分布', '偏集中']], draft: '近期饮水量基本稳定，但仍有 3 天未达到目标，且饮水时间较集中。建议在早晨和上午增加少量多次饮水，如有心肾功能限制，请以医嘱目标为准。' },
+    '用药': { title: '用药分析', analysis: '本周计划用药 21 次，完成 19 次，共漏服 2 次，漏服均发生在晚间。', metrics: [['计划用药', '21 次'], ['已完成', '19 次'], ['漏服', '2 次']], draft: '本周用药依从性总体较好，但晚间出现 2 次漏服。建议设置固定用药提醒，并核对药品名称、剂量和服用时间；请勿因漏服自行加倍补服。' },
+    '运动': { title: '运动分析', analysis: '本周完成 4 次运动，累计 146 分钟，目标完成率 68%，运动后未记录明显不适。', metrics: [['运动次数', '4 次'], ['累计时长', '146 分钟'], ['目标完成率', '68%']], draft: '本周运动执行情况良好，强度整体适中，但距离周目标仍有差距。建议在身体无不适的前提下增加 1–2 次中等强度运动，注意运动后拉伸和补水。' },
+    '血糖': { title: '血糖分析', analysis: '近 7 天空腹血糖平均为 7.8mmol/L，其中 4 次高于当前管理目标。', metrics: [['空腹均值', '7.8mmol/L'], ['偏高次数', '4 次'], ['记录完整度', '86%']], draft: '近期空腹血糖多次偏高。建议继续按计划监测，核对测量时段、晚餐和用药情况；如持续超出医嘱目标或伴明显不适，请及时联系医生。' },
+    '血压': { title: '血压分析', analysis: '近 7 天平均血压 146/92mmHg，共有 5 次测量超出当前管理目标。', metrics: [['平均血压', '146/92'], ['偏高次数', '5 次'], ['平均脉搏', '82 次/分']], draft: '近期血压整体偏高，建议确认测量前已安静休息，袖带和姿势正确，并继续早晚复测。如伴头痛、胸闷或其他明显不适，请及时就医。' },
+    '血脂': { title: '血脂分析', analysis: '本次 LDL-C 为 3.6mmol/L，甘油三酯为 2.1mmol/L，两项均高于当前管理目标。', metrics: [['LDL-C', '3.6mmol/L'], ['甘油三酯', '2.1mmol/L'], ['采样状态', '空腹']], draft: '本次血脂记录提示低密度脂蛋白和甘油三酯偏高。建议继续控制高油脂饮食、保持规律运动，并按医嘱用药和复查，请勿自行停药或调整药量。' },
+    '腰围': { title: '腰围分析', analysis: '本次腰围 88cm，比上次增加 1cm，测量时间为晨起空腹。', metrics: [['本次腰围', '88cm'], ['较上次', '+1cm'], ['测量条件', '晨起空腹']], draft: '本次腰围较上次略有增加。建议使用同一位置和松紧度进行复测，并结合体重、饮食和运动趋势继续观察。' },
+    '体重': { title: '体重分析', analysis: '本周平均体重 72.4kg，较上周增加 0.8kg，连续 6 天完成晨起测量。', metrics: [['本周均值', '72.4kg'], ['周环比', '+0.8kg'], ['记录天数', '6/7 天']], draft: '本周体重较上周上升 0.8kg，记录条件基本一致。建议结合近期饮食、盐分摄入和运动情况继续观察，不根据单次体重调整方案。' },
+    '心率': { title: '心率分析', analysis: '近期静息心率平均 86 次/分，其中 2 次超过 100 次/分。', metrics: [['平均心率', '86 次/分'], ['偏快次数', '2 次'], ['伴随不适', '无']], draft: '近期出现 2 次心率偏快，建议在安静休息后复测，并记录活动、情绪和咖啡因摄入等可能诱因。如持续异常或伴胸痛、气促、头晕，请及时就医。' },
+    '尿酸': { title: '尿酸分析', analysis: '本次尿酸 486μmol/L，高于当前管理目标，近期无关节红肿热痛记录。', metrics: [['尿酸值', '486μmol/L'], ['当前状态', '偏高'], ['关节不适', '无']], draft: '本次尿酸记录偏高。建议继续关注饮水、饮酒和高嘌呤食物摄入，按医嘱复查；如出现关节红肿热痛，请及时反馈。' }
+  };
+  const evaluationTypeRecords = {
+    '饮食': { task: '每日三餐饮食打卡', title: '午餐打卡记录', badge: '2 张图片', icon: '餐', time: '2026-10-29 12:18', fields: [['餐次', '午餐'], ['主食', '杂粮饭 150g'], ['菜品', '清蒸鱼、时蔬']], note: '患者上传了餐前、餐后图片，系统已识别主要食材与估算份量。' },
+    '饮水': { task: '每日饮水目标打卡', title: '当日饮水记录', badge: '7 条记录', icon: '水', time: '2026-10-29 20:30', fields: [['本次总量', '1650ml'], ['记录次数', '7 次'], ['目标完成', '82.5%']], note: '饮水主要集中在下午和晚间，早晨与上午记录较少。' },
+    '用药': { task: '处方用药依从性打卡', title: '晚间用药记录', badge: '用药确认', icon: '药', time: '2026-10-29 21:06', fields: [['药品', '二甲双胍片'], ['剂量', '0.5g'], ['执行状态', '已服用']], note: '患者上传用药照片并确认服用，本周另有 2 次晚间漏服记录。' },
+    '运动': { task: '每周运动计划打卡', title: '健步走记录', badge: '运动数据', icon: '动', time: '2026-10-29 18:42', fields: [['运动类型', '健步走'], ['运动时长', '38 分钟'], ['平均心率', '112 次/分']], note: '本次运动强度为中等，患者未记录胸闷、头晕等不适。' },
+    '血糖': { task: '空腹及餐后血糖打卡', title: '空腹血糖记录', badge: '设备数据', icon: '糖', time: '2026-10-29 07:16', fields: [['血糖值', '8.2mmol/L'], ['测量时段', '空腹'], ['设备', '家用血糖仪']], note: '本次数值高于当前管理目标，已关联近期 7 天血糖趋势。' },
+    '血压': { task: '早晚家庭血压打卡', title: '晨间血压记录', badge: '设备数据', icon: '压', time: '2026-10-29 07:28', fields: [['收缩压', '152mmHg'], ['舒张压', '96mmHg'], ['脉搏', '84 次/分']], note: '患者标记测量前已静坐 5 分钟，本次数值高于当前管理目标。' },
+    '血脂': { task: '血脂复查结果打卡', title: '血脂检验记录', badge: '检验报告', icon: '脂', time: '2026-10-29 09:12', fields: [['LDL-C', '3.6mmol/L'], ['甘油三酯', '2.1mmol/L'], ['采样状态', '空腹']], note: '患者上传检验报告图片，系统已提取本次主要血脂指标。' },
+    '腰围': { task: '每周腰围测量打卡', title: '晨起腰围记录', badge: '测量数据', icon: '围', time: '2026-10-29 07:08', fields: [['腰围', '88cm'], ['较上次', '+1cm'], ['测量条件', '晨起空腹']], note: '患者按肚脐水平位置完成测量，并上传测量照片。' },
+    '体重': { task: '每日晨起体重打卡', title: '晨起体重记录', badge: '设备数据', icon: '重', time: '2026-10-29 07:05', fields: [['体重', '73.1kg'], ['较昨日', '+0.2kg'], ['测量条件', '晨起空腹']], note: '本次由智能体脂秤同步，已连续完成 6 天晨起测量。' },
+    '心率': { task: '静息心率监测打卡', title: '静息心率记录', badge: '设备数据', icon: '心', time: '2026-10-29 08:02', fields: [['心率', '103 次/分'], ['测量状态', '静坐 5 分钟'], ['伴随不适', '无']], note: '本次静息心率偏快，患者未记录胸痛、气促或头晕。' },
+    '尿酸': { task: '尿酸指标复查打卡', title: '尿酸检测记录', badge: '检验数据', icon: '酸', time: '2026-10-29 09:20', fields: [['尿酸', '486μmol/L'], ['当前状态', '偏高'], ['关节不适', '无']], note: '患者上传检测结果，近期未记录关节红肿热痛。' }
+  };
+  let taskProcessorState = { key: 'enrollment-review', patientIndex: 0, institution: fallbackInstitutions[0], completed: new Set(), phoneVisible: new Set(), evaluationDrafts: new Map(), queueCollapsed: false, archiveQueueWasCollapsed: null, menuPatientIndex: null };
+  let taskReportSelection = null;
+  const hideTaskReportToolbar = () => {
+    const toolbar = document.querySelector('[data-task-report-toolbar]');
+    if (toolbar) toolbar.hidden = true;
+  };
+  const saveTaskReportSelection = editor => {
+    const selection = window.getSelection();
+    if (!selection?.rangeCount) return null;
+    const range = selection.getRangeAt(0);
+    if (!editor.contains(range.commonAncestorContainer)) return null;
+    taskReportSelection = range.cloneRange();
+    return range;
+  };
+  const restoreTaskReportSelection = editor => {
+    if (!taskReportSelection || !editor.contains(taskReportSelection.commonAncestorContainer)) return;
+    const selection = window.getSelection();
+    selection.removeAllRanges();
+    selection.addRange(taskReportSelection);
+  };
+  const showTaskReportToolbar = editor => {
+    const toolbar = document.querySelector('[data-task-report-toolbar]');
+    if (!toolbar || !editor) return;
+    const range = saveTaskReportSelection(editor);
+    const editorRect = editor.getBoundingClientRect();
+    const selectionRect = range?.getBoundingClientRect();
+    const anchorRect = selectionRect?.width || selectionRect?.height ? selectionRect : editorRect;
+    toolbar.hidden = false;
+    const toolbarRect = toolbar.getBoundingClientRect();
+    const left = Math.min(Math.max(12, anchorRect.left + anchorRect.width / 2 - toolbarRect.width / 2), window.innerWidth - toolbarRect.width - 12);
+    let top = anchorRect.top - toolbarRect.height - 10;
+    if (top < 12) top = Math.min(window.innerHeight - toolbarRect.height - 12, anchorRect.bottom + 10);
+    toolbar.style.left = `${Math.round(left)}px`;
+    toolbar.style.top = `${Math.round(top)}px`;
+  };
   const currentInstitutions = () => {
     const names = unique(scope?.institutionNames);
     return names.length ? names : fallbackInstitutions;
@@ -127,7 +187,30 @@
   const processorTask = key => processorTypes.find(task => task.key === (processorTypeAliases[key] || key)) || processorTypes[0];
   const processorProfile = key => taskProcessorProfiles[key] || taskProcessorProfiles.archive;
   const processorPatients = () => taskProcessorPatientsByType[taskProcessorState.key] || taskProcessorPatients;
-  const patientAvatar = (patient, large = false) => `<span class="${large ? 'task-patient-large-avatar' : 'task-patient-avatar'}" aria-hidden="true">${patient.avatar ? `<img src="${escapeHtml(patient.avatar)}" alt="">` : escapeHtml(patient.name.slice(-1))}</span>`;
+  const patientAvatarPhotos = {
+    '男': [
+      'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=160&q=80',
+      'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=160&q=80',
+      'https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&w=160&q=80',
+      'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&w=160&q=80',
+      'https://images.unsplash.com/photo-1527980965255-d3b416303d12?auto=format&fit=crop&w=160&q=80',
+      'https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?auto=format&fit=crop&w=160&q=80'
+    ],
+    '女': [
+      'https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=160&q=80',
+      'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=160&q=80',
+      'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?auto=format&fit=crop&w=160&q=80',
+      'https://images.unsplash.com/photo-1547425260-76bcadfb4f2c?auto=format&fit=crop&w=160&q=80',
+      'https://images.unsplash.com/photo-1488426862026-3ee34a7d66df?auto=format&fit=crop&w=160&q=80',
+      'https://images.unsplash.com/photo-1531123897727-8f129e1688ce?auto=format&fit=crop&w=160&q=80'
+    ]
+  };
+  const patientAvatar = (patient, large = false) => {
+    const seed = [...patient.name].reduce((sum, char) => sum + char.charCodeAt(0), 0);
+    const candidates = patientAvatarPhotos[patient.gender] || patientAvatarPhotos['男'];
+    const source = patient.avatar || candidates[seed % candidates.length];
+    return `<span class="${large ? 'task-patient-large-avatar' : 'task-patient-avatar'}" aria-hidden="true"><img src="${escapeHtml(source)}" alt=""></span>`;
+  };
   const patientPhone = (patient, index, iconOnly = false) => {
     const phoneKey = `${taskProcessorState.key}:${index}`;
     const visible = taskProcessorState.phoneVisible.has(phoneKey);
@@ -177,9 +260,20 @@
     };
   };
   const renderTaskAiAnalysis = (task, profile, patient, index) => {
+    if (task.key === 'health-assessment') {
+      const reportType = patient.tags[0] || '日报';
+      const reportAnalysis = {
+        '日报': '今日血压记录完整，处于正常高值区间；空腹血糖接近临界点，建议继续完成当日监测并减少晚餐精制碳水摄入。',
+        '周报': '本周体重总体平稳，运动完成率较上周提升，但晚餐热量仍偏高。建议下一周期持续关注血压、血糖与体重的联动趋势。',
+        '月报': '本月血压与血糖整体趋于稳定，体重变化幅度较小；仍需关注晚餐结构和规律运动，建议结合下月复查结果调整健康管理方案。'
+      };
+      return `<ul class="task-report-ai-analysis"><li><strong>${escapeHtml(reportType)}分析：</strong>${escapeHtml(reportAnalysis[reportType] || reportAnalysis['日报'])}</li></ul>`;
+    }
     if (task.key !== 'health-task') {
-      const insightSummary = profile.highlights.map(([label, value]) => `${label}为${value}`).join('，');
-      return `<ul><li>${escapeHtml(profile.analysis)}</li><li>基于当前患者画像与任务规则，${escapeHtml(insightSummary)}。</li></ul>`;
+      const highlights = profile.highlights.map(([label, value]) => [label, task.key === 'alert-disposal' && label === '预警等级' ? patient.risk : value]);
+      const insightSummary = highlights.map(([label, value]) => `${label}为${value}`).join('，');
+      const analysis = task.key === 'alert-disposal' ? profile.analysis.replace('紧急预警', patient.risk) : profile.analysis;
+      return `<ul><li>${escapeHtml(analysis)}</li><li>基于当前患者画像与任务规则，${escapeHtml(insightSummary)}。</li></ul>`;
     }
     const data = healthTaskExecutionData(patient, index);
     const recording = data.recordingName
@@ -194,7 +288,61 @@
     return `<label class="task-processor-field" for="${id}"><span>${escapeHtml(label)}</span><input id="${id}" value="${escapeHtml(value)}"></label>`;
   };
   const renderTaskMetricCards = items => `<div class="task-business-metrics">${items.map(([label, value, note, tone = '']) => `<article class="${escapeHtml(tone)}"><span>${escapeHtml(label)}</span><strong>${escapeHtml(value)}</strong><small>${escapeHtml(note)}</small></article>`).join('')}</div>`;
+  const renderEvaluationReviewContent = (patient, index) => {
+    const type = patient.evaluationType || '饮食';
+    const summary = evaluationTypeSummaries[type] || evaluationTypeSummaries['饮食'];
+    const record = evaluationTypeRecords[type] || evaluationTypeRecords['饮食'];
+    const sourceRecord = window.getCheckinReviewRecordForType?.(type);
+    const draftKey = `evaluation-review:${index}`;
+    const draft = taskProcessorState.evaluationDrafts.has(draftKey) ? taskProcessorState.evaluationDrafts.get(draftKey) : '';
+    const aiAnalysis = sourceRecord?.analysis || summary.analysis;
+    return `<div class="task-evaluation-review" aria-label="评价任务详情">
+      <section class="task-ai-profile-card task-evaluation-overview" aria-label="患者基本信息与 AI 总结">
+        <header class="task-ai-profile-header"><div class="task-ai-profile-strip"><strong class="task-ai-profile-name">${escapeHtml(patient.name)}</strong><span class="task-ai-demographic" aria-label="性别${escapeHtml(patient.gender)}，年龄${escapeHtml(patient.age)}岁"><span>${escapeHtml(patient.gender)}</span><i aria-hidden="true"></i><span>${escapeHtml(patient.age)}岁</span></span><span class="task-ai-profile-tags">${patient.tags.map(tag => `<i>${escapeHtml(tag)}</i>`).join('')}</span><span class="task-ai-profile-meta">身份证号 <strong>${escapeHtml(patient.idCard)}</strong></span><span class="task-ai-profile-meta">手机号 ${patientPhone(patient, index, true)}</span></div><button type="button" class="task-ai-profile-archive" data-task-processor-archive>${patientAvatar(patient)}<span>患者档案</span></button></header>
+        <div class="task-ai-scan-line" aria-hidden="true"></div>
+        <section class="task-ai-report task-evaluation-ai-report" aria-labelledby="taskEvaluationAiTitle"><header><span class="task-ai-orb" aria-hidden="true">✦</span><div><strong id="taskEvaluationAiTitle">AI 总结</strong><small>${escapeHtml(type)}打卡 · 根据本次记录生成</small></div><button type="button" class="task-evaluation-fill" data-task-evaluation-fill="${draftKey}">一键填充</button></header><p>${escapeHtml(aiAnalysis)}</p></section>
+      </section>
+      <section class="task-evaluation-section task-evaluation-record" aria-labelledby="taskEvaluationRecordTitle">
+        <header><div><strong id="taskEvaluationRecordTitle">本次打卡记录</strong><small>与“打卡评价”页面展示同一份原始数据</small></div><span class="task-evaluation-time">评价时间：${escapeHtml(patient.submittedAt || '--')}</span></header>
+        <div class="task-evaluation-source-content">${sourceRecord?.content || `<div class="task-evaluation-record-body"><div class="task-evaluation-record-heading"><span class="task-evaluation-record-icon" aria-hidden="true">${escapeHtml(record.icon)}</span><div><strong>${escapeHtml(record.title)}</strong><small>${escapeHtml(record.time)} · ${escapeHtml(type)}打卡</small></div></div><dl>${record.fields.map(([label, value]) => `<div><dt>${escapeHtml(label)}</dt><dd>${escapeHtml(value)}</dd></div>`).join('')}</dl><p>${escapeHtml(record.note)}</p></div>`}</div>
+      </section>
+      <section class="task-evaluation-section task-evaluation-editor" aria-labelledby="taskEvaluationEditorTitle">
+        <header><div><strong id="taskEvaluationEditorTitle">评价内容</strong><small>支持一键填充、人工修改或根据本次记录重新生成</small></div><button type="button" class="task-evaluation-regenerate" data-task-evaluation-regenerate="${draftKey}"><span aria-hidden="true">↻</span>重新生成</button></header>
+        <textarea data-task-evaluation-draft="${draftKey}" aria-label="评价内容" rows="7" placeholder="请输入评价内容，或使用上方 AI 总结一键填充">${escapeHtml(draft)}</textarea>
+        <p>内容由 AI 辅助生成，请结合患者实际情况核对后发送。</p>
+      </section>
+    </div>`;
+  };
+  const renderHealthAssessmentContent = patient => {
+    const indicators = [
+      ['血压趋势', '132/85 mmHg', '处于正常高值区间，建议减少钠盐摄入，并保持家庭血压连续监测。', '重点关注'],
+      ['代谢水平', '空腹血糖 5.8 mmol/L', '接近临界点，提示糖耐量可能存在波动，建议结合餐后血糖复查。', '持续观察'],
+      ['体重指数（BMI）', '24.2 kg/m²', '处于正常范围上限，建议继续保持规律运动，并关注腰围变化。', '接近上限'],
+      ['视力健康', '左眼 0.8 / 右眼 1.0', '左眼视力略低，建议减少连续用眼时间，并按需进行眼科复查。', '建议复查']
+    ];
+    return `<div class="task-health-assessment" aria-label="健康评估详情">
+      <section class="task-health-assessment-section task-health-assessment-basic" aria-labelledby="taskHealthAssessmentBasicTitle">
+        <header><div><span class="task-health-assessment-index">一</span><div><strong id="taskHealthAssessmentBasicTitle">基本信息</strong><small>本次健康评估的受检者与任务信息</small></div></div><span>数据已齐</span></header>
+        <p>本次评估基于患者近期健康档案、体检、监测和随访数据，由 AI 辅助完成多维度分析。</p>
+        <dl><div><dt>姓名</dt><dd>${escapeHtml(patient.name)}</dd></div><div><dt>性别</dt><dd>${escapeHtml(patient.gender)}</dd></div><div><dt>年龄</dt><dd>${escapeHtml(patient.age)} 岁</dd></div><div><dt>评估日期</dt><dd>2026-10-29</dd></div></dl>
+      </section>
+      <section class="task-health-assessment-section task-health-assessment-summary" aria-labelledby="taskHealthAssessmentSummaryTitle">
+        <header><div><span class="task-health-assessment-ai" aria-hidden="true">✦</span><div><strong id="taskHealthAssessmentSummaryTitle">AI 总结</strong><small>根据本次评估数据自动归纳，请结合患者实际情况核对</small></div></div><span class="${patient.risk === '高风险' ? 'danger' : ''}">${escapeHtml(patient.risk)}</span></header>
+        <p>${escapeHtml(patient.name)}当前健康状况总体平稳，但血压处于正常高值区间，空腹血糖接近临界点，体重指数位于正常范围上限。建议优先关注心血管与代谢风险，持续记录家庭血压、血糖及体重变化，并结合后续复查结果调整健康管理方案。</p>
+        <div class="task-health-assessment-focus"><span>本次重点</span><strong>血压管理</strong><strong>血糖观察</strong><strong>体重控制</strong><strong>视力复查</strong></div>
+      </section>
+      <section class="task-health-assessment-section task-health-assessment-indicators" aria-labelledby="taskHealthAssessmentIndicatorsTitle">
+        <header><div><span class="task-health-assessment-index">二</span><div><strong id="taskHealthAssessmentIndicatorsTitle">核心健康指标分析</strong><small>根据体检与近期监测数据整理的重点生理指标</small></div></div><span>${indicators.length} 项指标</span></header>
+        <p>以下为本次需要重点关注的生理指标评估：</p>
+        <ol>${indicators.map(([label, value, description, status], index) => `<li><span class="task-health-assessment-number">${index + 1}</span><div><div class="task-health-assessment-indicator-heading"><strong>${escapeHtml(label)}</strong><b>${escapeHtml(value)}</b><em>${escapeHtml(status)}</em></div><p>${escapeHtml(description)}</p></div></li>`).join('')}</ol>
+      </section>
+      <p class="task-health-assessment-disclaimer">AI 辅助评估内容仅供健康管理参考，不替代医生诊断；如指标持续异常，请及时复诊。</p>
+    </div>`;
+  };
   const renderTaskProcessorBusiness = (task, profile, patient) => {
+    if (task.key === 'alert-disposal') {
+      return `<section class="task-business-card task-alert-detail" aria-labelledby="taskAlertDetailTitle"><header><div><strong id="taskAlertDetailTitle">预警内容</strong><small>确认触发原因并完成本次处置</small></div><span class="danger">${escapeHtml(patient.risk)}</span></header><div class="task-alert-detail-body"><section class="task-alert-summary" aria-label="预警触发原因"><span class="task-alert-summary-icon" aria-hidden="true">!</span><div><span>触发原因</span><strong>连续2天未达2000ml饮水目标，血压超190mmHg，并且未服用减压药丸，或未采取任何处理</strong></div></section><dl class="task-alert-facts"><div><dt>预警等级</dt><dd><span class="task-alert-level">${escapeHtml(patient.risk)}</span></dd></div><div><dt>预警时间</dt><dd>2024-04-01 08:00</dd></div></dl><section class="task-alert-flow" aria-label="预警处置方案"><header><div><strong>处置方案</strong><small>系统已根据预警规则执行通知</small></div><span>2 项动作</span></header><ol><li><span class="task-alert-step" aria-hidden="true">1</span><div><div><strong>干预动作</strong><span class="task-alert-channel"><i aria-hidden="true"></i>短信通知</span></div><p>立即通知家属需要家属到场签字执行手术</p></div></li><li class="completed"><span class="task-alert-step" aria-hidden="true">✓</span><div><div><strong>系统自动执行</strong><span class="task-alert-executed">已执行</span></div><p>立即通知家属需要家属到场签字执行手术</p></div></li></ol></section><label class="task-alert-remark" for="taskAlertRemark"><span><strong>处置备注</strong><small>选填，记录人工核实结果或补充说明</small></span><textarea id="taskAlertRemark" rows="3" placeholder="请输入本次预警的处置记录" aria-label="预警处置备注"></textarea></label></div></section>`;
+    }
     if (task.key === 'enrollment-review') {
       const source = '<span class="task-archive-source"><span aria-hidden="true">▣</span><button type="button" data-task-record-source>2026-03-10 | 肾内科门诊 | 检验报告</button></span>';
       return `<section class="task-archive-overview" aria-label="档案要点"><header><strong>档案要点</strong></header><article class="task-archive-group"><h3>重点关注 (3)</h3><ul><li><span>eGFR:12 ml/min/1.73m，重度下降。</span>${source}</li><li><span>血肌酐:486 umol/L，明显升高，提示肾功能减退明显。</span>${source}</li><li><span>血红蛋白:86 g/，明显下降，提示肾性贫血风险。</span>${source}</li></ul></article><article class="task-archive-group"><h3>其他异常 (1)</h3><ul><li><span>eGFR:12 ml/min/1.73m，重度下降。</span>${source}</li></ul></article><p class="task-archive-note">*采用AI模型智能辅助采集量表内容，仅供参考，请核对确认。</p></section>`;
@@ -208,7 +356,8 @@
     if (task.key === 'evaluation-review') {
       return `<section class="task-business-card"><header><div><strong>评价总结</strong><small>饮食成分结构与本周期评价结论</small></div><span>评价审核</span></header><div class="task-composition-grid"><article><div><span>碳水化合物</span><strong>52%</strong></div><i><b style="width:52%"></b></i><small>建议范围 45%–50%</small></article><article><div><span>蛋白质</span><strong>16%</strong></div><i><b class="success" style="width:16%"></b></i><small>处于合理范围</small></article><article><div><span>脂肪</span><strong>32%</strong></div><i><b class="warning" style="width:32%"></b></i><small>建议控制在 30% 以下</small></article></div><div class="task-review-summary"><strong>综合评价</strong><p>本周期饮食记录完整度 91%。精制碳水和晚餐热量偏高，蔬菜摄入不足；建议下一周期重点调整晚餐结构，并持续记录三餐照片。</p></div><div class="task-processor-fields">${profile.fields.map(processorField).join('')}</div></section>`;
     }
-    return `<section class="task-business-card"><header><div><strong>修改评估报告明细</strong><small>分别调整日报、周报和月报的展示内容</small></div><span>健康评估</span></header><div class="task-report-grid"><label><span>日报明细</span><small>2026-10-27</small><textarea rows="5">今日晚餐碳水与脂肪占比偏高；家庭血压 148/92mmHg，建议晚餐后适量步行并按计划复测。</textarea></label><label><span>周报明细</span><small>2026-10-21 至 2026-10-27</small><textarea rows="5">本周饮食记录完成率 93%，晚餐热量持续偏高；血压平均值较上周下降 4/2mmHg，仍需继续监测。</textarea></label><label><span>月报明细</span><small>2026-10 月</small><textarea rows="5">本月精制碳水摄入下降，但饱和脂肪仍偏高。结合血压与肾功能趋势，建议强化复诊和用药依从性管理。</textarea></label></div></section>`;
+    const reportType = patient.tags[0] || '日报';
+    return `<section class="task-business-card task-health-report-editor" aria-labelledby="taskHealthReportTitle"><header><div><strong id="taskHealthReportTitle">${escapeHtml(reportType)}健康评估报告</strong><small>点击正文或选中文字后，可使用浮动工具栏编辑格式</small></div><span>${escapeHtml(reportType)}</span></header><div class="task-report-editor-toolbar" role="toolbar" aria-label="报告编辑工具" data-task-report-toolbar hidden><select data-task-report-format aria-label="段落样式"><option value="p">正文</option><option value="h2">二级标题</option><option value="h3">三级标题</option></select><button type="button" data-task-report-command="bold" aria-label="加粗" title="加粗"><strong>B</strong></button><button type="button" data-task-report-command="insertUnorderedList" aria-label="项目符号列表" title="项目符号列表">• 列表</button><button type="button" data-task-report-command="insertOrderedList" aria-label="编号列表" title="编号列表">1. 列表</button></div><article class="task-health-report-document" contenteditable="true" spellcheck="true" data-task-report-document aria-label="可编辑的${escapeHtml(reportType)}健康评估报告"><h1>2026 年 10 月${escapeHtml(reportType)}健康评估报告</h1><section><h2>一、受检者基础信息</h2><p>本报告基于患者 2026 年 10 月的健康档案与${escapeHtml(reportType)}数据，结合临床医学指南与 AI 预测模型，对健康状况进行多维度分析。</p><ul><li><strong>姓名：</strong>${escapeHtml(patient.name)}</li><li><strong>性别：</strong>${escapeHtml(patient.gender)}</li><li><strong>年龄：</strong>${escapeHtml(patient.age)} 岁</li><li><strong>评估日期：</strong>2026-10-29</li></ul></section><section><h2>二、核心健康指标分析</h2><p>根据体检数据与本次${escapeHtml(reportType)}记录，以下是需要重点关注的生理指标评估：</p><ol><li><strong>血压趋势：</strong>132/85 mmHg。处于正常高值区间，建议减少钠盐摄入，并保持家庭血压连续监测。</li><li><strong>代谢水平：</strong>空腹血糖 5.8 mmol/L。接近临界点，提示糖耐量可能存在波动，建议结合餐后血糖复查。</li><li><strong>体重指数（BMI）：</strong>24.2 kg/m²。处于正常范围上限，建议继续保持规律运动，并关注腰围变化。</li><li><strong>视力健康：</strong>左眼 0.8 / 右眼 1.0。左眼视力略低，建议减少连续用眼时间，并按需进行眼科复查。</li></ol></section></article><label class="task-report-note-panel" data-task-report-note-panel hidden><span>处理备注</span><textarea rows="3" placeholder="补充本次报告的核对结果或处理说明"></textarea></label><p class="task-health-report-hint">AI 辅助生成内容仅供健康管理参考，请结合患者实际情况核对后处理。</p></section>`;
   };
   const renderTaskProcessorActions = (task, profile) => {
     const host = document.getElementById('taskProcessorActions');
@@ -216,6 +365,19 @@
     if (task.key === 'health-task') {
       const actions = [['标记', 'default'], ['人工外呼', 'default'], ['保存', 'default'], ['提交', 'primary']];
       host.innerHTML = actions.map(([label, tone]) => `<button type="button" class="task-action-btn ${tone}" data-task-processor-action="${label}">${tone === 'primary' ? '<span aria-hidden="true">✓</span>' : ''}${label}</button>`).join('');
+      return;
+    }
+    if (task.key === 'alert-disposal') {
+      const actions = [['忽略', 'default'], ['处理', 'primary']];
+      host.innerHTML = actions.map(([label, tone]) => `<button type="button" class="task-action-btn ${tone}" data-task-processor-action="${label}">${label}</button>`).join('');
+      return;
+    }
+    if (task.key === 'evaluation-review') {
+      host.innerHTML = '<button type="button" class="task-action-btn primary task-evaluation-send" data-task-processor-action="发送处理"><span aria-hidden="true">→</span>发送处理</button>';
+      return;
+    }
+    if (task.key === 'health-assessment') {
+      host.innerHTML = '<button type="button" class="task-action-btn default" data-task-report-note-toggle aria-expanded="false"><span aria-hidden="true">＋</span>备注</button><button type="button" class="task-action-btn primary" data-task-processor-action="处理完成">处理完成</button>';
       return;
     }
     if (task.key !== 'enrollment-review') {
@@ -242,6 +404,12 @@
     toggle.setAttribute('aria-label', taskProcessorState.queueCollapsed ? '展开待办明细' : '收起待办明细');
     toggle.title = taskProcessorState.queueCollapsed ? '展开待办明细' : '收起待办明细';
   };
+  const restoreTaskProcessorQueueAfterArchive = () => {
+    if (taskProcessorState.archiveQueueWasCollapsed === null) return;
+    taskProcessorState.queueCollapsed = taskProcessorState.archiveQueueWasCollapsed;
+    taskProcessorState.archiveQueueWasCollapsed = null;
+    syncTaskProcessorQueueState();
+  };
   const renderTaskProcessorQueue = (task, profile) => {
     const title = document.getElementById('taskProcessorQueueTitle');
     const progress = document.getElementById('taskProcessorQueueProgress');
@@ -260,19 +428,25 @@
     const visiblePatients = patients.map((patient, index) => ({ patient, index })).filter(({ index }) => !taskProcessorState.completed.has(`${task.key}:${index}`));
     if (visiblePatients.length && !visiblePatients.some(({ index }) => index === taskProcessorState.patientIndex)) taskProcessorState.patientIndex = visiblePatients[0].index;
     if (!visiblePatients.length) {
-      host.innerHTML = '<p class="task-processor-empty">暂无待处理任务</p>';
+      host.innerHTML = '<section class="task-processor-queue-complete" aria-label="任务已完成"><span aria-hidden="true">✓</span><strong>当前任务已全部完成</strong><small>可返回工作台查看其他待办</small></section>';
       return;
     }
     host.innerHTML = visiblePatients.map(({ patient, index }) => {
       const selected = index === taskProcessorState.patientIndex;
-      const enrollment = task.key === 'enrollment-review';
+      const alertTask = task.key === 'alert-disposal';
+      const enrollment = task.key === 'enrollment-review' || task.key === 'health-assessment' || alertTask;
+      const alertTone = patient.risk.includes('三级') ? 'danger' : patient.risk.includes('二级') ? 'warning' : 'default';
       const healthTask = task.key === 'health-task';
       const menuOpen = taskProcessorState.menuPatientIndex === index;
       const tags = patient.tags.slice(0, 3);
       if (healthTask) {
         return `<article class="task-patient-card health-task-card${selected ? ' selected' : ''}" data-task-processor-patient="${index}" role="button" tabindex="0" aria-pressed="${selected}"><div class="health-task-card-main">${patientAvatar(patient)}<strong>${escapeHtml(patient.name)}</strong>${patientPhone(patient, index, true)}</div><div class="health-task-card-meta"><span class="health-task-call-count" aria-label="外呼 ${patient.callCount || 0} 次"><span aria-hidden="true">☎</span>${patient.callCount || 0}</span><span class="health-task-call-status ${escapeHtml(patient.callTone || 'inactive')}"><i aria-hidden="true"></i>${escapeHtml(patient.callStatus || '未入队')}</span><button type="button" class="health-task-record" data-task-patient-record="${index}">执行记录<span aria-hidden="true">›</span></button></div></article>`;
       }
-      return `<article class="task-patient-card${selected ? ' selected' : ''}" data-task-processor-patient="${index}" role="button" tabindex="0" aria-pressed="${selected}">${patientAvatar(patient)}<span class="task-patient-copy"><strong><span>${escapeHtml(patient.name)}</span>${enrollment ? patientPhone(patient, index, true) : `<em>${escapeHtml(patient.risk)}</em>`}</strong>${enrollment ? '' : `<small>${patient.gender} · ${patient.age}岁</small>`}<span>${tags.map(tag => `<i>${escapeHtml(tag)}</i>`).join('')}</span></span>${enrollment ? '' : '<b>待处理</b>'}<span class="task-patient-more-wrap"><button type="button" class="task-patient-more" data-task-patient-more="${index}" aria-expanded="${menuOpen}" aria-label="更多操作" title="更多操作"><span aria-hidden="true">•••</span></button><span class="task-patient-more-menu" ${menuOpen ? '' : 'hidden'}><button type="button" data-task-patient-record="${index}">执行记录</button></span></span></article>`;
+      if (task.key === 'evaluation-review') {
+        const checkinType = `${patient.evaluationType || '饮食'}打卡`;
+          return `<article class="task-patient-card task-evaluation-card${selected ? ' selected' : ''}" data-task-processor-patient="${index}" role="button" tabindex="0" aria-pressed="${selected}" aria-label="${escapeHtml(patient.name)} ${escapeHtml(patient.phone || '--')} ${escapeHtml(checkinType)}">${patientAvatar(patient)}<span class="task-patient-copy task-evaluation-card-copy"><strong><span>${escapeHtml(patient.name)}</span><span class="task-evaluation-card-phone">${escapeHtml(patient.phone || '--')}</span></strong><span><i>${escapeHtml(checkinType)}</i></span></span></article>`;
+      }
+      return `<article class="task-patient-card${selected ? ' selected' : ''}" data-task-processor-patient="${index}" role="button" tabindex="0" aria-pressed="${selected}">${patientAvatar(patient)}<span class="task-patient-copy"><strong><span>${escapeHtml(patient.name)}</span>${enrollment ? patientPhone(patient, index, true) : `<em>${escapeHtml(patient.risk)}</em>`}</strong>${enrollment ? '' : `<small>${patient.gender} · ${patient.age}岁</small>`}${alertTask ? `<span class="task-alert-card-level"><em class="${alertTone}">${escapeHtml(patient.risk)}</em></span>` : `<span>${tags.map(tag => `<i>${escapeHtml(tag)}</i>`).join('')}</span>`}</span>${enrollment ? '' : '<b>待处理</b>'}<span class="task-patient-more-wrap"><button type="button" class="task-patient-more" data-task-patient-more="${index}" aria-expanded="${menuOpen}" aria-label="更多操作" title="更多操作"><span aria-hidden="true">•••</span></button><span class="task-patient-more-menu" ${menuOpen ? '' : 'hidden'}><button type="button" data-task-patient-record="${index}">执行记录</button></span></span></article>`;
     }).join('');
   };
   const renderTaskProcessorContent = (task, profile) => {
@@ -284,14 +458,21 @@
     if (!patient || patientCompleted) {
       const actions = document.getElementById('taskProcessorActions');
       if (actions) actions.innerHTML = '';
-      host.innerHTML = '<section class="task-processor-content-empty"><strong>暂无待处理任务</strong><span>切换其他待办类型继续查看。</span></section>';
+      host.innerHTML = '<section class="task-processor-content-empty task-processor-complete" aria-labelledby="taskProcessorCompleteTitle"><span class="task-processor-complete-icon" aria-hidden="true">✓</span><strong id="taskProcessorCompleteTitle">太棒了，你已经完成所有待处理的任务了</strong><span>当前待办已全部处理完成，可以返回工作台继续其他工作。</span><button type="button" class="task-action-btn primary" data-task-return-workbench>返回工作台</button></section>';
       return;
     }
-    const enrollment = task.key === 'enrollment-review';
-    const analysisSource = task.key === 'health-task' ? '由 AI 根据任务执行记录生成' : '由 AI 根据患者档案与任务数据生成';
-    host.innerHTML = `<section class="task-ai-profile-card" aria-label="患者信息与 AI 智能解析"><header class="task-ai-profile-header"><div class="task-ai-profile-strip"><strong class="task-ai-profile-name">${escapeHtml(patient.name)}</strong><span class="task-ai-demographic" aria-label="性别${escapeHtml(patient.gender)}，年龄${escapeHtml(patient.age)}岁"><span>${escapeHtml(patient.gender)}</span><i aria-hidden="true"></i><span>${escapeHtml(patient.age)}岁</span></span><span class="task-ai-profile-tags">${patient.tags.map(tag => `<i>${escapeHtml(tag)}</i>`).join('')}</span><span class="task-ai-profile-meta">身份证号 <strong>${escapeHtml(patient.idCard)}</strong></span><span class="task-ai-profile-meta">手机号 ${enrollment ? patientPhone(patient, taskProcessorState.patientIndex, true) : `<strong>${escapeHtml(patient.phone || '--')}</strong>`}</span></div><button type="button" class="task-ai-profile-archive" data-task-processor-archive>${patientAvatar(patient)}<span>患者档案</span></button></header><div class="task-ai-scan-line" aria-hidden="true"></div><section class="task-ai-report"><header><span class="task-ai-orb" aria-hidden="true">✦</span><div><strong>智能解析报告</strong><small>${escapeHtml(profile.analysisTitle)} · ${escapeHtml(analysisSource)}</small></div></header>${renderTaskAiAnalysis(task, profile, patient, taskProcessorState.patientIndex)}</section></section>${renderTaskProcessorBusiness(task, profile, patient)}${enrollment ? '' : '<p class="task-ai-disclaimer">AI 辅助整理内容仅供参考，请结合患者实际情况核对确认。</p>'}`;
+    if (task.key === 'evaluation-review') {
+      host.innerHTML = renderEvaluationReviewContent(patient, taskProcessorState.patientIndex);
+      return;
+    }
+    const enrollment = task.key === 'enrollment-review' || task.key === 'health-assessment';
+    const reportType = patient.tags[0] || '日报';
+    const analysisTitle = task.key === 'health-assessment' ? `${reportType}数据分析` : profile.analysisTitle;
+    const analysisSource = task.key === 'health-task' ? '由 AI 根据任务执行记录生成' : task.key === 'health-assessment' ? `由 AI 根据${reportType}数据生成` : '由 AI 根据患者档案与任务数据生成';
+    host.innerHTML = `<section class="task-ai-profile-card" aria-label="患者信息与 AI 智能解析"><header class="task-ai-profile-header"><div class="task-ai-profile-strip"><strong class="task-ai-profile-name">${escapeHtml(patient.name)}</strong><span class="task-ai-demographic" aria-label="性别${escapeHtml(patient.gender)}，年龄${escapeHtml(patient.age)}岁"><span>${escapeHtml(patient.gender)}</span><i aria-hidden="true"></i><span>${escapeHtml(patient.age)}岁</span></span><span class="task-ai-profile-tags">${patient.tags.map(tag => `<i>${escapeHtml(tag)}</i>`).join('')}</span><span class="task-ai-profile-meta">身份证号 <strong>${escapeHtml(patient.idCard)}</strong></span><span class="task-ai-profile-meta">手机号 ${enrollment ? patientPhone(patient, taskProcessorState.patientIndex, true) : `<strong>${escapeHtml(patient.phone || '--')}</strong>`}</span></div><button type="button" class="task-ai-profile-archive" data-task-processor-archive>${patientAvatar(patient)}<span>患者档案</span></button></header><div class="task-ai-scan-line" aria-hidden="true"></div><section class="task-ai-report"><header><span class="task-ai-orb" aria-hidden="true">✦</span><div><strong>智能解析报告</strong><small>${escapeHtml(analysisTitle)} · ${escapeHtml(analysisSource)}</small></div></header>${renderTaskAiAnalysis(task, profile, patient, taskProcessorState.patientIndex)}</section></section>${renderTaskProcessorBusiness(task, profile, patient)}${enrollment ? '' : '<p class="task-ai-disclaimer">AI 辅助整理内容仅供参考，请结合患者实际情况核对确认。</p>'}`;
   };
   const renderTaskProcessor = () => {
+    if (window.closePatientArchiveEmbedded?.()) restoreTaskProcessorQueueAfterArchive();
     const task = processorTask(taskProcessorState.key);
     const profile = processorProfile(task.key);
     const tabs = document.getElementById('taskProcessorTabs');
@@ -579,12 +760,40 @@
     }
     const back = event.target.closest('[data-task-processor-back]');
     if (back) {
+      if (window.closePatientArchiveEmbedded?.()) restoreTaskProcessorQueueAfterArchive();
+      window.showListView?.('workbench');
+      return;
+    }
+    if (event.target.closest('[data-task-return-workbench]')) {
       window.showListView?.('workbench');
       return;
     }
     if (event.target.closest('[data-task-processor-queue-toggle]')) {
       taskProcessorState.queueCollapsed = !taskProcessorState.queueCollapsed;
       syncTaskProcessorQueueState();
+      return;
+    }
+    const fillEvaluation = event.target.closest('[data-task-evaluation-fill]');
+    if (fillEvaluation) {
+      const patient = processorPatients()[taskProcessorState.patientIndex];
+      const type = patient?.evaluationType || '饮食';
+      const summary = evaluationTypeSummaries[type] || evaluationTypeSummaries['饮食'];
+      const sourceRecord = window.getCheckinReviewRecordForType?.(type);
+      taskProcessorState.evaluationDrafts.set(fillEvaluation.dataset.taskEvaluationFill, sourceRecord?.analysis || summary.analysis);
+      renderTaskProcessorContent(processorTask(taskProcessorState.key), processorProfile(taskProcessorState.key));
+      showTaskProcessorToast(`已将本次${type}打卡的 AI 总结填入评价内容`);
+      return;
+    }
+    const regenerateEvaluation = event.target.closest('[data-task-evaluation-regenerate]');
+    if (regenerateEvaluation) {
+      const patient = processorPatients()[taskProcessorState.patientIndex];
+      const type = patient?.evaluationType || '饮食';
+      const summary = evaluationTypeSummaries[type] || evaluationTypeSummaries['饮食'];
+      const sourceRecord = window.getCheckinReviewRecordForType?.(type);
+      const refreshedDraft = sourceRecord?.draft || summary.draft;
+      taskProcessorState.evaluationDrafts.set(regenerateEvaluation.dataset.taskEvaluationRegenerate, refreshedDraft);
+      renderTaskProcessorContent(processorTask(taskProcessorState.key), processorProfile(taskProcessorState.key));
+      showTaskProcessorToast(`已根据本次${type}打卡记录重新生成评价内容`);
       return;
     }
     const phoneToggle = event.target.closest('[data-task-phone-toggle]');
@@ -627,11 +836,42 @@
       return;
     }
     if (event.target.closest('[data-task-processor-archive]')) {
-      showTaskProcessorToast(`已打开${processorPatients()[taskProcessorState.patientIndex].name}的患者档案预览`);
+      const patient = processorPatients()[taskProcessorState.patientIndex];
+      const host = document.getElementById('taskProcessorContent');
+      if (taskProcessorState.archiveQueueWasCollapsed === null) taskProcessorState.archiveQueueWasCollapsed = taskProcessorState.queueCollapsed;
+      taskProcessorState.queueCollapsed = true;
+      syncTaskProcessorQueueState();
+      const opened = window.openPatientArchiveEmbedded?.(patient, host);
+      if (opened) {
+        showTaskProcessorToast(`已展开${patient.name}的患者档案，待办明细已自动收起`);
+      } else {
+        restoreTaskProcessorQueueAfterArchive();
+        showTaskProcessorToast('患者档案暂时无法打开，请稍后重试');
+      }
       return;
     }
     if (event.target.closest('[data-task-audio]')) {
       showTaskProcessorToast('已打开最近一次电话随访录音文件');
+      return;
+    }
+    const reportCommand = event.target.closest('[data-task-report-command]');
+    if (reportCommand) {
+      event.preventDefault();
+      const editor = document.querySelector('[data-task-report-document]');
+      if (!editor) return;
+      editor.focus({ preventScroll: true });
+      restoreTaskReportSelection(editor);
+      document.execCommand(reportCommand.dataset.taskReportCommand, false);
+      showTaskReportToolbar(editor);
+      return;
+    }
+    const reportNoteToggle = event.target.closest('[data-task-report-note-toggle]');
+    if (reportNoteToggle) {
+      const panel = document.querySelector('[data-task-report-note-panel]');
+      if (!panel) return;
+      panel.hidden = !panel.hidden;
+      reportNoteToggle.setAttribute('aria-expanded', String(!panel.hidden));
+      if (!panel.hidden) panel.querySelector('textarea')?.focus();
       return;
     }
     const taskAction = event.target.closest('[data-task-processor-action]');
@@ -639,18 +879,53 @@
       const patients = processorPatients();
       const patient = patients[taskProcessorState.patientIndex];
       const action = taskAction.dataset.taskProcessorAction;
-      if (taskAction.classList.contains('primary') || taskAction.classList.contains('danger')) {
+      if (taskAction.classList.contains('primary') || taskAction.classList.contains('danger') || (taskProcessorState.key === 'alert-disposal' && action === '忽略')) {
         taskProcessorState.completed.add(`${taskProcessorState.key}:${taskProcessorState.patientIndex}`);
         const next = patients.findIndex((_, index) => !taskProcessorState.completed.has(`${taskProcessorState.key}:${index}`));
         if (next >= 0) taskProcessorState.patientIndex = next;
         renderTaskProcessor();
       }
-      showTaskProcessorToast(`${patient.name}：${action}操作已记录`);
+      showTaskProcessorToast(taskProcessorState.key === 'evaluation-review' ? `${patient.name}：已发送处理，已自动切换下一项` : `${patient.name}：${action}操作已记录`);
       return;
     }
     const row = event.target.closest('[data-workbench-institution]');
     if (row) openTaskProcessor(row.dataset.workbenchTaskKey, row.dataset.workbenchInstitution);
   });
+  document.addEventListener('input', event => {
+    const draft = event.target.closest?.('[data-task-evaluation-draft]');
+    if (!draft) return;
+    taskProcessorState.evaluationDrafts.set(draft.dataset.taskEvaluationDraft, draft.value);
+  });
+  document.addEventListener('change', event => {
+    const format = event.target.closest?.('[data-task-report-format]');
+    if (!format) return;
+    const editor = document.querySelector('[data-task-report-document]');
+    if (!editor) return;
+    editor.focus({ preventScroll: true });
+    restoreTaskReportSelection(editor);
+    document.execCommand('formatBlock', false, format.value);
+    showTaskReportToolbar(editor);
+  });
+  document.addEventListener('mousedown', event => {
+    if (event.target.closest?.('[data-task-report-command]')) event.preventDefault();
+  });
+  document.addEventListener('mouseup', event => {
+    const editor = event.target.closest?.('[data-task-report-document]');
+    if (editor) showTaskReportToolbar(editor);
+  });
+  document.addEventListener('keyup', event => {
+    const editor = event.target.closest?.('[data-task-report-document]');
+    if (editor) showTaskReportToolbar(editor);
+  });
+  document.addEventListener('focusin', event => {
+    const editor = event.target.closest?.('[data-task-report-document]');
+    if (editor) showTaskReportToolbar(editor);
+  });
+  document.addEventListener('pointerdown', event => {
+    if (event.target.closest?.('[data-task-report-document], [data-task-report-toolbar]')) return;
+    hideTaskReportToolbar();
+  });
+  window.addEventListener('scroll', hideTaskReportToolbar, true);
   document.addEventListener('keydown', event => {
     const patientCard = event.target.closest?.('[data-task-processor-patient]');
     if (patientCard && (event.key === 'Enter' || event.key === ' ')) {
@@ -689,6 +964,7 @@
   document.addEventListener('focusout', event => {
     if (event.target?.id === 'globalAiTitle' && event.target.classList.contains('editing')) finishAssistantNameEdit(true);
   });
+  window.addEventListener('taskProcessorArchiveClosed', restoreTaskProcessorQueueAfterArchive);
   window.addEventListener('organizationScopeChange', event => render(event.detail));
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', () => render(window.organizationScope));
   else render(window.organizationScope);
