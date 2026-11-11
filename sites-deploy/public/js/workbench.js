@@ -138,7 +138,7 @@
     '心率': { task: '静息心率监测打卡', title: '静息心率记录', badge: '设备数据', icon: '心', time: '2026-10-29 08:02', fields: [['心率', '103 次/分'], ['测量状态', '静坐 5 分钟'], ['伴随不适', '无']], note: '本次静息心率偏快，患者未记录胸痛、气促或头晕。' },
     '尿酸': { task: '尿酸指标复查打卡', title: '尿酸检测记录', badge: '检验数据', icon: '酸', time: '2026-10-29 09:20', fields: [['尿酸', '486μmol/L'], ['当前状态', '偏高'], ['关节不适', '无']], note: '患者上传检测结果，近期未记录关节红肿热痛。' }
   };
-  let taskProcessorState = { key: 'enrollment-review', patientIndex: 0, institution: fallbackInstitutions[0], completed: new Set(), phoneVisible: new Set(), evaluationDrafts: new Map(), queueCollapsed: false, archiveQueueWasCollapsed: null, menuPatientIndex: null };
+  let taskProcessorState = { key: 'enrollment-review', patientIndex: 0, institution: fallbackInstitutions[0], completed: new Set(), phoneVisible: new Set(), evaluationDrafts: new Map(), queueCollapsed: false, archiveQueueWasCollapsed: null, menuPatientIndex: null, returnView: 'workbench' };
   let taskReportSelection = null;
   const hideTaskReportToolbar = () => {
     const toolbar = document.querySelector('[data-task-report-toolbar]');
@@ -482,14 +482,16 @@
     renderTaskProcessorQueue(task, profile);
     renderTaskProcessorContent(task, profile);
   };
-  const openTaskProcessor = (taskKey, institutionName) => {
+  const openTaskProcessor = (taskKey, institutionName, returnView = 'workbench') => {
     taskProcessorState.key = processorTask(taskKey).key;
     taskProcessorState.patientIndex = 0;
     taskProcessorState.institution = institutionName || currentInstitutions()[0];
+    taskProcessorState.returnView = returnView;
     window.showListView?.('workbenchTasks');
     renderTaskProcessor();
     document.getElementById('workbenchTaskProcessorView')?.scrollTo({ top: 0 });
   };
+  window.openTaskProcessor = openTaskProcessor;
   let processorToastTimer;
   const showTaskProcessorToast = message => {
     const toast = document.getElementById('taskProcessorToast');
@@ -761,11 +763,11 @@
     const back = event.target.closest('[data-task-processor-back]');
     if (back) {
       if (window.closePatientArchiveEmbedded?.()) restoreTaskProcessorQueueAfterArchive();
-      window.showListView?.('workbench');
+      window.showListView?.(taskProcessorState.returnView || 'workbench');
       return;
     }
     if (event.target.closest('[data-task-return-workbench]')) {
-      window.showListView?.('workbench');
+      window.showListView?.(taskProcessorState.returnView || 'workbench');
       return;
     }
     if (event.target.closest('[data-task-processor-queue-toggle]')) {

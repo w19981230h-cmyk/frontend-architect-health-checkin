@@ -496,3 +496,1353 @@
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif !important;
   font-size: 14px !important;
 }
+
+/* 团队患者：统一为 Ant Design 风格的紧凑数据列表。 */
+.team-patient-list {
+  position: relative;
+  background: #fff;
+}
+
+.team-patient-table-header,
+.team-patient-row {
+  min-width: 1120px;
+  display: grid;
+  align-items: center;
+  column-gap: 24px;
+}
+
+.team-patient-pending-header,
+.team-patient-pending-row {
+  grid-template-columns: minmax(250px, 1.12fr) minmax(210px, .92fr) minmax(150px, .68fr) minmax(320px, 1.5fr) 152px;
+}
+
+.team-patient-managing-header,
+.team-patient-managing-row {
+  grid-template-columns: minmax(270px, 1.05fr) minmax(150px, .62fr) minmax(130px, .54fr) minmax(300px, 1.3fr) 228px;
+}
+
+.team-patient-table-header {
+  position: sticky;
+  z-index: 12;
+  top: 0;
+  min-height: 52px;
+  height: 52px;
+  padding: 0 20px;
+  color: #5f6b7c;
+  border-top: 1px solid #f0f0f0;
+  border-bottom: 1px solid #e8eaed;
+  background: #fafafa;
+  box-shadow: 0 1px 0 rgba(5, 5, 5, .02);
+  font-weight: 600;
+}
+
+.team-patient-table-header span[role="columnheader"] {
+  min-width: 0;
+}
+
+.team-patient-row,
+.team-patient-managing-row {
+  min-height: 68px;
+  height: 68px;
+  padding: 8px 20px;
+  gap: 24px;
+  border-bottom: 1px solid #f0f0f0;
+  background: #fff;
+}
+
+.team-patient-row:hover,
+.team-patient-row:focus-within {
+  background: #fafcff;
+}
+
+.team-patient-row.selected {
+  background: #e6f4ff;
+  box-shadow: inset 3px 0 0 #1677ff;
+}
+
+.team-patient-cell {
+  min-width: 0;
+}
+
+.team-patient-main,
+.team-patient-managing-row .team-patient-main {
+  display: grid;
+  grid-template-columns: 16px 32px minmax(0, 1fr);
+  align-items: center;
+  gap: 10px;
+  align-self: center;
+}
+
+.team-patient-check {
+  width: 16px;
+  height: 16px;
+  margin: 0;
+  accent-color: #1677ff;
+}
+
+.team-patient-avatar {
+  width: 32px;
+  height: 32px;
+  font-size: 12px !important;
+}
+
+.team-patient-line {
+  min-height: 22px;
+  gap: 6px;
+  flex-wrap: nowrap;
+}
+
+.team-patient-line strong {
+  overflow: hidden;
+  color: #1f2733;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-weight: 600;
+}
+
+.team-patient-line b {
+  flex: 0 0 auto;
+  color: #687386;
+  font-weight: 400;
+}
+
+.team-patient-detail {
+  margin-top: 4px;
+  overflow: hidden;
+  color: #8c96a6;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 12px !important;
+}
+
+.team-patient-contact,
+.team-patient-source-info,
+.team-patient-joined,
+.team-patient-manager {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 6px;
+  color: #667085;
+}
+
+.team-patient-contact > strong,
+.team-patient-source-info > strong,
+.team-patient-joined > strong,
+.team-patient-manager > strong {
+  color: #344054;
+  font-weight: 500;
+}
+
+.team-patient-contact > span,
+.team-patient-source-info > span,
+.team-patient-joined > span,
+.team-patient-manager > span {
+  min-width: 0;
+  color: #8c96a6;
+  font-size: 12px !important;
+}
+
+.team-patient-contact > span {
+  width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.team-patient-chip,
+.team-patient-overdue {
+  min-height: 22px;
+  margin-right: 4px;
+  padding: 1px 7px;
+  border-radius: 4px;
+  font-size: 12px !important;
+}
+
+.team-patient-ai {
+  padding: 0;
+  color: #667085;
+  line-height: 1.55;
+}
+
+.team-patient-ai strong {
+  margin-bottom: 3px;
+  color: #1677ff;
+  font-weight: 500;
+}
+
+.team-patient-ai strong::before {
+  font-size: 14px !important;
+}
+
+.team-patient-ai p {
+  display: -webkit-box;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  color: #667085;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 1;
+  line-clamp: 1;
+  font-size: 12px !important;
+}
+
+.team-patient-plan-info {
+  padding: 0;
+  border: 0;
+  color: #667085;
+  line-height: 1.6;
+}
+
+.team-patient-plan-info p {
+  margin: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.team-patient-plan-info p:first-child b {
+  color: #344054;
+  font-weight: 500;
+}
+
+.team-patient-plan-info em {
+  margin: 0 6px;
+}
+
+.team-patient-operation {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.team-patient-actions,
+.team-patient-managing-actions {
+  position: static;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+  margin: 0;
+  opacity: 1;
+  transform: none;
+  pointer-events: auto;
+}
+
+.team-patient-action {
+  height: 30px;
+  padding: 0 8px;
+  border-color: transparent;
+  border-radius: 6px;
+  color: #1677ff;
+  background: transparent;
+  font-weight: 400;
+  white-space: nowrap;
+}
+
+.team-patient-action:hover {
+  border-color: transparent;
+  color: #4096ff;
+  background: #e6f4ff;
+}
+
+.team-patient-action.primary {
+  height: 30px;
+  padding: 0 12px;
+  border-color: #1677ff;
+  border-radius: 6px;
+  background: #1677ff;
+}
+
+.team-patient-action.primary:hover {
+  border-color: #4096ff;
+  background: #4096ff;
+}
+
+.team-patient-more {
+  min-width: 32px;
+}
+
+.team-patient-list-status {
+  color: #8c96a6;
+  font-size: 12px !important;
+}
+
+.team-patient-empty {
+  min-width: 1120px;
+  min-height: 320px;
+}
+
+.team-patient-empty strong {
+  color: #667085;
+  font-weight: 500;
+}
+
+@media (max-width: 1100px) {
+  .team-patient-row,
+  .team-patient-managing-row {
+    grid-template-columns: inherit;
+  }
+
+  .team-patient-plan-info {
+    margin: 0;
+    padding: 0;
+    border: 0;
+  }
+
+  .team-patient-managing-actions {
+    grid-column: auto;
+    margin: 0;
+  }
+}
+
+/* 字段级列：每项业务数据拥有独立表头与单元格。 */
+.team-patient-pending-header,
+.team-patient-pending-row {
+  min-width: 1560px;
+  grid-template-columns: 32px minmax(360px, 1.35fr) 56px 64px 104px 122px 104px 112px minmax(300px, 1.2fr) 145px;
+  column-gap: 16px;
+}
+
+.team-patient-managing-header,
+.team-patient-managing-row {
+  min-width: 1900px;
+  grid-template-columns: 32px 140px 56px 64px 104px 122px 112px 80px 112px minmax(220px, 1fr) minmax(180px, .86fr) 112px 104px 104px;
+  column-gap: 16px;
+}
+
+.team-patient-table-header,
+.team-patient-row,
+.team-patient-managing-row {
+  padding-right: 20px;
+  padding-left: 20px;
+}
+
+.team-patient-selection {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.team-patient-name-cell {
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  flex-wrap: nowrap;
+  overflow: hidden;
+  gap: 8px;
+}
+
+.team-patient-name-cell strong {
+  min-width: 0;
+  overflow: hidden;
+  color: #1f2733;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-weight: 600;
+}
+
+.team-patient-name-cell .team-patient-chip {
+  flex: 0 0 auto;
+}
+
+.team-patient-inline-tags {
+  min-width: 0;
+  display: inline-flex;
+  align-items: center;
+  flex-wrap: nowrap;
+  overflow: hidden;
+  gap: 4px;
+}
+
+.team-patient-inline-tags .team-patient-chip {
+  margin: 0;
+  white-space: nowrap;
+}
+
+.team-patient-text-cell,
+.team-patient-code-cell,
+.team-patient-date-cell,
+.team-patient-plan-cell {
+  overflow: hidden;
+  color: #475467;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.team-patient-code-cell,
+.team-patient-date-cell {
+  color: #667085;
+  font-variant-numeric: tabular-nums;
+}
+
+.team-patient-tags-cell {
+  max-height: 52px;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.team-patient-tags-cell .team-patient-chip {
+  margin: 0;
+  white-space: nowrap;
+}
+
+.team-patient-status-cell {
+  display: flex;
+  align-items: center;
+}
+
+.team-patient-normal {
+  min-height: 22px;
+  padding: 1px 8px;
+  border-radius: 4px;
+  color: #389e0d;
+  background: #f6ffed;
+  font-size: 12px !important;
+}
+
+.team-patient-operation {
+  position: sticky;
+  z-index: 24;
+  right: 0;
+  min-height: 52px;
+  align-self: stretch;
+  align-items: center;
+  padding-left: 0;
+  background: #fff;
+  box-shadow: -10px 0 14px -14px rgba(31, 45, 72, .34);
+}
+
+.team-patient-table-header > span:last-child {
+  position: sticky;
+  z-index: 36;
+  right: 0;
+  align-self: stretch;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  padding-left: 0;
+  background: #fafafa;
+  box-shadow: -10px 0 14px -14px rgba(31, 45, 72, .34);
+}
+
+.team-patient-pending-row .team-patient-actions {
+  gap: 4px;
+}
+
+.team-patient-pending-row .team-patient-action {
+  height: 32px;
+  padding: 0 8px;
+  border: 0;
+  border-radius: 4px;
+  color: #3154ff;
+  background: transparent;
+  font-size: 13px !important;
+  font-weight: 400;
+}
+
+.team-patient-pending-row .team-patient-action:hover,
+.team-patient-pending-row .team-patient-action:focus-visible {
+  color: #3154ff;
+  background: #f0f3ff;
+  outline: none;
+}
+
+.team-patient-pending-row .team-patient-ai {
+  min-width: 0;
+}
+
+.team-patient-row:hover .team-patient-operation,
+.team-patient-row:focus-within .team-patient-operation {
+  background: #fafcff;
+}
+
+.team-patient-row.selected .team-patient-operation {
+  background: #e6f4ff;
+}
+
+.team-patient-operation:focus-within {
+  z-index: 28;
+}
+
+@media (max-width: 1100px) {
+  .team-patient-pending-header,
+  .team-patient-pending-row {
+    grid-template-columns: 32px minmax(360px, 1.35fr) 56px 64px 104px 122px 104px 112px minmax(300px, 1.2fr) 145px;
+  }
+
+  .team-patient-managing-header,
+  .team-patient-managing-row {
+    grid-template-columns: 32px 140px 56px 64px 104px 122px 112px 80px 112px minmax(220px, 1fr) minmax(180px, .86fr) 112px 104px 104px;
+  }
+}
+
+.team-patient-managing-actions {
+  gap: 16px;
+}
+
+.team-patient-managing-header > span:last-child,
+.team-patient-managing-row .team-patient-operation,
+.team-patient-managing-row .team-patient-managing-actions {
+  justify-content: center;
+}
+
+.team-patient-managing-row .team-patient-managing-actions {
+  width: 100%;
+}
+
+.team-patient-managing-actions .team-patient-action {
+  height: 40px;
+  padding: 0 15px;
+  border: 1px solid #3154ff;
+  border-radius: 4px;
+  color: #3154ff;
+  background: #fff;
+  font-size: 14px !important;
+  font-weight: 400;
+}
+
+.team-patient-managing-actions .team-patient-action:hover,
+.team-patient-managing-actions .team-patient-action:focus-visible {
+  border-color: #4096ff;
+  color: #1677ff;
+  background: #f7faff;
+  outline: none;
+}
+
+.team-patient-managing-actions .team-patient-action:focus-visible {
+  box-shadow: 0 0 0 2px rgba(22, 119, 255, .2);
+}
+
+.team-patient-managing-actions .team-patient-more {
+  width: auto;
+  min-width: 0;
+  height: 32px;
+  padding: 0 8px;
+  border: 0;
+  border-radius: 4px;
+  background: transparent;
+  letter-spacing: normal;
+}
+
+.team-patient-managing-actions .team-patient-more:hover,
+.team-patient-managing-actions .team-patient-more:focus-visible {
+  border: 0;
+  background: #e6f4ff;
+}
+
+.team-patient-managing-row.menu-open {
+  position: relative;
+  z-index: 38;
+}
+
+.team-patient-managing-row.menu-open .team-patient-operation {
+  z-index: 40;
+}
+
+.team-patient-managing-row .team-patient-row-menu {
+  top: 38px;
+  right: 0;
+  width: 154px;
+  padding: 4px;
+  border: 0;
+  border-radius: 4px;
+  box-shadow: 0 8px 24px rgba(31, 45, 72, .14);
+}
+
+.team-patient-managing-row .team-patient-row-menu button {
+  height: 40px;
+  padding: 0 12px;
+  color: #667085;
+  font-size: 14px !important;
+}
+
+.team-patient-managing-row .team-patient-row-menu.opens-up {
+  top: auto;
+  bottom: 38px;
+}
+
+.team-patient-exited-header,
+.team-patient-exited-row {
+  min-width: 1360px;
+  grid-template-columns: 32px minmax(300px, 1fr) 56px 64px 104px 122px 104px 112px 184px;
+  column-gap: 16px;
+}
+
+.team-patient-exited-header > span:last-child,
+.team-patient-exited-row .team-patient-operation {
+  justify-content: center;
+}
+
+.team-patient-exited-row .team-patient-operation {
+  gap: 8px;
+}
+
+.team-patient-exited-row .team-patient-rejoin,
+.team-patient-exited-row .team-patient-execution {
+  height: 32px;
+  padding: 0 10px;
+  border: 1px solid #1677ff;
+  border-radius: 4px;
+  color: #1677ff;
+  background: #fff;
+  font-size: 13px !important;
+  font-weight: 400;
+}
+
+.team-patient-exited-row .team-patient-rejoin:hover,
+.team-patient-exited-row .team-patient-rejoin:focus-visible,
+.team-patient-exited-row .team-patient-execution:hover,
+.team-patient-exited-row .team-patient-execution:focus-visible {
+  border-color: #4096ff;
+  color: #4096ff;
+  background: #f7faff;
+  outline: none;
+}
+
+.team-patient-exited-row .team-patient-rejoin:focus-visible,
+.team-patient-exited-row .team-patient-execution:focus-visible {
+  box-shadow: 0 0 0 2px rgba(22, 119, 255, .2);
+}
+
+.team-execution-empty {
+  padding: 40px 0;
+  color: #98a2b3;
+  text-align: center;
+}
+
+body.team-execution-open {
+  overflow: hidden;
+}
+
+.team-execution-overlay {
+  position: fixed;
+  z-index: 10080;
+  inset: 0;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+}
+
+.team-execution-backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(15, 23, 42, .35);
+}
+
+.team-execution-drawer {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: min(480px, 100vw);
+  height: 100%;
+  overflow-y: auto;
+  color: #344054;
+  background: #fff;
+  box-shadow: -8px 0 24px rgba(15, 23, 42, .12);
+}
+
+.team-execution-drawer > header {
+  position: sticky;
+  z-index: 1;
+  top: 0;
+  min-height: 76px;
+  padding: 16px 24px;
+  border-bottom: 1px solid #f0f0f0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  background: #fff;
+}
+
+.team-execution-drawer h2,
+.team-execution-drawer h3,
+.team-execution-drawer p {
+  margin: 0;
+}
+
+.team-execution-drawer h2 {
+  color: #1d2939;
+  font-size: 18px;
+}
+
+.team-execution-drawer > header p {
+  margin-top: 4px;
+  color: #98a2b3;
+  font-size: 13px;
+}
+
+.team-execution-drawer > header button {
+  width: 32px;
+  height: 32px;
+  border: 0;
+  border-radius: 4px;
+  color: #667085;
+  background: transparent;
+  font-size: 24px;
+}
+
+.team-execution-drawer > header button:hover,
+.team-execution-drawer > header button:focus-visible {
+  color: #1677ff;
+  background: #e6f4ff;
+  outline: none;
+}
+
+.team-execution-body {
+  padding: 24px;
+}
+
+.team-execution-count {
+  margin-bottom: 16px !important;
+  color: #98a2b3;
+  font-size: 13px;
+}
+
+.team-execution-card {
+  margin-bottom: 16px;
+  padding: 16px;
+  border: 1px solid #f0f0f0;
+  border-radius: 8px;
+}
+
+.team-execution-card h3 {
+  margin-bottom: 16px;
+  color: #1d2939;
+  font-size: 15px;
+}
+
+.team-execution-card p {
+  margin-top: 12px;
+  display: grid;
+  grid-template-columns: 80px minmax(0, 1fr);
+  gap: 12px;
+  font-size: 13px;
+}
+
+.team-execution-card p span {
+  color: #98a2b3;
+}
+
+.team-execution-card p strong {
+  font-weight: 500;
+}
+
+.team-execution-summary {
+  margin-top: 16px;
+  padding: 12px;
+  border-radius: 4px;
+  color: #667085;
+  background: #fafafa;
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+/* 团队患者全屏审核工作台 */
+body.team-review-workspace-active {
+  overflow: hidden;
+}
+
+.team-patient-insight.team-review-workspace {
+  position: fixed;
+  z-index: 10040;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  height: 100dvh;
+  min-width: 0;
+  overflow: hidden;
+  color: #172b4d;
+  background: #edf3f9;
+  box-shadow: none;
+  transform: translateY(12px);
+}
+
+.team-patient-insight.team-review-workspace.open {
+  transform: none;
+}
+
+.team-review-topbar {
+  height: 56px;
+  padding: 0 48px;
+  border-bottom: 1px solid #dce6f2;
+  display: flex;
+  align-items: center;
+  background: #fff;
+}
+
+.team-review-topbar button {
+  height: 32px;
+  padding: 0 13px;
+  border: 1px solid #d9d9d9;
+  border-radius: 6px;
+  color: #243550;
+  background: #fff;
+  font-size: 14px;
+}
+
+.team-review-topbar button:hover,
+.team-review-topbar button:focus-visible {
+  border-color: #4096ff;
+  color: #1677ff;
+  outline: none;
+}
+
+.team-review-layout {
+  height: calc(100dvh - 56px);
+  padding: 14px 32px;
+  display: grid;
+  grid-template-columns: 356px minmax(0, 1fr);
+  gap: 28px;
+  transition: grid-template-columns .2s ease;
+}
+
+.team-review-sidebar {
+  min-width: 0;
+  overflow: hidden;
+  border: 1px solid #cfdced;
+  border-radius: 12px;
+  display: flex;
+  flex-direction: column;
+  background: rgba(255, 255, 255, .76);
+}
+
+.team-review-sidebar-head {
+  min-height: 48px;
+  padding: 0 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.team-review-sidebar-head strong {
+  overflow: hidden;
+  font-size: 16px;
+  white-space: nowrap;
+}
+
+.team-review-sidebar-head small {
+  color: #7d8ca3;
+  font-size: 12px;
+  font-weight: 400;
+}
+
+.team-review-sidebar-head button {
+  width: 28px;
+  height: 28px;
+  flex: 0 0 auto;
+  border: 1px solid #c9d7ea;
+  border-radius: 6px;
+  color: #3154a8;
+  background: #fff;
+  font-size: 20px;
+}
+
+.team-review-categories {
+  padding: 0 16px 10px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.team-review-categories button {
+  height: 28px;
+  padding: 0 12px;
+  border: 0;
+  border-radius: 14px;
+  color: #475467;
+  background: #f3f5f8;
+  font-size: 12px;
+}
+
+.team-review-categories button.active {
+  color: #1677ff;
+  background: #e6f4ff;
+  box-shadow: inset 0 0 0 1px #91caff;
+}
+
+.team-review-patient-list {
+  min-height: 0;
+  padding: 0 16px 16px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  scrollbar-width: thin;
+  scrollbar-color: #b9c7d9 transparent;
+}
+
+.team-review-patient-card {
+  width: 100%;
+  min-height: 72px;
+  padding: 10px 12px;
+  border: 1px solid #dbe3ee;
+  border-radius: 10px;
+  display: grid;
+  grid-template-columns: 36px minmax(0, 1fr) 24px;
+  align-items: center;
+  gap: 10px;
+  color: #22324d;
+  background: #fff;
+  text-align: left;
+}
+
+.team-review-patient-card:hover {
+  border-color: #91caff;
+  background: #fafdff;
+}
+
+.team-review-patient-card.active {
+  border-color: #1677ff;
+  box-shadow: 0 0 0 1px rgba(22, 119, 255, .08);
+}
+
+.team-review-list-avatar,
+.team-review-profile-avatar {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  display: inline-grid;
+  place-items: center;
+  color: #fff;
+  background: linear-gradient(145deg, #8bbcff, #3154c8);
+  box-shadow: inset 0 0 0 2px rgba(255, 255, 255, .72);
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.team-review-list-info {
+  min-width: 0;
+  display: grid;
+  gap: 6px;
+}
+
+.team-review-list-info > span:first-child {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.team-review-list-info strong {
+  color: #172b4d;
+  font-size: 14px;
+}
+
+.team-review-list-info em {
+  overflow: hidden;
+  color: #697a94;
+  font-size: 11px;
+  font-style: normal;
+  text-overflow: ellipsis;
+}
+
+.team-review-list-info i {
+  color: #1677ff;
+  font-size: 10px;
+  font-style: normal;
+}
+
+.team-review-list-info small {
+  overflow: hidden;
+  display: flex;
+  gap: 4px;
+  white-space: nowrap;
+}
+
+.team-review-list-info b {
+  padding: 2px 5px;
+  border-radius: 3px;
+  color: #596b85;
+  background: #f1f5f9;
+  font-size: 10px;
+  font-weight: 400;
+}
+
+.team-review-card-more {
+  color: #7587a3;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-align: center;
+}
+
+.team-review-main {
+  min-width: 0;
+  overflow-y: auto;
+  padding: 4px 28px 140px;
+  scrollbar-width: thin;
+  scrollbar-color: #b9c7d9 transparent;
+}
+
+.team-review-patient-head {
+  min-height: 76px;
+  padding: 8px 26px;
+  border: 1px solid #cce0f8;
+  border-bottom: 0;
+  border-radius: 14px 14px 0 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  background: linear-gradient(105deg, #fff, #eef7ff);
+}
+
+.team-review-patient-basics {
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.team-review-patient-basics > strong {
+  margin-right: 2px;
+  color: #183c75;
+  font-size: 17px;
+}
+
+.team-review-patient-basics > span {
+  min-height: 24px;
+  padding: 2px 9px;
+  border: 1px solid #d8e3f0;
+  border-radius: 5px;
+  display: inline-flex;
+  align-items: center;
+  color: #52637d;
+  background: #f5f8fc;
+  font-size: 12px;
+}
+
+.team-review-patient-basics > i {
+  width: 1px;
+  height: 18px;
+  margin: 0 3px;
+  background: #d4deeb;
+}
+
+.team-review-patient-basics small {
+  color: #64748b;
+  font-size: 12px;
+}
+
+.team-review-patient-basics button {
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  border: 0;
+  color: #1677ff;
+  background: transparent;
+}
+
+.team-review-profile {
+  height: 44px;
+  padding: 0 14px 0 8px;
+  border: 1px solid #c9ddf7;
+  border-radius: 22px;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  flex: 0 0 auto;
+  color: #344d70;
+  background: #f1f7ff;
+}
+
+.team-review-profile-avatar {
+  width: 32px;
+  height: 32px;
+}
+
+.team-review-stripe {
+  height: 20px;
+  margin: 0 28px;
+  background: repeating-linear-gradient(72deg, transparent 0 7px, rgba(77, 145, 235, .18) 7px 9px);
+}
+
+.team-review-report {
+  padding: 18px 28px 20px;
+  border: 1px solid #cce0f8;
+  border-top: 0;
+  border-radius: 0 0 14px 14px;
+  background: rgba(255, 255, 255, .86);
+}
+
+.team-review-report-title {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.team-review-ai-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: inline-grid;
+  place-items: center;
+  color: #fff;
+  background: linear-gradient(145deg, #52d7ff, #6d5cff 65%, #bd5cff);
+  box-shadow: 0 5px 16px rgba(71, 99, 255, .28);
+}
+
+.team-review-report h2,
+.team-review-report p {
+  margin: 0;
+}
+
+.team-review-report h2 {
+  color: #183c75;
+  font-size: 17px;
+}
+
+.team-review-report-title p {
+  margin-top: 3px;
+  color: #8795aa;
+  font-size: 12px;
+}
+
+.team-review-report ul {
+  margin: 14px 0 0;
+  padding-left: 22px;
+  color: #334560;
+  font-size: 14px;
+  line-height: 1.75;
+}
+
+.team-review-report li::marker {
+  color: #1677ff;
+}
+
+.team-review-section-title {
+  margin: 20px 0 14px;
+  padding-left: 13px;
+  border-left: 3px solid #1677ff;
+  color: #183c75;
+  font-size: 17px;
+}
+
+.team-review-detail-card {
+  margin-bottom: 16px;
+  overflow: hidden;
+  border-radius: 12px;
+  background: #fff;
+}
+
+.team-review-detail-card h3 {
+  height: 54px;
+  margin: 0 24px;
+  border-bottom: 1px solid #e6ebf1;
+  display: flex;
+  align-items: center;
+  font-size: 15px;
+}
+
+.team-review-detail-card > div {
+  padding: 9px 24px 14px;
+  color: #344560;
+  font-size: 14px;
+  line-height: 1.7;
+}
+
+.team-review-detail-card p {
+  margin: 7px 0;
+}
+
+.team-review-disclaimer {
+  color: #9aa7b8;
+  font-size: 12px;
+}
+
+.team-review-empty-category {
+  min-height: 330px;
+  border: 1px solid #d9e4f1;
+  border-radius: 14px;
+  display: grid;
+  place-content: center;
+  justify-items: center;
+  gap: 10px;
+  color: #64748b;
+  background: #fff;
+  text-align: center;
+}
+
+.team-review-empty-category > span {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  color: #52c41a;
+  background: #f6ffed;
+  font-size: 22px;
+}
+
+.team-review-empty-category h2,
+.team-review-empty-category p {
+  margin: 0;
+}
+
+.team-review-empty-category button {
+  height: 32px;
+  margin-top: 6px;
+  padding: 0 15px;
+  border: 1px solid #1677ff;
+  border-radius: 6px;
+  color: #1677ff;
+  background: #fff;
+}
+
+.team-review-actions {
+  position: fixed;
+  z-index: 10042;
+  right: 24px;
+  bottom: 18px;
+  padding: 8px;
+  border: 1px solid #d7e2ef;
+  border-radius: 10px;
+  display: flex;
+  gap: 8px;
+  background: rgba(255, 255, 255, .96);
+  box-shadow: 0 8px 24px rgba(37, 63, 98, .14);
+}
+
+.team-review-actions button {
+  height: 38px;
+  padding: 0 16px;
+  border-radius: 6px;
+  font-size: 14px;
+}
+
+.team-review-actions .reject {
+  border: 1px solid #ff4d4f;
+  color: #ff4d4f;
+  background: #fff;
+}
+
+.team-review-actions .accept {
+  border: 1px solid #1677ff;
+  color: #fff;
+  background: #1677ff;
+  box-shadow: 0 2px 0 rgba(5, 145, 255, .1);
+}
+
+.team-review-actions .reject:hover {
+  color: #ff7875;
+  border-color: #ff7875;
+}
+
+.team-review-actions .accept:hover {
+  border-color: #4096ff;
+  background: #4096ff;
+}
+
+.team-review-assistant {
+  position: fixed;
+  z-index: 10041;
+  right: 24px;
+  bottom: 76px;
+  width: 294px;
+  padding: 12px 16px;
+  border: 1px solid #d7e6f8;
+  border-radius: 10px;
+  color: #5e6f87;
+  background: #fff;
+  box-shadow: 0 8px 24px rgba(37, 63, 98, .1);
+  font-size: 12px;
+  line-height: 1.55;
+}
+
+.team-review-layout.sidebar-collapsed {
+  grid-template-columns: 56px minmax(0, 1fr);
+}
+
+.team-review-layout.sidebar-collapsed .team-review-sidebar-head {
+  padding: 0 13px;
+}
+
+.team-review-layout.sidebar-collapsed .team-review-sidebar-head strong,
+.team-review-layout.sidebar-collapsed .team-review-categories,
+.team-review-layout.sidebar-collapsed .team-review-patient-list {
+  display: none;
+}
+
+.team-patient-toast {
+  z-index: 10100;
+}
+
+@media (max-width: 1100px) {
+  .team-review-layout {
+    padding: 12px 18px;
+    grid-template-columns: 300px minmax(0, 1fr);
+    gap: 16px;
+  }
+
+  .team-review-main {
+    padding-right: 8px;
+    padding-left: 8px;
+  }
+
+  .team-review-patient-basics > i,
+  .team-review-patient-basics small {
+    display: none;
+  }
+}
+
+@media (max-width: 760px) {
+  .team-review-topbar {
+    padding: 0 16px;
+  }
+
+  .team-review-layout {
+    padding: 10px;
+    grid-template-columns: 96px minmax(0, 1fr);
+    gap: 10px;
+  }
+
+  .team-review-sidebar-head {
+    padding: 0 8px;
+  }
+
+  .team-review-sidebar-head strong small,
+  .team-review-categories,
+  .team-review-list-info,
+  .team-review-card-more {
+    display: none;
+  }
+
+  .team-review-patient-list {
+    padding: 0 12px 12px;
+  }
+
+  .team-review-patient-card {
+    min-height: 54px;
+    padding: 8px;
+    grid-template-columns: 1fr;
+    justify-items: center;
+  }
+
+  .team-review-patient-head {
+    padding: 10px 14px;
+  }
+
+  .team-review-profile {
+    padding-right: 8px;
+    font-size: 0;
+  }
+
+  .team-review-report,
+  .team-review-detail-card > div {
+    padding-right: 16px;
+    padding-left: 16px;
+  }
+
+  .team-review-actions {
+    right: 12px;
+    bottom: 12px;
+  }
+
+  .team-review-assistant {
+    display: none;
+  }
+}
